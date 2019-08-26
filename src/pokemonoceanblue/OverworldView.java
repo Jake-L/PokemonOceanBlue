@@ -135,6 +135,19 @@ public class OverworldView {
                     sprite.getWidth(null) * graphics_scaling, 
                     sprite.getHeight(null) * graphics_scaling, 
                     canvas);        
+
+        for (int i = 0; i < model.CPUModel.length; i++){
+                    // get the CPU's sprite name
+        sprite = characterSprite.get(model.CPUModel[i].getCurrentSprite());
+
+        // draw the player
+        g.drawImage(sprite, 
+                    (model.CPUModel[i].getRenderX() - x_offset) * graphics_scaling, 
+                    (model.CPUModel[i].getRenderY() - y_offset) * graphics_scaling, 
+                    sprite.getWidth(null) * graphics_scaling, 
+                    sprite.getHeight(null) * graphics_scaling, 
+                    canvas);        
+        }
     }
 
     

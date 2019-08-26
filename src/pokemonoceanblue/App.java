@@ -12,6 +12,7 @@ public class App extends JFrame implements KeyListener {
     OverworldController overworldController;
     CharacterController playerController;
     CharacterModel playerModel;
+    CharacterModel[] CPUModel = new CharacterModel[1];
     ViewManager viewManager;
     List<Integer> keysDown = new ArrayList<Integer>(); 
 
@@ -36,6 +37,10 @@ public class App extends JFrame implements KeyListener {
         overworldController = new OverworldController(overworldModel);
         playerController = new CharacterController(playerModel);
         playerModel.setOverworldController(overworldController);
+
+        CPUModel[0] = new CharacterModel("red", 5, 4);
+        CPUModel[0].setOverworldController(overworldController);
+        overworldModel.setCPUModel(CPUModel);
 
         OverworldView overworldView = new OverworldView(overworldModel, playerModel);
         viewManager = new ViewManager();

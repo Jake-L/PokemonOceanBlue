@@ -11,6 +11,7 @@ public class OverworldModel {
     int mapId;
     public byte[][] tiles;
     public List<SpriteModel> mapObjects = new ArrayList<SpriteModel>(); 
+    public CharacterModel[] CPUModel;
     
     /** 
      * @param mapId unique identifier for the current map
@@ -22,6 +23,10 @@ public class OverworldModel {
         mapObjects.add(new SpriteModel("house1",9,17));
         mapObjects.add(new SpriteModel("house1",20,10));
         mapObjects.add(new SpriteModel("house1",20,17));
+    }
+
+    public void setCPUModel(CharacterModel[] CPUModel){
+        this.CPUModel = CPUModel;
     }
 
     /** 
