@@ -6,8 +6,9 @@ import javax.swing.JPanel;
 
 public class ViewManager extends JPanel {
 
-    private OverworldView view;
-    private byte graphics_scaling = 3;
+    private ViewBase view;
+    private ViewBase oldView;
+    private byte graphicsScaling = 3;
     private int width;
     private int height;
     
@@ -20,23 +21,22 @@ public class ViewManager extends JPanel {
     
     /** 
      * Sets variables for rendering on screen
-     * @param graphics_scaling a factor to multiply by all measurements to fit the screen
+     * @param graphicsScaling a factor to multiply by all measurements to fit the screen
      * @param width width of the screen in pixels
      * @param height height of the screen in pixels
      */
-    public void setViewSize(byte graphics_scaling, int width, int height){
-        this.graphics_scaling = graphics_scaling;
+    public void setViewSize(byte graphicsScaling, int width, int height){
+        this.graphicsScaling = graphicsScaling;
         this.width = width;
         this.height = height;
     }
-
     
     /** 
      * @param view the current OverworldView to be rendered
      */
-    public void setView(OverworldView view) {
+    public void setView(ViewBase view) {
         this.view = view;
-        view.setViewSize(graphics_scaling, width, height);
+        view.setViewSize(graphicsScaling, width, height);
     }
 
     /** 
@@ -55,5 +55,10 @@ public class ViewManager extends JPanel {
 
     public void render(){
         repaint();
+    }
+
+    public String getCurrentView()
+    {
+        return this.view.toString();
     }
 }

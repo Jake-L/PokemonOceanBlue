@@ -42,7 +42,7 @@ public class OverworldModel {
             // read the first line which gives the number of rows and columns
             String line = br.readLine();
             tiles = new byte[Integer.parseInt(line.split(",")[0])][Integer.parseInt(line.split(",")[1])];
-            int line_counter = 0;
+            int lineCounter = 0;
             
             // loop until all lines are read
             line = br.readLine();
@@ -54,12 +54,12 @@ public class OverworldModel {
                 // convert the string into a byte and insert into the array
                 for (var i = 0; i < data.length; i++)
                 {
-                    tiles[line_counter][i] = Byte.parseByte(data[i]);
+                    tiles[lineCounter][i] = Byte.parseByte(data[i]);
                 }
 
                 // read next line before looping
                 line = br.readLine();
-                line_counter++;
+                lineCounter++;
             }
 
         } catch (IOException e) {

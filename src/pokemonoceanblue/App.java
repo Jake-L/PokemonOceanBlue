@@ -18,6 +18,7 @@ public class App extends JFrame implements KeyListener {
 
     // number of milliseconds between frames
     private final byte FRAME_LENGTH = 32;
+    private long startTime;
 
     public App(){
         createAndShowGUI();
@@ -28,24 +29,14 @@ public class App extends JFrame implements KeyListener {
     }
 
     private void createAndShowGUI() {
+       
         //Create and set up the window.
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setPreferredSize(new Dimension(800, 700));
-
-        playerModel = new CharacterModel("red", 4, 4);
-        OverworldModel overworldModel = new OverworldModel(0);
-        overworldController = new OverworldController(overworldModel);
-        playerController = new CharacterController(playerModel);
-        playerModel.setOverworldController(overworldController);
-
-        CPUModel[0] = new CharacterModel("red", 5, 4);
-        CPUModel[0].setOverworldController(overworldController);
-        overworldModel.setCPUModel(CPUModel);
-
-        OverworldView overworldView = new OverworldView(overworldModel, playerModel);
-        viewManager = new ViewManager();
+        startTime = System.currentTimeMillis();        
         
         // display the view
+        viewManager = new ViewManager();
         this.add(viewManager);
 
         // listen for key press and release
@@ -57,7 +48,8 @@ public class App extends JFrame implements KeyListener {
         
         // set the size of the ViewManager, must come after pack()
         viewManager.setViewSize((byte)(4), this.getWidth(), this.getHeight());
-        viewManager.setView(overworldView);
+        TitleScreenView titleView = new TitleScreenView();
+        viewManager.setView(titleView);
 
         this.update();
     }
@@ -73,11 +65,32 @@ public class App extends JFrame implements KeyListener {
         {
             keysDown.add(e.getKeyCode());
         }
+
+        if (viewManager.getCurrentView() == "TitleScreen" && System.currentTimeMillis() - startTime > 1000)
+        {
+            setMap(0);
+        }
     }
      
     /** Handle the key released event from the text field. */
     public void keyReleased(KeyEvent e) {
         keysDown.remove(Integer.valueOf(e.getKeyCode()));
+    }
+
+    public void setMap(int mapId)
+    {
+        playerModel = new CharacterModel("red", 4, 4);
+        OverworldModel overworldModel = new OverworldModel(0);
+        overworldController = new OverworldController(overworldModel);
+        playerController = new CharacterController(playerModel);
+        playerModel.setOverworldController(overworldController);
+
+        CPUModel[0] = new CharacterModel("cassie", 5, 4);
+        CPUModel[0].setOverworldController(overworldController);
+        overworldModel.setCPUModel(CPUModel);
+
+        OverworldView overworldView = new OverworldView(overworldModel, playerModel);
+        viewManager.setView(overworldView);
     }
 
     public void update()
@@ -96,8 +109,11 @@ public class App extends JFrame implements KeyListener {
             if (System.currentTimeMillis() - lastRun > FRAME_LENGTH)
             {
                 // update the players position
-                playerController.userInput(keysDown);
-                playerModel.update();
+                if (viewManager.getCurrentView().equals("Overworld"))
+                {
+                    playerController.userInput(keysDown);
+                    playerModel.update();
+                }
                 lastRun = System.currentTimeMillis();
             }
 

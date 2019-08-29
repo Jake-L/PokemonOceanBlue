@@ -11,18 +11,15 @@ import javax.swing.JPanel;
 /** 
  * Renders the overworld
  */
-public class OverworldView {
+public class OverworldView extends ViewBase {
 
     private OverworldModel model;
     private CharacterModel playerModel;
     private Image[] tileSprite = new Image[5];
     Map<String, Image> mapObjectSprite = new HashMap<String, Image>();
     Map<String, Image> characterSprite = new HashMap<String, Image>();
-    private byte graphics_scaling;
-    private int width;
-    private int height;
-    private int x_offset;
-    private int y_offset;
+    private int xOffset;
+    private int yOffset;
     
     /** 
      * Constructor for the overworld view
@@ -33,20 +30,6 @@ public class OverworldView {
         this.model = model;
         this.playerModel = playerModel;
         loadImage();
-    }
-
-    
-    /** 
-     * Sets variables for rendering on screen
-     * @param graphics_scaling a factor to multiply by all measurements to fit the screen
-     * @param width width of the screen in pixels
-     * @param height height of the screen in pixels
-     */
-    public void setViewSize(byte graphics_scaling, int width, int height)
-    {
-        this.graphics_scaling = graphics_scaling;
-        this.width = width;
-        this.height = height;
     }
 
     /** 
@@ -85,6 +68,24 @@ public class OverworldView {
                 characterSprite.put(formattedName, ii.getImage());
             }
         }
+
+        for (CharacterModel CPUModel : model.CPUModel)
+        {
+            // load character sprites
+            spriteName = CPUModel.getSpriteName();
+
+            // get their sprites for each direction
+            for (Direction direction : Direction.values())
+            {
+                // each direction has 4 sprites
+                for (int i = 0; i < 4; i++)
+                {
+                    formattedName = String.format("%s%s%s", spriteName, direction.toString(), i);
+                    ImageIcon ii = new ImageIcon(String.format("src/characters/%s.png", formattedName));
+                    characterSprite.put(formattedName, ii.getImage());
+                }
+            }
+        }
     }
 
     /** 
@@ -92,6 +93,7 @@ public class OverworldView {
      * @param g graphics object
      * @param canvas JPanel to draw the images on
      */
+    @Override
     public void render(Graphics g, JPanel canvas) {
         Image sprite;
         int playerRenderX = playerModel.getRenderX();
@@ -105,10 +107,10 @@ public class OverworldView {
             for (int x = 0; x < model.tiles[y].length; x++)
             {
                 g.drawImage(tileSprite[Math.abs(model.tiles[y][x])], 
-                            (x * 16 - x_offset) * graphics_scaling, 
-                            (y * 16 - y_offset) * graphics_scaling, 
-                            16 * graphics_scaling, 
-                            16 * graphics_scaling,
+                            (x * 16 - xOffset) * graphicsScaling, 
+                            (y * 16 - yOffset) * graphicsScaling, 
+                            16 * graphicsScaling, 
+                            16 * graphicsScaling,
                             canvas);
             }
         }
@@ -118,10 +120,10 @@ public class OverworldView {
         {
             sprite = mapObjectSprite.get(current.spriteName);
             g.drawImage(sprite, 
-                        (current.x * 16 - x_offset + 8 - sprite.getWidth(null)/2) * graphics_scaling, 
-                        ((current.y + 1) * 16 - sprite.getHeight(null) - y_offset) * graphics_scaling, 
-                        sprite.getWidth(null) * graphics_scaling, 
-                        sprite.getHeight(null) * graphics_scaling, 
+                        (current.x * 16 - xOffset + 8 - sprite.getWidth(null)/2) * graphicsScaling, 
+                        ((current.y + 1) * 16 - sprite.getHeight(null) - yOffset) * graphicsScaling, 
+                        sprite.getWidth(null) * graphicsScaling, 
+                        sprite.getHeight(null) * graphicsScaling, 
                         canvas);
         }
 
@@ -130,10 +132,10 @@ public class OverworldView {
 
         // draw the player
         g.drawImage(sprite, 
-                    (playerRenderX - x_offset) * graphics_scaling, 
-                    (playerRenderY - y_offset) * graphics_scaling, 
-                    sprite.getWidth(null) * graphics_scaling, 
-                    sprite.getHeight(null) * graphics_scaling, 
+                    (playerRenderX - xOffset) * graphicsScaling, 
+                    (playerRenderY - yOffset) * graphicsScaling, 
+                    sprite.getWidth(null) * graphicsScaling, 
+                    sprite.getHeight(null) * graphicsScaling, 
                     canvas);        
 
         for (int i = 0; i < model.CPUModel.length; i++){
@@ -142,10 +144,10 @@ public class OverworldView {
 
         // draw the player
         g.drawImage(sprite, 
-                    (model.CPUModel[i].getRenderX() - x_offset) * graphics_scaling, 
-                    (model.CPUModel[i].getRenderY() - y_offset) * graphics_scaling, 
-                    sprite.getWidth(null) * graphics_scaling, 
-                    sprite.getHeight(null) * graphics_scaling, 
+                    (model.CPUModel[i].getRenderX() - xOffset) * graphicsScaling, 
+                    (model.CPUModel[i].getRenderY() - yOffset) * graphicsScaling, 
+                    sprite.getWidth(null) * graphicsScaling, 
+                    sprite.getHeight(null) * graphicsScaling, 
                     canvas);        
         }
     }
@@ -160,51 +162,56 @@ public class OverworldView {
         /* 
         / get horizontal offset
         */
-        int left_offset = (int) (playerRenderX - (Math.ceil(width / (2.00 * graphics_scaling))));
-		int right_offset = (int) (playerRenderX + (Math.floor(width / (2.00 * graphics_scaling))));
+        int leftOffset = (int) (playerRenderX - (Math.ceil(width / (2.00 * graphicsScaling))));
+		int rightOffset = (int) (playerRenderX + (Math.floor(width / (2.00 * graphicsScaling))));
 
 		// if the map doesn't fill the whole screen, center it
-		if (model.tiles[0].length * 16 <= width / graphics_scaling)
+		if (model.tiles[0].length * 16 <= width / graphicsScaling)
 		{
-			x_offset = (int) ((model.tiles[0].length * 16 - Math.ceil(width / graphics_scaling)) / 2);
+			xOffset = (int) ((model.tiles[0].length * 16 - Math.ceil(width / graphicsScaling)) / 2);
 		}
 		// check if the player is moving in the middle of the map and the screen needs to be moved
-		else if (left_offset > 0 && right_offset <= model.tiles[0].length * 16)
+		else if (leftOffset > 0 && rightOffset <= model.tiles[0].length * 16)
 		{
-            x_offset = left_offset;
+            xOffset = leftOffset;
         }
         // check if player is on right side of the map and screen stops scrolling
-		else if (left_offset > 0 && right_offset > model.tiles[0].length * 16)
+		else if (leftOffset > 0 && rightOffset > model.tiles[0].length * 16)
 		{
-            x_offset = (int) (model.tiles[0].length * 16 - Math.ceil(width / graphics_scaling));
+            xOffset = (int) (model.tiles[0].length * 16 - Math.ceil(width / graphicsScaling));
 		}
 		else
 		{
-			x_offset = 0;
+			xOffset = 0;
         }
         
         /* 
         / get vertical offset
         */
-        var top_offset = playerRenderY - (Math.round(height / graphics_scaling) / 2);
-        var bot_offset = playerRenderY + (Math.round(height / graphics_scaling) / 2);
+        var topOffset = playerRenderY - (Math.round(height / graphicsScaling) / 2);
+        var botOffset = playerRenderY + (Math.round(height / graphicsScaling) / 2);
 
 		// if the map doesn't fill the whole screen, center it
-		if (model.tiles.length * 16 <= height / graphics_scaling)
+		if (model.tiles.length * 16 <= height / graphicsScaling)
 		{
-			y_offset = Math.round((model.tiles.length * 16 - (height / graphics_scaling)) / 2);
+			yOffset = Math.round((model.tiles.length * 16 - (height / graphicsScaling)) / 2);
 		}
-		else if (top_offset > 0 && bot_offset <= model.tiles.length * 16)
+		else if (topOffset > 0 && botOffset <= model.tiles.length * 16)
 		{
-			y_offset = top_offset;
+			yOffset = topOffset;
 		}
-		else if (top_offset > 0 && bot_offset > model.tiles.length * 16)
+		else if (topOffset > 0 && botOffset > model.tiles.length * 16)
 		{
-			y_offset = (int)(model.tiles.length * 16 - Math.ceil(height / graphics_scaling));
+			yOffset = (int)(model.tiles.length * 16 - Math.ceil(height / graphicsScaling));
 		}
 		else
 		{
-			y_offset = 0;
+			yOffset = 0;
         }
+    }
+
+    @Override
+    public String toString(){
+        return "Overworld";
     }
 }
