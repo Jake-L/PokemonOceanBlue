@@ -54,7 +54,7 @@ public class App extends JFrame implements KeyListener {
         this.update();
     }
 
-    /** Handle the key typed event from the text field. */
+    /** unused function that needs to be included to implement KeyListener */
     public void keyTyped(KeyEvent e) {
 
     }
@@ -66,22 +66,32 @@ public class App extends JFrame implements KeyListener {
             keysDown.add(e.getKeyCode());
         }
 
+        // pressing any key will advance from the title screen
         if (viewManager.getCurrentView() == "TitleScreen" && System.currentTimeMillis() - startTime > 1000)
         {
-            setMap(0);
+            setMap(0, 4, 4);
         }
     }
      
-    /** Handle the key released event from the text field. */
+    /** Remove the released key from the list of pressed keys */
     public void keyReleased(KeyEvent e) {
         keysDown.remove(Integer.valueOf(e.getKeyCode()));
     }
 
-    public void setMap(int mapId)
+    /** 
+     * Loads a new map and passed it to ViewManager
+     * @param mapId unique identifier for the new map
+     * @param playerX x-coordinate to spawn player
+     * @param playerY y-coordinate to spawn player
+     */
+    public void setMap(int mapId, int playerX, int playerY)
     {
-        playerModel = new CharacterModel("red", 4, 4);
-        OverworldModel overworldModel = new OverworldModel(0);
+        // create the overworld
+        OverworldModel overworldModel = new OverworldModel(mapId);
         overworldController = new OverworldController(overworldModel);
+
+        // create the player
+        playerModel = new CharacterModel("red", playerX, playerY);
         playerController = new CharacterController(playerModel);
         playerModel.setOverworldController(overworldController);
 

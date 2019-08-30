@@ -1,7 +1,6 @@
 package pokemonoceanblue;
 
 import java.awt.Graphics;
-
 import javax.swing.JPanel;
 
 public class ViewBase {
@@ -24,6 +23,6 @@ public class ViewBase {
         this.height = height;
     }
 
-    
+    // render function that gets implemented by extended class
     public void render(Graphics g, JPanel canvas) {}
 }
