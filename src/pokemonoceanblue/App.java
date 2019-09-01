@@ -7,24 +7,27 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
 
-public class App extends JFrame implements KeyListener {
-
-    OverworldController overworldController;
+public class App extends JFrame implements KeyListener 
+{
     CharacterController playerController;
     CharacterModel playerModel;
+    CharacterModel oldPlayerModel;
     CharacterModel[] CPUModel = new CharacterModel[1];
     ViewManager viewManager;
     List<Integer> keysDown = new ArrayList<Integer>(); 
+    OverworldModel overworldModel;
 
     // number of milliseconds between frames
     private final byte FRAME_LENGTH = 32;
     private long startTime;
+    private byte graphicsScaling = (byte)(5);
 
     public App(){
         createAndShowGUI();
     }
     
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception 
+    {
         JFrame frame = new App();
     }
 
@@ -32,7 +35,7 @@ public class App extends JFrame implements KeyListener {
        
         //Create and set up the window.
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setPreferredSize(new Dimension(800, 700));
+        this.setPreferredSize(new Dimension(1920, 1080));
         startTime = System.currentTimeMillis();        
         
         // display the view
@@ -47,7 +50,7 @@ public class App extends JFrame implements KeyListener {
         this.setVisible(true);
         
         // set the size of the ViewManager, must come after pack()
-        viewManager.setViewSize((byte)(4), this.getWidth(), this.getHeight());
+        viewManager.setViewSize(graphicsScaling, this.getWidth(), this.getHeight());
         TitleScreenView titleView = new TitleScreenView();
         viewManager.setView(titleView);
 
@@ -67,7 +70,7 @@ public class App extends JFrame implements KeyListener {
         }
 
         // pressing any key will advance from the title screen
-        if (viewManager.getCurrentView() == "TitleScreen" && System.currentTimeMillis() - startTime > 1000)
+        if (viewManager.getCurrentView() == "TitleScreen" && System.currentTimeMillis() - startTime > 1000 && playerModel == null )
         {
             setMap(0, 4, 4);
         }
@@ -87,17 +90,21 @@ public class App extends JFrame implements KeyListener {
     public void setMap(int mapId, int playerX, int playerY)
     {
         // create the overworld
-        OverworldModel overworldModel = new OverworldModel(mapId);
-        overworldController = new OverworldController(overworldModel);
+        overworldModel = new OverworldModel(mapId);
 
         // create the player
-        playerModel = new CharacterModel("red", playerX, playerY);
+        if (playerModel != null)
+        {
+            // if the player moved from another map, keep them facing the same direction as before
+            oldPlayerModel = playerModel;
+            playerModel = new CharacterModel("red", playerX, playerY, oldPlayerModel.getDirection());
+        }
+        else
+        {
+            playerModel = new CharacterModel("red", playerX, playerY);
+        }
         playerController = new CharacterController(playerModel);
-        playerModel.setOverworldController(overworldController);
-
-        CPUModel[0] = new CharacterModel("cassie", 5, 4);
-        CPUModel[0].setOverworldController(overworldController);
-        overworldModel.setCPUModel(CPUModel);
+        playerModel.setOverworldModel(overworldModel);
 
         OverworldView overworldView = new OverworldView(overworldModel, playerModel);
         viewManager.setView(overworldView);
@@ -121,8 +128,34 @@ public class App extends JFrame implements KeyListener {
                 // update the players position
                 if (viewManager.getCurrentView().equals("Overworld"))
                 {
-                    playerController.userInput(keysDown);
                     playerModel.update();
+
+                    if (oldPlayerModel != null)
+                    {
+                        // continue to animate the player's movement on the old map during a transition
+                        oldPlayerModel.update();
+
+                        if (viewManager.previousViewComplete())
+                        {
+                            oldPlayerModel = null;
+                        }
+                    }
+                    else
+                    {
+                        // only read user input when previous map is no longer visible
+                        playerController.userInput(keysDown);
+                    }
+                    
+                    // check if player is entering a portal
+                    if (playerModel.getMovementCounter() == 15)
+                    {
+                        Portal portal = overworldModel.checkPortal(playerModel.getX(), playerModel.getY());
+                        if (portal != null)
+                        {
+                            // move to the new map
+                            setMap(portal.destMapId, portal.destX, portal.destY);
+                        }
+                    }
                 }
                 lastRun = System.currentTimeMillis();
             }

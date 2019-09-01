@@ -1,5 +1,6 @@
 package pokemonoceanblue;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.io.File;
@@ -15,9 +16,9 @@ public class OverworldView extends ViewBase {
 
     private OverworldModel model;
     private CharacterModel playerModel;
-    private Image[] tileSprite = new Image[5];
-    Map<String, Image> mapObjectSprite = new HashMap<String, Image>();
-    Map<String, Image> characterSprite = new HashMap<String, Image>();
+    private Image[] tileSprite = new Image[20];
+    private Map<String, Image> mapObjectSprite = new HashMap<String, Image>();
+    private Map<String, Image> characterSprite = new HashMap<String, Image>();
     private int xOffset;
     private int yOffset;
     
@@ -95,6 +96,11 @@ public class OverworldView extends ViewBase {
      */
     @Override
     public void render(Graphics g, JPanel canvas) {
+        // draw black background
+        Color colour = new Color(0, 0, 0, 255);
+        g.setColor(colour);
+        g.fillRect(0, 0, width, height);
+        
         Image sprite;
         int playerRenderX = playerModel.getRenderX();
         int playerRenderY = playerModel.getRenderY();
@@ -138,17 +144,18 @@ public class OverworldView extends ViewBase {
                     sprite.getHeight(null) * graphicsScaling, 
                     canvas);        
 
-        for (int i = 0; i < model.CPUModel.length; i++){
-                    // get the CPU's sprite name
-        sprite = characterSprite.get(model.CPUModel[i].getCurrentSprite());
+        for (int i = 0; i < model.CPUModel.length; i++)
+        {            
+            // get the CPU's sprite name            
+            sprite = characterSprite.get(model.CPUModel[i].getCurrentSprite());
 
-        // draw the player
-        g.drawImage(sprite, 
-                    (model.CPUModel[i].getRenderX() - xOffset) * graphicsScaling, 
-                    (model.CPUModel[i].getRenderY() - yOffset) * graphicsScaling, 
-                    sprite.getWidth(null) * graphicsScaling, 
-                    sprite.getHeight(null) * graphicsScaling, 
-                    canvas);        
+            // draw the player
+            g.drawImage(sprite, 
+                        (model.CPUModel[i].getRenderX() - xOffset) * graphicsScaling, 
+                        (model.CPUModel[i].getRenderY() - yOffset) * graphicsScaling, 
+                        sprite.getWidth(null) * graphicsScaling, 
+                        sprite.getHeight(null) * graphicsScaling, 
+                        canvas);     
         }
     }
 

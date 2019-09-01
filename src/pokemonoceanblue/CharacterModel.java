@@ -12,27 +12,38 @@ public class CharacterModel {
     private int dx;
     private Direction direction;
     private int animationOffset = 0;
-    private OverworldController overworldController;
+    private OverworldModel overworldModel;
 
     /** 
      * @param spriteName name of the sprite used in the image filename
      * @param x x position of the sprite
      * @param y y position of the sprite
+     * sets direction to default value of DOWN
      */
     public CharacterModel(String spriteName, int x, int y){
+        this(spriteName, x, y, Direction.DOWN);
+    }
+
+    /** 
+     * @param spriteName name of the sprite used in the image filename
+     * @param x x position of the sprite
+     * @param y y position of the sprite
+     * @param direction the direction the character initially faces 
+     */
+    public CharacterModel(String spriteName, int x, int y, Direction direction){
         this.spriteName = spriteName;
         this.x = x;
         this.y = y;
-        this.direction = Direction.DOWN;
+        this.direction = direction;
 
         // get the sprite's height
         ImageIcon ii = new ImageIcon(String.format("src/characters/%sDown0.png", spriteName));
         this.height = ii.getImage().getHeight(null);
     }
 
-    public void setOverworldController(OverworldController overworldController)
+    public void setOverworldModel(OverworldModel overworldModel)
     {
-        this.overworldController = overworldController;
+        this.overworldModel = overworldModel;
     }
 
     public String getSpriteName(){
@@ -45,7 +56,7 @@ public class CharacterModel {
     public String getCurrentSprite(){
         if (this.movementCounter >= 0)
         {
-            return String.format("%s%s%s", this.spriteName, this.direction.toString(), (int)(Math.floor((this.movementCounter + 16 * this.animationOffset) / 8)));
+            return String.format("%s%s%s", this.spriteName, this.direction.toString(), (int)(Math.floor((this.movementCounter + 16 * this.animationOffset) / 8)) % 4);
         }
         else
         {
@@ -79,6 +90,11 @@ public class CharacterModel {
     
     public int getMovementCounter(){
         return this.movementCounter;
+    }
+
+    public Direction getDirection()
+    {
+        return this.direction;
     }
     
     /** 
@@ -117,14 +133,14 @@ public class CharacterModel {
 
             // check if the space they want to move into is open
             // check x direction
-            if (dx != 0 && overworldController.checkPosition(this.x + dx, this.y))
+            if (dx != 0 && overworldModel.checkPosition(this.x + dx, this.y))
             {
                 // set their movement speed
                 this.dx = dx;
                 this.dy = 0;
             }
             // check y direction
-            else if (dy != 0 && overworldController.checkPosition(this.x, this.y + dy))
+            else if (dy != 0 && overworldModel.checkPosition(this.x, this.y + dy))
             {
                 // set their movement speed
                 this.dy = dy;
@@ -134,6 +150,7 @@ public class CharacterModel {
             // update the player's grid position immediately
             this.x += this.dx;
             this.y += this.dy;
+            System.out.printf("new position %s, %s\n", this.x, this.y);
         }
     }
 

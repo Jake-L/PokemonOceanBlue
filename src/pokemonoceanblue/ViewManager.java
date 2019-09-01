@@ -9,7 +9,7 @@ public class ViewManager extends JPanel {
 
     private ViewBase view;
     private ViewBase newView;
-    private byte graphicsScaling = 3;
+    private byte graphicsScaling;
     private int width;
     private int height;
     private int transitionCounter = 0;
@@ -34,7 +34,7 @@ public class ViewManager extends JPanel {
     }
     
     /** 
-     * @param view the current OverworldView to be rendered
+     * @param view the current view to be rendered
      */
     public void setView(ViewBase view) {
         if (this.view != null)
@@ -95,5 +95,17 @@ public class ViewManager extends JPanel {
     public String getCurrentView()
     {
         return this.view.toString();
+    }
+
+    public boolean previousViewComplete()
+    {
+        if (this.newView == null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

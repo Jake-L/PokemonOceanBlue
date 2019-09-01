@@ -45,8 +45,8 @@ public class TitleScreenView extends ViewBase {
         g.drawImage(sprite[i], 
                     width / 2 - sprite[i].getWidth(null) * graphicsScaling / 2, 
                     height / 2 - sprite[i].getHeight(null) * graphicsScaling / 2, 
-                    width / 2, 
-                    height / 2, 
+                    sprite[i].getWidth(null) * graphicsScaling * 2, 
+                    sprite[i].getHeight(null) * graphicsScaling * 2, 
                     canvas);        
     }
 

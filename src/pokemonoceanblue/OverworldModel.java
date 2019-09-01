@@ -8,10 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OverworldModel {
-    int mapId;
+    public int mapId;
     public byte[][] tiles;
     public List<SpriteModel> mapObjects = new ArrayList<SpriteModel>(); 
     public CharacterModel[] CPUModel;
+    private Portal[] portals;
     
     /** 
      * @param mapId unique identifier for the current map
@@ -19,14 +20,30 @@ public class OverworldModel {
     public OverworldModel(int mapId){
         this.mapId = mapId;
         readMapFile();
-        mapObjects.add(new SpriteModel("house1",9,10));
-        mapObjects.add(new SpriteModel("house1",9,17));
-        mapObjects.add(new SpriteModel("house1",20,10));
-        mapObjects.add(new SpriteModel("house1",20,17));
-    }
+        if (this.mapId == 0)
+        {
+            mapObjects.add(new SpriteModel("house1",9,10));
+            mapObjects.add(new SpriteModel("house1",9,17));
+            mapObjects.add(new SpriteModel("house1",20,10));
+            mapObjects.add(new SpriteModel("house1",20,17));
 
-    public void setCPUModel(CharacterModel[] CPUModel){
-        this.CPUModel = CPUModel;
+            CPUModel = new CharacterModel[1];
+            CPUModel[0] = new CharacterModel("cassie", 5, 4);
+            CPUModel[0].setOverworldModel(this);
+
+            portals = new Portal[1];
+            portals[0] = new Portal(8, 10, 1, 3, 8);
+        }
+        else if (mapId == 1)
+        {
+            mapObjects.add(new SpriteModel("doormat",3,8));
+            mapObjects.add(new SpriteModel("pottedTree",0,8));
+            mapObjects.add(new SpriteModel("pottedTree",11,8));
+
+            CPUModel = new CharacterModel[0];
+            portals = new Portal[1];
+            portals[0] = new Portal(3, 9, 0, 8, 11);
+        }
     }
 
     /** 
@@ -65,5 +82,41 @@ public class OverworldModel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /** 
+     * @param x x position of the character
+     * @param y y position of the character
+     * @return true if the position is free or false if it is occupied
+     */
+    public boolean checkPosition(int x, int y)
+    {
+        if (y < 0 || y >= this.tiles.length
+            || x < 0 || x >= this.tiles[y].length
+            || this.tiles[y][x] < 1)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    /** 
+     * @param x x position of the character
+     * @param y y position of the character
+     * @return portal that the player stepped on or null if there is no portal at that position
+     */
+    public Portal checkPortal(int x, int y)
+    {
+        for (int i = 0; i < portals.length; i++)
+        {
+            if (x == portals[i].x && y == portals[i].y)
+            {
+                return portals[i];
+            }
+        }
+        return null;
     }
 }
