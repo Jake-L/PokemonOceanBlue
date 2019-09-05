@@ -35,7 +35,7 @@ public class App extends JFrame implements KeyListener
        
         //Create and set up the window.
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setPreferredSize(new Dimension(1920, 1080));
+        this.setPreferredSize(new Dimension(1800, 900));
         startTime = System.currentTimeMillis();        
         
         // display the view

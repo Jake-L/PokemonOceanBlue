@@ -11,8 +11,8 @@ public class OverworldModel {
     public int mapId;
     public byte[][] tiles;
     public List<SpriteModel> mapObjects = new ArrayList<SpriteModel>(); 
-    public CharacterModel[] CPUModel;
-    private Portal[] portals;
+    public CharacterModel[] CPUModel = new CharacterModel[0];
+    private Portal[] portals = new Portal[0];
     
     /** 
      * @param mapId unique identifier for the current map
@@ -22,27 +22,50 @@ public class OverworldModel {
         readMapFile();
         if (this.mapId == 0)
         {
-            mapObjects.add(new SpriteModel("house1",9,10));
-            mapObjects.add(new SpriteModel("house1",9,17));
-            mapObjects.add(new SpriteModel("house1",20,10));
-            mapObjects.add(new SpriteModel("house1",20,17));
-
             CPUModel = new CharacterModel[1];
             CPUModel[0] = new CharacterModel("cassie", 5, 4);
             CPUModel[0].setOverworldModel(this);
 
-            portals = new Portal[1];
+            portals = new Portal[6];
+            // houses
             portals[0] = new Portal(8, 10, 1, 3, 8);
+            portals[1] = new Portal(19, 10, 2, 3, 8);
+            portals[2] = new Portal(8, 17, 3, 3, 8);
+            portals[3] = new Portal(19, 17, 4, 3, 8);
+            portals[4] = new Portal(19, 24, 5, 3, 8);
+
+            // oak's lab
+            portals[5] = new Portal(10, 24, 6, 6, 12);
         }
         else if (mapId == 1)
         {
-            mapObjects.add(new SpriteModel("doormat",3,8));
-            mapObjects.add(new SpriteModel("pottedTree",0,8));
-            mapObjects.add(new SpriteModel("pottedTree",11,8));
-
-            CPUModel = new CharacterModel[0];
             portals = new Portal[1];
             portals[0] = new Portal(3, 9, 0, 8, 11);
+        }
+        else if (mapId == 2)
+        {
+            portals = new Portal[1];
+            portals[0] = new Portal(3, 9, 0, 19, 11);
+        }
+        else if (mapId == 3)
+        {
+            portals = new Portal[1];
+            portals[0] = new Portal(3, 9, 0, 8, 18);
+        }
+        else if (mapId == 4)
+        {
+            portals = new Portal[1];
+            portals[0] = new Portal(3, 9, 0, 19, 18);
+        }
+        else if (mapId == 5)
+        {
+            portals = new Portal[1];
+            portals[0] = new Portal(3, 9, 0, 19, 25);
+        }
+        else if (mapId == 6)
+        {
+            portals = new Portal[1];
+            portals[0] = new Portal(6, 13, 0, 10, 25);
         }
     }
 
@@ -61,11 +84,11 @@ public class OverworldModel {
             tiles = new byte[Integer.parseInt(line.split(",")[0])][Integer.parseInt(line.split(",")[1])];
             int lineCounter = 0;
             
-            // loop until all lines are read
+            // loop through all the lines of tile data
             line = br.readLine();
-            while (line != null) {
+            while (lineCounter < tiles.length) {
 
-                // split the line into an array of value
+                // split the line into an array of values
                 String[] data = line.split(",");
 
                 // convert the string into a byte and insert into the array
@@ -77,6 +100,19 @@ public class OverworldModel {
                 // read next line before looping
                 line = br.readLine();
                 lineCounter++;
+            }
+
+            // loop through all the mapObjects
+            while (line != null) 
+            {
+                // split the line into an array of values
+                String[] data = line.split(",");
+
+                // create the mapObject
+                mapObjects.add(new SpriteModel(data[0], Integer.parseInt(data[1]), Integer.parseInt(data[2])));
+
+                // read next line before looping
+                line = br.readLine();
             }
 
         } catch (IOException e) {

@@ -126,7 +126,7 @@ public class OverworldView extends ViewBase {
         {
             sprite = mapObjectSprite.get(current.spriteName);
             g.drawImage(sprite, 
-                        (current.x * 16 - xOffset + 8 - sprite.getWidth(null)/2) * graphicsScaling, 
+                        (current.x * 16 - xOffset) * graphicsScaling, // x refers to leftmost position
                         ((current.y + 1) * 16 - sprite.getHeight(null) - yOffset) * graphicsScaling, 
                         sprite.getWidth(null) * graphicsScaling, 
                         sprite.getHeight(null) * graphicsScaling, 
