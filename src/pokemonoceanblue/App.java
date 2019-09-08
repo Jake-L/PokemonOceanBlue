@@ -3,9 +3,15 @@ package pokemonoceanblue;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
+import javax.lang.model.util.ElementScanner6;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.AudioSystem;
 
 public class App extends JFrame implements KeyListener 
 {
@@ -53,6 +59,7 @@ public class App extends JFrame implements KeyListener
         viewManager.setViewSize(graphicsScaling, this.getWidth(), this.getHeight());
         TitleScreenView titleView = new TitleScreenView();
         viewManager.setView(titleView);
+        MusicPlayer.setSong("0");
 
         this.update();
     }
@@ -108,6 +115,7 @@ public class App extends JFrame implements KeyListener
 
         OverworldView overworldView = new OverworldView(overworldModel, playerModel);
         viewManager.setView(overworldView);
+        MusicPlayer.setSong("1");
     }
 
     public void update()
@@ -157,11 +165,15 @@ public class App extends JFrame implements KeyListener
                         }
                     }
                 }
+
+                // fade music during transition
+                MusicPlayer.fadeVolume();
+
                 lastRun = System.currentTimeMillis();
             }
 
             // render graphics at every opportunity
-            viewManager.render();
+            viewManager.render();    
 
             // check the amount of time to sleep until the next frame
             sleepLength = (int) (FRAME_LENGTH - (System.currentTimeMillis() - lastRun));
@@ -178,6 +190,109 @@ public class App extends JFrame implements KeyListener
 
             
         }
+    }    
+
+    /** 
+     * Plays background music
+     */
+    public static class MusicPlayer 
+    {
+        private static String currentSong;
+        private static String newSong;
+        private static Clip currentClip;
+        private static int transitionCounter = -40;
+
+        /** 
+         * Queues the background music for the given song number
+         * @param song the number of the song to be played
+         */
+        public static void setSong(String song)
+        {
+            // only switch songs if the new song is different from the one currently being played
+            if (currentSong == null)
+            {
+                newSong = song;
+                transitionCounter = -40;
+                playSong();
+            }
+            else if (song != currentSong)
+            {
+                newSong = song;
+                transitionCounter = 40;
+            } 
+            else
+            {
+                transitionCounter = -40;
+            }
+        }
+
+        /** 
+         * Begins playing the queued song
+         */
+        private static void playSong()
+        {
+            currentSong = newSong;
+
+            // stop any song currently being played
+            if (currentClip != null)
+            {
+                currentClip.stop();
+            }
+            try
+            {
+                // open and play the new song
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(String.format("src/music/%s.wav", currentSong)).getAbsoluteFile());
+                currentClip = AudioSystem.getClip();
+                currentClip.open(audioStream);
+                fadeVolume();
+                currentClip.loop(Clip.LOOP_CONTINUOUSLY);
+                //currentClip.start();
+            }
+            catch (Exception e)
+            {
+                System.out.println("Error playing music");
+            }
+        }
+
+        /** 
+         * Adjust the volume level
+         */
+        private static void setVolume(double gain)
+        {
+            FloatControl gainControl = (FloatControl) currentClip.getControl(FloatControl.Type.MASTER_GAIN);
+            float dB = (float) (Math.log(gain) / Math.log(10.0) * 20.0);
+            gainControl.setValue(dB);
+        }
+
+        /** 
+         * Fade volume during transitions between songs
+         */
+        public static void fadeVolume()
+        {
+            double gain;
+
+            if (transitionCounter > 0)
+            {
+                gain = 0.25 * (transitionCounter + 2) / 42;
+                transitionCounter--;
+            }
+            else if (transitionCounter > -40)
+            {
+                if (currentSong != newSong)
+                {
+                    playSong();
+                }
+
+                gain = 0.25 * (Math.abs(transitionCounter) + 2) / 42;
+                transitionCounter--;
+            }
+            else
+            {
+                gain = 0.25;
+            }
+
+            setVolume(gain);
+            
+        }
     }
-    
 }
