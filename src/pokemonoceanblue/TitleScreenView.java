@@ -10,7 +10,8 @@ import javax.swing.JPanel;
  */
 public class TitleScreenView extends ViewBase {
 
-    private Image[] sprite = new Image[2];
+    private Image[] blastoiseSprite = new Image[2];
+    private Image[] title = new Image[6];
     
     /** 
      * Constructor for the overworld view
@@ -25,11 +26,17 @@ public class TitleScreenView extends ViewBase {
      * loads all the necessary sprites
      */
     private void loadImage() {
-        ImageIcon ii = new ImageIcon("src/pokemon/9.png");
-        sprite[0] = ii.getImage();
+        ImageIcon ii = new ImageIcon("src/pokemon/frame0/9.png");
+        blastoiseSprite[0] = ii.getImage();
 
-        ii = new ImageIcon("src/pokemon/9b.png");
-        sprite[1] = ii.getImage();
+        ii = new ImageIcon("src/pokemon/frame1/9.png");
+        blastoiseSprite[1] = ii.getImage();
+
+        for (int i = 0; i < title.length; i++)
+        {
+            ii = new ImageIcon("src/titleScreen/Pokemon" + i + ".png");
+            title[i] = ii.getImage();
+        }
     }
 
     /** 
@@ -41,13 +48,27 @@ public class TitleScreenView extends ViewBase {
     public void render(Graphics g, JPanel canvas) {
         byte i = (byte)(System.currentTimeMillis() / 500 % 2);
 
-        // draw the player
-        g.drawImage(sprite[i], 
-                    width / 2 - sprite[i].getWidth(null) * graphicsScaling / 2, 
-                    height / 2 - sprite[i].getHeight(null) * graphicsScaling / 2, 
-                    sprite[i].getWidth(null) * graphicsScaling * 2, 
-                    sprite[i].getHeight(null) * graphicsScaling * 2, 
-                    canvas);        
+        // display blastoise
+        g.drawImage(blastoiseSprite[i], 
+                    width / 2 - blastoiseSprite[i].getWidth(null) * graphicsScaling / 2, 
+                    height / 2 - blastoiseSprite[i].getHeight(null) * graphicsScaling / 2, 
+                    blastoiseSprite[i].getWidth(null) * graphicsScaling * 2, 
+                    blastoiseSprite[i].getHeight(null) * graphicsScaling * 2, 
+                    canvas);    
+        
+        i = (byte)(System.currentTimeMillis() / 50 % 18);
+        
+        if (i > 5)
+        {
+            i = 0;
+        }
+        
+        g.drawImage(title[i],
+                    width / 2 - title[i].getWidth(null) * graphicsScaling /2,
+                    height / 4 - title[i].getHeight(null) * graphicsScaling /2,
+                    title[i].getWidth(null) * graphicsScaling, 
+                    title[i].getHeight(null) * graphicsScaling, 
+                    canvas);
     }
 
     @Override
