@@ -17,6 +17,7 @@ public class OverworldView extends ViewBase {
     private OverworldModel model;
     private CharacterModel playerModel;
     private Image[] tileSprite = new Image[20];
+    private Map<String, Image> animatedTileSprite = new HashMap<String, Image>();
     private Map<String, Image> mapObjectSprite = new HashMap<String, Image>();
     private Map<String, Image> characterSprite = new HashMap<String, Image>();
     private int xOffset;
@@ -42,6 +43,13 @@ public class OverworldView extends ViewBase {
         {
             ImageIcon ii = new ImageIcon(String.format("src/tiles/%s.png", i));
             tileSprite[i] = ii.getImage();
+        }
+
+        // load animated water tile sprites
+        for (int i = 0; i < 8; i++)
+        {
+            ImageIcon ii = new ImageIcon(String.format("src/tiles/0-%s.png", i));
+            animatedTileSprite.put(String.format("0-%s", i), ii.getImage());
         }
 
         // load all mapObject sprites 
@@ -112,7 +120,16 @@ public class OverworldView extends ViewBase {
         {
             for (int x = 0; x < model.tiles[y].length; x++)
             {
-                g.drawImage(tileSprite[Math.abs(model.tiles[y][x])], 
+                if (model.tiles[y][x] == 0)
+                {
+                    //load animated water sprite
+                    sprite = animatedTileSprite.get(String.format("0-%s", System.currentTimeMillis() / 500 % 8));
+                }
+                else
+                {
+                    sprite = tileSprite[Math.abs(model.tiles[y][x])];
+                }
+                g.drawImage(sprite, 
                             (x * 16 - xOffset) * graphicsScaling, 
                             (y * 16 - yOffset) * graphicsScaling, 
                             16 * graphicsScaling, 
