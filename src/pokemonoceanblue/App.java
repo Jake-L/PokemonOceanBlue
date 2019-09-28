@@ -7,7 +7,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JFrame;
-import javax.lang.model.util.ElementScanner6;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
@@ -38,6 +37,9 @@ public class App extends JFrame implements KeyListener
     }
 
     private void createAndShowGUI() {
+        DatabaseUtility db = new DatabaseUtility();
+        db.prepareDatabase();
+        PokemonModel p = new PokemonModel(1, 5);
        
         //Create and set up the window.
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
