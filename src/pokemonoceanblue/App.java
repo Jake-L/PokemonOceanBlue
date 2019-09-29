@@ -21,6 +21,7 @@ public class App extends JFrame implements KeyListener
     ViewManager viewManager;
     List<Integer> keysDown = new ArrayList<Integer>(); 
     OverworldModel overworldModel;
+    PokemonModel[] pokemonTeam = new PokemonModel[6];
 
     // number of milliseconds between frames
     private final byte FRAME_LENGTH = 32;
@@ -37,8 +38,8 @@ public class App extends JFrame implements KeyListener
     }
 
     private void createAndShowGUI() {
-        DatabaseUtility db = new DatabaseUtility();
-        db.prepareDatabase();
+        //DatabaseUtility db = new DatabaseUtility();
+        //db.prepareDatabase();
         PokemonModel p = new PokemonModel(1, 5);
        
         //Create and set up the window.
@@ -63,6 +64,13 @@ public class App extends JFrame implements KeyListener
         viewManager.setView(titleView);
         MusicPlayer.setSong("0");
 
+        pokemonTeam[0] = new PokemonModel(1, 5);
+        pokemonTeam[1] = new PokemonModel(26, 30);
+        pokemonTeam[2] = new PokemonModel(9, 40);
+        pokemonTeam[3] = new PokemonModel(34, 5);
+        pokemonTeam[4] = new PokemonModel(150, 5);
+        pokemonTeam[5] = new PokemonModel(306, 5);
+
         this.update();
     }
 
@@ -76,10 +84,16 @@ public class App extends JFrame implements KeyListener
         if (!keysDown.contains(e.getKeyCode()))
         {
             keysDown.add(e.getKeyCode());
+
+            // pressing 'p' opens the party view
+            if (e.getKeyCode() == KeyEvent.VK_P)
+            {
+                viewManager.setView(new PartyView(pokemonTeam));
+            }
         }
 
         // pressing any key will advance from the title screen
-        if (viewManager.getCurrentView() == "TitleScreen" && System.currentTimeMillis() - startTime > 1000 && playerModel == null )
+        if (viewManager.getCurrentView() == "TitleScreenView" && System.currentTimeMillis() - startTime > 1000 && playerModel == null )
         {
             setMap(0, 4, 4);
         }
@@ -88,6 +102,13 @@ public class App extends JFrame implements KeyListener
     /** Remove the released key from the list of pressed keys */
     public void keyReleased(KeyEvent e) {
         keysDown.remove(Integer.valueOf(e.getKeyCode()));
+
+        // releasing 'p' exits the party view
+        if (e.getKeyCode() == KeyEvent.VK_P)
+        {
+            OverworldView overworldView = new OverworldView(overworldModel, playerModel);
+            viewManager.setView(overworldView);
+        }
     }
 
     /** 
@@ -136,7 +157,7 @@ public class App extends JFrame implements KeyListener
             if (System.currentTimeMillis() - lastRun > FRAME_LENGTH)
             {
                 // update the players position
-                if (viewManager.getCurrentView().equals("Overworld"))
+                if (viewManager.getCurrentView().equals("OverworldView"))
                 {
                     playerModel.update();
 

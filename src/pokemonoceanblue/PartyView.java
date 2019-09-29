@@ -33,9 +33,37 @@ public class PartyView extends ViewBase {
      */
     private void loadImage() 
     {
+        ImageIcon ii;
+
         for (int i = 0; i < model.length; i++)
         {
-
+            ii = new ImageIcon("src/pokemonicons/" + model[i].id + ".png");
+            pokemonSprite[i]  = ii.getImage();
         }
+    }
+
+    /** 
+     * renders the party screen graphics
+     * @param g graphics object
+     * @param canvas JPanel to draw the images on
+     */
+    @Override
+    public void render(Graphics g, JPanel canvas) 
+    {
+        for (int i = 0; i < model.length; i++)
+        {
+            // display the Pokemon's icons
+            g.drawImage(pokemonSprite[i], 
+                width * (1 + (i%3)*2) / 6 - (pokemonSprite[i].getWidth(null) * graphicsScaling / 2), 
+                height * (1 + (i/3)*2) / 4 - (pokemonSprite[i].getHeight(null) * graphicsScaling / 2), 
+                pokemonSprite[i].getWidth(null) * graphicsScaling * 2, 
+                pokemonSprite[i].getHeight(null) * graphicsScaling * 2, 
+                canvas);  
+        }
+    }
+
+    @Override
+    public String toString(){
+        return "PartyView";
     }
 }

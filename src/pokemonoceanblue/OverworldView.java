@@ -236,6 +236,6 @@ public class OverworldView extends ViewBase {
 
     @Override
     public String toString(){
-        return "Overworld";
+        return "OverworldView";
     }
 }

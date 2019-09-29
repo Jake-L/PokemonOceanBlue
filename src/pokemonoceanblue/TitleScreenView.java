@@ -73,6 +73,6 @@ public class TitleScreenView extends ViewBase {
 
     @Override
     public String toString(){
-        return "TitleScreen";
+        return "TitleScreenView";
     }
 }

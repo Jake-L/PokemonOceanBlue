@@ -22,7 +22,17 @@ public class DatabaseUtility
      */
     public DatabaseUtility()
     {
-
+        try
+        {
+            // create a connection to the database
+            conn = DriverManager.getConnection(url);
+            
+            System.out.println("Connection to SQLite has been established.");
+        } 
+        catch (SQLException e) 
+        {
+            System.out.println(e.getMessage());
+        } 
     }
 
     /** 
@@ -32,11 +42,6 @@ public class DatabaseUtility
     {
         try
         {
-            // create a connection to the database
-            conn = DriverManager.getConnection(url);
-            
-            System.out.println("Connection to SQLite has been established.");
-
             createTables();
         } 
         catch (SQLException e) 
