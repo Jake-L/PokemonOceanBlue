@@ -27,26 +27,38 @@ public class ViewManager extends JPanel {
      * @param width width of the screen in pixels
      * @param height height of the screen in pixels
      */
-    public void setViewSize(byte graphicsScaling, int width, int height){
-        this.graphicsScaling = graphicsScaling;
+    public void setViewSize(int width, int height){
+        this.graphicsScaling = (byte) Math.max(Math.min(width, height) / 250, 1);
         this.width = width;
         this.height = height;
+
+        if (this.view != null)
+        {
+            this.view.setViewSize(this.graphicsScaling, this.width, this.height);
+
+            if (this.newView != null)
+            {
+                this.newView.setViewSize(this.graphicsScaling, this.width, this.height);
+            }
+        }
     }
     
     /** 
      * @param view the current view to be rendered
      */
-    public void setView(ViewBase view) {
+    public void setView(ViewBase view) 
+    {
         if (this.view != null)
         {
             this.newView = view;
             this.transitionCounter = 120;
+            this.newView.setViewSize(this.graphicsScaling, this.width, this.height);
         }
         else
         {
             this.view = view;
         }
-        view.setViewSize(graphicsScaling, width, height);
+        this.view.setViewSize(this.graphicsScaling, this.width, this.height);
     }
 
     /** 

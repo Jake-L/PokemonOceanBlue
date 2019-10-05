@@ -1,6 +1,11 @@
 package pokemonoceanblue;
 
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -26,7 +31,6 @@ public class App extends JFrame implements KeyListener
     // number of milliseconds between frames
     private final byte FRAME_LENGTH = 32;
     private long startTime;
-    private byte graphicsScaling = (byte)(5);
 
     public App(){
         createAndShowGUI();
@@ -44,7 +48,8 @@ public class App extends JFrame implements KeyListener
        
         //Create and set up the window.
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setPreferredSize(new Dimension(1800, 900));
+        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+        this.setPreferredSize(new Dimension(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight()));
         startTime = System.currentTimeMillis();        
         
         // display the view
@@ -57,9 +62,20 @@ public class App extends JFrame implements KeyListener
         //Display the window.
         this.pack();
         this.setVisible(true);
+
+        // listen for screen resizes
+        this.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent e) {
+                Component c = (Component)e.getSource();
+    
+                // Get new size
+                Dimension newSize = c.getSize();
+                viewManager.setViewSize(newSize.width, newSize.height);
+            }
+        });
         
         // set the size of the ViewManager, must come after pack()
-        viewManager.setViewSize(graphicsScaling, this.getWidth(), this.getHeight());
+        viewManager.setViewSize(this.getWidth(), this.getHeight());
         TitleScreenView titleView = new TitleScreenView();
         viewManager.setView(titleView);
         MusicPlayer.setSong("0");
