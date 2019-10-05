@@ -16,6 +16,7 @@ public class PartyView extends ViewBase {
 
     private PokemonModel[] model;
     private Image[] pokemonSprite;
+    private Image healthBar;
     
     /** 
      * Constructor for the overworld view
@@ -40,6 +41,9 @@ public class PartyView extends ViewBase {
             ii = new ImageIcon("src/pokemonicons/" + model[i].id + ".png");
             pokemonSprite[i]  = ii.getImage();
         }
+
+        ii = new ImageIcon("src/battle/hpBarE.png");
+        healthBar = ii.getImage();
     }
 
     /** 
@@ -55,10 +59,21 @@ public class PartyView extends ViewBase {
             // display the Pokemon's icons
             g.drawImage(pokemonSprite[i], 
                 width * (1 + (i%3)*2) / 6 - (pokemonSprite[i].getWidth(null) * graphicsScaling / 2), 
-                height * (1 + (i/3)*2) / 4 - (pokemonSprite[i].getHeight(null) * graphicsScaling / 2), 
+                height * ((i/3)*2) / 4, 
                 pokemonSprite[i].getWidth(null) * graphicsScaling * 2, 
                 pokemonSprite[i].getHeight(null) * graphicsScaling * 2, 
                 canvas);  
+            
+            g.drawString(model[i].name + "    HP" + model[i].currentHP + "/" + model[i].hp, 
+                width * (1 + (i%3)*2) / 6 - (pokemonSprite[i].getWidth(null) * graphicsScaling / 2), 
+                height * (1 + (i/3)*2) / 4 - (pokemonSprite[i].getHeight(null) * graphicsScaling / 2));
+
+            g.drawImage(healthBar,
+                width * (1 + (i%3)*2) / 6 - (healthBar.getWidth(null) * graphicsScaling), 
+                height * (1 + (i/3)*2) / 4 - (healthBar.getHeight(null) * graphicsScaling / 2),
+                healthBar.getWidth(null) * graphicsScaling * 2, 
+                healthBar.getHeight(null) * graphicsScaling * 2, 
+                canvas);
         }
     }
 

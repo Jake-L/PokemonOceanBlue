@@ -8,10 +8,12 @@ public class PokemonModel
     String name;
     int xp;
     int level;
+    byte statusEffect;
 
     int[] types;
 
     int hp;
+    int currentHP;
     int attack;
     int defense;
     int special_attack;
@@ -70,11 +72,13 @@ public class PokemonModel
             
             // set the Pokemon's stats
             this.hp = rs.getInt("hp");
+            this.currentHP = this.hp;
             this.attack = rs.getInt("attack");
             this.defense = rs.getInt("defense");
             this.special_attack = rs.getInt("special_attack");
             this.special_defense = rs.getInt("special_defense");
             this.speed = rs.getInt("speed");
+            this.statusEffect = 0;
         }
         catch (SQLException e) 
         {
