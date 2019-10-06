@@ -17,6 +17,7 @@ public class PartyView extends ViewBase {
     private PokemonModel[] model;
     private Image[] pokemonSprite;
     private Image healthBar;
+    private Image[] healthBarFill = new Image[3];
     
     /** 
      * Constructor for the overworld view
@@ -44,6 +45,12 @@ public class PartyView extends ViewBase {
 
         ii = new ImageIcon("src/battle/hpBarE.png");
         healthBar = ii.getImage();
+
+         for (int i = 0; i < 3; i++)
+         {  
+            ii = new ImageIcon("src/battle/hp" + i + ".png");
+            healthBarFill[i] = ii.getImage();
+         }
     }
 
     /** 
@@ -64,15 +71,36 @@ public class PartyView extends ViewBase {
                 pokemonSprite[i].getHeight(null) * graphicsScaling * 2, 
                 canvas);  
             
+            //display text with pokemon name and hp
             g.drawString(model[i].name + "    HP" + model[i].currentHP + "/" + model[i].hp, 
                 width * (1 + (i%3)*2) / 6 - (pokemonSprite[i].getWidth(null) * graphicsScaling / 2), 
                 height * (1 + (i/3)*2) / 4 - (pokemonSprite[i].getHeight(null) * graphicsScaling / 2));
-
+            
+            //display healthbars
             g.drawImage(healthBar,
                 width * (1 + (i%3)*2) / 6 - (healthBar.getWidth(null) * graphicsScaling), 
                 height * (1 + (i/3)*2) / 4 - (healthBar.getHeight(null) * graphicsScaling / 2),
                 healthBar.getWidth(null) * graphicsScaling * 2, 
                 healthBar.getHeight(null) * graphicsScaling * 2, 
+                canvas);
+            
+            //get health bar colour
+            byte healthBarFillIndex = 0;
+            if((double)model[i].currentHP / model[i].hp < 0.2)
+            {
+                healthBarFillIndex = 2;
+            }
+            else if((double)model[i].currentHP / model[i].hp < 0.5)
+            {
+                healthBarFillIndex = 1;
+            }
+            
+            //fill health bars
+            g.drawImage(healthBarFill[healthBarFillIndex],
+                width * (1 + (i%3)*2) / 6 - (healthBar.getWidth(null) * graphicsScaling) + 16 * graphicsScaling * 2, 
+                height * (1 + (i/3)*2) / 4 - (healthBar.getHeight(null) * graphicsScaling / 2) + 2 * graphicsScaling * 2,
+                (int)Math.ceil(healthBarFill[0].getWidth(null) * (model[i].currentHP * 48.0 / model[i].hp) * graphicsScaling * 2),
+                healthBarFill[0].getHeight(null) * graphicsScaling * 2,
                 canvas);
         }
     }
