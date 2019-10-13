@@ -16,7 +16,7 @@ public class OverworldView extends ViewBase {
 
     private OverworldModel model;
     private CharacterModel playerModel;
-    private Image[] tileSprite = new Image[20];
+    private Image[] tileSprite = new Image[40];
     private Map<String, Image> animatedTileSprite = new HashMap<String, Image>();
     private Map<String, Image> mapObjectSprite = new HashMap<String, Image>();
     private Map<String, Image> characterSprite = new HashMap<String, Image>();
