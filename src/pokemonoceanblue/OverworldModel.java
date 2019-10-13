@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class OverworldModel {
     public int mapId;
@@ -23,7 +24,7 @@ public class OverworldModel {
         if (this.mapId == 0)
         {
             CPUModel = new CharacterModel[1];
-            CPUModel[0] = new CharacterModel("cassie", 5, 4);
+            CPUModel[0] = new CharacterModel("cassie", 6, 6);
             CPUModel[0].setOverworldModel(this);
 
             portals = new Portal[6];
@@ -117,6 +118,40 @@ public class OverworldModel {
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void update()
+    {
+        Random rand = new Random();
+        for (int i = 0; i < CPUModel.length; i++)
+        {
+            CPUModel[i].update();
+            
+            if (CPUModel[i].getMovementCounter() < 0)
+            {
+                int n = rand.nextInt(20);
+                int dx = 0;
+                int dy = 0;
+
+                if (n < 3)
+                {
+                    dx = n - 1;
+                }
+                else if (n < 6)
+                {
+                    dy = n - 4;
+                }
+
+                if (dx != 0 || dy != 0)
+                {
+                    System.out.println(CPUModel[i].getX() + CPUModel[i].getY() + dx + dy);
+                    if (Math.abs(((CPUModel[i].getX() + CPUModel[i].getY() + dx + dy) % 10) - CPUModel[i].wanderCode) < 2)
+                    {
+                        CPUModel[i].setMovement(dx, dy, 16);
+                    }
+                }
+            }
         }
     }
 

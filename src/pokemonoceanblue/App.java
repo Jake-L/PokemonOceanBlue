@@ -44,7 +44,6 @@ public class App extends JFrame implements KeyListener
     private void createAndShowGUI() {
         //DatabaseUtility db = new DatabaseUtility();
         //db.prepareDatabase();
-        PokemonModel p = new PokemonModel(1, 5);
        
         //Create and set up the window.
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -176,6 +175,7 @@ public class App extends JFrame implements KeyListener
                 if (viewManager.getCurrentView().equals("OverworldView"))
                 {
                     playerModel.update();
+                    overworldModel.update();
 
                     if (oldPlayerModel != null)
                     {
