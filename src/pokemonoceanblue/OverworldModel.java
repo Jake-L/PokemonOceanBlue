@@ -28,14 +28,14 @@ public class OverworldModel {
 
             portals = new Portal[6];
             // houses
-            portals[0] = new Portal(8, 10, 1, 3, 8);
-            portals[1] = new Portal(19, 10, 2, 3, 8);
-            portals[2] = new Portal(8, 17, 3, 3, 8);
-            portals[3] = new Portal(19, 17, 4, 3, 8);
-            portals[4] = new Portal(19, 24, 5, 3, 8);
+            portals[0] = new Portal(8, 35, 1, 3, 8);
+            portals[1] = new Portal(19, 35, 2, 3, 8);
+            portals[2] = new Portal(8, 42, 3, 3, 8);
+            portals[3] = new Portal(19, 42, 4, 3, 8);
+            portals[4] = new Portal(19, 49, 5, 3, 8);
 
             // oak's lab
-            portals[5] = new Portal(10, 24, 6, 6, 12);
+            portals[5] = new Portal(10, 49, 6, 6, 12);
         }
         else if (mapId == 1)
         {
