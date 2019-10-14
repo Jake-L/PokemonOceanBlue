@@ -4,6 +4,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.Insets;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
@@ -47,8 +50,10 @@ public class App extends JFrame implements KeyListener
        
         //Create and set up the window.
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-        this.setPreferredSize(new Dimension(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight()));
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        System.out.println(screenSize.width);
+        Insets scnMax = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
+        this.setPreferredSize(new Dimension(screenSize.width, screenSize.height - scnMax.bottom));
         startTime = System.currentTimeMillis();        
         
         // display the view
@@ -61,7 +66,9 @@ public class App extends JFrame implements KeyListener
         //Display the window.
         this.pack();
         this.setVisible(true);
-
+        
+        // set the size of the ViewManager, must come after pack()
+        viewManager.setViewSize(this.getWidth(), this.getHeight());
         // listen for screen resizes
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
@@ -69,12 +76,10 @@ public class App extends JFrame implements KeyListener
     
                 // Get new size
                 Dimension newSize = c.getSize();
-                viewManager.setViewSize(newSize.width, newSize.height);
+                Insets scnMax = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
+                viewManager.setViewSize(newSize.width - 16, newSize.height - scnMax.bottom - scnMax.top);
             }
         });
-        
-        // set the size of the ViewManager, must come after pack()
-        viewManager.setViewSize(this.getWidth(), this.getHeight());
         TitleScreenView titleView = new TitleScreenView();
         viewManager.setView(titleView);
         MusicPlayer.setSong("0");
