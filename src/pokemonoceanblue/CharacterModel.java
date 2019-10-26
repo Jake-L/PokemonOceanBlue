@@ -13,7 +13,8 @@ public class CharacterModel {
     private Direction direction;
     private int animationOffset = 0;
     private OverworldModel overworldModel;
-    public final int wanderCode;
+    public final int spawn_x;
+    public final int spawn_y;
 
     /** 
      * @param spriteName name of the sprite used in the image filename
@@ -36,7 +37,8 @@ public class CharacterModel {
         this.x = x;
         this.y = y;
         this.direction = direction;
-        this.wanderCode = (x+y) % 10;
+        this.spawn_x = x;
+        this.spawn_y = y;
 
         // get the sprite's height
         ImageIcon ii = new ImageIcon(String.format("src/characters/%sDown0.png", spriteName));

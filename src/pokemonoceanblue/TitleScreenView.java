@@ -63,6 +63,7 @@ public class TitleScreenView extends ViewBase {
             i = 0;
         }
         
+        // display Pokemon logo
         g.drawImage(title[i],
                     width / 2 - title[i].getWidth(null) * graphicsScaling /2,
                     height / 4 - title[i].getHeight(null) * graphicsScaling /2,

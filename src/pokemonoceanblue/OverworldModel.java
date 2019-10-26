@@ -145,8 +145,7 @@ public class OverworldModel {
 
                 if (dx != 0 || dy != 0)
                 {
-                    System.out.println(CPUModel[i].getX() + CPUModel[i].getY() + dx + dy);
-                    if (Math.abs(((CPUModel[i].getX() + CPUModel[i].getY() + dx + dy) % 10) - CPUModel[i].wanderCode) < 2)
+                    if (Math.abs(CPUModel[i].spawn_x - CPUModel[i].getX() - dx) + Math.abs(CPUModel[i].spawn_y - CPUModel[i].getY() - dy) <= 2)
                     {
                         CPUModel[i].setMovement(dx, dy, 16);
                     }
