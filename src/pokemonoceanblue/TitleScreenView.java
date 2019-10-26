@@ -70,6 +70,8 @@ public class TitleScreenView extends ViewBase {
                     title[i].getWidth(null) * graphicsScaling, 
                     title[i].getHeight(null) * graphicsScaling, 
                     canvas);
+
+        this.displayText("Welcome to Pokemon OceanBlue", g, canvas);
     }
 
     @Override

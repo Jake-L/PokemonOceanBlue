@@ -19,6 +19,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.AudioSystem;
+import java.awt.Font;
 
 public class App extends JFrame implements KeyListener 
 {
@@ -47,11 +48,21 @@ public class App extends JFrame implements KeyListener
     private void createAndShowGUI() {
         //DatabaseUtility db = new DatabaseUtility();
         //db.prepareDatabase();
+
+        // load custom font
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        try
+        {
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("src/pokemonfont.ttf")));            
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error loading font");
+        }
        
         //Create and set up the window.
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        System.out.println(screenSize.width);
         Insets scnMax = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
         this.setPreferredSize(new Dimension(screenSize.width, screenSize.height - scnMax.bottom));
         startTime = System.currentTimeMillis();        

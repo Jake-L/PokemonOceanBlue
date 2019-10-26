@@ -1,6 +1,8 @@
 package pokemonoceanblue;
 
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -99,6 +101,16 @@ public class ViewBase {
             width - 16 * graphicsScaling,
             height / 4 - 16 * graphicsScaling,
             canvas);
+
+        g.setFont(new Font("Pokemon Fire Red", Font.PLAIN, 36 * graphicsScaling));
+
+        // convert to 
+        Graphics2D g2d = (Graphics2D) g;
+
+        // display the string
+        g2d.drawString(text, 
+            8 * graphicsScaling, 
+            height * 3 / 4 + 28 * graphicsScaling);
     }
 
     // render function that gets implemented by extended class
