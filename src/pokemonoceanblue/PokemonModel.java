@@ -19,6 +19,8 @@ public class PokemonModel
     int special_attack;
     int special_defense;
     int speed;
+
+    int[] moves = new int[4];
     
     /** 
      * Constructor
@@ -32,6 +34,7 @@ public class PokemonModel
         this.xp = (int) Math.pow(level, 3);
 
         this.loadStats();
+        this.loadMoves();
     }
 
     /** 
@@ -79,6 +82,36 @@ public class PokemonModel
             this.special_defense = rs.getInt("special_defense");
             this.speed = rs.getInt("speed");
             this.statusEffect = 0;
+        }
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+        }  
+    }
+
+    /** 
+     * Read the Pokemon's moves from a database
+     */
+    private void loadMoves()
+    {
+        try
+        {
+            DatabaseUtility db = new DatabaseUtility();
+
+            String query = "SELECT move_id FROM pokemon_moves WHERE pokemon_id = " + this.id + " LIMIT 4";
+
+            ResultSet rs = db.runQuery(query);
+
+            int index = 0;
+
+            while(rs.next()) 
+            {
+                this.moves[index] = rs.getInt("move_id");
+                System.out.println(this.moves[index]);
+                index++;
+            }
+
+            
         }
         catch (SQLException e) 
         {

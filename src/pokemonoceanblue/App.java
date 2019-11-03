@@ -46,8 +46,8 @@ public class App extends JFrame implements KeyListener
     }
 
     private void createAndShowGUI() {
-        //DatabaseUtility db = new DatabaseUtility();
-        //db.prepareDatabase();
+        DatabaseUtility db = new DatabaseUtility();
+        db.prepareDatabase();
 
         // load custom font
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import java.awt.Font;
 
 /** 
  * Renders the overworld
@@ -61,6 +62,8 @@ public class PartyView extends ViewBase {
     @Override
     public void render(Graphics g, JPanel canvas) 
     {
+        g.setFont(new Font("Pokemon Fire Red", Font.PLAIN, 18 * graphicsScaling));
+
         for (int i = 0; i < model.length; i++)
         {
             // display the Pokemon's icons
@@ -106,7 +109,8 @@ public class PartyView extends ViewBase {
     }
 
     @Override
-    public String toString(){
+    public String toString()
+    {
         return "PartyView";
     }
 }

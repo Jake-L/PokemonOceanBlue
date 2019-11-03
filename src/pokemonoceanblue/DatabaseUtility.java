@@ -66,6 +66,8 @@ public class DatabaseUtility
             runUpdate(query);
         }
 
+        conn.setAutoCommit(false);
+
         // CREATE TABLE evolution_methods
         // how specific Pokemon evolve, such as by level, item, or trade
 
@@ -94,6 +96,8 @@ public class DatabaseUtility
                 + "level INT NOT NULL)";
         runUpdate(query);
 
+        loadPokemonMovesTable();
+
         // CREATE TABLE pokemon_location
         // the map location where a Pokemon can be found
         // and in what type of tile, such as in grass or water
@@ -108,7 +112,7 @@ public class DatabaseUtility
 
         // CREATE TABLE move_effects
         // effect type, probability
-        
+        conn.commit();
     }
 
     /** 
@@ -118,12 +122,7 @@ public class DatabaseUtility
     {
         try
         {
-            // prepare to read the file and handle any encoding errors
-            FileInputStream input = new FileInputStream(new File("src/rawdata/pokemon.csv"));
-            CharsetDecoder decoder = Charset.forName("UTF-8").newDecoder();
-            decoder.onMalformedInput(CodingErrorAction.IGNORE);
-            InputStreamReader reader = new InputStreamReader(input, decoder);
-            BufferedReader br = new BufferedReader(reader);
+            BufferedReader br = getFileReader("src/rawdata/pokemon.csv");
 
             // skip the first line which just has column names
             String line = br.readLine();
@@ -132,11 +131,7 @@ public class DatabaseUtility
             String[] data;
             PreparedStatement statement;
 
-            while (line != null)
-            {
-                data = line.split(",");
-
-                query = "INSERT INTO pokemon ("
+            query = "INSERT INTO pokemon ("
                     + "id, name, "
                     + "type1, type2, "
                     + "hp, attack, "
@@ -144,7 +139,11 @@ public class DatabaseUtility
                     + "special_defense, speed)"
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-                statement = conn.prepareStatement(query);
+            statement = conn.prepareStatement(query);
+
+            while (line != null)
+            {
+                data = line.split(",");
 
                 if (data[3].equals(""))
                 {
@@ -162,23 +161,77 @@ public class DatabaseUtility
                 statement.setInt(9, Integer.parseInt(data[8]));
                 statement.setInt(10, Integer.parseInt(data[9]));
 
-                statement.execute();
+                statement.addBatch();
 
                 line = br.readLine();
             }
 
+            statement.executeBatch();
             br.close();
         } 
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IOException e) 
+        catch (Exception e)
         {
             e.printStackTrace();
         }
     }
 
+    /** 
+     * Fills the pokemon_moves table with data
+     */
+    private void loadPokemonMovesTable() throws SQLException
+    {
+        try
+        {
+            BufferedReader br = getFileReader("src/rawdata/pokemonMoves.csv");
+
+            // skip the first line which just has column names
+            String line = br.readLine();
+            line = br.readLine();
+            String query;
+            String[] data;
+            PreparedStatement statement;
+            query = "INSERT INTO pokemon_moves ("
+                    + "pokemon_id, move_id, level)"
+                    + "VALUES (?, ?, ?)";
+
+            statement = conn.prepareStatement(query);
+
+            while (line != null)
+            {
+                data = line.split(",");
+
+                statement.setInt(1, Integer.parseInt(data[0]));
+                statement.setInt(2, Integer.parseInt(data[1]));
+                statement.setInt(3, Integer.parseInt(data[2]));                
+
+                statement.addBatch();
+
+                line = br.readLine();
+            }
+
+            statement.executeBatch();
+            br.close();
+        } 
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /** 
+     * Creates a BufferedReader object with proper decoding
+     * @param filename path to the filename to be read
+     * @return A BufferedReader for reading the given file
+     */
+    private BufferedReader getFileReader(String filename) throws FileNotFoundException, IOException
+    {
+        // prepare to read the file and handle any encoding errors
+        FileInputStream input = new FileInputStream(new File(filename));
+        CharsetDecoder decoder = Charset.forName("UTF-8").newDecoder();
+        decoder.onMalformedInput(CodingErrorAction.IGNORE);
+        InputStreamReader reader = new InputStreamReader(input, decoder);
+        return new BufferedReader(reader);
+    }
 
     /** 
      * Runs INSERT or DELETE queries
@@ -204,7 +257,6 @@ public class DatabaseUtility
      */
     public ResultSet runQuery(String query) throws SQLException
     {
-
         Statement stmt = conn.createStatement();
         ResultSet rs = stmt.executeQuery(query);
         return rs;   
