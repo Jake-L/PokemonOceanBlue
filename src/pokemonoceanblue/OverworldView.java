@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -138,45 +140,84 @@ public class OverworldView extends ViewBase {
             }
         }
 
-        // draw map objects
-        for (SpriteModel current : model.mapObjects)
+        // create a sorted list of all the characters to be rendered
+        List<CharacterModel> renderList = new ArrayList<CharacterModel>();
+        renderList.add(playerModel);
+        for (CharacterModel current : model.CPUModel)
         {
-            sprite = mapObjectSprite.get(current.spriteName);
-            g.drawImage(sprite, 
-                        (current.x * 16 - xOffset) * graphicsScaling, // x refers to leftmost position
-                        ((current.y + 1) * 16 - sprite.getHeight(null) - yOffset) * graphicsScaling, 
-                        sprite.getWidth(null) * graphicsScaling, 
-                        sprite.getHeight(null) * graphicsScaling, 
-                        canvas);
+            int i = 0;
+            while (i < renderList.size() && renderList.get(i).getY() < current.getY())
+            {
+                i++;
+            }
+            renderList.add(i, current);
         }
 
-        // get the player's sprite name
-        sprite = characterSprite.get(playerModel.getCurrentSprite());
+        int objectIndex = 0;
+        int characterIndex = 0;
 
-        // draw the player
-        g.drawImage(sprite, 
-                    (playerRenderX - xOffset) * graphicsScaling, 
-                    (playerRenderY - yOffset) * graphicsScaling, 
-                    sprite.getWidth(null) * graphicsScaling, 
-                    sprite.getHeight(null) * graphicsScaling, 
-                    canvas);        
-
-        for (int i = 0; i < model.CPUModel.length; i++)
-        {            
-            // get the CPU's sprite name            
-            sprite = characterSprite.get(model.CPUModel[i].getCurrentSprite());
-
-            // draw the player
-            g.drawImage(sprite, 
-                        (model.CPUModel[i].getRenderX() - xOffset) * graphicsScaling, 
-                        (model.CPUModel[i].getRenderY() - yOffset) * graphicsScaling, 
-                        sprite.getWidth(null) * graphicsScaling, 
-                        sprite.getHeight(null) * graphicsScaling, 
-                        canvas);     
+        // move through lists of mapObjects and characters, rendering them in vertical order
+        while (objectIndex < model.mapObjects.size() && characterIndex < renderList.size())
+        {
+            SpriteModel currentObject = model.mapObjects.get(objectIndex);
+            CharacterModel currentCharacter = renderList.get(characterIndex);
+            if (currentObject.y < currentCharacter.getY())
+            {
+                this.renderObject(g, canvas, model.mapObjects.get(objectIndex));                
+                objectIndex++;
+            }
+            else
+            {
+                this.renderCharacter(g, canvas, renderList.get(characterIndex));                            
+                characterIndex++;
+            }
+        }
+        while (objectIndex < model.mapObjects.size())
+        { 
+            this.renderObject(g, canvas, model.mapObjects.get(objectIndex));
+            objectIndex++;
+        }
+        while (characterIndex < renderList.size())
+        {
+            this.renderCharacter(g, canvas, renderList.get(characterIndex));
+            characterIndex++;
         }
     }
 
-    
+    /** 
+     * @param g graphics object
+     * @param canvas JPanel to draw the images on
+     * @param object the object to be rendered
+     */
+    private void renderObject(Graphics g, JPanel canvas, SpriteModel object)
+    {
+        // render the mapObject
+        Image sprite = mapObjectSprite.get(object.spriteName);
+        g.drawImage(sprite, 
+                    (object.x * 16 - xOffset) * graphicsScaling, // x refers to leftmost position
+                    ((object.y + 1) * 16 - sprite.getHeight(null) - yOffset) * graphicsScaling, 
+                    sprite.getWidth(null) * graphicsScaling, 
+                    sprite.getHeight(null) * graphicsScaling, 
+                    canvas);
+    }
+
+    /** 
+     * @param g graphics object
+     * @param canvas JPanel to draw the images on
+     * @param object the character to be rendered
+     */
+    private void renderCharacter(Graphics g, JPanel canvas, CharacterModel character)
+    {
+        // render the character
+        Image sprite = characterSprite.get(character.getCurrentSprite());
+        g.drawImage(sprite, 
+                    (character.getRenderX() - xOffset) * graphicsScaling, 
+                    (character.getRenderY() - yOffset) * graphicsScaling, 
+                    sprite.getWidth(null) * graphicsScaling, 
+                    sprite.getHeight(null) * graphicsScaling, 
+                    canvas); 
+    }
+
     /** 
      * Calculates the offset to use for screen scrolling
      * @param playerRenderX the x position to render the player, before applying graphics scaling multiplier

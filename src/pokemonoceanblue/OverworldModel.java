@@ -73,7 +73,8 @@ public class OverworldModel {
     /** 
      * read the tile grid for the current map from a CSV file
      */
-    public void readMapFile(){
+    public void readMapFile()
+    {
         Path pathToFile = Paths.get(String.format("src/maps/map%s.csv", mapId));
 
         // create an instance of BufferedReader
@@ -130,7 +131,7 @@ public class OverworldModel {
             
             if (CPUModel[i].getMovementCounter() < 0)
             {
-                int n = rand.nextInt(20);
+                int n = rand.nextInt(100);
                 int dx = 0;
                 int dy = 0;
 
