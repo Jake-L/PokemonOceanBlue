@@ -104,13 +104,51 @@ public class ViewBase {
 
         g.setFont(new Font("Pokemon Fire Red", Font.PLAIN, 36 * graphicsScaling));
 
-        // convert to 
-        Graphics2D g2d = (Graphics2D) g;
+        String[] renderText; 
+
+        int textWidth = g.getFontMetrics(font).stringWidth(text);
+
+        // manual text wrapping if text is too wide
+        if (textWidth > width - 16 * graphicsScaling)
+        {
+            renderText = new String[2];
+            renderText[0] = "";
+            renderText[1] = "";
+            String[] splitText = text.split(" ");
+            int index = 0;
+            
+            // put the first 1/3 of the words on the first line
+            while (index < splitText.length / 3.0)
+            {
+                renderText[0] = renderText[0] + splitText[index] + " ";
+                index++;
+            }
+            // continue adding to the first line until the edge is reached
+            while (g.getFontMetrics(font).stringWidth(renderText[0] + splitText[index]) < width - 16 * graphicsScaling)
+            {
+                renderText[0] = renderText[0] + splitText[index] + " ";
+                index++;
+            }
+            // add remaining text to the second line
+            while (index < splitText.length)
+            {
+                renderText[1] = renderText[1] + splitText[index] + " ";
+                index++;
+            }
+        }
+        else
+        {
+            renderText = new String[1];
+            renderText[0] = text;
+        }
 
         // display the string
-        g2d.drawString(text, 
-            8 * graphicsScaling, 
-            height * 3 / 4 + 28 * graphicsScaling);
+        for (int i = 0; i < renderText.length; i++)
+        {
+            g.drawString(renderText[i], 
+                8 * graphicsScaling, 
+                height * 3 / 4 + 30 * graphicsScaling * (i+1));
+        }
     }
 
     // render function that gets implemented by extended class

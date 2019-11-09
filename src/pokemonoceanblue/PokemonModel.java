@@ -107,7 +107,6 @@ public class PokemonModel
             while(rs.next()) 
             {
                 this.moves[index] = rs.getInt("move_id");
-                System.out.println(this.moves[index]);
                 index++;
             }
 
