@@ -5,6 +5,8 @@ public class BattleModel
 {
     public PokemonModel[][] team = new PokemonModel[2][6];
     public int[] currentPokemon = new int[2];
+    public byte daytimeType = 0;
+    public byte areaType = 0;
 
     /** 
      * Constructor

@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import java.awt.Font;
 
 /** 
  * Renders the Battle
@@ -14,6 +15,7 @@ public class BattleView extends ViewBase {
     private Image[][] pokemonSprite = new Image[2][6];
     private Image[] healthBarFill = new Image[3];
     private Image[] statusWindow = new Image[2];
+    private Image background;
     
     /** 
      * Constructor for the overworld view
@@ -58,6 +60,10 @@ public class BattleView extends ViewBase {
         statusWindow[0] = ii.getImage();
         ii = new ImageIcon("src/battle/OpponentStatusWindow.png");
         statusWindow[1] = ii.getImage();
+
+        //loads background image
+        ii = new ImageIcon("src/battle/Background" + model.areaType + model.daytimeType + ".png");
+        background = ii.getImage();
     }
 
     /** 
@@ -67,7 +73,18 @@ public class BattleView extends ViewBase {
      */
     @Override
     public void render(Graphics g, JPanel canvas) 
-    {
+    { 
+        Font font = new Font("Pokemon Fire Red", Font.PLAIN, 12 * graphicsScaling);      
+        g.setFont(font);
+
+        //renders background
+        g.drawImage(background,
+        width / 10,
+        0,
+        width * 8 / 10,
+        height * 3 / 4,
+        canvas);
+        
         //renders players current pokemon
         g.drawImage(pokemonSprite[0][model.currentPokemon[0]],
             width / 8,
@@ -130,6 +147,34 @@ public class BattleView extends ViewBase {
             (int)Math.ceil(healthBarFill[1].getWidth(null) * (model.team[1][model.currentPokemon[1]].currentHP * 48.0 / model.team[1][model.currentPokemon[1]].hp) * graphicsScaling),
             healthBarFill[1].getHeight(null) * graphicsScaling,
             canvas);
+
+        //displays level of trainer pokemon
+        g.drawString(String.valueOf(model.team[0][model.currentPokemon[0]].level),
+            ((int)(width * (9.0 / 10.0)) - ((statusWindow[0].getWidth(null) - 106) * graphicsScaling)),
+            height / 2 + (18 * graphicsScaling));
+
+        //displays health of trainer pokemon
+        g.drawString(String.valueOf(model.team[0][model.currentPokemon[0]].currentHP),
+            (int)(width * (9.0 / 10.0)) - ((statusWindow[0].getWidth(null) - 88) * graphicsScaling) - g.getFontMetrics(font).stringWidth(String.valueOf(model.team[0][model.currentPokemon[0]].currentHP)),
+            height / 2 + 38 * graphicsScaling);
+        g.drawString(String.valueOf(model.team[0][model.currentPokemon[0]].hp),
+            (int)(width * (9.0 / 10.0)) - ((statusWindow[0].getWidth(null) - 97) * graphicsScaling),
+            height / 2 + 38 * graphicsScaling);
+
+        //displays name of trainer pokemon
+        g.drawString(String.valueOf(model.team[0][model.currentPokemon[0]].name),
+            (int)(width * (9.0 / 10.0)) - ((statusWindow[0].getWidth(null) - 16) * graphicsScaling),
+            height / 2 + (18 * graphicsScaling));
+
+        //displays name of opponent pokemon
+        g.drawString(String.valueOf(model.team[1][model.currentPokemon[1]].name),
+            width / 10 + 2 * graphicsScaling,
+            height / 10 + 17 * graphicsScaling);
+
+        //displays level of opponent pokemon
+        g.drawString(String.valueOf(model.team[1][model.currentPokemon[1]].level),
+            width / 10 + 84 * graphicsScaling,
+            height / 10 + 17 * graphicsScaling);
     }
 
     @Override
