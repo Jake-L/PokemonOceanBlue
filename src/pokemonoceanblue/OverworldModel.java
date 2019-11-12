@@ -14,6 +14,10 @@ public class OverworldModel {
     public List<SpriteModel> mapObjects = new ArrayList<SpriteModel>(); 
     public CharacterModel[] CPUModel = new CharacterModel[0];
     private Portal[] portals = new Portal[0];
+    public ConversationModel conversation;
+
+    // prevent players from accidently repeating actions by holdings keys
+    private int actionCounter = 15;
     
     /** 
      * @param mapId unique identifier for the current map
@@ -24,7 +28,7 @@ public class OverworldModel {
         if (this.mapId == 0)
         {
             CPUModel = new CharacterModel[1];
-            CPUModel[0] = new CharacterModel("cassie", 6, 6);
+            CPUModel[0] = new CharacterModel("cassie", 6, 6, 0);
             CPUModel[0].setOverworldModel(this);
 
             portals = new Portal[6];
@@ -124,11 +128,19 @@ public class OverworldModel {
 
     public void update()
     {
+        // decrement action counter
+        if (this.actionCounter > 0)
+        {
+            this.actionCounter--;
+        }
+
+        // update the CPUs
         Random rand = new Random();
         for (int i = 0; i < CPUModel.length; i++)
         {
             CPUModel[i].update();
             
+            // generate random movement
             if (CPUModel[i].getMovementCounter() < 0)
             {
                 int n = rand.nextInt(100);
@@ -152,6 +164,12 @@ public class OverworldModel {
                     }
                 }
             }
+        }
+
+        // update the current conversation
+        if (this.conversation != null)
+        {
+            this.conversation.update();
         }
     }
 
@@ -189,5 +207,62 @@ public class OverworldModel {
             }
         }
         return null;
+    }
+
+    /** 
+     * Prevent characters from moving during conversations
+     * @return true if characters can walk around or false otherwise
+     */
+    public boolean canMove()
+    {
+        if (this.conversation != null)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    /** 
+     * Enable to player to interact with other characters
+     */
+    public void checkAction(int x, int y)
+    {
+        // if already in a conversation, check if it's time to move on to next dialog
+        if (this.conversation != null)
+        {
+            // delete the conversation if it is over
+            if (this.conversation.isComplete())
+            {
+                this.conversation = null;
+                this.actionCounter = 15;
+            }
+            else
+            {
+                this.conversation.nextEvent();
+            }
+        }
+        // otherwise check for a cpu to interact with
+        else if (this.actionCounter == 0)
+        {
+            for (CharacterModel cpu : CPUModel)
+            {
+                if (x == cpu.getX() && y == cpu.getY())
+                {
+                    if (cpu.conversationId == -1)
+                    {
+                        // no other CPU can occur the same spot so no point in continuing to search
+                        break;
+                    }
+                    else
+                    {
+                        this.conversation = new ConversationModel(cpu.conversationId);
+                        break;
+                    }
+                }
+            }
+        }
     }
 }

@@ -58,7 +58,7 @@ public class DatabaseUtility
         String query;
 
         // remove all the existing tables first
-        String[] table_list = {"evolution_methods", "pokemon", "pokemon_moves", "pokemon_location"};
+        String[] table_list = {"evolution_methods", "pokemon", "pokemon_moves", "pokemon_location", "conversation"};
 
         for (String t : table_list)
         {
@@ -112,13 +112,25 @@ public class DatabaseUtility
 
         // CREATE TABLE move_effects
         // effect type, probability
+
+        // CREATE TABLE conversation
+        // all the text displayed in conversations
+        query = "CREATE TABLE conversation("
+                + "conversationId INT NOT NULL, "
+                + "conversationEventId INT NOT NULL, "
+                + "text VARCHAR(100) NOT NULL, "
+                + "battleId INT NOT NULL)";
+        runUpdate(query);
+
+        loadConversationTable();
+
         conn.commit();
     }
 
     /** 
      * Fills the Pokemon table with data
      */
-    private void loadPokemonTable() throws SQLException
+    private void loadPokemonTable()
     {
         try
         {
@@ -178,7 +190,7 @@ public class DatabaseUtility
     /** 
      * Fills the pokemon_moves table with data
      */
-    private void loadPokemonMovesTable() throws SQLException
+    private void loadPokemonMovesTable()
     {
         try
         {
@@ -203,6 +215,52 @@ public class DatabaseUtility
                 statement.setInt(1, Integer.parseInt(data[0]));
                 statement.setInt(2, Integer.parseInt(data[1]));
                 statement.setInt(3, Integer.parseInt(data[2]));                
+
+                statement.addBatch();
+
+                line = br.readLine();
+            }
+
+            statement.executeBatch();
+            br.close();
+        } 
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /** 
+     * Fills the conversation table with data
+     */
+    private void loadConversationTable()
+    {
+
+        try
+        {
+            BufferedReader br = getFileReader("src/rawdata/conversation.csv");
+
+            // skip the first line which just has column names
+            String line = br.readLine();
+            line = br.readLine();
+            String query;
+            String[] data;
+            PreparedStatement statement;
+
+            query = "INSERT INTO conversation ("
+                    + "conversationId, conversationEventId, text, battleId)"
+                    + "VALUES (?, ?, ?, ?)";
+
+            statement = conn.prepareStatement(query);
+
+            while (line != null)
+            {
+                data = line.split(",");
+
+                statement.setInt(1, Integer.parseInt(data[0]));
+                statement.setInt(2, Integer.parseInt(data[1]));
+                statement.setString(3, data[2]);
+                statement.setInt(4, Integer.parseInt(data[3]));
 
                 statement.addBatch();
 

@@ -108,9 +108,7 @@ public class PokemonModel
             {
                 this.moves[index] = rs.getInt("move_id");
                 index++;
-            }
-
-            
+            }            
         }
         catch (SQLException e) 
         {

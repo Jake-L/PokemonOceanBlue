@@ -12,33 +12,37 @@ public class CharacterModel {
     private int dx;
     private Direction direction;
     private int animationOffset = 0;
-    private OverworldModel overworldModel;
+    public OverworldModel overworldModel;
     public final int spawn_x;
     public final int spawn_y;
+    public final int conversationId;
 
     /** 
      * @param spriteName name of the sprite used in the image filename
      * @param x x position of the sprite
      * @param y y position of the sprite
+     * @param conversationId a unique identifier for their conversation or -1 otherwise
      * sets direction to default value of DOWN
      */
-    public CharacterModel(String spriteName, int x, int y){
-        this(spriteName, x, y, Direction.DOWN);
+    public CharacterModel(String spriteName, int x, int y, int conversationId){
+        this(spriteName, x, y, conversationId, Direction.DOWN);
     }
 
     /** 
      * @param spriteName name of the sprite used in the image filename
      * @param x x position of the sprite
      * @param y y position of the sprite
+     * @param conversationId a unique identifier for their conversation or -1 otherwise
      * @param direction the direction the character initially faces 
      */
-    public CharacterModel(String spriteName, int x, int y, Direction direction){
+    public CharacterModel(String spriteName, int x, int y, int conversationId, Direction direction){
         this.spriteName = spriteName;
         this.x = x;
         this.y = y;
         this.direction = direction;
         this.spawn_x = x;
         this.spawn_y = y;
+        this.conversationId = conversationId;
 
         // get the sprite's height
         ImageIcon ii = new ImageIcon(String.format("src/characters/%sDown0.png", spriteName));
@@ -109,7 +113,7 @@ public class CharacterModel {
     public void setMovement(int dx, int dy, int movementCounter)
     {
         // can only specify movement when not already moving
-        if (this.movementCounter <= 0)
+        if (this.movementCounter <= 0 && this.overworldModel.canMove())
         {
             // toggle animation offset between 0 and 1
             animationOffset = Math.abs(animationOffset - 1);

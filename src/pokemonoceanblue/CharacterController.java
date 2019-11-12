@@ -20,7 +20,11 @@ public class CharacterController {
      */
     public void userInput(List<Integer> keysDown)
     {
-        if (keysDown.contains(KeyEvent.VK_UP))
+        if (keysDown.contains(KeyEvent.VK_ENTER))
+        {
+            this.callCheckAction();
+        }
+        else if (keysDown.contains(KeyEvent.VK_UP))
         {
             model.setMovement(0, -1, 16);
         }
@@ -36,5 +40,36 @@ public class CharacterController {
         {
             model.setMovement(1, 0, 16);
         }
+    }
+
+    /** 
+     * Check which position the player is trying to interact with
+     * Pass the check position to the overworld model
+     */
+    private void callCheckAction()
+    {
+        int checkX = this.model.getX();
+        int checkY = this.model.getY();
+
+        // get the coordinates the player is interacting with
+        if (this.model.getDirection() == Direction.RIGHT)
+        {
+            checkX++;
+        }
+        else if (this.model.getDirection() == Direction.LEFT)
+        {
+            checkX--;
+        }
+        else if (this.model.getDirection() == Direction.UP)
+        {
+            checkY--;
+        }
+        else if (this.model.getDirection() == Direction.DOWN)
+        {
+            checkY++;
+        }
+
+        // check if there is anything to interact with
+        model.overworldModel.checkAction(checkX, checkY);
     }
 }

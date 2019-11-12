@@ -102,7 +102,8 @@ public class ViewBase {
             height / 4 - 16 * graphicsScaling,
             canvas);
 
-        g.setFont(new Font("Pokemon Fire Red", Font.PLAIN, 36 * graphicsScaling));
+        Font font = new Font("Pokemon Fire Red", Font.PLAIN, 36 * graphicsScaling);
+        g.setFont(font);
 
         String[] renderText; 
 

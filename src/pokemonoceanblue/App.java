@@ -158,11 +158,11 @@ public class App extends JFrame implements KeyListener
         {
             // if the player moved from another map, keep them facing the same direction as before
             oldPlayerModel = playerModel;
-            playerModel = new CharacterModel("red", playerX, playerY, oldPlayerModel.getDirection());
+            playerModel = new CharacterModel("red", playerX, playerY, -1, oldPlayerModel.getDirection());
         }
         else
         {
-            playerModel = new CharacterModel("red", playerX, playerY);
+            playerModel = new CharacterModel("red", playerX, playerY, -1);
         }
         playerController = new CharacterController(playerModel);
         playerModel.setOverworldModel(overworldModel);
