@@ -57,6 +57,11 @@ public class CharacterModel {
     public String getSpriteName(){
         return this.spriteName;
     }
+
+    public void setDirection(Direction direction)
+    {
+        this.direction = direction;
+    }
     
     /** 
      * @return the filename of the sprite that should be displayed

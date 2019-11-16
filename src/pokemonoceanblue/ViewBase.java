@@ -115,7 +115,8 @@ public class ViewBase {
             renderText = new String[2];
             renderText[0] = "";
             renderText[1] = "";
-            String[] splitText = text.split(" ");
+            // text cannot contain commas when stored in csv, so use $ instead
+            String[] splitText = text.replace("$",",").split(" ");
             int index = 0;
             
             // put the first 1/3 of the words on the first line

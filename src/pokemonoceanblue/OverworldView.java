@@ -17,7 +17,6 @@ import javax.swing.JPanel;
 public class OverworldView extends ViewBase {
 
     private OverworldModel model;
-    private CharacterModel playerModel;
     private Image[] tileSprite = new Image[40];
     private Map<String, Image> animatedTileSprite = new HashMap<String, Image>();
     private Map<String, Image> mapObjectSprite = new HashMap<String, Image>();
@@ -28,11 +27,9 @@ public class OverworldView extends ViewBase {
     /** 
      * Constructor for the overworld view
      * @param model model for the overworld to be displayed
-     * @param playerModel model for the player to display it and calculate screen offset
      */
-    public OverworldView(OverworldModel model, CharacterModel playerModel){
+    public OverworldView(OverworldModel model){
         this.model = model;
-        this.playerModel = playerModel;
         loadImage();
     }
 
@@ -66,7 +63,7 @@ public class OverworldView extends ViewBase {
         }
 
         // load character sprites
-        String spriteName = playerModel.getSpriteName();
+        String spriteName = model.playerModel.getSpriteName();
         String formattedName;
         // get their sprites for each direction
         for (Direction direction : Direction.values())
@@ -112,8 +109,8 @@ public class OverworldView extends ViewBase {
         g.fillRect(0, 0, width, height);
         
         Image sprite;
-        int playerRenderX = playerModel.getRenderX();
-        int playerRenderY = playerModel.getRenderY();
+        int playerRenderX = model.playerModel.getRenderX();
+        int playerRenderY = model.playerModel.getRenderY();
 
         calcOffset(playerRenderX, playerRenderY);
 
@@ -142,7 +139,7 @@ public class OverworldView extends ViewBase {
 
         // create a sorted list of all the characters to be rendered
         List<CharacterModel> renderList = new ArrayList<CharacterModel>();
-        renderList.add(playerModel);
+        renderList.add(model.playerModel);
         for (CharacterModel current : model.CPUModel)
         {
             int i = 0;

@@ -13,6 +13,7 @@ public class OverworldModel {
     public byte[][] tiles;
     public List<SpriteModel> mapObjects = new ArrayList<SpriteModel>(); 
     public CharacterModel[] CPUModel = new CharacterModel[0];
+    public CharacterModel playerModel;
     private Portal[] portals = new Portal[0];
     public ConversationModel conversation;
 
@@ -21,14 +22,16 @@ public class OverworldModel {
     
     /** 
      * @param mapId unique identifier for the current map
+     * @param playerModel model for the player to display it and calculate screen offset
      */
-    public OverworldModel(int mapId){
+    public OverworldModel(int mapId, CharacterModel playerModel){
         this.mapId = mapId;
+        this.playerModel = playerModel;
         readMapFile();
         if (this.mapId == 0)
         {
             CPUModel = new CharacterModel[1];
-            CPUModel[0] = new CharacterModel("cassie", 6, 6, 0);
+            CPUModel[0] = new CharacterModel("cassie", 6, 6, 3);
             CPUModel[0].setOverworldModel(this);
 
             portals = new Portal[6];
@@ -71,6 +74,12 @@ public class OverworldModel {
         {
             portals = new Portal[1];
             portals[0] = new Portal(6, 13, 0, 10, 25);
+
+            CPUModel = new CharacterModel[2];
+            CPUModel[0] = new CharacterModel("oak", 6, 3, 0);
+            CPUModel[0].setOverworldModel(this);
+            CPUModel[1] = new CharacterModel("scientist", 8, 8, 2);
+            CPUModel[1].setOverworldModel(this);
         }
     }
 
@@ -258,6 +267,25 @@ public class OverworldModel {
                     }
                     else
                     {
+                        // make the CPU face the player
+                        if (cpu.getX() > this.playerModel.getX())
+                        {
+                            cpu.setDirection(Direction.LEFT);
+                        }
+                        else if (cpu.getX() < this.playerModel.getX())
+                        {
+                            cpu.setDirection(Direction.RIGHT);
+                        }
+                        else if (cpu.getY() > this.playerModel.getY())
+                        {
+                            cpu.setDirection(Direction.UP);
+                        }
+                        else if (cpu.getY() < this.playerModel.getY())
+                        {
+                            cpu.setDirection(Direction.DOWN);
+                        }
+
+                        // start the conversation
                         this.conversation = new ConversationModel(cpu.conversationId);
                         break;
                     }

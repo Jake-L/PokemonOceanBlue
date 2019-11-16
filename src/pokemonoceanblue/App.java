@@ -137,7 +137,7 @@ public class App extends JFrame implements KeyListener
         // releasing 'p' exits the party view
         if (e.getKeyCode() == KeyEvent.VK_P)
         {
-            OverworldView overworldView = new OverworldView(overworldModel, playerModel);
+            OverworldView overworldView = new OverworldView(overworldModel);
             viewManager.setView(overworldView);
         }
     }
@@ -150,8 +150,6 @@ public class App extends JFrame implements KeyListener
      */
     public void setMap(int mapId, int playerX, int playerY)
     {
-        // create the overworld
-        overworldModel = new OverworldModel(mapId);
 
         // create the player
         if (playerModel != null)
@@ -165,9 +163,11 @@ public class App extends JFrame implements KeyListener
             playerModel = new CharacterModel("red", playerX, playerY, -1);
         }
         playerController = new CharacterController(playerModel);
+        // create the overworld
+        overworldModel = new OverworldModel(mapId, playerModel);
         playerModel.setOverworldModel(overworldModel);
 
-        OverworldView overworldView = new OverworldView(overworldModel, playerModel);
+        OverworldView overworldView = new OverworldView(overworldModel);
         viewManager.setView(overworldView);
         MusicPlayer.setSong("1");
     }
