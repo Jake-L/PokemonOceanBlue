@@ -16,6 +16,7 @@ public class OverworldModel {
     public CharacterModel playerModel;
     private Portal[] portals = new Portal[0];
     public ConversationModel conversation;
+    private App app;
 
     // prevent players from accidently repeating actions by holdings keys
     private int actionCounter = 15;
@@ -24,9 +25,10 @@ public class OverworldModel {
      * @param mapId unique identifier for the current map
      * @param playerModel model for the player to display it and calculate screen offset
      */
-    public OverworldModel(int mapId, CharacterModel playerModel){
+    public OverworldModel(int mapId, CharacterModel playerModel, App app){
         this.mapId = mapId;
         this.playerModel = playerModel;
+        this.app = app;
         readMapFile();
         if (this.mapId == 0)
         {
@@ -247,6 +249,8 @@ public class OverworldModel {
             {
                 this.conversation = null;
                 this.actionCounter = 15;
+                System.out.println("create battle");
+                this.app.createBattle();
             }
             else
             {

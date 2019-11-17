@@ -48,6 +48,11 @@ public class ViewManager extends JPanel {
      */
     public void setView(ViewBase view) 
     {
+        if (this.newView != null)
+        {
+            // can't change the view while it is already being changed
+            return;
+        }
         if (this.view != null)
         {
             this.newView = view;

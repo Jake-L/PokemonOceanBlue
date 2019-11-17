@@ -31,6 +31,8 @@ public class App extends JFrame implements KeyListener
     List<Integer> keysDown = new ArrayList<Integer>(); 
     OverworldModel overworldModel;
     PokemonModel[] pokemonTeam = new PokemonModel[6];
+    BattleModel battleModel;
+    //BattleController battleController;
 
     // number of milliseconds between frames
     private final byte FRAME_LENGTH = 32;
@@ -142,6 +144,13 @@ public class App extends JFrame implements KeyListener
         }
     }
 
+    public void createBattle()
+    {
+        this.battleModel = new BattleModel(pokemonTeam, pokemonTeam);
+        BattleView battleView = new BattleView(this.battleModel);
+        viewManager.setView(battleView);
+    }
+
     /** 
      * Loads a new map and passed it to ViewManager
      * @param mapId unique identifier for the new map
@@ -164,7 +173,7 @@ public class App extends JFrame implements KeyListener
         }
         playerController = new CharacterController(playerModel);
         // create the overworld
-        overworldModel = new OverworldModel(mapId, playerModel);
+        overworldModel = new OverworldModel(mapId, playerModel, this);
         playerModel.setOverworldModel(overworldModel);
 
         OverworldView overworldView = new OverworldView(overworldModel);
@@ -187,8 +196,20 @@ public class App extends JFrame implements KeyListener
             // update on a set interval
             if (System.currentTimeMillis() - lastRun > FRAME_LENGTH)
             {
+                // update the battle
+                if (viewManager.getCurrentView().equals("BattleView"))
+                {
+                    //battleModel.update();
+                    //battleController.userInput(keysDown);
+                    if (this.battleModel.isComplete())
+                    {
+                        // return to overworld screen
+                        OverworldView overworldView = new OverworldView(overworldModel);
+                        viewManager.setView(overworldView);
+                    }
+                }
                 // update the players position
-                if (viewManager.getCurrentView().equals("OverworldView"))
+                else if (viewManager.getCurrentView().equals("OverworldView"))
                 {
                     playerModel.update();
                     overworldModel.update();
