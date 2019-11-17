@@ -175,6 +175,30 @@ public class BattleView extends ViewBase {
         g.drawString(String.valueOf(model.team[1][model.currentPokemon[1]].level),
             width / 10 + 84 * graphicsScaling,
             height / 10 + 17 * graphicsScaling);
+        
+        displayTextOptions(g, canvas);
+    }
+
+    //displays battle options in a text box
+    protected void displayTextOptions(Graphics g, JPanel canvas)
+    {
+        displayTextbox(g, canvas);
+
+        Font font = new Font("Pokemon Fire Red", Font.PLAIN, 24 * graphicsScaling);
+        g.setFont(font);
+
+        for (int i = 0; i < model.battleOptions.length; i++)
+        {
+            g.drawString(model.battleOptions[i], 
+                24 * graphicsScaling + (width / 2) * (i % 2), 
+                (height * 3 / 4 + 24 * graphicsScaling) + graphicsScaling * 24 * (i / 2));
+        }
+
+        int textWidth = g.getFontMetrics(font).stringWidth(">");
+
+        g.drawString(">",
+        24 * graphicsScaling + (width / 2) * (model.optionIndex % 2) - textWidth,
+        (height * 3 / 4 + 24 * graphicsScaling) + graphicsScaling * 24 * (model.optionIndex / 2));
     }
 
     @Override

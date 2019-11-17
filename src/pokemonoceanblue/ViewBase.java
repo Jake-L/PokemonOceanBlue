@@ -2,7 +2,6 @@ package pokemonoceanblue;
 
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -36,7 +35,7 @@ public class ViewBase {
         this.height = height;
     }
 
-    protected void displayText(String text, Graphics g, JPanel canvas)
+    protected void displayTextbox(Graphics g, JPanel canvas)
     {
         //top left
         g.drawImage(textDisplayBox[0],
@@ -101,7 +100,12 @@ public class ViewBase {
             width - 16 * graphicsScaling,
             height / 4 - 16 * graphicsScaling,
             canvas);
+    } 
 
+    protected void displayText(String text, Graphics g, JPanel canvas)    
+    {
+        displayTextbox(g, canvas);
+        
         Font font = new Font("Pokemon Fire Red", Font.PLAIN, 36 * graphicsScaling);
         g.setFont(font);
 
@@ -115,7 +119,6 @@ public class ViewBase {
             renderText = new String[2];
             renderText[0] = "";
             renderText[1] = "";
-            // text cannot contain commas when stored in csv, so use $ instead
             String[] splitText = text.replace("$",",").split(" ");
             int index = 0;
             

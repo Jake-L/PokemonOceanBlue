@@ -32,7 +32,7 @@ public class App extends JFrame implements KeyListener
     OverworldModel overworldModel;
     PokemonModel[] pokemonTeam = new PokemonModel[6];
     BattleModel battleModel;
-    //BattleController battleController;
+    BattleController battleController;
 
     // number of milliseconds between frames
     private final byte FRAME_LENGTH = 32;
@@ -146,9 +146,10 @@ public class App extends JFrame implements KeyListener
 
     public void createBattle()
     {
-        this.battleModel = new BattleModel(pokemonTeam, pokemonTeam);
+        battleModel = new BattleModel(pokemonTeam, pokemonTeam);
         BattleView battleView = new BattleView(this.battleModel);
         viewManager.setView(battleView);
+        battleController = new BattleController(battleModel);
     }
 
     /** 
@@ -199,8 +200,8 @@ public class App extends JFrame implements KeyListener
                 // update the battle
                 if (viewManager.getCurrentView().equals("BattleView"))
                 {
-                    //battleModel.update();
-                    //battleController.userInput(keysDown);
+                    battleModel.update();
+                    battleController.userInput(keysDown);
                     if (this.battleModel.isComplete())
                     {
                         // return to overworld screen
