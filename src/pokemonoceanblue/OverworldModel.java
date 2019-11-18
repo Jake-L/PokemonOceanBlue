@@ -12,7 +12,7 @@ public class OverworldModel {
     public int mapId;
     public byte[][] tiles;
     public List<SpriteModel> mapObjects = new ArrayList<SpriteModel>(); 
-    public CharacterModel[] CPUModel = new CharacterModel[0];
+    public CharacterModel[] cpuModel = new CharacterModel[0];
     public CharacterModel playerModel;
     private Portal[] portals = new Portal[0];
     public ConversationModel conversation;
@@ -32,9 +32,9 @@ public class OverworldModel {
         readMapFile();
         if (this.mapId == 0)
         {
-            CPUModel = new CharacterModel[1];
-            CPUModel[0] = new CharacterModel("cassie", 6, 6, 3);
-            CPUModel[0].setOverworldModel(this);
+            cpuModel = new CharacterModel[1];
+            cpuModel[0] = new CharacterModel("cassie", 6, 6, 3);
+            cpuModel[0].setOverworldModel(this);
 
             portals = new Portal[6];
             // houses
@@ -77,11 +77,11 @@ public class OverworldModel {
             portals = new Portal[1];
             portals[0] = new Portal(6, 13, 0, 10, 25);
 
-            CPUModel = new CharacterModel[2];
-            CPUModel[0] = new CharacterModel("oak", 6, 3, 0);
-            CPUModel[0].setOverworldModel(this);
-            CPUModel[1] = new CharacterModel("scientist", 8, 8, 2);
-            CPUModel[1].setOverworldModel(this);
+            cpuModel = new CharacterModel[2];
+            cpuModel[0] = new CharacterModel("oak", 6, 3, 0);
+            cpuModel[0].setOverworldModel(this);
+            cpuModel[1] = new CharacterModel("scientist", 8, 8, 2);
+            cpuModel[1].setOverworldModel(this);
         }
     }
 
@@ -147,12 +147,12 @@ public class OverworldModel {
 
         // update the CPUs
         Random rand = new Random();
-        for (int i = 0; i < CPUModel.length; i++)
+        for (int i = 0; i < cpuModel.length; i++)
         {
-            CPUModel[i].update();
+            cpuModel[i].update();
             
             // generate random movement
-            if (CPUModel[i].getMovementCounter() < 0)
+            if (cpuModel[i].getMovementCounter() < 0)
             {
                 int n = rand.nextInt(100);
                 int dx = 0;
@@ -169,9 +169,9 @@ public class OverworldModel {
 
                 if (dx != 0 || dy != 0)
                 {
-                    if (Math.abs(CPUModel[i].spawn_x - CPUModel[i].getX() - dx) + Math.abs(CPUModel[i].spawn_y - CPUModel[i].getY() - dy) <= 2)
+                    if (Math.abs(cpuModel[i].spawn_x - cpuModel[i].getX() - dx) + Math.abs(cpuModel[i].spawn_y - cpuModel[i].getY() - dy) <= 2)
                     {
-                        CPUModel[i].setMovement(dx, dy, 16);
+                        cpuModel[i].setMovement(dx, dy, 16);
                     }
                 }
             }
@@ -191,16 +191,28 @@ public class OverworldModel {
      */
     public boolean checkPosition(int x, int y)
     {
+        // check if the map allows movement
         if (y < 0 || y >= this.tiles.length
             || x < 0 || x >= this.tiles[y].length
             || this.tiles[y][x] < 1)
         {
             return false;
         }
-        else
+        // check if the player is already standing there
+        if (x == playerModel.getX() && y == playerModel.getY())
         {
-            return true;
+            return false;
         }
+        // check if a CPU is already standing there
+        for (int i = 0; i < cpuModel.length; i++)
+        {
+            if (x == cpuModel[i].getX() && y == cpuModel[i].getY())
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /** 
@@ -260,7 +272,7 @@ public class OverworldModel {
         // otherwise check for a cpu to interact with
         else if (this.actionCounter == 0)
         {
-            for (CharacterModel cpu : CPUModel)
+            for (CharacterModel cpu : cpuModel)
             {
                 if (x == cpu.getX() && y == cpu.getY())
                 {

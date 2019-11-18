@@ -26,7 +26,6 @@ public class App extends JFrame implements KeyListener
     CharacterController playerController;
     CharacterModel playerModel;
     CharacterModel oldPlayerModel;
-    CharacterModel[] CPUModel = new CharacterModel[1];
     ViewManager viewManager;
     List<Integer> keysDown = new ArrayList<Integer>(); 
     OverworldModel overworldModel;

@@ -77,10 +77,10 @@ public class OverworldView extends ViewBase {
             }
         }
 
-        for (CharacterModel CPUModel : model.CPUModel)
+        for (CharacterModel cpuModel : model.cpuModel)
         {
             // load character sprites
-            spriteName = CPUModel.getSpriteName();
+            spriteName = cpuModel.getSpriteName();
 
             // get their sprites for each direction
             for (Direction direction : Direction.values())
@@ -140,7 +140,7 @@ public class OverworldView extends ViewBase {
         // create a sorted list of all the characters to be rendered
         List<CharacterModel> renderList = new ArrayList<CharacterModel>();
         renderList.add(model.playerModel);
-        for (CharacterModel current : model.CPUModel)
+        for (CharacterModel current : model.cpuModel)
         {
             int i = 0;
             while (i < renderList.size() && renderList.get(i).getY() < current.getY())
