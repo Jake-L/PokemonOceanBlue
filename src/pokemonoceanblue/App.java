@@ -145,6 +145,7 @@ public class App extends JFrame implements KeyListener
 
     public void createBattle()
     {
+        MusicPlayer.setSong("18");
         battleModel = new BattleModel(pokemonTeam, pokemonTeam);
         BattleView battleView = new BattleView(this.battleModel);
         viewManager.setView(battleView);
@@ -276,7 +277,7 @@ public class App extends JFrame implements KeyListener
         private static String currentSong;
         private static String newSong;
         private static Clip currentClip;
-        private static int transitionCounter = -40;
+        private static int transitionCounter = 0;
 
         /** 
          * Queues the background music for the given song number
@@ -288,17 +289,17 @@ public class App extends JFrame implements KeyListener
             if (currentSong == null)
             {
                 newSong = song;
-                transitionCounter = -40;
+                transitionCounter = 0;
                 playSong();
             }
             else if (song != currentSong)
             {
                 newSong = song;
-                transitionCounter = 40;
+                transitionCounter = 25;
             } 
             else
             {
-                transitionCounter = -40;
+                transitionCounter = 0;
             }
         }
 
@@ -349,26 +350,16 @@ public class App extends JFrame implements KeyListener
 
             if (transitionCounter > 0)
             {
-                gain = 0.25 * (transitionCounter + 2) / 42;
+                gain = 0.25 * (transitionCounter + 15) / 40;
+                setVolume(gain);
                 transitionCounter--;
             }
-            else if (transitionCounter > -40)
+            else if (currentSong != newSong)
             {
-                if (currentSong != newSong)
-                {
-                    playSong();
-                }
-
-                gain = 0.25 * (Math.abs(transitionCounter) + 2) / 42;
-                transitionCounter--;
-            }
-            else
-            {
+                playSong();
                 gain = 0.25;
+                setVolume(gain);   
             }
-
-            setVolume(gain);
-            
         }
     }
 }
