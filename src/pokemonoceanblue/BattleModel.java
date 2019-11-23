@@ -1,5 +1,7 @@
 package pokemonoceanblue;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 public class BattleModel 
 {
@@ -10,6 +12,7 @@ public class BattleModel
     public String[] battleOptions = new String[3];
     public int optionIndex = 0;
     public byte counter = 15;
+    private float[][] typeEffectiveness = new float[19][19];
 
     /** 
      * Constructor
@@ -25,6 +28,7 @@ public class BattleModel
         this.battleOptions[0] = "FIGHT";
         this.battleOptions[1] = "POKEMON";
         this.battleOptions[2] = "POKEBALLS";
+        loadData();
     }
 
     public void confirmSelection()
@@ -38,6 +42,31 @@ public class BattleModel
                 this.battleOptions[i] = String.valueOf(this.team[0][this.currentPokemon[0]].moves[i]);
             } 
         }
+    }
+
+    /*
+     * Read data on type effectiveness and load it into an array
+     */ 
+    private void loadData()
+    {
+        try
+        {
+            DatabaseUtility db = new DatabaseUtility();
+
+            String query = "SELECT src_type_id, target_type_id, damage_factor "
+                         + "FROM type_effectiveness";
+
+            ResultSet rs = db.runQuery(query);
+
+            while(rs.next()) 
+            {
+                this.typeEffectiveness[rs.getInt(1)][rs.getInt(2)] = rs.getFloat(3);
+            }            
+        }
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+        }  
     }
 
     public boolean isComplete()

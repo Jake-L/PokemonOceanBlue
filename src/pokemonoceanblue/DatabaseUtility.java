@@ -113,6 +113,16 @@ public class DatabaseUtility
         // CREATE TABLE move_effects
         // effect type, probability
 
+        // store the multipliers for different types
+        query = "CREATE TABLE type_effectiveness("
+                + "src_type_id INT NOT NULL, "
+                + "target_type_id INT NOT NULL, "
+                + "damage_factor FLOAT NOT NuLL)";
+        runUpdate(query);
+
+        loadTypeEffectivenessTable();
+        
+
         // CREATE TABLE conversation
         // all the text displayed in conversations
         query = "CREATE TABLE conversation("
@@ -231,11 +241,54 @@ public class DatabaseUtility
     }
 
     /** 
+     * Fills the type_effectiveness table with data
+     */
+    private void loadTypeEffectivenessTable()
+    {
+        try
+        {
+            BufferedReader br = getFileReader("src/rawdata/typeEffectiveness.csv");
+
+            // skip the first line which just has column names
+            String line = br.readLine();
+            line = br.readLine();
+            String query;
+            String[] data;
+            PreparedStatement statement;
+
+            query = "INSERT INTO type_effectiveness ("
+                    + "src_type_id, target_type_id, damage_factor)"
+                    + "VALUES (?, ?, ?)";
+
+            statement = conn.prepareStatement(query);
+
+            while (line != null)
+            {
+                data = line.split(",");
+
+                statement.setInt(1, Integer.parseInt(data[0]));
+                statement.setInt(2, Integer.parseInt(data[1]));
+                statement.setFloat(3, Float.parseFloat(data[2]));
+
+                statement.addBatch();
+
+                line = br.readLine();
+            }
+
+            statement.executeBatch();
+            br.close();
+        } 
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /** 
      * Fills the conversation table with data
      */
     private void loadConversationTable()
     {
-
         try
         {
             BufferedReader br = getFileReader("src/rawdata/conversation.csv");
