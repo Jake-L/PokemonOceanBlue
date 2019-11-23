@@ -176,14 +176,22 @@ public class BattleView extends ViewBase {
             width / 10 + 84 * graphicsScaling,
             height / 10 + 17 * graphicsScaling);
         
-        displayTextOptions(g, canvas);
+        displayTextbox(g, canvas);
+        
+        if (model.battleIndex == 0 || model.battleIndex == 1)
+        {
+            displayTextOptions(g, canvas);
+        }
+
+        if (model.battleIndex == 2)
+        {
+            displayBattleText(g, canvas);
+        }
     }
 
     //displays battle options in a text box
     protected void displayTextOptions(Graphics g, JPanel canvas)
     {
-        displayTextbox(g, canvas);
-
         Font font = new Font("Pokemon Fire Red", Font.PLAIN, 24 * graphicsScaling);
         g.setFont(font);
 
@@ -199,6 +207,20 @@ public class BattleView extends ViewBase {
         g.drawString(">",
         24 * graphicsScaling + (width / 2) * (model.optionIndex % 2) - textWidth,
         (height * 3 / 4 + 24 * graphicsScaling) + graphicsScaling * 24 * (model.optionIndex / 2));
+    }
+
+    //displays text in a text box
+    private void displayBattleText(Graphics g, JPanel canvas)
+    {
+        Font font = new Font("Pokemon Fire Red", Font.PLAIN, 24 * graphicsScaling);
+        g.setFont(font);
+        String text = model.getText();
+        if (text != null)
+        {
+            g.drawString(text,
+                24 * graphicsScaling,
+                height * 3 / 4 + 24 * graphicsScaling);
+        }
     }
 
     @Override

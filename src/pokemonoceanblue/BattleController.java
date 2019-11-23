@@ -30,6 +30,7 @@ public class BattleController {
             else if (keysDown.contains(KeyEvent.VK_UP) && (model.optionIndex == 2 || model.optionIndex == 3))
             {
                 model.optionIndex -= 2;
+                model.counter = model.INPUTDELAY;
             }
 
             else if (keysDown.contains(KeyEvent.VK_DOWN) && (model.optionIndex == 0 || model.optionIndex == 1))
@@ -37,17 +38,20 @@ public class BattleController {
                 if (model.optionIndex + 2 < model.battleOptions.length)
                 {
                     model.optionIndex += 2;
+                    model.counter = model.INPUTDELAY;
                 }
 
                 else if (model.battleOptions.length == 3 && model.optionIndex == 1)
                 {
                     model.optionIndex = model.battleOptions.length - 1;
+                    model.counter = model.INPUTDELAY;
                 }
             }
 
             else if (keysDown.contains(KeyEvent.VK_LEFT) && (model.optionIndex == 1 || model.optionIndex == 3))
             {
                 model.optionIndex -= 1;
+                model.counter = model.INPUTDELAY;
             }
 
             else if (keysDown.contains(KeyEvent.VK_RIGHT) && (model.optionIndex == 0 || model.optionIndex == 2))
@@ -55,6 +59,7 @@ public class BattleController {
                 if (model.optionIndex + 1 < model.battleOptions.length)
                 {
                     model.optionIndex += 1;
+                    model.counter = model.INPUTDELAY;
                 }
             }
         }
