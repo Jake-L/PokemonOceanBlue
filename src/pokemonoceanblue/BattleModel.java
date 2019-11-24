@@ -48,7 +48,7 @@ public class BattleModel
             
                     for (int i = 0; i < this.team[0][this.currentPokemon[0]].moves.length; i++)
                     {
-                        this.battleOptions[i] = String.valueOf(this.team[0][this.currentPokemon[0]].moves[i]);
+                        this.battleOptions[i] = String.valueOf(this.team[0][this.currentPokemon[0]].moves[i].name);
                     }
                 }
 
@@ -63,11 +63,11 @@ public class BattleModel
 
             else
             {
-                BattleEvent event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " used " + this.team[0][this.currentPokemon[0]].moves[optionIndex]);
+                BattleEvent event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " used " + this.team[0][this.currentPokemon[0]].moves[optionIndex].name);
                 this.events.add(event);
                 this.battleIndex++;
                 this.counter = 60;
-                event = new BattleEvent(this.team[1][this.currentPokemon[1]].name + " used " + this.team[1][this.currentPokemon[1]].moves[0]);
+                event = new BattleEvent(this.team[1][this.currentPokemon[1]].name + " used " + this.team[1][this.currentPokemon[1]].moves[0].name);
                 this.events.add(event);
             }
         }

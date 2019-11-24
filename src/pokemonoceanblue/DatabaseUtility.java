@@ -58,7 +58,7 @@ public class DatabaseUtility
         String query;
 
         // remove all the existing tables first
-        String[] table_list = {"evolution_methods", "pokemon", "pokemon_moves", "pokemon_location", "conversation"};
+        String[] table_list = {"evolution_methods", "pokemon", "pokemon_moves", "pokemon_location", "conversation", "moves", "type_effectiveness"};
 
         for (String t : table_list)
         {
@@ -109,6 +109,17 @@ public class DatabaseUtility
 
         // CREATE TABLE moves
         // move's name, damage, accuracy, type
+        query = "CREATE TABLE moves("
+                + "move_id INT NOT NULL, "
+                + "name VARCHAR(30) NOT NULL, "
+                + "type_id INT NOT NULL, "
+                + "power INT NULL, "
+                + "accuracy INT NULL, "
+                + "priority INT NOT NULL, "
+                + "damage_class_id INT NOT NULL)";
+        runUpdate(query);
+
+        loadMovesTable();
 
         // CREATE TABLE move_effects
         // effect type, probability
@@ -225,6 +236,55 @@ public class DatabaseUtility
                 statement.setInt(1, Integer.parseInt(data[0]));
                 statement.setInt(2, Integer.parseInt(data[1]));
                 statement.setInt(3, Integer.parseInt(data[2]));                
+
+                statement.addBatch();
+
+                line = br.readLine();
+            }
+
+            statement.executeBatch();
+            br.close();
+        } 
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+        /** 
+     * Fills the moves table with data
+     */
+    private void loadMovesTable()
+    {
+        try
+        {
+            BufferedReader br = getFileReader("src/rawdata/moves.csv");
+
+            // skip the first line which just has column names
+            String line = br.readLine();
+            line = br.readLine();
+            String query;
+            String[] data;
+            PreparedStatement statement;
+            query = "INSERT INTO moves ("
+                    + "move_id, name, type_id, " 
+                    + "power, accuracy, priority, "
+                    + "damage_class_id) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+            statement = conn.prepareStatement(query);
+
+            while (line != null)
+            {
+                data = line.split(",");
+
+                statement.setInt(1, Integer.parseInt(data[0]));
+                statement.setString(2, data[1]);
+                statement.setInt(3, Integer.parseInt(data[2]));  
+                statement.setObject(4, data[3].equals("") ? null : Integer.parseInt(data[3]));
+                statement.setObject(5, data[4].equals("") ? null : Integer.parseInt(data[4]));
+                statement.setInt(6, Integer.parseInt(data[5]));  
+                statement.setInt(7, Integer.parseInt(data[7]));               
 
                 statement.addBatch();
 

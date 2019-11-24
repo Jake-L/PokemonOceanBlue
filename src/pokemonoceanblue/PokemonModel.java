@@ -20,7 +20,7 @@ public class PokemonModel
     int special_defense;
     int speed;
 
-    int[] moves = new int[4];
+    MoveModel[] moves;
     
     /** 
      * Constructor
@@ -104,9 +104,11 @@ public class PokemonModel
 
             int index = 0;
 
+            this.moves = new MoveModel[4];
+
             while(rs.next()) 
             {
-                this.moves[index] = rs.getInt("move_id");
+                this.moves[index] = new MoveModel(rs.getInt("move_id"));
                 index++;
             }            
         }
