@@ -104,8 +104,10 @@ public class DatabaseUtility
         query = "CREATE TABLE pokemon_location("
                 + "pokemon_id INT NOT NULL, "
                 + "map_id INT NOT NULL, "
-                + "tile INT NOT NULL)";
+                + "tile_id INT NOT NULL)";
         runUpdate(query);
+
+        loadPokemonLocationTable();
 
         // CREATE TABLE moves
         // move's name, damage, accuracy, type
@@ -251,7 +253,52 @@ public class DatabaseUtility
         }
     }
 
-        /** 
+    /** 
+     * Fills the pokemon location table with data
+     */
+    private void loadPokemonLocationTable()
+    {
+        try
+        {
+            BufferedReader br = getFileReader("src/rawdata/pokemonLocation.csv");
+
+            // skip the first line which just has column names
+            String line = br.readLine();
+            line = br.readLine();
+            String query;
+            String[] data;
+            PreparedStatement statement;
+            query = "INSERT INTO pokemon_location ("
+                    + "map_id, " 
+                    + "pokemon_id, "
+                    + "tile_id) "
+                    + "VALUES (?, ?, ?)";
+
+            statement = conn.prepareStatement(query);
+
+            while (line != null)
+            {
+                data = line.split(",");
+
+                statement.setInt(1, Integer.parseInt(data[0]));
+                statement.setInt(2, Integer.parseInt(data[1]));
+                statement.setInt(3, Integer.parseInt(data[2]));            
+
+                statement.addBatch();
+
+                line = br.readLine();
+            }
+
+            statement.executeBatch();
+            br.close();
+        } 
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /** 
      * Fills the moves table with data
      */
     private void loadMovesTable()

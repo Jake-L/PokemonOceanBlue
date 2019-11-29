@@ -42,7 +42,7 @@ public class MoveModel
             this.power = rs.getInt("power");
             this.accuracy = rs.getInt("accuracy");
             this.priority = rs.getInt("priority");
-            this.damageClassId = rs.getInt("damageClassId");   
+            this.damageClassId = rs.getInt("damage_class_id");   
         }
         catch (SQLException e) 
         {

@@ -12,7 +12,7 @@ import java.awt.Font;
 public class BattleView extends ViewBase {
 
     private BattleModel model;
-    private Image[][] pokemonSprite = new Image[2][6];
+    private Image[][] pokemonSprite = new Image[2][];
     private Image[] healthBarFill = new Image[3];
     private Image[] statusWindow = new Image[2];
     private Image background;
@@ -33,6 +33,8 @@ public class BattleView extends ViewBase {
     private void loadImage() 
     {
         ImageIcon ii;
+        pokemonSprite[0] = new Image[model.team[0].length];
+        pokemonSprite[1] = new Image[model.team[1].length];
 
         //load players pokemon back sprites
         for (int i = 0; i < pokemonSprite[0].length; i++)
