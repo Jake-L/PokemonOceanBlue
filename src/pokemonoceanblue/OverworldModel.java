@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -17,6 +19,7 @@ public class OverworldModel {
     private Portal[] portals = new Portal[0];
     public ConversationModel conversation;
     private App app;
+    private List<Integer> wildPokemon = new ArrayList<Integer>();
 
     // prevent players from accidently repeating actions by holdings keys
     private int actionCounter = 15;
@@ -30,6 +33,7 @@ public class OverworldModel {
         this.playerModel = playerModel;
         this.app = app;
         readMapFile();
+        loadWildPokemon();
         if (this.mapId == 0)
         {
             cpuModel = new CharacterModel[1];
@@ -149,7 +153,7 @@ public class OverworldModel {
         Random rand = new Random();
         for (int i = 0; i < cpuModel.length; i++)
         {
-            cpuModel[i].update();
+            cpuModel[i].update(false);
             
             // generate random movement
             if (cpuModel[i].getMovementCounter() < 0)
@@ -261,8 +265,7 @@ public class OverworldModel {
             {
                 this.conversation = null;
                 this.actionCounter = 15;
-                System.out.println("create battle");
-                this.app.createBattle();
+                this.app.createBattle(0);
             }
             else
             {
@@ -308,5 +311,50 @@ public class OverworldModel {
                 }
             }
         }
+    }
+
+    /** 
+     * Check for any interactions based on player movement
+     * This function creates wild pokemon encounters
+     */
+    public void checkMovement(int x, int y)
+    {
+        if (this.tiles[y][x] == 4)
+        {
+            Random rand = new Random();
+            int n = rand.nextInt(this.wildPokemon.size() * 5);
+            System.out.println(n + " " + this.wildPokemon.size());
+            if (n < this.wildPokemon.size())
+            {
+                PokemonModel[] team = new PokemonModel[1];
+                team[0] = new PokemonModel(this.wildPokemon.get(n), 5);
+                this.app.createBattle(team);
+            }
+        }
+    }
+
+    /** 
+     * load a list of wild pokemon that can appear on the current map
+     */
+    private void loadWildPokemon()
+    {
+        try
+        {
+            DatabaseUtility db = new DatabaseUtility();
+
+            String query = "SELECT pokemon_id FROM pokemon_location WHERE map_id = " + this.mapId;
+            System.out.println(query);
+
+            ResultSet rs = db.runQuery(query);
+
+            while(rs.next()) 
+            {
+                this.wildPokemon.add(rs.getInt("pokemon_id"));
+            }            
+        }
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+        }  
     }
 }

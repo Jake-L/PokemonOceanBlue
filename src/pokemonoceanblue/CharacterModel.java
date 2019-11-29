@@ -170,16 +170,18 @@ public class CharacterModel {
     /** 
      * determines when the character should stop moving
      */
-    public void update()
+    public void update(boolean updateOverworld)
     {
         if (this.movementCounter >= 0)
         {
             this.movementCounter--;
-        }
-        if (this.movementCounter <= 0)
-        {
-            this.dx = 0;
-            this.dy = 0;
+        
+            if (updateOverworld && this.movementCounter == 0)
+            {
+                this.dx = 0;
+                this.dy = 0;
+                this.overworldModel.checkMovement(this.x, this.y);
+            }
         }
     }
 }

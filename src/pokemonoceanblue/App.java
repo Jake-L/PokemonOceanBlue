@@ -143,10 +143,19 @@ public class App extends JFrame implements KeyListener
         }
     }
 
-    public void createBattle()
+    public void createBattle(int battleId)
     {
         MusicPlayer.setSong("18");
         battleModel = new BattleModel(pokemonTeam, pokemonTeam);
+        BattleView battleView = new BattleView(this.battleModel);
+        viewManager.setView(battleView);
+        battleController = new BattleController(battleModel);
+    }
+
+    public void createBattle(PokemonModel[] team)
+    {
+        MusicPlayer.setSong("18");
+        battleModel = new BattleModel(team, pokemonTeam);
         BattleView battleView = new BattleView(this.battleModel);
         viewManager.setView(battleView);
         battleController = new BattleController(battleModel);
@@ -212,20 +221,20 @@ public class App extends JFrame implements KeyListener
                 // update the players position
                 else if (viewManager.getCurrentView().equals("OverworldView"))
                 {
-                    playerModel.update();
+                    playerModel.update(true);
                     overworldModel.update();
 
                     if (oldPlayerModel != null)
                     {
                         // continue to animate the player's movement on the old map during a transition
-                        oldPlayerModel.update();
+                        oldPlayerModel.update(false);
 
                         if (viewManager.previousViewComplete())
                         {
                             oldPlayerModel = null;
                         }
                     }
-                    else
+                    else if (this.battleModel == null)
                     {
                         // only read user input when previous map is no longer visible
                         playerController.userInput(keysDown);
