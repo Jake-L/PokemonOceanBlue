@@ -63,15 +63,33 @@ public class BattleModel
 
             else
             {
-                BattleEvent event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " used " + this.team[0][this.currentPokemon[0]].moves[optionIndex].name);
+                BattleEvent event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " used " + this.team[0][this.currentPokemon[0]].moves[optionIndex].name,
+                    this.damageCalc(optionIndex, 0, 1),
+                    1);
                 this.events.add(event);
                 this.battleIndex++;
                 this.counter = 60;
-                event = new BattleEvent(this.team[1][this.currentPokemon[1]].name + " used " + this.team[1][this.currentPokemon[1]].moves[0].name);
+                event = new BattleEvent("Enemy " + this.team[1][this.currentPokemon[1]].name + " used " + this.team[1][this.currentPokemon[1]].moves[0].name,
+                    this.damageCalc(0, 1, 0),
+                    0);
                 this.events.add(event);
             }
         }
     }
+
+    private int damageCalc(int moveIndex, int attacker, int defender)
+    {
+        if (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].damageClassId == 2)
+        {
+            return (int)Math.ceil((this.team[attacker][this.currentPokemon[attacker]].level * 2.0 / 5.0 + 2.0) * (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].power) * (this.team[attacker][this.currentPokemon[attacker]].attack * 1.0 / this.team[defender][this.currentPokemon[defender]].defense));
+        }
+        else if (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].damageClassId == 3)
+        {
+            return (int)Math.ceil((this.team[attacker][this.currentPokemon[attacker]].level * 2.0 / 5.0 + 2.0) * (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].power) * (this.team[attacker][this.currentPokemon[attacker]].special_attack * 1.0 / this.team[defender][this.currentPokemon[defender]].special_defense));
+        }
+        
+        return 0;
+    } 
 
         /*
      * Read data on type effectiveness and load it into an array
@@ -142,11 +160,34 @@ public class BattleModel
 
         else if (this.events.size() > 0)
         {
+            if (this.events.get(0).damage > -1)
+            {
+                this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP -= Math.min((this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP), (this.events.get(0).damage));
+                this.battleIndex++;
+            }
+            if (this.events.get(0).newPokemonIndex > -1)
+            {
+                this.currentPokemon[1] = this.events.get(0).newPokemonIndex;
+            }
+
             this.events.remove(0);
             this.counter = 60;
+
+            if (this.team[1][this.currentPokemon[1]].currentHP == 0 && this.battleIndex == 3)
+            {
+                BattleEvent event = new BattleEvent(this.team[1][this.currentPokemon[1]].name + " fainted.");
+                this.events.add(event);
+                this.events.remove(0);
+                if (!isComplete())
+                {
+                    event = new BattleEvent("Enemy trainer sent out " + this.team[1][this.currentPokemon[1] + 1].name, this.currentPokemon[1] + 1);
+                    this.events.add(event);
+                }
+                this.battleIndex++;
+            }
         }
 
-        if (this.events.size() == 0 && battleIndex == 2)
+        if (this.events.size() == 0 && this.battleIndex == 4)
         {
             this.battleIndex = 0;
             this.battleOptions = new String[3];            
@@ -154,6 +195,7 @@ public class BattleModel
             this.battleOptions[1] = "POKEMON";
             this.battleOptions[2] = "POKEBALLS";
             this.optionIndex = 0;
+            this.counter = INPUTDELAY;
         }
     }
     
@@ -172,6 +214,9 @@ public class BattleModel
     class BattleEvent
     {
         public final String text;
+        public int damage = -1;
+        public int target;
+        public int newPokemonIndex = -1;
 
         /** 
          * Constructor
@@ -180,6 +225,30 @@ public class BattleModel
         public BattleEvent(String text)
         {
             this.text = text;
+        }
+
+        /** 
+         * Constructor
+         * @param text the text that will be displayed
+         * @param damage the damage that will be taken by target
+         * @param target the pokemon that will recieve the damage
+         */
+        public BattleEvent(String text, int damage, int target)
+        {
+            this(text);
+            this.damage = damage;
+            this.target = target;
+        }
+
+        /** 
+         * Constructor
+         * @param text the text that will be displayed
+         * @param newPokemonIndex the pokemon that will be sent out
+         */
+        public BattleEvent(String text, int newPokemonIndex)
+        {
+            this(text);
+            this.newPokemonIndex = newPokemonIndex;
         }
     }
 }    

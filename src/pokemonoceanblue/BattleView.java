@@ -183,7 +183,7 @@ public class BattleView extends ViewBase {
             displayTextOptions(g, canvas);
         }
 
-        if (model.battleIndex == 2)
+        if (model.battleIndex > 1)
         {
             displayBattleText(g, canvas);
         }
