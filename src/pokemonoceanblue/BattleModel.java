@@ -91,13 +91,13 @@ public class BattleModel
 
                 else
                 {
-                    if (this.team[0][this.currentPokemon[0]].speed < this.team[1][this.currentPokemon[1]].speed)
+                    if (this.team[0][this.currentPokemon[0]].stats[Stat.SPEED] < this.team[1][this.currentPokemon[1]].stats[Stat.SPEED])
                     {
                         this.events.add(enemyAttackEvent);
                         this.events.add(playerAttackEvent);
                     }
 
-                    else if (this.team[0][this.currentPokemon[0]].speed > this.team[1][this.currentPokemon[1]].speed)
+                    else if (this.team[0][this.currentPokemon[0]].stats[Stat.SPEED] > this.team[1][this.currentPokemon[1]].stats[Stat.SPEED])
                     {
                         this.events.add(playerAttackEvent);
                         this.events.add(enemyAttackEvent);
