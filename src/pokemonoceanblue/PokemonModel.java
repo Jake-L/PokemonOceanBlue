@@ -12,14 +12,10 @@ public class PokemonModel
 
     int[] types;
 
-    int hp;
     int currentHP;
-    int attack;
-    int defense;
-    int special_attack;
-    int special_defense;
-    int speed;
+    int[] stats = new int[6];
 
+    int[] ivs = new int[6];
     MoveModel[] moves;
     
     /** 
@@ -74,13 +70,18 @@ public class PokemonModel
             this.types[0] = rs.getInt("type1");
             
             // set the Pokemon's stats
-            this.hp = rs.getInt("hp");
-            this.currentHP = this.hp;
-            this.attack = rs.getInt("attack");
-            this.defense = rs.getInt("defense");
-            this.special_attack = rs.getInt("special_attack");
-            this.special_defense = rs.getInt("special_defense");
-            this.speed = rs.getInt("speed");
+            this.stats[Stat.HP] = (int)Math.floor(2.0 * rs.getInt("hp") * this.level / 100) + this.level + 10;
+            this.currentHP = this.stats[Stat.HP];
+
+            String[] stats = {"hp", "attack","defense","special_attack","special_defense","speed"};
+
+            for (int i = 1; i < stats.length; i++)
+            {
+                this.stats[i] = (int)Math.floor((2.0 * rs.getInt(stats[i]) + this.ivs[i]) * this.level / 100) + 5;
+            }
+
+            System.out.println(this.stats[1]);
+
             this.statusEffect = 0;
         }
         catch (SQLException e) 

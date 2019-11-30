@@ -75,7 +75,7 @@ public class PartyView extends ViewBase {
                 canvas);  
             
             //display text with pokemon name and hp
-            g.drawString(model[i].name + "    HP" + model[i].currentHP + "/" + model[i].hp, 
+            g.drawString(model[i].name + "    HP" + model[i].currentHP + "/" + model[i].stats[Stat.HP], 
                 width * (1 + (i%3)*2) / 6 - (pokemonSprite[i].getWidth(null) * graphicsScaling / 2), 
                 height * (1 + (i/3)*2) / 4 - (pokemonSprite[i].getHeight(null) * graphicsScaling / 2));
             
@@ -89,11 +89,11 @@ public class PartyView extends ViewBase {
             
             //get health bar colour
             byte healthBarFillIndex = 0;
-            if((double)model[i].currentHP / model[i].hp < 0.2)
+            if((double)model[i].currentHP / model[i].stats[Stat.HP] < 0.2)
             {
                 healthBarFillIndex = 2;
             }
-            else if((double)model[i].currentHP / model[i].hp < 0.5)
+            else if((double)model[i].currentHP / model[i].stats[Stat.HP] < 0.5)
             {
                 healthBarFillIndex = 1;
             }
@@ -102,7 +102,7 @@ public class PartyView extends ViewBase {
             g.drawImage(healthBarFill[healthBarFillIndex],
                 width * (1 + (i%3)*2) / 6 - (healthBar.getWidth(null) * graphicsScaling) + 16 * graphicsScaling * 2, 
                 height * (1 + (i/3)*2) / 4 - (healthBar.getHeight(null) * graphicsScaling / 2) + 2 * graphicsScaling * 2,
-                (int)Math.ceil(healthBarFill[0].getWidth(null) * (model[i].currentHP * 48.0 / model[i].hp) * graphicsScaling * 2),
+                (int)Math.ceil(healthBarFill[0].getWidth(null) * (model[i].currentHP * 48.0 / model[i].stats[Stat.HP]) * graphicsScaling * 2),
                 healthBarFill[0].getHeight(null) * graphicsScaling * 2,
                 canvas);
         }

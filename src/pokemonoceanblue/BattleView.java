@@ -124,11 +124,11 @@ public class BattleView extends ViewBase {
         for (int i = 0; i < healthBarFillIndex.length; i++)
         {
             healthBarFillIndex[i] = 0;
-            if((double)model.team[i][model.currentPokemon[i]].currentHP / model.team[i][model.currentPokemon[i]].hp < 0.2)
+            if((double)model.team[i][model.currentPokemon[i]].currentHP / model.team[i][model.currentPokemon[i]].stats[Stat.HP] < 0.2)
             {
                 healthBarFillIndex[i] = 2;
             }
-            else if((double)model.team[i][model.currentPokemon[i]].currentHP / model.team[i][model.currentPokemon[i]].hp < 0.5)
+            else if((double)model.team[i][model.currentPokemon[i]].currentHP / model.team[i][model.currentPokemon[i]].stats[Stat.HP] < 0.5)
             {
                 healthBarFillIndex[i] = 1;
             }
@@ -138,7 +138,7 @@ public class BattleView extends ViewBase {
         g.drawImage(healthBarFill[healthBarFillIndex[0]],
             (int)(width * (9.0 / 10.0)) - (statusWindow[0].getWidth(null) * graphicsScaling) + (72 * graphicsScaling),
             height / 2 + (25 * graphicsScaling),
-            (int)Math.ceil(healthBarFill[0].getWidth(null) * (model.team[0][model.currentPokemon[0]].currentHP * 48.0 / model.team[0][model.currentPokemon[0]].hp) * graphicsScaling),
+            (int)Math.ceil(healthBarFill[0].getWidth(null) * (model.team[0][model.currentPokemon[0]].currentHP * 48.0 / model.team[0][model.currentPokemon[0]].stats[Stat.HP]) * graphicsScaling),
             healthBarFill[0].getHeight(null) * graphicsScaling,
             canvas);
 
@@ -146,7 +146,7 @@ public class BattleView extends ViewBase {
         g.drawImage(healthBarFill[healthBarFillIndex[1]],
             width / 10 + (50 * graphicsScaling),
             height / 10 + (24 * graphicsScaling),
-            (int)Math.ceil(healthBarFill[1].getWidth(null) * (model.team[1][model.currentPokemon[1]].currentHP * 48.0 / model.team[1][model.currentPokemon[1]].hp) * graphicsScaling),
+            (int)Math.ceil(healthBarFill[1].getWidth(null) * (model.team[1][model.currentPokemon[1]].currentHP * 48.0 / model.team[1][model.currentPokemon[1]].stats[Stat.HP]) * graphicsScaling),
             healthBarFill[1].getHeight(null) * graphicsScaling,
             canvas);
 
@@ -159,7 +159,7 @@ public class BattleView extends ViewBase {
         g.drawString(String.valueOf(model.team[0][model.currentPokemon[0]].currentHP),
             (int)(width * (9.0 / 10.0)) - ((statusWindow[0].getWidth(null) - 88) * graphicsScaling) - g.getFontMetrics(font).stringWidth(String.valueOf(model.team[0][model.currentPokemon[0]].currentHP)),
             height / 2 + 38 * graphicsScaling);
-        g.drawString(String.valueOf(model.team[0][model.currentPokemon[0]].hp),
+        g.drawString(String.valueOf(model.team[0][model.currentPokemon[0]].stats[Stat.HP]),
             (int)(width * (9.0 / 10.0)) - ((statusWindow[0].getWidth(null) - 97) * graphicsScaling),
             height / 2 + 38 * graphicsScaling);
 

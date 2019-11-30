@@ -79,16 +79,25 @@ public class BattleModel
 
     private int damageCalc(int moveIndex, int attacker, int defender)
     {
+        int attack_stat;
+        int defense_stat;
+
         if (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].damageClassId == 2)
         {
-            return (int)Math.ceil((this.team[attacker][this.currentPokemon[attacker]].level * 2.0 / 5.0 + 2.0) * (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].power) * (this.team[attacker][this.currentPokemon[attacker]].attack * 1.0 / this.team[defender][this.currentPokemon[defender]].defense));
+            attack_stat = Stat.ATTACK;
+            defense_stat = Stat.DEFENSE;
         }
         else if (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].damageClassId == 3)
         {
-            return (int)Math.ceil((this.team[attacker][this.currentPokemon[attacker]].level * 2.0 / 5.0 + 2.0) * (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].power) * (this.team[attacker][this.currentPokemon[attacker]].special_attack * 1.0 / this.team[defender][this.currentPokemon[defender]].special_defense));
+            attack_stat = Stat.SPECIAL_ATTACK;
+            defense_stat = Stat.SPECIAL_DEFENSE;
         }
-        
-        return 0;
+        else
+        {
+            return 0;
+        }
+
+        return (int)Math.ceil((this.team[attacker][this.currentPokemon[attacker]].level * 2.0 / 5.0 + 2.0) * (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].power) * (this.team[attacker][this.currentPokemon[attacker]].stats[attack_stat] * 1.0 / this.team[defender][this.currentPokemon[defender]].stats[defense_stat]) / 50 + 2);
     } 
 
         /*
