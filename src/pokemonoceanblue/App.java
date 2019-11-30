@@ -207,7 +207,7 @@ public class App extends JFrame implements KeyListener
             if (System.currentTimeMillis() - lastRun > FRAME_LENGTH)
             {
                 // update the battle
-                if (viewManager.getCurrentView().equals("BattleView"))
+                if (viewManager.getCurrentView().equals("BattleView") && this.battleModel != null)
                 {
                     battleModel.update();
                     battleController.userInput(keysDown);
@@ -216,6 +216,7 @@ public class App extends JFrame implements KeyListener
                         // return to overworld screen
                         OverworldView overworldView = new OverworldView(overworldModel);
                         viewManager.setView(overworldView);
+                        this.battleModel = null;
                     }
                 }
                 // update the players position
