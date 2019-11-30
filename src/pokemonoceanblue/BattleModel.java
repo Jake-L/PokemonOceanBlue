@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class BattleModel 
 {
@@ -16,6 +17,9 @@ public class BattleModel
     public byte INPUTDELAY = 10;
     public byte counter = INPUTDELAY;
     public List<BattleEvent> events = new ArrayList<BattleEvent>();
+    public Random ranNum = new Random();
+
+    //when battleIndex is: 0, main menu. 1, secondary menu. 2, first turn. 3, second turn. 4, end of rotation.
     public byte battleIndex = 0;
     private float[][] typeEffectiveness = new float[19][19];
 
@@ -63,16 +67,57 @@ public class BattleModel
 
             else
             {
-                BattleEvent event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " used " + this.team[0][this.currentPokemon[0]].moves[optionIndex].name,
+                BattleEvent playerAttackEvent = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " used " + this.team[0][this.currentPokemon[0]].moves[optionIndex].name,
                     this.damageCalc(optionIndex, 0, 1),
                     1);
-                this.events.add(event);
                 this.battleIndex++;
                 this.counter = 60;
-                event = new BattleEvent("Enemy " + this.team[1][this.currentPokemon[1]].name + " used " + this.team[1][this.currentPokemon[1]].moves[0].name,
-                    this.damageCalc(0, 1, 0),
+                int enemyMove = ranNum.nextInt(this.team[1][this.currentPokemon[1]].moves.length);
+                BattleEvent enemyAttackEvent = new BattleEvent("Enemy " + this.team[1][this.currentPokemon[1]].name + " used " + this.team[1][this.currentPokemon[1]].moves[enemyMove].name,
+                    this.damageCalc(enemyMove, 1, 0),
                     0);
-                this.events.add(event);
+                
+                if (this.team[0][this.currentPokemon[0]].moves[optionIndex].priority > this.team[1][this.currentPokemon[1]].moves[enemyMove].priority)
+                {
+                    this.events.add(playerAttackEvent);
+                    this.events.add(enemyAttackEvent);
+                }
+
+                else if (this.team[0][this.currentPokemon[0]].moves[optionIndex].priority < this.team[1][this.currentPokemon[1]].moves[enemyMove].priority)
+                {
+                    this.events.add(enemyAttackEvent);
+                    this.events.add(playerAttackEvent);
+                }
+
+                else
+                {
+                    if (this.team[0][this.currentPokemon[0]].speed < this.team[1][this.currentPokemon[1]].speed)
+                    {
+                        this.events.add(enemyAttackEvent);
+                        this.events.add(playerAttackEvent);
+                    }
+
+                    else if (this.team[0][this.currentPokemon[0]].speed > this.team[1][this.currentPokemon[1]].speed)
+                    {
+                        this.events.add(playerAttackEvent);
+                        this.events.add(enemyAttackEvent);
+                    }
+
+                    else 
+                    {
+                        if (ranNum.nextInt(2) == 1)
+                        {
+                            this.events.add(playerAttackEvent);
+                            this.events.add(enemyAttackEvent);
+                        }
+
+                        else
+                        {
+                            this.events.add(enemyAttackEvent);
+                            this.events.add(playerAttackEvent);
+                        }
+                    }
+                }
             }
         }
     }
