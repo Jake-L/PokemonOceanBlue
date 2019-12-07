@@ -18,10 +18,12 @@ public class BattleModel
     public byte counter = INPUTDELAY;
     public List<BattleEvent> events = new ArrayList<BattleEvent>();
     public Random ranNum = new Random();
+    private int firstAttacker;
 
     //when battleIndex is: 0, main menu. 1, secondary menu. 2, first turn. 3, second turn. 4, end of rotation.
     public byte battleIndex = 0;
     private float[][] typeEffectiveness = new float[19][19];
+    private float[] modifier = new float[2];
 
     /** 
      * Constructor
@@ -79,53 +81,60 @@ public class BattleModel
                 
                 if (this.team[0][this.currentPokemon[0]].moves[optionIndex].priority > this.team[1][this.currentPokemon[1]].moves[enemyMove].priority)
                 {
-                    this.events.add(playerAttackEvent);
-                    this.events.add(enemyAttackEvent);
+                    firstAttacker = 0;
                 }
 
                 else if (this.team[0][this.currentPokemon[0]].moves[optionIndex].priority < this.team[1][this.currentPokemon[1]].moves[enemyMove].priority)
                 {
-                    this.events.add(enemyAttackEvent);
-                    this.events.add(playerAttackEvent);
+                    firstAttacker = 1;
                 }
 
+                else if (this.team[0][this.currentPokemon[0]].stats[Stat.SPEED] < this.team[1][this.currentPokemon[1]].stats[Stat.SPEED])
+                {
+                    firstAttacker = 1;
+                }
+
+                else if (this.team[0][this.currentPokemon[0]].stats[Stat.SPEED] > this.team[1][this.currentPokemon[1]].stats[Stat.SPEED])
+                {
+                    firstAttacker = 0;
+                }
+
+                else 
+                {
+                    firstAttacker = ranNum.nextInt(2);
+                }
+                
+                if (firstAttacker == 1)
+                {
+                    this.events.add(enemyAttackEvent);
+                    effectivenessMessage(modifier[1]);
+                    this.events.add(playerAttackEvent);
+                    effectivenessMessage(modifier[0]);
+                }
+                
                 else
                 {
-                    if (this.team[0][this.currentPokemon[0]].stats[Stat.SPEED] < this.team[1][this.currentPokemon[1]].stats[Stat.SPEED])
-                    {
-                        this.events.add(enemyAttackEvent);
-                        this.events.add(playerAttackEvent);
-                    }
-
-                    else if (this.team[0][this.currentPokemon[0]].stats[Stat.SPEED] > this.team[1][this.currentPokemon[1]].stats[Stat.SPEED])
-                    {
-                        this.events.add(playerAttackEvent);
-                        this.events.add(enemyAttackEvent);
-                    }
-
-                    else 
-                    {
-                        if (ranNum.nextInt(2) == 1)
-                        {
-                            this.events.add(playerAttackEvent);
-                            this.events.add(enemyAttackEvent);
-                        }
-
-                        else
-                        {
-                            this.events.add(enemyAttackEvent);
-                            this.events.add(playerAttackEvent);
-                        }
-                    }
+                    this.events.add(playerAttackEvent);
+                    effectivenessMessage(modifier[0]);
+                    this.events.add(enemyAttackEvent);
+                    effectivenessMessage(modifier[1]);
                 }
             }
         }
     }
 
+    /** 
+     * @param moveIndex the current move of the attacker
+     * @param attacker the attacking team
+     * @param defender the defending team
+     * @return damage
+     */
     private int damageCalc(int moveIndex, int attacker, int defender)
     {
         int attack_stat;
         int defense_stat;
+        float stab = 1.0f;
+        this.modifier[attacker] = 1;
 
         if (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].damageClassId == 2)
         {
@@ -142,10 +151,36 @@ public class BattleModel
             return 0;
         }
 
-        return (int)Math.ceil((this.team[attacker][this.currentPokemon[attacker]].level * 2.0 / 5.0 + 2.0) * (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].power) * (this.team[attacker][this.currentPokemon[attacker]].stats[attack_stat] * 1.0 / this.team[defender][this.currentPokemon[defender]].stats[defense_stat]) / 50 + 2);
-    } 
+        for (int i = 0; i < this.team[defender][this.currentPokemon[defender]].types.length; i++)
+        {
+            this.modifier[attacker] = this.typeEffectiveness[this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].typeId][this.team[defender][this.currentPokemon[defender]].types[i]] * this.modifier[attacker];
+        }
 
-        /*
+        if (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].typeId == this.team[attacker][this.currentPokemon[attacker]].types[0] || this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].typeId == this.team[attacker][this.currentPokemon[attacker]].types[this.team[attacker][this.currentPokemon[attacker]].types.length - 1])
+        {
+            stab = 1.5f;
+        }
+        return (int)Math.ceil(((this.team[attacker][this.currentPokemon[attacker]].level * 2.0 / 5.0 + 2.0) * (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].power) * (this.team[attacker][this.currentPokemon[attacker]].stats[attack_stat] * 1.0 / this.team[defender][this.currentPokemon[defender]].stats[defense_stat]) / 50 + 2) * this.modifier[attacker] * stab);
+    }
+    
+    /** 
+     * @param effectiveness damage modifier
+     */
+    private void effectivenessMessage(float effectiveness)
+    {
+        if (effectiveness > 1)
+        {
+            BattleEvent event = new BattleEvent("It's super effective!");
+            this.events.add(event);
+        }
+        else if (effectiveness < 1)
+        {
+            BattleEvent event = new BattleEvent("It's not very effective.");
+            this.events.add(event);
+        }
+    }
+
+    /*
      * Read data on type effectiveness and load it into an array
      */ 
     private void loadData()
