@@ -7,8 +7,8 @@ public class BattleController {
     private BattleModel model;
 
     /** 
-     * Constructor for the CharacterController class
-     * @param model the model of the character to be managed by the controller
+     * Constructor for the BattleController class
+     * @param model the model of the Battle to be managed by the controller
      */
     public BattleController(BattleModel model){
         this.model = model;

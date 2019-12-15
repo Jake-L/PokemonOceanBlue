@@ -15,19 +15,21 @@ import java.awt.Font;
  */
 public class PartyView extends ViewBase {
 
-    private PokemonModel[] model;
     private Image[] pokemonSprite;
-    private Image healthBar;
     private Image[] healthBarFill = new Image[3];
+    private PartyModel model;
+    private Image[] pokemonWindows = new Image[4];
+    private Image hpBar;
     
     /** 
      * Constructor for the overworld view
      * @param model model for the overworld to be displayed
      * @param playerModel model for the player to display it and calculate screen offset
      */
-    public PartyView(PokemonModel[] model){
+    public PartyView(PartyModel model)
+    {
         this.model = model;
-        pokemonSprite = new Image[model.length];
+        pokemonSprite = new Image[model.team.length];
         loadImage();
     }
 
@@ -38,20 +40,26 @@ public class PartyView extends ViewBase {
     {
         ImageIcon ii;
 
-        for (int i = 0; i < model.length; i++)
+        for (int i = 0; i < this.model.team.length; i++)
         {
-            ii = new ImageIcon("src/pokemonicons/" + model[i].id + ".png");
-            pokemonSprite[i]  = ii.getImage();
+            ii = new ImageIcon("src/pokemonicons/" + this.model.team[i].id + ".png");
+            this.pokemonSprite[i]  = ii.getImage();
         }
 
-        ii = new ImageIcon("src/battle/hpBarE.png");
-        healthBar = ii.getImage();
-
-         for (int i = 0; i < 3; i++)
-         {  
+        for (int i = 0; i < this.healthBarFill.length; i++)
+        {  
             ii = new ImageIcon("src/battle/hp" + i + ".png");
-            healthBarFill[i] = ii.getImage();
-         }
+            this.healthBarFill[i] = ii.getImage();
+        }
+
+        for (int i = 0; i < this.pokemonWindows.length; i++)  
+        {
+            ii = new ImageIcon("src/menus/party" + i + ".png");
+            this.pokemonWindows[i] = ii.getImage();
+        }
+
+        ii = new ImageIcon("src/menus/hpBar.png");
+        this.hpBar = ii.getImage();
     }
 
     /** 
@@ -64,46 +72,70 @@ public class PartyView extends ViewBase {
     {
         g.setFont(new Font("Pokemon Fire Red", Font.PLAIN, 18 * graphicsScaling));
 
-        for (int i = 0; i < model.length; i++)
+        //display pokemon windows
+        for (int i = 0; i < 6; i++)
+        {
+            if (i < this.model.team.length)
+            {
+                g.drawImage(pokemonWindows[0],
+                    (i % 2) * (width / 3 + 8 * graphicsScaling) + 8 * graphicsScaling,
+                    (i / 2) * (height / 4 + 8 * graphicsScaling) + 8 * graphicsScaling,
+                    width / 3,
+                    height / 4,
+                    canvas);
+            }
+
+            else
+            {
+                g.drawImage(pokemonWindows[3],
+                    (i % 2) * (width / 3 + 8 * graphicsScaling) + 8 * graphicsScaling,
+                    (i / 2) * (height / 4 + 8 * graphicsScaling) + 8 * graphicsScaling,
+                    width / 3,
+                    height / 4,
+                    canvas);
+            }
+        }
+
+        for (int i = 0; i < this.model.team.length; i++)
         {
             // display the Pokemon's icons
             g.drawImage(pokemonSprite[i], 
-                width * (1 + (i%3)*2) / 6 - (pokemonSprite[i].getWidth(null) * graphicsScaling / 2), 
-                height * ((i/3)*2) / 4, 
+                (i % 2) * (width / 3 + 8 * graphicsScaling) + 8 * graphicsScaling, 
+                (i / 2) * (height / 4 + 8 * graphicsScaling) + 8 * graphicsScaling, 
                 pokemonSprite[i].getWidth(null) * graphicsScaling * 2, 
                 pokemonSprite[i].getHeight(null) * graphicsScaling * 2, 
                 canvas);  
             
-            //display text with pokemon name and hp
-            g.drawString(model[i].name + "    HP" + model[i].currentHP + "/" + model[i].stats[Stat.HP], 
-                width * (1 + (i%3)*2) / 6 - (pokemonSprite[i].getWidth(null) * graphicsScaling / 2), 
-                height * (1 + (i/3)*2) / 4 - (pokemonSprite[i].getHeight(null) * graphicsScaling / 2));
-            
-            //display healthbars
-            g.drawImage(healthBar,
-                width * (1 + (i%3)*2) / 6 - (healthBar.getWidth(null) * graphicsScaling), 
-                height * (1 + (i/3)*2) / 4 - (healthBar.getHeight(null) * graphicsScaling / 2),
-                healthBar.getWidth(null) * graphicsScaling * 2, 
-                healthBar.getHeight(null) * graphicsScaling * 2, 
+            //display text with pokemon name
+            g.drawString(this.model.team[i].name, 
+                (i % 2) * (width / 3 + 8 * graphicsScaling) + 78 * graphicsScaling, 
+                (i / 2) * (height / 4 + 8 * graphicsScaling) + 34 * graphicsScaling);
+
+            //display hp bars
+            g.drawImage(this.hpBar,
+                (i % 2) * (width / 3 + 8 * graphicsScaling) + 78 * graphicsScaling,
+                (i / 2) * (height / 4 + 8 * graphicsScaling) + 40 * graphicsScaling,
+                this.hpBar.getWidth(null) * graphicsScaling,
+                this.hpBar.getHeight(null) * graphicsScaling,
                 canvas);
             
             //get health bar colour
             byte healthBarFillIndex = 0;
-            if((double)model[i].currentHP / model[i].stats[Stat.HP] < 0.2)
+            if((double)this.model.team[i].currentHP / this.model.team[i].stats[Stat.HP] < 0.2)
             {
                 healthBarFillIndex = 2;
             }
-            else if((double)model[i].currentHP / model[i].stats[Stat.HP] < 0.5)
+            else if((double)this.model.team[i].currentHP / this.model.team[i].stats[Stat.HP] < 0.5)
             {
                 healthBarFillIndex = 1;
             }
             
             //fill health bars
             g.drawImage(healthBarFill[healthBarFillIndex],
-                width * (1 + (i%3)*2) / 6 - (healthBar.getWidth(null) * graphicsScaling) + 16 * graphicsScaling * 2, 
-                height * (1 + (i/3)*2) / 4 - (healthBar.getHeight(null) * graphicsScaling / 2) + 2 * graphicsScaling * 2,
-                (int)Math.ceil(healthBarFill[0].getWidth(null) * (model[i].currentHP * 48.0 / model[i].stats[Stat.HP]) * graphicsScaling * 2),
-                healthBarFill[0].getHeight(null) * graphicsScaling * 2,
+                (i % 2) * (width / 3 + 8 * graphicsScaling) + 94 * graphicsScaling, 
+                (i / 2) * (height / 4 + 8 * graphicsScaling) + 42 * graphicsScaling,
+                (int)Math.ceil(healthBarFill[0].getWidth(null) * (this.model.team[i].currentHP * 48.0 / this.model.team[i].stats[Stat.HP]) * graphicsScaling),
+                healthBarFill[0].getHeight(null) * graphicsScaling,
                 canvas);
         }
     }

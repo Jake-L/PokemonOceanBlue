@@ -29,7 +29,7 @@ public class App extends JFrame implements KeyListener
     ViewManager viewManager;
     List<Integer> keysDown = new ArrayList<Integer>(); 
     OverworldModel overworldModel;
-    PokemonModel[] pokemonTeam = new PokemonModel[6];
+    PokemonModel[] pokemonTeam = new PokemonModel[5];
     BattleModel battleModel;
     BattleController battleController;
 
@@ -101,7 +101,6 @@ public class App extends JFrame implements KeyListener
         pokemonTeam[2] = new PokemonModel(9, 40);
         pokemonTeam[3] = new PokemonModel(34, 5);
         pokemonTeam[4] = new PokemonModel(150, 5);
-        pokemonTeam[5] = new PokemonModel(306, 5);
 
         this.update();
     }
@@ -120,7 +119,7 @@ public class App extends JFrame implements KeyListener
             // pressing 'p' opens the party view
             if (e.getKeyCode() == KeyEvent.VK_P)
             {
-                viewManager.setView(new PartyView(pokemonTeam));
+                viewManager.setView(new PartyView(new PartyModel(pokemonTeam)));
             }
         }
 
