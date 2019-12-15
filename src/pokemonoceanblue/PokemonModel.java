@@ -80,8 +80,6 @@ public class PokemonModel
                 this.stats[i] = (int)Math.floor((2.0 * rs.getInt(stats[i]) + this.ivs[i]) * this.level / 100) + 5;
             }
 
-            System.out.println(this.stats[1]);
-
             this.statusEffect = 0;
         }
         catch (SQLException e) 

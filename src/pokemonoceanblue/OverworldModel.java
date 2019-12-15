@@ -323,7 +323,6 @@ public class OverworldModel {
         {
             Random rand = new Random();
             int n = rand.nextInt(this.wildPokemon.size() * 5);
-            System.out.println(n + " " + this.wildPokemon.size());
             if (n < this.wildPokemon.size())
             {
                 PokemonModel[] team = new PokemonModel[1];
@@ -343,7 +342,6 @@ public class OverworldModel {
             DatabaseUtility db = new DatabaseUtility();
 
             String query = "SELECT pokemon_id FROM pokemon_location WHERE map_id = " + this.mapId;
-            System.out.println(query);
 
             ResultSet rs = db.runQuery(query);
 

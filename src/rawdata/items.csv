@@ -1,0 +1,293 @@
+item_id,name,category_id,cost
+0,Master Ball,0,0
+1,Ultra Ball,0,800
+2,Great Ball,0,600
+3,Pok\u00E9 Ball,0,200
+4,Safari Ball,0,0
+5,Net Ball,0,1000
+6,Dive Ball,0,1000
+7,Nest Ball,0,1000
+8,Repeat Ball,0,1000
+9,Timer Ball,0,1000
+10,Luxury Ball,0,1000
+11,Premier Ball,0,20
+12,Dusk Ball,0,1000
+13,Heal Ball,0,300
+14,Quick Ball,0,1000
+15,Cherish Ball,0,0
+16,Potion,2,200
+17,Antidote,2,200
+18,Burn Heal,2,300
+19,Ice Heal,2,100
+20,Awakening,2,100
+21,Paralyze Heal,2,300
+22,Full Restore,2,3000
+23,Max Potion,2,2500
+24,Hyper Potion,2,1500
+25,Super Potion,2,700
+26,Full Heal,2,400
+27,Revive,2,2000
+28,Max Revive,2,4000
+29,Fresh Water,2,200
+30,Soda Pop,2,300
+31,Lemonade,2,400
+32,Moomoo Milk,2,600
+33,Energy Powder,2,500
+34,Energy Root,2,1200
+35,Heal Powder,2,300
+36,Revival Herb,2,2800
+37,Ether,2,1200
+38,Max Ether,2,2000
+39,Elixir,2,3000
+40,Max Elixir,2,4500
+41,Lava Cookie,2,350
+42,Berry Juice,2,200
+43,Sacred Ash,2,50000
+44,HP Up,2,10000
+45,Protein,2,10000
+46,Iron,2,10000
+47,Carbos,2,10000
+48,Calcium,2,10000
+49,Rare Candy,2,10000
+50,PP Up,2,10000
+51,Zinc,2,10000
+52,PP Max,2,10000
+53,Old Gateau,2,350
+54,Guard Spec.,2,1500
+55,Dire Hit,2,1000
+56,X Attack,2,1000
+57,X Defense,2,2000
+58,X Speed,2,1000
+59,X Accuracy,2,1000
+60,X Sp. Atk,2,1000
+61,X Sp. Def,2,2000
+62,Pok\u00E9 Doll,2,100
+63,Fluffy Tail,2,100
+64,Blue Flute,2,20
+65,Yellow Flute,2,20
+66,Red Flute,2,20
+67,Black Flute,2,20
+68,White Flute,2,20
+69,Shoal Salt,2,20
+70,Shoal Shell,2,20
+71,Red Shard,2,1000
+72,Blue Shard,2,1000
+73,Yellow Shard,2,1000
+74,Green Shard,2,1000
+75,Super Repel,2,700
+76,Max Repel,2,900
+77,Escape Rope,2,1000
+78,Repel,2,400
+79,Sun Stone,2,3000
+80,Moon Stone,2,3000
+81,Fire Stone,2,3000
+82,Thunder Stone,2,3000
+83,Water Stone,2,3000
+84,Leaf Stone,2,3000
+85,Tiny Mushroom,2,500
+86,Big Mushroom,2,5000
+87,Pearl,2,2000
+88,Big Pearl,2,8000
+89,Stardust,2,3000
+90,Star Piece,2,12000
+91,Nugget,2,10000
+92,Heart Scale,2,100
+93,Honey,2,300
+94,Growth Mulch,2,200
+95,Damp Mulch,2,200
+96,Stable Mulch,2,200
+97,Gooey Mulch,2,200
+98,Root Fossil,3,7000
+99,Claw Fossil,3,7000
+100,Helix Fossil,3,7000
+101,Dome Fossil,3,7000
+102,Old Amber,3,10000
+103,Armor Fossil,3,7000
+104,Skull Fossil,3,7000
+105,Rare Bone,2,5000
+106,Shiny Stone,2,3000
+107,Dusk Stone,2,3000
+108,Dawn Stone,2,3000
+109,Oval Stone,2,2000
+110,Odd Keystone,2,2100
+111,Adamant Orb,2,0
+112,Lustrous Orb,2,0
+113,Cheri Berry,1,20
+114,Chesto Berry,1,20
+115,Pecha Berry,1,20
+116,Rawst Berry,1,20
+117,Aspear Berry,1,20
+118,Leppa Berry,1,20
+119,Oran Berry,1,20
+120,Persim Berry,1,20
+121,Lum Berry,1,20
+122,Sitrus Berry,1,20
+123,Figy Berry,1,20
+124,Wiki Berry,1,20
+125,Mago Berry,1,20
+126,Aguav Berry,1,20
+127,Iapapa Berry,1,20
+128,Razz Berry,1,20
+129,Bluk Berry,1,20
+130,Nanab Berry,1,20
+131,Wepear Berry,1,20
+132,Pinap Berry,1,20
+133,Pomeg Berry,1,20
+134,Kelpsy Berry,1,20
+135,Qualot Berry,1,20
+136,Hondew Berry,1,20
+137,Grepa Berry,1,20
+138,Tamato Berry,1,20
+139,Cornn Berry,1,20
+140,Magost Berry,1,20
+141,Rabuta Berry,1,20
+142,Nomel Berry,1,20
+143,Spelon Berry,1,20
+144,Pamtre Berry,1,20
+145,Watmel Berry,1,20
+146,Durin Berry,1,20
+147,Belue Berry,1,20
+148,Occa Berry,1,20
+149,Passho Berry,1,20
+150,Wacan Berry,1,20
+151,Rindo Berry,1,20
+152,Yache Berry,1,20
+153,Chople Berry,1,20
+154,Kebia Berry,1,20
+155,Shuca Berry,1,20
+156,Coba Berry,1,20
+157,Payapa Berry,1,20
+158,Tanga Berry,1,20
+159,Charti Berry,1,20
+160,Kasib Berry,1,20
+161,Haban Berry,1,20
+162,Colbur Berry,1,20
+163,Babiri Berry,1,20
+164,Chilan Berry,1,20
+165,Liechi Berry,1,20
+166,Ganlon Berry,1,20
+167,Salac Berry,1,20
+168,Petaya Berry,1,20
+169,Apicot Berry,1,20
+170,Lansat Berry,1,20
+171,Starf Berry,1,20
+172,Enigma Berry,1,20
+173,Micle Berry,1,20
+174,Custap Berry,1,20
+175,Jaboca Berry,1,20
+176,Rowap Berry,1,20
+177,Bright Powder,12,4000
+178,White Herb,12,4000
+179,Macho Brace,14,3000
+180,Exp. Share,16,0
+181,Quick Claw,12,4000
+182,Soothe Bell,16,4000
+183,Mental Herb,12,4000
+184,Choice Band,13,4000
+185,King's Rock,12,5000
+186,Silver Powder,19,1000
+187,Amulet Coin,16,10000
+188,Cleanse Tag,16,5000
+189,Soul Dew,18,0
+190,Deep Sea Tooth,18,2000
+191,Deep Sea Scale,18,2000
+192,Smoke Ball,12,4000
+193,Everstone,16,3000
+194,Focus Band,12,4000
+195,Lucky Egg,16,10000
+196,Scope Lens,12,4000
+197,Metal Coat,19,2000
+198,Leftovers,12,4000
+199,Dragon Scale,10,2000
+200,Light Ball,18,1000
+201,Soft Sand,19,1000
+202,Hard Stone,19,1000
+203,Miracle Seed,19,1000
+204,Black Glasses,19,1000
+205,Black Belt,19,1000
+206,Magnet,19,1000
+207,Mystic Water,19,1000
+208,Sharp Beak,19,1000
+209,Poison Barb,19,1000
+210,Never-Melt Ice,19,1000
+211,Spell Tag,19,1000
+212,Twisted Spoon,19,1000
+213,Charcoal,19,1000
+214,Dragon Fang,19,1000
+215,Silk Scarf,19,1000
+216,Up-Grade,10,2000
+217,Shell Bell,12,4000
+218,Sea Incense,19,2000
+219,Lax Incense,12,5000
+220,Lucky Punch,18,1000
+221,Metal Powder,18,1000
+222,Thick Club,18,1000
+223,Stick,18,1000
+224,Red Scarf,36,100
+225,Blue Scarf,36,100
+226,Pink Scarf,36,100
+227,Green Scarf,36,100
+228,Yellow Scarf,36,100
+229,Wide Lens,12,4000
+230,Muscle Band,12,4000
+231,Wise Glasses,12,4000
+232,Expert Belt,12,4000
+233,Light Clay,12,4000
+234,Life Orb,12,4000
+235,Power Herb,12,4000
+236,Toxic Orb,15,4000
+237,Flame Orb,15,4000
+238,Quick Powder,18,1000
+239,Focus Sash,12,4000
+240,Zoom Lens,12,4000
+241,Metronome,12,4000
+242,Iron Ball,15,4000
+243,Lagging Tail,15,4000
+244,Destiny Knot,12,4000
+245,Black Sludge,12,4000
+246,Icy Rock,12,4000
+247,Smooth Rock,12,4000
+248,Heat Rock,12,4000
+249,Damp Rock,12,4000
+250,Grip Claw,12,4000
+251,Choice Scarf,13,4000
+252,Sticky Barb,15,4000
+253,Power Bracer,14,3000
+254,Power Belt,14,3000
+255,Power Lens,14,3000
+256,Power Band,14,3000
+257,Power Anklet,14,3000
+258,Power Weight,14,3000
+259,Shed Shell,12,4000
+260,Big Root,12,4000
+261,Choice Specs,13,4000
+262,Flame Plate,17,1000
+263,Splash Plate,17,1000
+264,Zap Plate,17,1000
+265,Meadow Plate,17,1000
+266,Icicle Plate,17,1000
+267,Fist Plate,17,1000
+268,Toxic Plate,17,1000
+269,Earth Plate,17,1000
+270,Sky Plate,17,1000
+271,Mind Plate,17,1000
+272,Insect Plate,17,1000
+273,Stone Plate,17,1000
+274,Spooky Plate,17,1000
+275,Draco Plate,17,1000
+276,Dread Plate,17,1000
+277,Iron Plate,17,1000
+278,Odd Incense,19,2000
+279,Rock Incense,19,2000
+280,Full Incense,15,5000
+281,Wave Incense,19,2000
+282,Rose Incense,19,2000
+283,Luck Incense,16,11000
+284,Pure Incense,16,6000
+285,Protector,10,2000
+286,Electirizer,10,2000
+287,Magmarizer,10,2000
+288,Dubious Disc,10,2000
+289,Reaper Cloth,10,2000
+290,Razor Claw,12,5000
+291,Razor Fang,12,5000

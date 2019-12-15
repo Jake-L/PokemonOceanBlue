@@ -56,9 +56,13 @@ public class DatabaseUtility
     private void createTables() throws SQLException
     {
         String query;
+        String path;
 
         // remove all the existing tables first
-        String[] table_list = {"evolution_methods", "pokemon", "pokemon_moves", "pokemon_location", "conversation", "moves", "type_effectiveness"};
+        String[] table_list = {
+            "evolution_methods", "pokemon", "pokemon_moves", "pokemon_location", 
+            "conversation", "moves", "type_effectiveness", "items"
+        };
 
         for (String t : table_list)
         {
@@ -67,6 +71,8 @@ public class DatabaseUtility
         }
 
         conn.setAutoCommit(false);
+
+        String dataTypes[];
 
         // CREATE TABLE evolution_methods
         // how specific Pokemon evolve, such as by level, item, or trade
@@ -86,7 +92,18 @@ public class DatabaseUtility
                 + "speed INT NOT NULL)";
         runUpdate(query);
 
-        loadPokemonTable();
+        // fill pokemon table with data
+        path = "src/rawdata/pokemon.csv";
+        query = "INSERT INTO pokemon ("
+                    + "id, name, "
+                    + "type1, type2, "
+                    + "hp, attack, "
+                    + "defense, special_attack, "
+                    + "special_defense, speed)"
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        dataTypes = new String[] {"int", "String", "int", "int", "int", "int", "int", "int", "int", "int"};
+        loadTable(path, query, dataTypes);
 
         // CREATE TABLE pokemon_moves
         // each move a Pokemon can learn and at which level
@@ -96,7 +113,14 @@ public class DatabaseUtility
                 + "level INT NOT NULL)";
         runUpdate(query);
 
-        loadPokemonMovesTable();
+        // fill pokemon moves table with data
+        path = "src/rawdata/pokemonMoves.csv";
+        query = "INSERT INTO pokemon_moves ("
+                    + "pokemon_id, move_id, level)"
+                    + "VALUES (?, ?, ?)";
+       
+        dataTypes = new String[] {"int", "int", "int"};
+        loadTable(path, query, dataTypes);
 
         // CREATE TABLE pokemon_location
         // the map location where a Pokemon can be found
@@ -107,7 +131,16 @@ public class DatabaseUtility
                 + "tile_id INT NOT NULL)";
         runUpdate(query);
 
-        loadPokemonLocationTable();
+        // fills pokemon location table with data
+        path = "src/rawdata/pokemonLocation.csv";
+        query = "INSERT INTO pokemon_location ("
+                    + "map_id, " 
+                    + "pokemon_id, "
+                    + "tile_id) "
+                    + "VALUES (?, ?, ?)";
+        
+        dataTypes = new String[] {"int", "int", "int"};
+        loadTable(path, query, dataTypes);
 
         // CREATE TABLE moves
         // move's name, damage, accuracy, type
@@ -121,7 +154,16 @@ public class DatabaseUtility
                 + "damage_class_id INT NOT NULL)";
         runUpdate(query);
 
-        loadMovesTable();
+        // fill moves table with data
+        path = "src/rawdata/moves.csv";
+        query = "INSERT INTO moves ("
+                    + "move_id, name, type_id, " 
+                    + "power, accuracy, priority, "
+                    + "damage_class_id) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        dataTypes = new String[] {"int", "String", "int", "int", "int", "int", "int"};
+        loadTable(path, query, dataTypes);
 
         // CREATE TABLE move_effects
         // effect type, probability
@@ -133,8 +175,14 @@ public class DatabaseUtility
                 + "damage_factor FLOAT NOT NuLL)";
         runUpdate(query);
 
-        loadTypeEffectivenessTable();
-        
+        // fill type effectiveness table with data
+        path = "src/rawdata/typeEffectiveness.csv";
+        query = "INSERT INTO type_effectiveness ("
+                    + "src_type_id, target_type_id, damage_factor)"
+                    + "VALUES (?, ?, ?)";
+
+        dataTypes = new String[] {"int", "int", "float"};
+        loadTable(path, query, dataTypes);
 
         // CREATE TABLE conversation
         // all the text displayed in conversations
@@ -145,134 +193,49 @@ public class DatabaseUtility
                 + "battleId INT NOT NULL)";
         runUpdate(query);
 
-        loadConversationTable();
+        // fill conversation table with data
+        path = "src/rawdata/conversation.csv";
+        query = "INSERT INTO conversation ("
+                + "conversationId, conversationEventId, text, battleId)"
+                + "VALUES (?, ?, ?, ?)";
+
+        dataTypes = new String[] {"int", "int", "String", "int"};
+        loadTable(path, query, dataTypes);
+
+        // store all the items
+        query = "CREATE TABLE items("
+                + "item_id INT NOT NULL,"
+                + "name VARCHAR(50) NOT NULL,"
+                + "category_id INT NOT NULL,"
+                + "cost INT NOT NULL)";
+        runUpdate(query);
+
+        // fill items table with data
+        path = "src/rawdata/items.csv";
+        query = "INSERT INTO items ("
+                    + "item_id, name, category_id, cost)"
+                    + "VALUES (?, ?, ?, ?)";
+
+        dataTypes = new String[] {"int", "String", "int", "int"};
+        loadTable(path, query, dataTypes);
 
         conn.commit();
     }
 
     /** 
-     * Fills the Pokemon table with data
-     */
-    private void loadPokemonTable()
-    {
-        try
-        {
-            BufferedReader br = getFileReader("src/rawdata/pokemon.csv");
-
-            // skip the first line which just has column names
-            String line = br.readLine();
-            line = br.readLine();
-            String query;
-            String[] data;
-            PreparedStatement statement;
-
-            query = "INSERT INTO pokemon ("
-                    + "id, name, "
-                    + "type1, type2, "
-                    + "hp, attack, "
-                    + "defense, special_attack, "
-                    + "special_defense, speed)"
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-            statement = conn.prepareStatement(query);
-
-            while (line != null)
-            {
-                data = line.split(",");
-
-                if (data[3].equals(""))
-                {
-                    data[3] = "0";
-                }
-
-                statement.setInt(1, Integer.parseInt(data[0]));
-                statement.setString(2, data[1]);
-                statement.setInt(3, Integer.parseInt(data[2]));
-                statement.setInt(4, Integer.parseInt(data[3]));
-                statement.setInt(5, Integer.parseInt(data[4]));
-                statement.setInt(6, Integer.parseInt(data[5]));
-                statement.setInt(7, Integer.parseInt(data[6]));
-                statement.setInt(8, Integer.parseInt(data[7]));
-                statement.setInt(9, Integer.parseInt(data[8]));
-                statement.setInt(10, Integer.parseInt(data[9]));
-
-                statement.addBatch();
-
-                line = br.readLine();
-            }
-
-            statement.executeBatch();
-            br.close();
-        } 
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    /** 
-     * Fills the pokemon_moves table with data
-     */
-    private void loadPokemonMovesTable()
-    {
-        try
-        {
-            BufferedReader br = getFileReader("src/rawdata/pokemonMoves.csv");
-
-            // skip the first line which just has column names
-            String line = br.readLine();
-            line = br.readLine();
-            String query;
-            String[] data;
-            PreparedStatement statement;
-            query = "INSERT INTO pokemon_moves ("
-                    + "pokemon_id, move_id, level)"
-                    + "VALUES (?, ?, ?)";
-
-            statement = conn.prepareStatement(query);
-
-            while (line != null)
-            {
-                data = line.split(",");
-
-                statement.setInt(1, Integer.parseInt(data[0]));
-                statement.setInt(2, Integer.parseInt(data[1]));
-                statement.setInt(3, Integer.parseInt(data[2]));                
-
-                statement.addBatch();
-
-                line = br.readLine();
-            }
-
-            statement.executeBatch();
-            br.close();
-        } 
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    /** 
      * Fills the pokemon location table with data
      */
-    private void loadPokemonLocationTable()
+    private void loadTable(String path, String query, String[] dataTypes)
     {
         try
         {
-            BufferedReader br = getFileReader("src/rawdata/pokemonLocation.csv");
+            BufferedReader br = getFileReader(path);
 
             // skip the first line which just has column names
             String line = br.readLine();
             line = br.readLine();
-            String query;
             String[] data;
             PreparedStatement statement;
-            query = "INSERT INTO pokemon_location ("
-                    + "map_id, " 
-                    + "pokemon_id, "
-                    + "tile_id) "
-                    + "VALUES (?, ?, ?)";
 
             statement = conn.prepareStatement(query);
 
@@ -280,147 +243,22 @@ public class DatabaseUtility
             {
                 data = line.split(",");
 
-                statement.setInt(1, Integer.parseInt(data[0]));
-                statement.setInt(2, Integer.parseInt(data[1]));
-                statement.setInt(3, Integer.parseInt(data[2]));            
-
-                statement.addBatch();
-
-                line = br.readLine();
-            }
-
-            statement.executeBatch();
-            br.close();
-        } 
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    /** 
-     * Fills the moves table with data
-     */
-    private void loadMovesTable()
-    {
-        try
-        {
-            BufferedReader br = getFileReader("src/rawdata/moves.csv");
-
-            // skip the first line which just has column names
-            String line = br.readLine();
-            line = br.readLine();
-            String query;
-            String[] data;
-            PreparedStatement statement;
-            query = "INSERT INTO moves ("
-                    + "move_id, name, type_id, " 
-                    + "power, accuracy, priority, "
-                    + "damage_class_id) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-            statement = conn.prepareStatement(query);
-
-            while (line != null)
-            {
-                data = line.split(",");
-
-                statement.setInt(1, Integer.parseInt(data[0]));
-                statement.setString(2, data[1]);
-                statement.setInt(3, Integer.parseInt(data[2]));  
-                statement.setObject(4, data[3].equals("") ? null : Integer.parseInt(data[3]));
-                statement.setObject(5, data[4].equals("") ? null : Integer.parseInt(data[4]));
-                statement.setInt(6, Integer.parseInt(data[5]));  
-                statement.setInt(7, Integer.parseInt(data[7]));               
-
-                statement.addBatch();
-
-                line = br.readLine();
-            }
-
-            statement.executeBatch();
-            br.close();
-        } 
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    /** 
-     * Fills the type_effectiveness table with data
-     */
-    private void loadTypeEffectivenessTable()
-    {
-        try
-        {
-            BufferedReader br = getFileReader("src/rawdata/typeEffectiveness.csv");
-
-            // skip the first line which just has column names
-            String line = br.readLine();
-            line = br.readLine();
-            String query;
-            String[] data;
-            PreparedStatement statement;
-
-            query = "INSERT INTO type_effectiveness ("
-                    + "src_type_id, target_type_id, damage_factor)"
-                    + "VALUES (?, ?, ?)";
-
-            statement = conn.prepareStatement(query);
-
-            while (line != null)
-            {
-                data = line.split(",");
-
-                statement.setInt(1, Integer.parseInt(data[0]));
-                statement.setInt(2, Integer.parseInt(data[1]));
-                statement.setFloat(3, Float.parseFloat(data[2]));
-
-                statement.addBatch();
-
-                line = br.readLine();
-            }
-
-            statement.executeBatch();
-            br.close();
-        } 
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    /** 
-     * Fills the conversation table with data
-     */
-    private void loadConversationTable()
-    {
-        try
-        {
-            BufferedReader br = getFileReader("src/rawdata/conversation.csv");
-
-            // skip the first line which just has column names
-            String line = br.readLine();
-            line = br.readLine();
-            String query;
-            String[] data;
-            PreparedStatement statement;
-
-            query = "INSERT INTO conversation ("
-                    + "conversationId, conversationEventId, text, battleId)"
-                    + "VALUES (?, ?, ?, ?)";
-
-            statement = conn.prepareStatement(query);
-
-            while (line != null)
-            {
-                data = line.split(",");
-
-                statement.setInt(1, Integer.parseInt(data[0]));
-                statement.setInt(2, Integer.parseInt(data[1]));
-                statement.setString(3, data[2]);
-                statement.setInt(4, Integer.parseInt(data[3]));
+                for (int i = 0; i < dataTypes.length; i++)
+                {
+                    if (dataTypes[i] == "int")
+                    {
+                        // use setObject to allow for null values
+                        statement.setObject(i+1, data[i].equals("") ? null : Integer.parseInt(data[i]));
+                    }
+                    else if (dataTypes[i] == "String")
+                    {
+                        statement.setString(i+1, data[i]);
+                    }
+                    else if (dataTypes[i] == "float")
+                    {
+                        statement.setFloat(i+1, Float.parseFloat(data[i]));
+                    }
+                }        
 
                 statement.addBatch();
 
