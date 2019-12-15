@@ -30,16 +30,16 @@ public class PartyController
 
                 else
                 {
-                    model.optionIndex += model.team.length / 2 + (model.optionIndex + 1) % 2;
+                    model.optionIndex = model.team.length - (model.team.length % 2);
                     model.counter = model.INPUTDELAY;
                 }
             }
 
-            else if (keysDown.contains(KeyEvent.VK_DOWN))
+            else if (keysDown.contains(KeyEvent.VK_DOWN) && model.team.length > 2)
             {
-                if (model.optionIndex + 2 > model.team.length)
+                if (model.optionIndex + 2 > model.team.length - 1)
                 {
-                    model.optionIndex = 0 + (model.optionIndex + 1) % 2;
+                    model.optionIndex = (model.team.length + 1) % 2 + model.optionIndex % 2;
                     model.counter = model.INPUTDELAY;
                 }
 
@@ -58,7 +58,7 @@ public class PartyController
                     model.counter = model.INPUTDELAY;
                 }
                 
-                else if (model.team.length > model.optionIndex)
+                else if (model.team.length > model.optionIndex + 1)
                 {
                     model.optionIndex++;
                     model.counter = model.INPUTDELAY;
@@ -67,15 +67,15 @@ public class PartyController
 
             else if (keysDown.contains(KeyEvent.VK_RIGHT))
             {
-                if (model.optionIndex + 1 < model.team.length)
+                if (model.optionIndex % 2 == 1)
                 {
-                    model.optionIndex++;
+                    model.optionIndex--;
                     model.counter = model.INPUTDELAY;
                 }
 
-                else
+                else if (model.optionIndex + 1 < model.team.length)
                 {
-                    model.optionIndex--;
+                    model.optionIndex++;
                     model.counter = model.INPUTDELAY;
                 }
             }

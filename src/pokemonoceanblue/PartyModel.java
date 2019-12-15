@@ -4,7 +4,7 @@ public class PartyModel
 {
     public PokemonModel[] team;
     public int optionIndex = 0;
-    public int INPUTDELAY = 10;
+    public int INPUTDELAY = 5;
     public int counter = this.INPUTDELAY;
     private int currentPokemon = -1;
 

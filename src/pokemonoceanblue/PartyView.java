@@ -75,25 +75,24 @@ public class PartyView extends ViewBase {
         //display pokemon windows
         for (int i = 0; i < 6; i++)
         {
-            if (i < this.model.team.length)
+            int renderIndex = 0;
+
+            if (i < this.model.team.length && i == this.model.optionIndex)
             {
-                g.drawImage(pokemonWindows[0],
-                    (i % 2) * (width / 3 + 8 * graphicsScaling) + 8 * graphicsScaling,
-                    (i / 2) * (height / 4 + 8 * graphicsScaling) + 8 * graphicsScaling,
-                    width / 3,
-                    height / 4,
-                    canvas);
+                renderIndex = 2;
             }
 
-            else
+            else if (i >= this.model.team.length)
             {
-                g.drawImage(pokemonWindows[3],
-                    (i % 2) * (width / 3 + 8 * graphicsScaling) + 8 * graphicsScaling,
-                    (i / 2) * (height / 4 + 8 * graphicsScaling) + 8 * graphicsScaling,
-                    width / 3,
-                    height / 4,
-                    canvas);
+                renderIndex = 3;
             }
+
+            g.drawImage(pokemonWindows[renderIndex],
+                        (i % 2) * (width / 3 + 8 * graphicsScaling) + 8 * graphicsScaling,
+                        (i / 2) * (height / 4 + 8 * graphicsScaling) + 8 * graphicsScaling,
+                        width / 3,
+                        height / 4,
+                        canvas);
         }
 
         for (int i = 0; i < this.model.team.length; i++)
