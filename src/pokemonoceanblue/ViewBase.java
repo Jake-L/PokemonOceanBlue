@@ -10,7 +10,8 @@ public class ViewBase {
     protected byte graphicsScaling;
     protected int width;
     protected int height;
-    private Image[] textDisplayBox = new Image[9];
+    protected Image[] textDisplayBox = new Image[9];
+
     public ViewBase()
     {       
         ImageIcon ii;
@@ -35,76 +36,79 @@ public class ViewBase {
         this.height = height;
     }
 
-    protected void displayTextbox(Graphics g, JPanel canvas)
+    protected void displayTextbox(Image boxSprite[], int x, int y, int boxWidth, int boxHeight, Graphics g, JPanel canvas)
     {
+        // sprites are square, so only need to look at width or height
+        int boxSize = boxSprite[0].getWidth(null);
+
         //top left
-        g.drawImage(textDisplayBox[0],
-            0,
-            height * 3 / 4,
-            8 * graphicsScaling,
-            8 * graphicsScaling,
+        g.drawImage(boxSprite[0],
+            x,
+            y,
+            boxSize * graphicsScaling,
+            boxSize * graphicsScaling,
             canvas);
         //top right
-        g.drawImage(textDisplayBox[2],
-            width - 8 * graphicsScaling,
-            height * 3 / 4,
-            8 * graphicsScaling,
-            8 * graphicsScaling,
+        g.drawImage(boxSprite[2],
+            x + boxWidth - boxSize * graphicsScaling,
+            y,
+            boxSize * graphicsScaling,
+            boxSize * graphicsScaling,
             canvas);
         //top
-        g.drawImage(textDisplayBox[1],
-            8 * graphicsScaling,
-            height * 3 / 4,
-            width - 16 * graphicsScaling,
-            8 * graphicsScaling,
+        g.drawImage(boxSprite[1],
+            x + boxSize * graphicsScaling,
+            y,
+            boxWidth - boxSize * 2 * graphicsScaling,
+            boxSize * graphicsScaling,
             canvas);
         //bottom left
-        g.drawImage(textDisplayBox[6],
-            0,
-            height - 8 * graphicsScaling,
-            8 * graphicsScaling,
-            8 * graphicsScaling,
+        g.drawImage(boxSprite[6],
+            x,
+            y + boxHeight - boxSize * graphicsScaling,
+            boxSize * graphicsScaling,
+            boxSize * graphicsScaling,
             canvas);
         //left
-        g.drawImage(textDisplayBox[3],
-            0,
-            height * 3 / 4 + 8 * graphicsScaling,
-            8 * graphicsScaling,
-            height / 4 - 16 * graphicsScaling,
+        g.drawImage(boxSprite[3],
+            x,
+            y + boxSize * graphicsScaling,
+            boxSize * graphicsScaling,
+            boxHeight - boxSize * 2 * graphicsScaling,
             canvas);
         //bottom right
-        g.drawImage(textDisplayBox[8],
-            width - 8 * graphicsScaling,
-            height - 8 * graphicsScaling,
-            8 * graphicsScaling,
-            8 * graphicsScaling,
+        g.drawImage(boxSprite[8],
+            x + boxWidth - boxSize * graphicsScaling,
+            y + boxHeight - boxSize * graphicsScaling,
+            boxSize * graphicsScaling,
+            boxSize * graphicsScaling,
             canvas);
         //right
-        g.drawImage(textDisplayBox[5],
-            width - 8 * graphicsScaling,
-            height * 3 / 4 + 8 * graphicsScaling,
-            8 * graphicsScaling,
-            height / 4 - 16 * graphicsScaling,
+        g.drawImage(boxSprite[5],
+            x + boxWidth - boxSize * graphicsScaling,
+            y + boxSize * graphicsScaling,
+            boxSize * graphicsScaling,
+            boxHeight - boxSize * 2 * graphicsScaling,
             canvas);
         //bottom
-        g.drawImage(textDisplayBox[7],
-            8 * graphicsScaling,
-            height - 8 * graphicsScaling,
-            width - 16 * graphicsScaling,
-            8 * graphicsScaling,
+        g.drawImage(boxSprite[7],
+            x + boxSize * graphicsScaling,
+            y + boxHeight - boxSize * graphicsScaling,
+            boxWidth - boxSize * 2 * graphicsScaling,
+            boxSize * graphicsScaling,
             canvas);
         //centre
-        g.drawImage(textDisplayBox[4],
-            8 * graphicsScaling,
-            height * 3 / 4 + 8 * graphicsScaling,
-            width - 16 * graphicsScaling,
-            height / 4 - 16 * graphicsScaling,
+        g.drawImage(boxSprite[4],
+            x + boxSize * graphicsScaling,
+            y + boxSize * graphicsScaling,
+            boxWidth - boxSize * 2 * graphicsScaling,
+            boxHeight - boxSize * 2 * graphicsScaling,
             canvas);
     } 
 
     protected void displayText(String text, Graphics g, JPanel canvas)    
     {
-        displayTextbox(g, canvas);
+        displayTextbox(textDisplayBox, 0, height * 3 / 4, width, height / 4, g, canvas);
         
         Font font = new Font("Pokemon Fire Red", Font.PLAIN, 36 * graphicsScaling);
         g.setFont(font);

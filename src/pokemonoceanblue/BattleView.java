@@ -178,7 +178,7 @@ public class BattleView extends ViewBase {
             width / 10 + 84 * graphicsScaling,
             height / 10 + 17 * graphicsScaling);
         
-        displayTextbox(g, canvas);
+        displayTextbox(this.textDisplayBox, 0, height * 3 / 4, width, height / 4, g, canvas);
         
         if (model.battleIndex == 0 || model.battleIndex == 1)
         {

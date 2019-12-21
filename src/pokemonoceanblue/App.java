@@ -34,6 +34,8 @@ public class App extends JFrame implements KeyListener
     BattleController battleController;
     PartyController partyController;
     PartyModel partyModel;
+    InventoryController inventoryController;
+    InventoryModel inventoryModel;
 
     // number of milliseconds between frames
     private final byte FRAME_LENGTH = 32;
@@ -124,6 +126,14 @@ public class App extends JFrame implements KeyListener
                 partyModel = new PartyModel(pokemonTeam);
                 viewManager.setView(new PartyView(partyModel));
                 partyController = new PartyController(partyModel);
+            }
+            
+            // pressing 'i' opens the items view
+            if (e.getKeyCode() == KeyEvent.VK_I)
+            {
+                inventoryModel = new InventoryModel();
+                viewManager.setView(new InventoryView(inventoryModel));
+                inventoryController = new InventoryController(inventoryModel);
             }
         }
 
@@ -259,6 +269,11 @@ public class App extends JFrame implements KeyListener
                 {
                     partyModel.update();
                     partyController.userInput(keysDown);
+                }
+                else if (viewManager.getCurrentView().equals("InventoryView"))
+                {
+                    inventoryModel.update();
+                    inventoryController.userInput(keysDown);
                 }
 
                 // fade music during transition
