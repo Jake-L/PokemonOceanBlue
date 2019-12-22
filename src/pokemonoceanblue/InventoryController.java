@@ -26,7 +26,11 @@ public class InventoryController {
         }
         else if (model.counter == 0)
         {
-            if (keysDown.contains(KeyEvent.VK_UP))
+            if (keysDown.contains(KeyEvent.VK_ENTER))
+            {
+                model.confirmSelection();
+            }
+            else if (keysDown.contains(KeyEvent.VK_UP))
             {
                 model.moveCursor(-1);
             }

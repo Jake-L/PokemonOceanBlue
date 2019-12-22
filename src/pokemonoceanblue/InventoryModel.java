@@ -142,6 +142,12 @@ public class InventoryModel {
         return this.returnValue;
     }
 
+    public void confirmSelection()
+    {
+        this.returnValue = this.items[this.bagIndex].get(this.itemIndex).itemId;
+        this.removeItem(this.returnValue, 1);
+    }
+
     class ItemModel
     {
         public int itemId;

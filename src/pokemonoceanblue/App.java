@@ -123,17 +123,13 @@ public class App extends JFrame implements KeyListener
             // pressing 'p' opens the party view
             if (e.getKeyCode() == KeyEvent.VK_P)
             {
-                partyModel = new PartyModel(pokemonTeam);
-                viewManager.setView(new PartyView(partyModel));
-                partyController = new PartyController(partyModel);
+                openParty();
             }
             
             // pressing 'i' opens the items view
             if (e.getKeyCode() == KeyEvent.VK_I)
             {
-                inventoryModel = new InventoryModel();
-                viewManager.setView(new InventoryView(inventoryModel));
-                inventoryController = new InventoryController(inventoryModel);
+                openInventory();
             }
         }
 
@@ -147,13 +143,6 @@ public class App extends JFrame implements KeyListener
     /** Remove the released key from the list of pressed keys */
     public void keyReleased(KeyEvent e) {
         keysDown.remove(Integer.valueOf(e.getKeyCode()));
-
-        // releasing 'p' exits the party view
-        if (e.getKeyCode() == KeyEvent.VK_P)
-        {
-            OverworldView overworldView = new OverworldView(overworldModel);
-            viewManager.setView(overworldView);
-        }
     }
 
     public void createBattle(int battleId)
@@ -202,6 +191,20 @@ public class App extends JFrame implements KeyListener
         OverworldView overworldView = new OverworldView(overworldModel);
         viewManager.setView(overworldView);
         MusicPlayer.setSong("1");
+    }
+
+    public void openInventory()
+    {
+        inventoryModel = new InventoryModel();
+        viewManager.setView(new InventoryView(inventoryModel));
+        inventoryController = new InventoryController(inventoryModel);
+    }
+
+    public void openParty()
+    {
+        partyModel = new PartyModel(pokemonTeam);
+        viewManager.setView(new PartyView(partyModel));
+        partyController = new PartyController(partyModel);
     }
 
     public void update()
@@ -268,12 +271,55 @@ public class App extends JFrame implements KeyListener
                 else if (viewManager.getCurrentView().equals("PartyView"))
                 {
                     partyModel.update();
-                    partyController.userInput(keysDown);
+
+                    if (partyController != null)
+                    {
+                        partyController.userInput(keysDown);
+                        //int returnValue = partyController.getSelection();
+                        int returnValue = -2;
+                        if (returnValue >= -1)
+                        {
+                            this.partyController = null;
+
+                            if (this.battleModel != null)
+                            {
+                                //this.battleModel.setPokemon(returnValue);
+                                System.out.println("Switch Pokemon in battle: " + returnValue);
+                            }
+                            else
+                            {
+                                // return to overworld screen
+                                OverworldView overworldView = new OverworldView(overworldModel);
+                                viewManager.setView(overworldView);
+                            }
+                        }
+                    }
                 }
                 else if (viewManager.getCurrentView().equals("InventoryView"))
                 {
                     inventoryModel.update();
-                    inventoryController.userInput(keysDown);
+
+                    if (inventoryController != null)
+                    {
+                        inventoryController.userInput(keysDown);
+                        int returnValue = inventoryModel.getSelection();
+                        if (returnValue >= -1)
+                        {
+                            this.inventoryController = null;
+
+                            if (this.battleModel != null)
+                            {
+                                //this.battleModel.setItem(returnValue);
+                                System.out.println("Use item in battle: " + returnValue);
+                            }
+                            else
+                            {
+                                // return to overworld screen
+                                OverworldView overworldView = new OverworldView(overworldModel);
+                                viewManager.setView(overworldView);
+                            }
+                        }
+                    }
                 }
 
                 // fade music during transition
