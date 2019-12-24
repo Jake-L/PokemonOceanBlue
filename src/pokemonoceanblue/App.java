@@ -23,7 +23,7 @@ import java.awt.Font;
 
 public class App extends JFrame implements KeyListener 
 {
-    CharacterController playerController;
+    OverworldController overworldController;
     CharacterModel playerModel;
     CharacterModel oldPlayerModel;
     ViewManager viewManager;
@@ -171,7 +171,6 @@ public class App extends JFrame implements KeyListener
      */
     public void setMap(int mapId, int playerX, int playerY)
     {
-
         // create the player
         if (playerModel != null)
         {
@@ -183,9 +182,10 @@ public class App extends JFrame implements KeyListener
         {
             playerModel = new CharacterModel("red", playerX, playerY, -1);
         }
-        playerController = new CharacterController(playerModel);
+
         // create the overworld
         overworldModel = new OverworldModel(mapId, playerModel, this);
+        overworldController = new OverworldController(overworldModel);
         playerModel.setOverworldModel(overworldModel);
 
         OverworldView overworldView = new OverworldView(overworldModel);
@@ -254,7 +254,7 @@ public class App extends JFrame implements KeyListener
                     else if (this.battleModel == null)
                     {
                         // only read user input when previous map is no longer visible
-                        playerController.userInput(keysDown);
+                        overworldController.userInput(keysDown);
                     }
                     
                     // check if player is entering a portal
@@ -286,7 +286,7 @@ public class App extends JFrame implements KeyListener
                                 System.out.println("Switch Pokemon in battle: " + returnValue);
                                 // return to battle screen
                                 BattleView battleView = new BattleView(this.battleModel);
-                                viewManager.setView(battleView);
+                                viewManager.setView(battleView); 
                             }
                             else
                             {

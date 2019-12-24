@@ -23,8 +23,6 @@ public class InventoryView extends ViewBase {
     private int rowLimit = 0;
     private int oldItemIndex = 0;
     private int oldBagIndex = 0;
-    private Image arrowSprite;
-
     
     /** 
      * Constructor for the overworld view
@@ -68,9 +66,6 @@ public class InventoryView extends ViewBase {
 
         ii = new ImageIcon("src/inventory/background.png");
         background = ii.getImage();
-
-        ii = new ImageIcon("src/inventory/arrow.png");
-        arrowSprite = ii.getImage();
     }
 
     /** 
@@ -154,7 +149,7 @@ public class InventoryView extends ViewBase {
         }
 
         // draw an arrow showing the currently selected item
-        g.drawImage(arrowSprite,
+        g.drawImage(this.arrowSprite,
             width * 3 / 10 + graphicsScaling,
             (this.model.itemIndex - this.minIndex) * fontSpacing + (30 - arrowSprite.getHeight(null) * 2) * graphicsScaling,
             arrowSprite.getWidth(null) * 2 * graphicsScaling,

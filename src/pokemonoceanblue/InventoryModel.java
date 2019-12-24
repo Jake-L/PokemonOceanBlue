@@ -130,6 +130,10 @@ public class InventoryModel {
         }
     }
 
+    /**
+     * Switch to a different category of items
+     * @param dx the difference between the current index and the index to move to
+     */
     public void movePocket(int dx)
     {
         this.bagIndex = (this.bagIndex + dx) % 3;
@@ -137,11 +141,20 @@ public class InventoryModel {
         this.itemIndex = 0;
     }
 
+    /**
+     * Returns information about what the player has selected
+     * @return -2 means the player hasn't made a selection yet
+     * @return -1 means they exited the screen without making a selection
+     * @return 0 or greater gives the itemId of what they selected
+     */
     public int getSelection()
     {
         return this.returnValue;
     }
 
+    /**
+     * Selects the item that the player is hovering
+     */
     public void confirmSelection()
     {
         this.returnValue = this.items[this.bagIndex].get(this.itemIndex).itemId;

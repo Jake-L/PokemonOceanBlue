@@ -185,6 +185,12 @@ public class OverworldView extends ViewBase {
         {
             this.displayText(this.model.conversation.getText(), g, canvas);
         }
+
+        // display text options
+        if (this.model.textOptions != null)
+        {
+            this.displayOptions(this.model.textOptions, this.model.optionIndex, g, canvas);
+        }
     }
 
     /** 

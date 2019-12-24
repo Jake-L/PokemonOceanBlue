@@ -11,6 +11,7 @@ public class ViewBase {
     protected int width;
     protected int height;
     protected Image[] textDisplayBox = new Image[9];
+    protected Image arrowSprite;
 
     public ViewBase()
     {       
@@ -21,6 +22,9 @@ public class ViewBase {
             ii = new ImageIcon("src/battle/TextBox" + i + ".png");
             textDisplayBox[i]  = ii.getImage();
         }
+
+        ii = new ImageIcon("src/inventory/arrow.png");
+        arrowSprite = ii.getImage();
     }
 
     /** 
@@ -36,6 +40,16 @@ public class ViewBase {
         this.height = height;
     }
 
+    /**
+     * Renders a text box using the given sprites and dimensions
+     * @param boxSprite an array of 9 images, where index 0 is the top left sprite, 1 is the top sprite, and 8 is the bottom right sprite
+     * @param x x position of text box
+     * @param y y position of text box
+     * @param boxWidth width of text box
+     * @param boxHeight height of text box
+     * @param g graphics object
+     * @param canvas JPanel object
+     */
     protected void displayTextbox(Image boxSprite[], int x, int y, int boxWidth, int boxHeight, Graphics g, JPanel canvas)
     {
         // sprites are square, so only need to look at width or height
@@ -106,8 +120,15 @@ public class ViewBase {
             canvas);
     } 
 
+    /**
+     * Renders the given text inside of a text box
+     * @param text the text to be displayed
+     * @param g Graphics object
+     * @param canvas JPanel object
+     */
     protected void displayText(String text, Graphics g, JPanel canvas)    
     {
+        // display the text box at the bottom of the screen
         displayTextbox(textDisplayBox, 0, height * 3 / 4, width, height / 4, g, canvas);
         
         Font font = new Font("Pokemon Fire Red", Font.PLAIN, 36 * graphicsScaling);
@@ -158,6 +179,53 @@ public class ViewBase {
                 8 * graphicsScaling, 
                 height * 3 / 4 + 30 * graphicsScaling * (i+1));
         }
+    }
+
+    /**
+     * Displays the given text options at the right side of the screen
+     * @param textOptions the array of text options to be displayed
+     * @param g Graphics object
+     * @param canvas JPanel object
+     */
+    protected void displayOptions(String[] textOptions, int optionIndex, Graphics g, JPanel canvas)
+    {
+        int fontSize = Math.max(16, height / 10);
+        int fontSpacing = fontSize * 2 / 3;
+
+        // set the font
+        Font font = new Font("Pokemon Fire Red", Font.PLAIN, fontSize);
+        g.setFont(font);
+
+        // determine the width of the text box
+        int textWidth = 0;
+        for (int i = 0; i < textOptions.length; i++)
+        {
+            textWidth = Math.max(g.getFontMetrics(font).stringWidth(textOptions[i]), textWidth);
+        }
+
+        // render the text box that contains the options
+        displayTextbox(textDisplayBox, 
+            width - textWidth - 24 * graphicsScaling, 
+            height * 3 / 4 - fontSpacing * textOptions.length - 16 * graphicsScaling, 
+            textWidth + 24 * graphicsScaling, 
+            fontSpacing * textOptions.length + 24 * graphicsScaling, 
+            g, canvas);
+
+        // render the text
+        for (int i = 0; i < textOptions.length; i++)
+        {
+            g.drawString(textOptions[i], 
+                width - textWidth - 8 * graphicsScaling, 
+                height * 3 / 4 - fontSpacing * (textOptions.length - i - 1) - 8 * graphicsScaling);
+        }  
+        
+        // render the arrow
+        g.drawImage(this.arrowSprite,
+            width - textWidth - 21 * graphicsScaling,
+            height * 3 / 4 - fontSpacing * (textOptions.length - optionIndex - 1) - (8 + arrowSprite.getHeight(null) * 2) * graphicsScaling,
+            arrowSprite.getWidth(null) * 2 * graphicsScaling,
+            arrowSprite.getHeight(null) * 2 * graphicsScaling,
+            canvas);
     }
 
     // render function that gets implemented by extended class

@@ -20,6 +20,8 @@ public class OverworldModel {
     public ConversationModel conversation;
     private App app;
     private List<Integer> wildPokemon = new ArrayList<Integer>();
+    public String[] textOptions;
+    public int optionIndex;
 
     // prevent players from accidently repeating actions by holdings keys
     private int actionCounter = 15;
@@ -329,6 +331,53 @@ public class OverworldModel {
                 team[0] = new PokemonModel(this.wildPokemon.get(n), 5);
                 this.app.createBattle(team);
             }
+        }
+    }
+
+    public void openMenu()
+    {
+        if (this.actionCounter == 0)
+        {
+            // open the menu
+            if (this.textOptions == null)
+            {
+                this.textOptions = new String[]{"Pokemon", "Bag"};
+                this.actionCounter = 15;
+            }
+            // exit the menu if it was already open
+            else
+            {
+                this.textOptions = null;
+                this.actionCounter = 15;
+            }
+        }
+    }
+
+    public void confirmSelection()
+    {
+        if (this.textOptions[this.optionIndex] == "Pokemon")
+        {
+            app.openParty();
+            this.openMenu();
+        }
+        else if (this.textOptions[this.optionIndex] == "Bag")
+        {
+            app.openInventory();
+            this.openMenu();
+        }
+    }
+
+    public void moveCursor(int dy)
+    {
+        if (dy > 0 && this.optionIndex < this.textOptions.length - 1)
+        {
+            this.optionIndex++;
+            this.actionCounter = 10;
+        }
+        else if (dy < 0 && this.optionIndex > 0)
+        {
+            this.optionIndex--;
+            this.actionCounter = 10;
         }
     }
 
