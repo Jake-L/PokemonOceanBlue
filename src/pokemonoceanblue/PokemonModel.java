@@ -17,17 +17,19 @@ public class PokemonModel
 
     int[] ivs = new int[6];
     MoveModel[] moves;
+    public final boolean shiny;
     
     /** 
      * Constructor
      * @param id the Pokemon's number from the national pokedex
      * @param level the Pokemon's current level
      */
-    public PokemonModel(int id, int level)
+    public PokemonModel(int id, int level, boolean shiny)
     {
         this.id = id;
         this.level = level;
         this.xp = (int) Math.pow(level, 3);
+        this.shiny = shiny;
 
         this.loadStats();
         this.loadMoves();

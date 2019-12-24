@@ -33,20 +33,23 @@ public class BattleView extends ViewBase {
     private void loadImage() 
     {
         ImageIcon ii;
+        String shinyPrefix;
         pokemonSprite[0] = new Image[model.team[0].length];
         pokemonSprite[1] = new Image[model.team[1].length];
 
         //load players pokemon back sprites
         for (int i = 0; i < pokemonSprite[0].length; i++)
         {
-            ii = new ImageIcon("src/pokemonback/frame0/" + model.team[0][i].id + ".png");
+            shinyPrefix = model.team[0][i].shiny ? "shiny" : "";
+            ii = new ImageIcon("src/pokemonback/" + shinyPrefix + "frame0/" + model.team[0][i].id + ".png");
             pokemonSprite[0][i]  = ii.getImage();
         }
 
         //load opponents pokemon front sprites
         for (int i = 0; i < pokemonSprite[1].length; i++)
         {
-            ii = new ImageIcon("src/pokemon/frame0/" + model.team[1][i].id + ".png");
+            shinyPrefix = model.team[1][i].shiny ? "shiny" : "";
+            ii = new ImageIcon("src/pokemon/" + shinyPrefix + "frame0/" + model.team[1][i].id + ".png");
             pokemonSprite[1][i]  = ii.getImage();
         }
 
