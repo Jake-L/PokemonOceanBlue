@@ -13,6 +13,11 @@ public class PartyController
 
     public void userInput(List<Integer> keysDown)
     {
+        if (keysDown.contains(KeyEvent.VK_ESCAPE))
+        {
+            model.returnValue = -1;
+        }
+
         if (model.counter == 0)
         {
             if (keysDown.contains(KeyEvent.VK_ENTER))

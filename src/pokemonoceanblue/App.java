@@ -148,7 +148,7 @@ public class App extends JFrame implements KeyListener
     public void createBattle(int battleId)
     {
         MusicPlayer.setSong("18");
-        battleModel = new BattleModel(pokemonTeam, pokemonTeam);
+        battleModel = new BattleModel(pokemonTeam, pokemonTeam, this);
         BattleView battleView = new BattleView(this.battleModel);
         viewManager.setView(battleView);
         battleController = new BattleController(battleModel);
@@ -157,7 +157,7 @@ public class App extends JFrame implements KeyListener
     public void createBattle(PokemonModel[] team)
     {
         MusicPlayer.setSong("18");
-        battleModel = new BattleModel(team, pokemonTeam);
+        battleModel = new BattleModel(team, pokemonTeam, this);
         BattleView battleView = new BattleView(this.battleModel);
         viewManager.setView(battleView);
         battleController = new BattleController(battleModel);
@@ -275,16 +275,18 @@ public class App extends JFrame implements KeyListener
                     if (partyController != null)
                     {
                         partyController.userInput(keysDown);
-                        //int returnValue = partyController.getSelection();
-                        int returnValue = -2;
+                        int returnValue = partyModel.getSelection();
                         if (returnValue >= -1)
                         {
                             this.partyController = null;
 
                             if (this.battleModel != null)
                             {
-                                //this.battleModel.setPokemon(returnValue);
+                                this.battleModel.setPokemon(returnValue);
                                 System.out.println("Switch Pokemon in battle: " + returnValue);
+                                // return to battle screen
+                                BattleView battleView = new BattleView(this.battleModel);
+                                viewManager.setView(battleView);
                             }
                             else
                             {
@@ -309,7 +311,7 @@ public class App extends JFrame implements KeyListener
 
                             if (this.battleModel != null)
                             {
-                                //this.battleModel.setItem(returnValue);
+                                this.battleModel.setItem(returnValue);
                                 System.out.println("Use item in battle: " + returnValue);
                             }
                             else

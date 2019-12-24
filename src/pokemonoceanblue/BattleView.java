@@ -180,12 +180,12 @@ public class BattleView extends ViewBase {
         
         displayTextbox(this.textDisplayBox, 0, height * 3 / 4, width, height / 4, g, canvas);
         
-        if (model.battleIndex == 0 || model.battleIndex == 1)
+        if (model.battleOptions != null)
         {
             displayTextOptions(g, canvas);
         }
 
-        if (model.battleIndex > 1)
+        else
         {
             displayBattleText(g, canvas);
         }
