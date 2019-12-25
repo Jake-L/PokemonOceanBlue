@@ -12,9 +12,9 @@ public class BattleModel
     public int[] currentPokemon = new int[2];
     public byte daytimeType = 0;
     public byte areaType = 0;
-    public String[] battleOptions = new String[3];
+    public String[] battleOptions;
     public int optionIndex = 0;
-    public byte INPUTDELAY = 10;
+    public final byte INPUTDELAY = 10;
     public byte counter = INPUTDELAY;
     public List<BattleEvent> events = new ArrayList<BattleEvent>();
     public Random ranNum = new Random();
@@ -34,9 +34,7 @@ public class BattleModel
         this.team[1] = opponentTeam;
         this.currentPokemon[0] = 0;
         this.currentPokemon[1] = 0;
-        this.battleOptions[0] = "FIGHT";
-        this.battleOptions[1] = "POKEMON";
-        this.battleOptions[2] = "POKEBALLS";
+        this.loadBattleMenu();
         loadData();
         this.app = app;
     }
@@ -45,6 +43,8 @@ public class BattleModel
     {
         if (this.events.size() == 0)
         {
+            this.counter = INPUTDELAY;
+            
             if (this.battleOptions != null)
             {
                 if (this.battleOptions[this.optionIndex].equals("FIGHT"))
@@ -122,8 +122,6 @@ public class BattleModel
                         effectivenessMessage(modifier[1]);
                     }
                 }
-
-                this.counter = INPUTDELAY;
             }
         }
     }
@@ -227,6 +225,19 @@ public class BattleModel
         }  
     }
 
+    /**
+     * returns to menu
+     */
+    public void loadBattleMenu()
+    {
+        this.battleOptions = new String[3];
+        this.battleOptions[0] = "FIGHT";
+        this.battleOptions[1] = "POKEMON";
+        this.battleOptions[2] = "POKEBALLS";
+        this.optionIndex = 0;
+        this.counter = INPUTDELAY;
+    }
+
     /** 
      * checks if battle is complete
      */ 
@@ -241,7 +252,7 @@ public class BattleModel
                 faintedPokemon++;
             }
 
-            if (faintedPokemon == team[0].length)
+            if (faintedPokemon == team[0].length && this.counter == 0 && this.events.size() == 0)
             {
                 return true;
             }
@@ -302,11 +313,7 @@ public class BattleModel
         else if (this.battleOptions == null && this.counter == 0)
         {
             this.battleOptions = new String[3];            
-            this.battleOptions[0] = "FIGHT";
-            this.battleOptions[1] = "POKEMON";
-            this.battleOptions[2] = "POKEBALLS";
-            this.optionIndex = 0;
-            this.counter = INPUTDELAY;
+            this.loadBattleMenu();
         }
     }
     

@@ -223,8 +223,9 @@ public class App extends JFrame implements KeyListener
                 // update the battle
                 if (viewManager.getCurrentView().equals("BattleView") && this.battleModel != null)
                 {
-                    battleModel.update();
                     battleController.userInput(keysDown);
+                    battleModel.update();
+                    
                     if (this.battleModel.isComplete())
                     {
                         // return to overworld screen

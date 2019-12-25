@@ -27,6 +27,11 @@ public class BattleController {
                 model.confirmSelection();
             }
 
+            else if (keysDown.contains(KeyEvent.VK_ESCAPE))
+            {
+                model.loadBattleMenu();
+            }
+
             else if (keysDown.contains(KeyEvent.VK_UP) && (model.optionIndex == 2 || model.optionIndex == 3))
             {
                 model.optionIndex -= 2;
