@@ -8,6 +8,10 @@ public class CharacterModel {
     private int y;
     private int height;
     private int movementCounter = 0;
+
+    // must be 1 for walking or 2 for running, but never 0
+    private int movementSpeed = 1;
+    
     private int dy;
     private int dx;
     private Direction direction;
@@ -69,7 +73,14 @@ public class CharacterModel {
     public String getCurrentSprite(){
         if (this.movementCounter >= 0)
         {
-            return String.format("%s%s%s", this.spriteName, this.direction.toString(), (int)(Math.floor((this.movementCounter + 16 * this.animationOffset) / 8)) % 4);
+            // load different image if running or walking
+            String running = this.movementSpeed == 2 ? "Run" : "";
+
+            return String.format("%s%s%s%s", 
+                this.spriteName, 
+                running, 
+                this.direction.toString(), 
+                (int)(Math.floor((this.movementCounter + 16 * this.animationOffset) / 8)) % 4);
         }
         else
         {
@@ -115,7 +126,7 @@ public class CharacterModel {
      * @param dy movement speed along y-axis
      * @param movementCounter the duration of their movement, usually 16
      */
-    public void setMovement(int dx, int dy, int movementCounter)
+    public void setMovement(int dx, int dy, int movementSpeed)
     {
         // can only specify movement when not already moving
         if (this.movementCounter <= 0 && this.overworldModel.canMove())
@@ -142,7 +153,7 @@ public class CharacterModel {
             }
 
             // animate the player walking, even if they can't move
-            this.movementCounter = movementCounter;
+            this.movementCounter = 16;
 
             // check if the space they want to move into is open
             // check x direction
@@ -151,6 +162,7 @@ public class CharacterModel {
                 // set their movement speed
                 this.dx = dx;
                 this.dy = 0;
+                this.movementSpeed = movementSpeed;
             }
             // check y direction
             else if (dy != 0 && overworldModel.checkPosition(this.x, this.y + dy))
@@ -158,6 +170,7 @@ public class CharacterModel {
                 // set their movement speed
                 this.dy = dy;
                 this.dx = 0;
+                this.movementSpeed = movementSpeed;
             }
 
             // update the player's grid position immediately
@@ -174,13 +187,18 @@ public class CharacterModel {
     {
         if (this.movementCounter >= 0)
         {
-            this.movementCounter--;
+            this.movementCounter -= this.movementSpeed;
         
-            if (updateOverworld && this.movementCounter == 0)
+            if (this.movementCounter == 0)
             {
                 this.dx = 0;
                 this.dy = 0;
-                this.overworldModel.checkMovement(this.x, this.y);
+                this.movementSpeed = 1;
+
+                if (updateOverworld)
+                {
+                    this.overworldModel.checkMovement(this.x, this.y);
+                }
             }
         }
     }

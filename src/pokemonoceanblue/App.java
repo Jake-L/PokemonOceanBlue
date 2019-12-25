@@ -256,7 +256,7 @@ public class App extends JFrame implements KeyListener
                     }
                     
                     // check if player is entering a portal
-                    if (playerModel.getMovementCounter() == 15)
+                    if (playerModel.getMovementCounter() == 14)
                     {
                         Portal portal = overworldModel.checkPortal(playerModel.getX(), playerModel.getY());
                         if (portal != null)
@@ -326,20 +326,22 @@ public class App extends JFrame implements KeyListener
                 MusicPlayer.fadeVolume();
 
                 lastRun = System.currentTimeMillis();
-            }
 
-            // render graphics at every opportunity
-            viewManager.render();    
+                // render graphics
+                viewManager.render();
+            }
 
             // check the amount of time to sleep until the next frame
             sleepLength = (int) (FRAME_LENGTH - (System.currentTimeMillis() - lastRun));
 
             // sleep until next frame
             if (sleepLength > 0) {
-                try {
-                    // sleep at most x milliseconds to keep a high graphics FPS
-                    Thread.sleep(Math.min(sleepLength, 10));
-                } catch (InterruptedException e) {
+                try 
+                {
+                    Thread.sleep(sleepLength, 10);
+                } 
+                catch (InterruptedException e) 
+                {
                     System.out.println(String.format("Thread interrupted: %s", e.getMessage()));
                 }
             }

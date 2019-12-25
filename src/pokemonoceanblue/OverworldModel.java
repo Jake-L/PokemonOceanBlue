@@ -177,7 +177,7 @@ public class OverworldModel {
                 {
                     if (Math.abs(cpuModel[i].spawn_x - cpuModel[i].getX() - dx) + Math.abs(cpuModel[i].spawn_y - cpuModel[i].getY() - dy) <= 2)
                     {
-                        cpuModel[i].setMovement(dx, dy, 16);
+                        cpuModel[i].setMovement(dx, dy, 1);
                     }
                 }
             }

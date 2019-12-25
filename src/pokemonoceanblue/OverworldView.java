@@ -71,8 +71,14 @@ public class OverworldView extends ViewBase {
             // each direction has 4 sprites
             for (int i = 0; i < 4; i++)
             {
+                // walking sprites
                 formattedName = String.format("%s%s%s", spriteName, direction.toString(), i);
                 ImageIcon ii = new ImageIcon(String.format("src/characters/%s.png", formattedName));
+                characterSprite.put(formattedName, ii.getImage());
+
+                // running sprites
+                formattedName = String.format("%sRun%s%s", spriteName, direction.toString(), i);
+                ii = new ImageIcon(String.format("src/characters/%s.png", formattedName));
                 characterSprite.put(formattedName, ii.getImage());
             }
         }

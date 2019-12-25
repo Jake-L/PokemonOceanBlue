@@ -46,25 +46,30 @@ public class OverworldController {
         // otherwise move player around on map
         else
         {
+            int movespeed = 1;
+            if (keysDown.contains(KeyEvent.VK_SHIFT))
+            {
+                movespeed = 2;
+            }
             if (keysDown.contains(KeyEvent.VK_ENTER))
             {
                 this.callCheckAction();
             }
             else if (keysDown.contains(KeyEvent.VK_UP))
             {
-                this.playerModel.setMovement(0, -1, 16);
+                this.playerModel.setMovement(0, -1, movespeed);
             }
             else if (keysDown.contains(KeyEvent.VK_DOWN))
             {
-                this.playerModel.setMovement(0, 1, 16);
+                this.playerModel.setMovement(0, 1, movespeed);
             }
             else if (keysDown.contains(KeyEvent.VK_LEFT))
             {
-                this.playerModel.setMovement(-1, 0, 16);
+                this.playerModel.setMovement(-1, 0, movespeed);
             }
             else if (keysDown.contains(KeyEvent.VK_RIGHT))
             {
-                this.playerModel.setMovement(1, 0, 16);
+                this.playerModel.setMovement(1, 0, movespeed);
             }
         }
     }
