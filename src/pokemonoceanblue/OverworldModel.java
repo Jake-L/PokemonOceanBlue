@@ -195,12 +195,13 @@ public class OverworldModel {
      * @param y y position of the character
      * @return true if the position is free or false if it is occupied
      */
-    public boolean checkPosition(int x, int y)
+    public boolean checkPosition(int x, int y, boolean surf)
     {
         // check if the map allows movement
         if (y < 0 || y >= this.tiles.length
             || x < 0 || x >= this.tiles[y].length
-            || this.tiles[y][x] < 1)
+            || this.tiles[y][x] < 0
+            || (this.tiles[y][x] == 0 && !surf))
         {
             return false;
         }
@@ -274,6 +275,12 @@ public class OverworldModel {
                 this.conversation.nextEvent();
             }
         }
+        // surf if facing water
+        else if (!this.playerModel.surf && tiles[y][x] == 0 && this.playerModel.getMovementCounter() <= 0)
+        {
+            this.playerModel.surf = true;
+            this.playerModel.setMovement(x - this.playerModel.getX(), y - this.playerModel.getY(), 1);
+        }
         // otherwise check for a cpu to interact with
         else if (this.actionCounter == 0)
         {
@@ -332,6 +339,11 @@ public class OverworldModel {
                 team[0] = new PokemonModel(this.wildPokemon.get(n), 5, shiny);
                 this.app.createBattle(team);
             }
+        }
+        // player is no longer surfing when they step onto solid land
+        if (this.tiles[y][x] > 0)
+        {
+            this.playerModel.surf = false;
         }
     }
 

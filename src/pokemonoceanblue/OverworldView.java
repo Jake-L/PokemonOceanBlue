@@ -81,6 +81,15 @@ public class OverworldView extends ViewBase {
                 ii = new ImageIcon(String.format("src/characters/%s.png", formattedName));
                 characterSprite.put(formattedName, ii.getImage());
             }
+
+            // surfing sprites
+            for (int i = 0; i < 2; i++)
+            {
+                // walking sprites
+                formattedName = String.format("%sSurf%s%s", spriteName, direction.toString(), i);
+                ImageIcon ii = new ImageIcon(String.format("src/characters/%s.png", formattedName));
+                characterSprite.put(formattedName, ii.getImage());
+            }
         }
 
         for (CharacterModel cpuModel : model.cpuModel)
@@ -115,10 +124,8 @@ public class OverworldView extends ViewBase {
         g.fillRect(0, 0, width, height);
         
         Image sprite;
-        int playerRenderX = model.playerModel.getRenderX();
-        int playerRenderY = model.playerModel.getRenderY();
 
-        calcOffset(playerRenderX, playerRenderY);
+        calcOffset(model.playerModel.getRenderX(), model.playerModel.getRenderY());
 
         // display the ground tiles
         for (int y = 0; y < model.tiles.length; y++)
@@ -226,7 +233,7 @@ public class OverworldView extends ViewBase {
         // render the character
         Image sprite = characterSprite.get(character.getCurrentSprite());
         g.drawImage(sprite, 
-                    (character.getRenderX() - xOffset) * graphicsScaling, 
+                    (character.getRenderX() + 8 - sprite.getWidth(null) / 2 - xOffset) * graphicsScaling, 
                     (character.getRenderY() - yOffset) * graphicsScaling, 
                     sprite.getWidth(null) * graphicsScaling, 
                     sprite.getHeight(null) * graphicsScaling, 

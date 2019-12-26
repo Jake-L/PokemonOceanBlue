@@ -21,6 +21,8 @@ public class CharacterModel {
     public final int spawn_y;
     public final int conversationId;
 
+    public boolean surf = false;
+
     /** 
      * @param spriteName name of the sprite used in the image filename
      * @param x x position of the sprite
@@ -71,7 +73,14 @@ public class CharacterModel {
      * @return the filename of the sprite that should be displayed
      */
     public String getCurrentSprite(){
-        if (this.movementCounter >= 0)
+        if (this.surf)
+        {
+            return String.format("%sSurf%s%s", 
+                this.spriteName,  
+                this.direction.toString(), 
+                System.currentTimeMillis() / 500 % 2);
+        }
+        else if (this.movementCounter >= 0)
         {
             // load different image if running or walking
             String running = this.movementSpeed == 2 ? "Run" : "";
@@ -157,7 +166,7 @@ public class CharacterModel {
 
             // check if the space they want to move into is open
             // check x direction
-            if (dx != 0 && overworldModel.checkPosition(this.x + dx, this.y))
+            if (dx != 0 && overworldModel.checkPosition(this.x + dx, this.y, this.surf))
             {
                 // set their movement speed
                 this.dx = dx;
@@ -165,7 +174,7 @@ public class CharacterModel {
                 this.movementSpeed = movementSpeed;
             }
             // check y direction
-            else if (dy != 0 && overworldModel.checkPosition(this.x, this.y + dy))
+            else if (dy != 0 && overworldModel.checkPosition(this.x, this.y + dy, this.surf))
             {
                 // set their movement speed
                 this.dy = dy;

@@ -84,12 +84,12 @@ public class BattleView extends ViewBase {
 
         //renders background
         g.drawImage(background,
-        width / 10,
-        0,
-        width * 8 / 10,
-        height * 3 / 4,
-        canvas);
-        
+            width / 10,
+            0,
+            width * 8 / 10,
+            height * 3 / 4,
+            canvas);
+
         //renders players current pokemon
         g.drawImage(pokemonSprite[0][model.currentPokemon[0]],
             width / 8,
