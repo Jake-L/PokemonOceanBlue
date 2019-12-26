@@ -282,7 +282,6 @@ public class App extends JFrame implements KeyListener
                             if (this.battleModel != null)
                             {
                                 this.battleModel.setPokemon(returnValue);
-                                System.out.println("Switch Pokemon in battle: " + returnValue);
                                 // return to battle screen
                                 BattleView battleView = new BattleView(this.battleModel);
                                 viewManager.setView(battleView); 
@@ -311,7 +310,9 @@ public class App extends JFrame implements KeyListener
                             if (this.battleModel != null)
                             {
                                 this.battleModel.setItem(returnValue);
-                                System.out.println("Use item in battle: " + returnValue);
+                                // return to battle screen
+                                BattleView battleView = new BattleView(this.battleModel);
+                                viewManager.setView(battleView); 
                             }
                             else
                             {

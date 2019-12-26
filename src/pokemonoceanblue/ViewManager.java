@@ -53,7 +53,9 @@ public class ViewManager extends JPanel {
             // can't change the view while it is already being changed
             return;
         }
-        if (this.view != null && view.toString() != "PartyView")
+        if (this.view != null && 
+            (this.view.toString().equals("TitleScreenView")
+            || (this.view.toString().equals("OverworldView") && view.toString().equals("BattleView"))))
         {
             this.newView = view;
             this.transitionCounter = 120;

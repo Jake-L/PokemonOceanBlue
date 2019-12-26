@@ -128,17 +128,32 @@ public class BattleModel
 
     public void setItem(int itemId)
     {
-        BattleEvent event = new BattleEvent("Trainer used a " + itemId, itemId, false);
-        this.events.add(event);
+        if (itemId == -1)
+        {
+            this.loadBattleMenu();
+        }
+        else
+        {
+            BattleEvent event = new BattleEvent("Trainer used a " + itemId, itemId, false);
+            this.events.add(event);
+            this.counter = 60;
+        }
     }
 
     public void setPokemon(int pokemon)
     {
-        BattleEvent event = new BattleEvent("Trainer withdrew " + this.team[0][currentPokemon[0]].name);
-        this.events.add(event);
-        event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name, pokemon, true);
-        this.events.add(event);
-        this.counter = 60;
+        if (pokemon == -1)
+        {
+            this.loadBattleMenu();
+        }
+        else
+        {
+            BattleEvent event = new BattleEvent("Trainer withdrew " + this.team[0][currentPokemon[0]].name);
+            this.events.add(event);
+            event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name, pokemon, true);
+            this.events.add(event);
+            this.counter = 60;
+        }
     }
 
     /** 
@@ -243,36 +258,41 @@ public class BattleModel
      */ 
     public boolean isComplete()
     {
+        if (this.counter > 0 || this.events.size() > 0 || this.battleOptions != null)
+        {
+            return false;
+        }
+
+        if (teamFainted(0) || teamFainted(1))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Determines if all the Pokemon have fainted in one team
+     * @param teamIndex 0 for player's team, 1 for enemy's team
+     * @return true if all of the Pokemon in that team have fainted
+     */
+    private boolean teamFainted(int teamIndex)
+    {
         int faintedPokemon = 0;
 
-        for (int i = 0; i < team[0].length; i++)
+        for (int i = 0; i < this.team[teamIndex].length; i++)
         {
-            if (team[0][i].currentHP == 0)
+            if (this.team[teamIndex][i].currentHP == 0)
             {
                 faintedPokemon++;
             }
 
-            if (faintedPokemon == team[0].length && this.counter == 0 && this.events.size() == 0)
+            if (faintedPokemon == this.team[teamIndex].length)
             {
                 return true;
             }
         }
 
-        faintedPokemon = 0;
-
-        for (int i = 0; i < team[1].length; i++)
-        {
-            if (team[1][i].currentHP == 0)
-            {
-                faintedPokemon++;
-            }
-
-            if (faintedPokemon == team[1].length)
-            {
-                return true;
-            }
-        }
-        
         return false;
     }
 
@@ -288,6 +308,19 @@ public class BattleModel
             if (this.events.get(0).damage > -1)
             {
                 this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP -= Math.min((this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP), (this.events.get(0).damage));
+
+                // only check if a Pokemon was defeated if damage was applied
+                if (this.team[1][this.currentPokemon[1]].currentHP == 0)
+                {
+                    BattleEvent event = new BattleEvent(this.team[1][this.currentPokemon[1]].name + " fainted.");
+                    this.events.add(event);
+                    // TODO: remove any events involving the enemy Pokemon's attack
+                    if (!teamFainted(1))
+                    {
+                        event = new BattleEvent("Enemy trainer sent out " + this.team[1][this.currentPokemon[1] + 1].name, this.currentPokemon[1] + 1);
+                        this.events.add(event);
+                    }
+                }
             }
             if (this.events.get(0).newPokemonIndex > -1)
             {
@@ -295,24 +328,15 @@ public class BattleModel
             }
 
             this.events.remove(0);
-            this.counter = 60;
 
-            if (this.team[1][this.currentPokemon[1]].currentHP == 0)
+            if (this.events.size() > 0)
             {
-                BattleEvent event = new BattleEvent(this.team[1][this.currentPokemon[1]].name + " fainted.");
-                this.events.add(event);
-                this.events.remove(0);
-                if (!isComplete())
-                {
-                    event = new BattleEvent("Enemy trainer sent out " + this.team[1][this.currentPokemon[1] + 1].name, this.currentPokemon[1] + 1);
-                    this.events.add(event);
-                }
+                this.counter = 60;
             }
         }
 
         else if (this.battleOptions == null && this.counter == 0)
-        {
-            this.battleOptions = new String[3];            
+        {            
             this.loadBattleMenu();
         }
     }
