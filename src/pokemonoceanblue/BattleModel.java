@@ -74,12 +74,14 @@ public class BattleModel
                     this.battleOptions = null;
                     BattleEvent playerAttackEvent = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " used " + this.team[0][this.currentPokemon[0]].moves[optionIndex].name,
                         this.damageCalc(optionIndex, 0, 1),
-                        1);
+                        1,
+                        0);
                     this.counter = 60;
                     int enemyMove = ranNum.nextInt(this.team[1][this.currentPokemon[1]].moves.length);
                     BattleEvent enemyAttackEvent = new BattleEvent("Enemy " + this.team[1][this.currentPokemon[1]].name + " used " + this.team[1][this.currentPokemon[1]].moves[enemyMove].name,
                         this.damageCalc(enemyMove, 1, 0),
-                        0);
+                        0,
+                        1);
                     
                     if (this.team[0][this.currentPokemon[0]].moves[optionIndex].priority > this.team[1][this.currentPokemon[1]].moves[enemyMove].priority)
                     {
@@ -109,17 +111,17 @@ public class BattleModel
                     if (firstAttacker == 1)
                     {
                         this.events.add(enemyAttackEvent);
-                        effectivenessMessage(modifier[1]);
+                        effectivenessMessage(modifier[1], 1);
                         this.events.add(playerAttackEvent);
-                        effectivenessMessage(modifier[0]);
+                        effectivenessMessage(modifier[0], 0);
                     }
                     
                     else
                     {
                         this.events.add(playerAttackEvent);
-                        effectivenessMessage(modifier[0]);
+                        effectivenessMessage(modifier[0], 0);
                         this.events.add(enemyAttackEvent);
-                        effectivenessMessage(modifier[1]);
+                        effectivenessMessage(modifier[1], 1);
                     }
                 }
             }
@@ -134,7 +136,7 @@ public class BattleModel
         }
         else
         {
-            BattleEvent event = new BattleEvent("Trainer used a " + itemId, itemId, false);
+            BattleEvent event = new BattleEvent("Trainer used a " + itemId, itemId, false, 0);
             this.events.add(event);
             this.counter = 60;
         }
@@ -148,9 +150,9 @@ public class BattleModel
         }
         else
         {
-            BattleEvent event = new BattleEvent("Trainer withdrew " + this.team[0][currentPokemon[0]].name);
+            BattleEvent event = new BattleEvent("Trainer withdrew " + this.team[0][currentPokemon[0]].name, 0);
             this.events.add(event);
-            event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name, pokemon, true);
+            event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name, pokemon, true, 0);
             this.events.add(event);
             this.counter = 60;
         }
@@ -201,16 +203,16 @@ public class BattleModel
     /** 
      * @param effectiveness damage modifier
      */
-    private void effectivenessMessage(float effectiveness)
+    private void effectivenessMessage(float effectiveness, int attacker)
     {
         if (effectiveness > 1)
         {
-            BattleEvent event = new BattleEvent("It's super effective!");
+            BattleEvent event = new BattleEvent("It's super effective!", attacker);
             this.events.add(event);
         }
         else if (effectiveness < 1)
         {
-            BattleEvent event = new BattleEvent("It's not very effective.");
+            BattleEvent event = new BattleEvent("It's not very effective.", attacker);
             this.events.add(event);
         }
     }
@@ -312,12 +314,24 @@ public class BattleModel
                 // only check if a Pokemon was defeated if damage was applied
                 if (this.team[1][this.currentPokemon[1]].currentHP == 0)
                 {
-                    BattleEvent event = new BattleEvent(this.team[1][this.currentPokemon[1]].name + " fainted.");
+                    int i = 0;
+                    while (i < this.events.size())
+                    {
+                        if (this.events.get(i).attacker == 1)
+                        {
+                            this.events.remove(i);
+                        }
+
+                        else
+                        {
+                            i++;
+                        }
+                    }
+                    BattleEvent event = new BattleEvent(this.team[1][this.currentPokemon[1]].name + " fainted.", 1);
                     this.events.add(event);
-                    // TODO: remove any events involving the enemy Pokemon's attack
                     if (!teamFainted(1))
                     {
-                        event = new BattleEvent("Enemy trainer sent out " + this.team[1][this.currentPokemon[1] + 1].name, this.currentPokemon[1] + 1);
+                        event = new BattleEvent("Enemy trainer sent out " + this.team[1][this.currentPokemon[1] + 1].name, this.currentPokemon[1] + 1, true, 1);
                         this.events.add(event);
                     }
                 }
@@ -360,15 +374,16 @@ public class BattleModel
         public int target;
         public int newPokemonIndex = -1;
         public int itemId = -1;
-        public int enemyPokemon = -1;
+        public int attacker;
 
         /** 
          * Constructor
          * @param text the text that will be displayed
          */
-        public BattleEvent(String text)
+        public BattleEvent(String text, int attacker)
         {
             this.text = text;
+            this.attacker = attacker;
         }
 
         /** 
@@ -376,29 +391,26 @@ public class BattleModel
          * @param text the text that will be displayed
          * @param damage the damage that will be taken by target
          * @param target the pokemon that will recieve the damage
+         * @param attacker the team performing event
          */
-        public BattleEvent(String text, int damage, int target)
+        public BattleEvent(String text, int damage, int target, int attacker)
         {
-            this(text);
+            this(text, attacker);
             this.damage = damage;
             this.target = target;
-        }
-
-        public BattleEvent(String text, int newPokemon)
-        {
-            this(text);
-            this.enemyPokemon = newPokemon;
         }
 
         /** 
          * Constructor
          * @param text the text that will be displayed
-         * @param newPokemonIndex the pokemon that will be sent out
+         * @param index is the index of the item or pokemon used
+         * @param isPokemon determines whether index refers to item or pokemon
+         * @param attacker the team performing event
          */
-        public BattleEvent(String text, int index, boolean isPokemon)
+        public BattleEvent(String text, int index, boolean isPokemon, int attacker)
         {
-            this(text);
-
+            this(text, attacker);
+            
             if (!isPokemon)
             {
                 this.itemId = index;
