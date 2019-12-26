@@ -28,7 +28,7 @@ public class ViewManager extends JPanel {
      * @param height height of the screen in pixels
      */
     public void setViewSize(int width, int height){
-        this.graphicsScaling = (byte) Math.max(Math.min(width, height) / 300, 1);
+        this.graphicsScaling = (byte) Math.max(Math.min(width, height) / 250, 1);
         this.width = width;
         this.height = height;
 

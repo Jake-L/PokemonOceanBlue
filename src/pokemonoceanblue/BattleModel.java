@@ -14,7 +14,7 @@ public class BattleModel
     public byte areaType = 0;
     public String[] battleOptions;
     public int optionIndex = 0;
-    public final byte INPUTDELAY = 10;
+    public final byte INPUTDELAY = 8;
     public byte counter = INPUTDELAY;
     public List<BattleEvent> events = new ArrayList<BattleEvent>();
     public Random ranNum = new Random();
@@ -33,6 +33,10 @@ public class BattleModel
         this.team[0] = playerTeam;
         this.team[1] = opponentTeam;
         this.currentPokemon[0] = 0;
+        while (this.team[0][currentPokemon[0]].currentHP == 0)
+        {
+            this.currentPokemon[0]++;
+        }
         this.currentPokemon[1] = 0;
         this.loadBattleMenu();
         loadData();
@@ -72,13 +76,13 @@ public class BattleModel
                 else
                 {
                     this.battleOptions = null;
-                    BattleEvent playerAttackEvent = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " used " + this.team[0][this.currentPokemon[0]].moves[optionIndex].name,
+                    BattleEvent playerAttackEvent = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " used " + this.team[0][this.currentPokemon[0]].moves[optionIndex].name + ".",
                         this.damageCalc(optionIndex, 0, 1),
                         1,
                         0);
                     this.counter = 60;
                     int enemyMove = ranNum.nextInt(this.team[1][this.currentPokemon[1]].moves.length);
-                    BattleEvent enemyAttackEvent = new BattleEvent("Enemy " + this.team[1][this.currentPokemon[1]].name + " used " + this.team[1][this.currentPokemon[1]].moves[enemyMove].name,
+                    BattleEvent enemyAttackEvent = new BattleEvent("Enemy " + this.team[1][this.currentPokemon[1]].name + " used " + this.team[1][this.currentPokemon[1]].moves[enemyMove].name + ".",
                         this.damageCalc(enemyMove, 1, 0),
                         0,
                         1);
@@ -136,7 +140,7 @@ public class BattleModel
         }
         else
         {
-            BattleEvent event = new BattleEvent("Trainer used a " + itemId, itemId, false, 0);
+            BattleEvent event = new BattleEvent("Trainer used a " + itemId + ".", itemId, false, 0);
             this.events.add(event);
             this.counter = 60;
         }
@@ -150,9 +154,9 @@ public class BattleModel
         }
         else
         {
-            BattleEvent event = new BattleEvent("Trainer withdrew " + this.team[0][currentPokemon[0]].name, 0);
+            BattleEvent event = new BattleEvent("Trainer withdrew " + this.team[0][currentPokemon[0]].name + ".", 0);
             this.events.add(event);
-            event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name, pokemon, true, 0);
+            event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", pokemon, true, 0);
             this.events.add(event);
             this.counter = 60;
         }
@@ -321,7 +325,6 @@ public class BattleModel
                         {
                             this.events.remove(i);
                         }
-
                         else
                         {
                             i++;
@@ -335,12 +338,30 @@ public class BattleModel
                         this.events.add(event);
                     }
                 }
+
+                //prevents player's pokemon from fighting when fainted
+                if (this.team[0][currentPokemon[0]].currentHP == 0)
+                {
+                    int i = 0;
+                    while (i < this.events.size())
+                    {
+                        if (this.events.get(i).attacker == 0)
+                        {
+                            this.events.remove(i);
+                        }
+                        else
+                        {
+                            i++;
+                        }
+                    }
+                    BattleEvent event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " fainted.", 0);
+                    this.events.add(event);
+                }
             }
             if (this.events.get(0).newPokemonIndex > -1)
             {
                 this.currentPokemon[0] = this.events.get(0).newPokemonIndex;
             }
-
             this.events.remove(0);
 
             if (this.events.size() > 0)
@@ -348,10 +369,19 @@ public class BattleModel
                 this.counter = 60;
             }
         }
-
+        
+        //player sends out new pokemon to replace fainted one or battle returns to battle menu
         else if (this.battleOptions == null && this.counter == 0)
-        {            
-            this.loadBattleMenu();
+        {
+            if (!teamFainted(0) && this.team[0][currentPokemon[0]].currentHP == 0)
+            {
+                this.battleOptions = null;
+                this.app.openParty();
+            }
+            else
+            {
+                this.loadBattleMenu();
+            }
         }
     }
     
