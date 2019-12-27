@@ -16,6 +16,7 @@ public class BattleView extends ViewBase {
     private Image[] healthBarFill = new Image[3];
     private Image[] statusWindow = new Image[2];
     private Image background;
+    private Image xp;
     
     /** 
      * Constructor for the overworld view
@@ -34,8 +35,8 @@ public class BattleView extends ViewBase {
     {
         ImageIcon ii;
         String shinyPrefix;
-        pokemonSprite[0] = new Image[model.team[0].length];
-        pokemonSprite[1] = new Image[model.team[1].length];
+        this.pokemonSprite[0] = new Image[model.team[0].length];
+        this.pokemonSprite[1] = new Image[model.team[1].length];
 
         //load players pokemon back sprites
         for (int i = 0; i < pokemonSprite[0].length; i++)
@@ -50,7 +51,7 @@ public class BattleView extends ViewBase {
         {
             shinyPrefix = model.team[1][i].shiny ? "shiny" : "";
             ii = new ImageIcon("src/pokemon/" + shinyPrefix + "frame0/" + model.team[1][i].id + ".png");
-            pokemonSprite[1][i]  = ii.getImage();
+            this.pokemonSprite[1][i]  = ii.getImage();
         }
 
         //loads health bar fill images
@@ -60,15 +61,18 @@ public class BattleView extends ViewBase {
             healthBarFill[i] = ii.getImage();
         }
 
-        //loads status window images
+        //loads status window images and xp
         ii = new ImageIcon("src/battle/TrainerStatusWindow.png");
-        statusWindow[0] = ii.getImage();
+        this.statusWindow[0] = ii.getImage();
         ii = new ImageIcon("src/battle/OpponentStatusWindow.png");
-        statusWindow[1] = ii.getImage();
+        this.statusWindow[1] = ii.getImage();
+        ii = new ImageIcon("src/battle/exp.png");
+        this.xp = ii.getImage();
+        
 
         //loads background image
         ii = new ImageIcon("src/battle/Background" + model.areaType + model.daytimeType + ".png");
-        background = ii.getImage();
+        this.background = ii.getImage();
     }
 
     /** 
@@ -83,7 +87,7 @@ public class BattleView extends ViewBase {
         g.setFont(font);
 
         //renders background
-        g.drawImage(background,
+        g.drawImage(this.background,
             width / 10,
             0,
             width * 8 / 10,
@@ -91,35 +95,35 @@ public class BattleView extends ViewBase {
             canvas);
 
         //renders players current pokemon
-        g.drawImage(pokemonSprite[0][model.currentPokemon[0]],
+        g.drawImage(pokemonSprite[0][this.model.currentPokemon[0]],
             width / 8,
-            (int)(height * (3.0 / 4.0) - (pokemonSprite[0][model.currentPokemon[0]].getHeight(null) * graphicsScaling)),
-            pokemonSprite[0][model.currentPokemon[0]].getWidth(null) * graphicsScaling,
-            pokemonSprite[0][model.currentPokemon[0]].getHeight(null) * graphicsScaling,
+            (int)(height * (3.0 / 4.0) - (this.pokemonSprite[0][this.model.currentPokemon[0]].getHeight(null) * graphicsScaling)),
+            this.pokemonSprite[0][this.model.currentPokemon[0]].getWidth(null) * graphicsScaling,
+            this.pokemonSprite[0][this.model.currentPokemon[0]].getHeight(null) * graphicsScaling,
             canvas);
 
         //renders opposing trainers current pokemon
-        g.drawImage(pokemonSprite[1][model.currentPokemon[1]],
+        g.drawImage(pokemonSprite[1][this.model.currentPokemon[1]],
             width / 2,
-            height / 2 - (pokemonSprite[1][model.currentPokemon[1]].getHeight(null) * graphicsScaling),
-            pokemonSprite[1][model.currentPokemon[1]].getWidth(null) * graphicsScaling,
-            pokemonSprite[1][model.currentPokemon[1]].getHeight(null) * graphicsScaling,
+            height / 2 - (pokemonSprite[1][this.model.currentPokemon[1]].getHeight(null) * graphicsScaling),
+            this.pokemonSprite[1][this.model.currentPokemon[1]].getWidth(null) * graphicsScaling,
+            this.pokemonSprite[1][this.model.currentPokemon[1]].getHeight(null) * graphicsScaling,
             canvas);
 
         //renders player status window
-        g.drawImage(statusWindow[0],
-            (int)(width * (9.0 / 10.0)) - (statusWindow[0].getWidth(null) * graphicsScaling),
+        g.drawImage(this.statusWindow[0],
+            (int)(width * (9.0 / 10.0)) - (this.statusWindow[0].getWidth(null) * graphicsScaling),
             height / 2,
-            statusWindow[0].getWidth(null) * graphicsScaling,
-            statusWindow[0].getHeight(null) * graphicsScaling,
+            this.statusWindow[0].getWidth(null) * graphicsScaling,
+            this.statusWindow[0].getHeight(null) * graphicsScaling,
             canvas);
         
         //renders opponent status window
-        g.drawImage(statusWindow[1],
+        g.drawImage(this.statusWindow[1],
             width / 10,
             height / 10,
-            statusWindow[1].getWidth(null) * graphicsScaling,
-            statusWindow[1].getHeight(null) * graphicsScaling,
+            this.statusWindow[1].getWidth(null) * graphicsScaling,
+            this.statusWindow[1].getHeight(null) * graphicsScaling,
             canvas);
 
         //get health bar colour
@@ -127,63 +131,74 @@ public class BattleView extends ViewBase {
         for (int i = 0; i < healthBarFillIndex.length; i++)
         {
             healthBarFillIndex[i] = 0;
-            if((double)model.team[i][model.currentPokemon[i]].currentHP / model.team[i][model.currentPokemon[i]].stats[Stat.HP] < 0.2)
+            if((double)this.model.team[i][this.model.currentPokemon[i]].currentHP / this.model.team[i][this.model.currentPokemon[i]].stats[Stat.HP] < 0.2)
             {
                 healthBarFillIndex[i] = 2;
             }
-            else if((double)model.team[i][model.currentPokemon[i]].currentHP / model.team[i][model.currentPokemon[i]].stats[Stat.HP] < 0.5)
+            else if((double)this.model.team[i][this.model.currentPokemon[i]].currentHP / this.model.team[i][this.model.currentPokemon[i]].stats[Stat.HP] < 0.5)
             {
                 healthBarFillIndex[i] = 1;
             }
         }
         
         //renders player health bar fill
-        g.drawImage(healthBarFill[healthBarFillIndex[0]],
-            (int)(width * (9.0 / 10.0)) - (statusWindow[0].getWidth(null) * graphicsScaling) + (72 * graphicsScaling),
+        g.drawImage(this.healthBarFill[healthBarFillIndex[0]],
+            (int)(width * (9.0 / 10.0)) - (this.statusWindow[0].getWidth(null) * graphicsScaling) + (72 * graphicsScaling),
             height / 2 + (25 * graphicsScaling),
-            (int)Math.ceil(healthBarFill[0].getWidth(null) * (model.team[0][model.currentPokemon[0]].currentHP * 48.0 / model.team[0][model.currentPokemon[0]].stats[Stat.HP]) * graphicsScaling),
-            healthBarFill[0].getHeight(null) * graphicsScaling,
+            (int)Math.ceil(this.healthBarFill[0].getWidth(null) * (this.model.team[0][model.currentPokemon[0]].currentHP * 48.0 / this.model.team[0][this.model.currentPokemon[0]].stats[Stat.HP]) * graphicsScaling),
+            this.healthBarFill[0].getHeight(null) * graphicsScaling,
             canvas);
 
         //renders opponent health bar fill
-        g.drawImage(healthBarFill[healthBarFillIndex[1]],
+        g.drawImage(this.healthBarFill[healthBarFillIndex[1]],
             width / 10 + (50 * graphicsScaling),
             height / 10 + (24 * graphicsScaling),
-            (int)Math.ceil(healthBarFill[1].getWidth(null) * (model.team[1][model.currentPokemon[1]].currentHP * 48.0 / model.team[1][model.currentPokemon[1]].stats[Stat.HP]) * graphicsScaling),
-            healthBarFill[1].getHeight(null) * graphicsScaling,
+            (int)Math.ceil(this.healthBarFill[1].getWidth(null) * (this.model.team[1][this.model.currentPokemon[1]].currentHP * 48.0 / this.model.team[1][this.model.currentPokemon[1]].stats[Stat.HP]) * graphicsScaling),
+            this.healthBarFill[1].getHeight(null) * graphicsScaling,
+            canvas);
+
+        int xpMin = (int) Math.pow(this.model.team[0][this.model.currentPokemon[0]].level, 3.0);
+        int xpMax = (int) Math.pow(this.model.team[0][this.model.currentPokemon[0]].level + 1, 3.0);
+
+        //renders player xp bar fill
+        g.drawImage(this.xp,
+            (int)(width * (9.0 / 10.0)) - (this.statusWindow[0].getWidth(null) * graphicsScaling) + (24 * graphicsScaling),
+            height / 2 + (42 * graphicsScaling),
+            (int)(96 * ((double)(this.model.team[0][this.model.currentPokemon[0]].xp - xpMin) / (xpMax - xpMin)) * graphicsScaling),
+            this.xp.getHeight(null) * graphicsScaling,
             canvas);
 
         //displays level of trainer pokemon
-        g.drawString(String.valueOf(model.team[0][model.currentPokemon[0]].level),
-            ((int)(width * (9.0 / 10.0)) - ((statusWindow[0].getWidth(null) - 106) * graphicsScaling)),
+        g.drawString(String.valueOf(this.model.team[0][this.model.currentPokemon[0]].level),
+            ((int)(width * (9.0 / 10.0)) - ((this.statusWindow[0].getWidth(null) - 106) * graphicsScaling)),
             height / 2 + (18 * graphicsScaling));
 
         //displays health of trainer pokemon
-        g.drawString(String.valueOf(model.team[0][model.currentPokemon[0]].currentHP),
-            (int)(width * (9.0 / 10.0)) - ((statusWindow[0].getWidth(null) - 88) * graphicsScaling) - g.getFontMetrics(font).stringWidth(String.valueOf(model.team[0][model.currentPokemon[0]].currentHP)),
+        g.drawString(String.valueOf(this.model.team[0][this.model.currentPokemon[0]].currentHP),
+            (int)(width * (9.0 / 10.0)) - ((this.statusWindow[0].getWidth(null) - 88) * graphicsScaling) - g.getFontMetrics(font).stringWidth(String.valueOf(this.model.team[0][this.model.currentPokemon[0]].currentHP)),
             height / 2 + 38 * graphicsScaling);
-        g.drawString(String.valueOf(model.team[0][model.currentPokemon[0]].stats[Stat.HP]),
-            (int)(width * (9.0 / 10.0)) - ((statusWindow[0].getWidth(null) - 97) * graphicsScaling),
+        g.drawString(String.valueOf(this.model.team[0][this.model.currentPokemon[0]].stats[Stat.HP]),
+            (int)(width * (9.0 / 10.0)) - ((this.statusWindow[0].getWidth(null) - 97) * graphicsScaling),
             height / 2 + 38 * graphicsScaling);
 
         //displays name of trainer pokemon
-        g.drawString(String.valueOf(model.team[0][model.currentPokemon[0]].name),
-            (int)(width * (9.0 / 10.0)) - ((statusWindow[0].getWidth(null) - 16) * graphicsScaling),
+        g.drawString(String.valueOf(this.model.team[0][this.model.currentPokemon[0]].name),
+            (int)(width * (9.0 / 10.0)) - ((this.statusWindow[0].getWidth(null) - 16) * graphicsScaling),
             height / 2 + (18 * graphicsScaling));
 
         //displays name of opponent pokemon
-        g.drawString(String.valueOf(model.team[1][model.currentPokemon[1]].name),
+        g.drawString(String.valueOf(this.model.team[1][this.model.currentPokemon[1]].name),
             width / 10 + 2 * graphicsScaling,
             height / 10 + 17 * graphicsScaling);
 
         //displays level of opponent pokemon
-        g.drawString(String.valueOf(model.team[1][model.currentPokemon[1]].level),
+        g.drawString(String.valueOf(this.model.team[1][this.model.currentPokemon[1]].level),
             width / 10 + 84 * graphicsScaling,
             height / 10 + 17 * graphicsScaling);
         
         displayTextbox(this.textDisplayBox, 0, height * 3 / 4, width, height / 4, g, canvas);
         
-        if (model.battleOptions != null)
+        if (this.model.battleOptions != null)
         {
             displayTextOptions(g, canvas);
         }
@@ -200,9 +215,9 @@ public class BattleView extends ViewBase {
         Font font = new Font("Pokemon Fire Red", Font.PLAIN, 24 * graphicsScaling);
         g.setFont(font);
 
-        for (int i = 0; i < model.battleOptions.length; i++)
+        for (int i = 0; i < this.model.battleOptions.length; i++)
         {
-            g.drawString(model.battleOptions[i], 
+            g.drawString(this.model.battleOptions[i], 
                 24 * graphicsScaling + (width / 2) * (i % 2), 
                 (height * 3 / 4 + 24 * graphicsScaling) + graphicsScaling * 24 * (i / 2));
         }
@@ -210,8 +225,8 @@ public class BattleView extends ViewBase {
         int textWidth = g.getFontMetrics(font).stringWidth(">");
 
         g.drawString(">",
-        24 * graphicsScaling + (width / 2) * (model.optionIndex % 2) - textWidth,
-        (height * 3 / 4 + 24 * graphicsScaling) + graphicsScaling * 24 * (model.optionIndex / 2));
+        24 * graphicsScaling + (width / 2) * (this.model.optionIndex % 2) - textWidth,
+        (height * 3 / 4 + 24 * graphicsScaling) + graphicsScaling * 24 * (this.model.optionIndex / 2));
     }
 
     //displays text in a text box

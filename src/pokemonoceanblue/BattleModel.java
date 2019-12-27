@@ -302,6 +302,11 @@ public class BattleModel
         return false;
     }
 
+    private int xpCalc(int enemyLevel)
+    {
+        return (int) Math.pow(enemyLevel, 2) * 3;
+    }
+
     public void update()
     {
         if (this.counter > 0)
@@ -311,6 +316,11 @@ public class BattleModel
 
         else if (this.events.size() > 0)
         {
+            if (this.events.get(0).xp > 0)
+            {
+                this.team[0][currentPokemon[0]].xp += xpCalc(this.team[1][currentPokemon[1]].level);
+                this.team[0][currentPokemon[0]].calcLevel();
+            }
             if (this.events.get(0).damage > -1)
             {
                 this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP -= Math.min((this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP), (this.events.get(0).damage));
@@ -332,6 +342,11 @@ public class BattleModel
                     }
                     BattleEvent event = new BattleEvent(this.team[1][this.currentPokemon[1]].name + " fainted.", 1);
                     this.events.add(event);
+
+                    event = new BattleEvent(this.team[0][currentPokemon[0]].name + " gained " + xpCalc(this.team[1][currentPokemon[1]].level) + " experience.",
+                        xpCalc(this.team[1][currentPokemon[1]].level), 0);
+                    this.events.add(event);
+
                     if (!teamFainted(1))
                     {
                         event = new BattleEvent("Enemy trainer sent out " + this.team[1][this.currentPokemon[1] + 1].name, this.currentPokemon[1] + 1, true, 1);
@@ -369,7 +384,7 @@ public class BattleModel
                 this.counter = 60;
             }
         }
-        
+
         //player sends out new pokemon to replace fainted one or battle returns to battle menu
         else if (this.battleOptions == null && this.counter == 0)
         {
@@ -405,6 +420,7 @@ public class BattleModel
         public int newPokemonIndex = -1;
         public int itemId = -1;
         public int attacker;
+        public int xp = 0;
 
         /** 
          * Constructor
@@ -430,6 +446,18 @@ public class BattleModel
             this.target = target;
         }
 
+        /** 
+         * Constructor
+         * @param text the text that will be displayed
+         * @param xp the amount of xp earned
+         * @param attacker the team performing event
+         */
+
+        public BattleEvent(String text, int xp, int attacker)
+        {
+            this(text, attacker);
+            this.xp = xp;
+        }
         /** 
          * Constructor
          * @param text the text that will be displayed

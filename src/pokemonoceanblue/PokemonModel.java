@@ -38,7 +38,7 @@ public class PokemonModel
     /** 
      * Recalculates a Pokemon's level based off it's current experience
      */
-    private void calcLevel()
+    public void calcLevel()
     {
         this.level = (int) Math.pow(xp, 1.00 / 3.00);
     }
