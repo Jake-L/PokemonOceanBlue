@@ -99,11 +99,16 @@ public class PartyView extends ViewBase {
         {
             // display the Pokemon's icons
             g.drawImage(pokemonSprite[i], 
-                (i % 2) * (width / 3 + 8 * graphicsScaling) + 8 * graphicsScaling, 
-                (i / 2) * (height / 4 + 8 * graphicsScaling) + 8 * graphicsScaling, 
-                pokemonSprite[i].getWidth(null) * graphicsScaling * 2, 
-                pokemonSprite[i].getHeight(null) * graphicsScaling * 2, 
-                canvas);  
+                (i % 2) * (width / 3 + 8 * graphicsScaling) + 12 * graphicsScaling, 
+                (i / 2) * (height / 4 + 8 * graphicsScaling) + 14 * graphicsScaling, 
+                pokemonSprite[i].getWidth(null) * graphicsScaling, 
+                pokemonSprite[i].getHeight(null) * graphicsScaling, 
+                canvas);
+
+            //display text with Pokemon level
+            g.drawString("Lv. " + this.model.team[i].level,
+                (i % 2) * (width / 3 + 8 * graphicsScaling) + 18 * graphicsScaling, 
+                (i / 2) * (height / 4 + 8 * graphicsScaling) + 60 * graphicsScaling);
             
             //display text with pokemon name
             g.drawString(this.model.team[i].name, 

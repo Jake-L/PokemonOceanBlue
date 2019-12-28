@@ -15,73 +15,77 @@ public class PartyController
     {
         if (keysDown.contains(KeyEvent.VK_ESCAPE))
         {
-            model.returnValue = -1;
+            this.model.returnValue = -1;
         }
 
-        if (model.counter == 0)
+        if (this.model.counter == 0)
         {
             if (keysDown.contains(KeyEvent.VK_ENTER))
             {
-                model.confirmSelection();
+                //TODO: add possiblity of confirm selection outside of battle (isBattle not working)
+                if (this.model.team[this.model.optionIndex].currentHP > 0)
+                {
+                    this.model.confirmSelection();
+                }
             }
 
             else if (keysDown.contains(KeyEvent.VK_UP))
             {
-                if (model.optionIndex - 2 >= 0)
+                if (this.model.optionIndex - 2 >= 0)
                 {
-                    model.optionIndex -= 2;
-                    model.counter = model.INPUTDELAY;
+                    this.model.optionIndex -= 2;
+                    this.model.counter = this.model.INPUTDELAY;
                 }
 
                 else
                 {
-                    model.optionIndex = model.team.length - (model.team.length % 2);
-                    model.counter = model.INPUTDELAY;
+                    this.model.optionIndex = this.model.team.length - (this.model.team.length % 2);
+                    this.model.counter = this.model.INPUTDELAY;
                 }
             }
 
-            else if (keysDown.contains(KeyEvent.VK_DOWN) && model.team.length > 2)
+            else if (keysDown.contains(KeyEvent.VK_DOWN) && this.model.team.length > 2)
             {
-                if (model.optionIndex + 2 > model.team.length - 1)
+                if (this.model.optionIndex + 2 > this.model.team.length - 1)
                 {
-                    model.optionIndex = (model.team.length + 1) % 2 + model.optionIndex % 2;
-                    model.counter = model.INPUTDELAY;
+                    this.model.optionIndex = (this.model.team.length + 1) % 2 + this.model.optionIndex % 2;
+                    this.model.counter = this.model.INPUTDELAY;
                 }
 
                 else
                 {
-                    model.optionIndex += 2;
-                    model.counter = model.INPUTDELAY;
+                    this.model.optionIndex += 2;
+                    this.model.counter = this.model.INPUTDELAY;
                 }
             }
 
             else if (keysDown.contains(KeyEvent.VK_LEFT))
             {
-                if (model.optionIndex % 2 == 1)
+                if (this.model.optionIndex % 2 == 1)
                 {
-                    model.optionIndex--;
-                    model.counter = model.INPUTDELAY;
+                    this.model.optionIndex--;
+                    this.model.counter = this.model.INPUTDELAY;
                 }
                 
-                else if (model.team.length > model.optionIndex + 1)
+                else if (this.model.team.length > this.model.optionIndex + 1)
                 {
-                    model.optionIndex++;
-                    model.counter = model.INPUTDELAY;
+                    this.model.optionIndex++;
+                    this.model.counter = this.model.INPUTDELAY;
                 }
             }
 
             else if (keysDown.contains(KeyEvent.VK_RIGHT))
             {
-                if (model.optionIndex % 2 == 1)
+                if (this.model.optionIndex % 2 == 1)
                 {
-                    model.optionIndex--;
-                    model.counter = model.INPUTDELAY;
+                    this.model.optionIndex--;
+                    this.model.counter = model.INPUTDELAY;
                 }
 
-                else if (model.optionIndex + 1 < model.team.length)
+                else if (this.model.optionIndex + 1 < this.model.team.length)
                 {
-                    model.optionIndex++;
-                    model.counter = model.INPUTDELAY;
+                    this.model.optionIndex++;
+                    this.model.counter = model.INPUTDELAY;
                 }
             }
         }

@@ -14,7 +14,7 @@ public class BattleModel
     public byte areaType = 0;
     public String[] battleOptions;
     public int optionIndex = 0;
-    public final byte INPUTDELAY = 8;
+    public final byte INPUTDELAY = 5;
     public byte counter = INPUTDELAY;
     public List<BattleEvent> events = new ArrayList<BattleEvent>();
     public Random ranNum = new Random();

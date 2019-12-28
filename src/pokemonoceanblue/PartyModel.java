@@ -7,7 +7,8 @@ public class PartyModel
     public int INPUTDELAY = 5;
     public int counter = this.INPUTDELAY;
     private int currentPokemon = -1;
-    private boolean isBattle;
+    public boolean isBattle;
+    
     public int returnValue = -2;
 
     public PartyModel(PokemonModel[] model)
