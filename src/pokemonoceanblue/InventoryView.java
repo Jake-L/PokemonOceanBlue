@@ -98,17 +98,18 @@ public class InventoryView extends ViewBase {
                     canvas);
 
         // display item description
-        this.displayText("Item description", g, canvas);
+        if (this.model.items[this.model.bagIndex].size() > 0)
+        {
+            this.displayText(this.model.items[this.model.bagIndex].get(this.model.itemIndex).description, g, canvas);
+        }
 
         int fontSize = Math.max(16, height / 10);
         int fontSpacing = fontSize * 2 / 3;
+        int iconScaling = (int)Math.floor(fontSpacing / 20);
 
         // set the font
         Font font = new Font("Pokemon Fire Red", Font.PLAIN, fontSize);
         g.setFont(font);
-
-        // determine the number of item names to show
-        this.rowLimit = Math.min(this.model.items[this.model.bagIndex].size(), (int)Math.floor((height * 0.7 - 16 * graphicsScaling) / fontSpacing));
 
         // determine the first item name to show
         if (this.model.bagIndex != this.oldBagIndex)
@@ -122,7 +123,20 @@ public class InventoryView extends ViewBase {
             this.calcIndices();
         }
 
-        for (int i = 0; i < this.rowLimit; i++)
+        // determine the number of item names to show
+        this.rowLimit = Math.min(
+            this.model.items[this.model.bagIndex].size() - this.minIndex, 
+            (int)Math.floor((height * 0.7 - 36 * graphicsScaling) / fontSpacing)
+        );
+
+        // if the screen resolution changes and the item the player selected is no longer displayed
+        // increase the minimum index displayed until the selected item is shown
+        if (this.model.itemIndex > this.minIndex + this.rowLimit)
+        {
+            this.minIndex = this.model.itemIndex - this.rowLimit;
+        }
+
+        for (int i = 0; i <= this.rowLimit; i++)
         {
             Image sprite = this.itemSprite[this.model.items[this.model.bagIndex].get(this.minIndex + i).itemId];
 
@@ -134,9 +148,9 @@ public class InventoryView extends ViewBase {
             // display an icon for the item
             g.drawImage(sprite,
                 width * 3 / 10 + 16 * graphicsScaling,
-                (i * fontSpacing) + (30 - sprite.getHeight(null)) * graphicsScaling,
-                sprite.getWidth(null) * graphicsScaling,
-                sprite.getHeight(null) * graphicsScaling,
+                (i * fontSpacing) + 30 * graphicsScaling - sprite.getHeight(null) * iconScaling,
+                sprite.getWidth(null) * iconScaling,
+                sprite.getHeight(null) * iconScaling,
                 canvas);
 
             // draw the item's quantity
@@ -150,10 +164,10 @@ public class InventoryView extends ViewBase {
 
         // draw an arrow showing the currently selected item
         g.drawImage(this.arrowSprite,
-            width * 3 / 10 + graphicsScaling,
-            (this.model.itemIndex - this.minIndex) * fontSpacing + (30 - arrowSprite.getHeight(null) * 2) * graphicsScaling,
-            arrowSprite.getWidth(null) * 2 * graphicsScaling,
-            arrowSprite.getHeight(null) * 2 * graphicsScaling,
+            width * 3 / 10 + 2 * graphicsScaling,
+            (this.model.itemIndex - this.minIndex) * fontSpacing + 30 * graphicsScaling - arrowSprite.getHeight(null) * 2 * iconScaling,
+            arrowSprite.getWidth(null) * 2 * iconScaling,
+            arrowSprite.getHeight(null) * 2 * iconScaling,
             canvas);
 
     }
@@ -170,7 +184,7 @@ public class InventoryView extends ViewBase {
         }
         // if the player is moving down at the bottom of the inventory
         if (this.model.itemIndex > this.oldItemIndex 
-            && this.model.itemIndex == this.rowLimit + this.minIndex 
+            && this.model.itemIndex > this.rowLimit + this.minIndex 
             // make sure there is still room to move down
             && this.rowLimit + this.minIndex < this.model.items[this.model.bagIndex].size())
         {

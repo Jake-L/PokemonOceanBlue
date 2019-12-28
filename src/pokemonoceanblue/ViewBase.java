@@ -130,46 +130,34 @@ public class ViewBase {
     {
         // display the text box at the bottom of the screen
         displayTextbox(textDisplayBox, 0, height * 3 / 4, width, height / 4, g, canvas);
+
+        int fontSize = Math.max(16, (int)(height * 0.105));
+        int fontSpacing = fontSize * 2 / 3;
         
-        Font font = new Font("Pokemon Fire Red", Font.PLAIN, 36 * graphicsScaling);
+        Font font = new Font("Pokemon Fire Red", Font.PLAIN, fontSize);
         g.setFont(font);
 
-        String[] renderText; 
+        String[] renderText = new String[3];
+        renderText[0] = "";
+        renderText[1] = "";
+        renderText[2] = "";
+        String[] splitText = text.replace("$",",").split(" ");
+        int index = 0;
+        int line = 0;
 
-        int textWidth = g.getFontMetrics(font).stringWidth(text);
+        // split the string into multiple linse
+        while (index < splitText.length)
+        {
+            // move to next line when end is reached
+            if (g.getFontMetrics(font).stringWidth(renderText[line] + splitText[index]) >= width - 16 * graphicsScaling 
+                && !renderText[line].equals("")
+                && line < 2)
+            {
+                line++;
+            }
 
-        // manual text wrapping if text is too wide
-        if (textWidth > width - 16 * graphicsScaling)
-        {
-            renderText = new String[2];
-            renderText[0] = "";
-            renderText[1] = "";
-            String[] splitText = text.replace("$",",").split(" ");
-            int index = 0;
-            
-            // put the first 1/3 of the words on the first line
-            while (index < splitText.length / 3.0)
-            {
-                renderText[0] = renderText[0] + splitText[index] + " ";
-                index++;
-            }
-            // continue adding to the first line until the edge is reached
-            while (g.getFontMetrics(font).stringWidth(renderText[0] + splitText[index]) < width - 16 * graphicsScaling)
-            {
-                renderText[0] = renderText[0] + splitText[index] + " ";
-                index++;
-            }
-            // add remaining text to the second line
-            while (index < splitText.length)
-            {
-                renderText[1] = renderText[1] + splitText[index] + " ";
-                index++;
-            }
-        }
-        else
-        {
-            renderText = new String[1];
-            renderText[0] = text;
+            renderText[line] = renderText[line] + splitText[index] + " ";
+            index++;
         }
 
         // display the string
@@ -177,7 +165,7 @@ public class ViewBase {
         {
             g.drawString(renderText[i], 
                 8 * graphicsScaling, 
-                height * 3 / 4 + 30 * graphicsScaling * (i+1));
+                height * 3 / 4 + (3 * graphicsScaling) + fontSpacing * (i+1));
         }
     }
 

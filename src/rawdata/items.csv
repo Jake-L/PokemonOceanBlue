@@ -1,293 +1,617 @@
-item_id,name,category_id,cost
-0,Master Ball,0,0
-1,Ultra Ball,0,800
-2,Great Ball,0,600
-3,Poke Ball,0,200
-4,Safari Ball,0,0
-5,Net Ball,0,1000
-6,Dive Ball,0,1000
-7,Nest Ball,0,1000
-8,Repeat Ball,0,1000
-9,Timer Ball,0,1000
-10,Luxury Ball,0,1000
-11,Premier Ball,0,20
-12,Dusk Ball,0,1000
-13,Heal Ball,0,300
-14,Quick Ball,0,1000
-15,Cherish Ball,0,0
-16,Potion,2,200
-17,Antidote,2,200
-18,Burn Heal,2,300
-19,Ice Heal,2,100
-20,Awakening,2,100
-21,Paralyze Heal,2,300
-22,Full Restore,2,3000
-23,Max Potion,2,2500
-24,Hyper Potion,2,1500
-25,Super Potion,2,700
-26,Full Heal,2,400
-27,Revive,2,2000
-28,Max Revive,2,4000
-29,Fresh Water,2,200
-30,Soda Pop,2,300
-31,Lemonade,2,400
-32,Moomoo Milk,2,600
-33,Energy Powder,2,500
-34,Energy Root,2,1200
-35,Heal Powder,2,300
-36,Revival Herb,2,2800
-37,Ether,2,1200
-38,Max Ether,2,2000
-39,Elixir,2,3000
-40,Max Elixir,2,4500
-41,Lava Cookie,2,350
-42,Berry Juice,2,200
-43,Sacred Ash,2,50000
-44,HP Up,2,10000
-45,Protein,2,10000
-46,Iron,2,10000
-47,Carbos,2,10000
-48,Calcium,2,10000
-49,Rare Candy,2,10000
-50,PP Up,2,10000
-51,Zinc,2,10000
-52,PP Max,2,10000
-53,Old Gateau,2,350
-54,Guard Spec.,2,1500
-55,Dire Hit,2,1000
-56,X Attack,2,1000
-57,X Defense,2,2000
-58,X Speed,2,1000
-59,X Accuracy,2,1000
-60,X Sp. Atk,2,1000
-61,X Sp. Def,2,2000
-62,Pok\u00E9 Doll,2,100
-63,Fluffy Tail,2,100
-64,Blue Flute,2,20
-65,Yellow Flute,2,20
-66,Red Flute,2,20
-67,Black Flute,2,20
-68,White Flute,2,20
-69,Shoal Salt,2,20
-70,Shoal Shell,2,20
-71,Red Shard,2,1000
-72,Blue Shard,2,1000
-73,Yellow Shard,2,1000
-74,Green Shard,2,1000
-75,Super Repel,2,700
-76,Max Repel,2,900
-77,Escape Rope,2,1000
-78,Repel,2,400
-79,Sun Stone,2,3000
-80,Moon Stone,2,3000
-81,Fire Stone,2,3000
-82,Thunder Stone,2,3000
-83,Water Stone,2,3000
-84,Leaf Stone,2,3000
-85,Tiny Mushroom,2,500
-86,Big Mushroom,2,5000
-87,Pearl,2,2000
-88,Big Pearl,2,8000
-89,Stardust,2,3000
-90,Star Piece,2,12000
-91,Nugget,2,10000
-92,Heart Scale,2,100
-93,Honey,2,300
-94,Growth Mulch,2,200
-95,Damp Mulch,2,200
-96,Stable Mulch,2,200
-97,Gooey Mulch,2,200
-98,Root Fossil,3,7000
-99,Claw Fossil,3,7000
-100,Helix Fossil,3,7000
-101,Dome Fossil,3,7000
-102,Old Amber,3,10000
-103,Armor Fossil,3,7000
-104,Skull Fossil,3,7000
-105,Rare Bone,2,5000
-106,Shiny Stone,2,3000
-107,Dusk Stone,2,3000
-108,Dawn Stone,2,3000
-109,Oval Stone,2,2000
-110,Odd Keystone,2,2100
-111,Adamant Orb,2,0
-112,Lustrous Orb,2,0
-113,Cheri Berry,1,20
-114,Chesto Berry,1,20
-115,Pecha Berry,1,20
-116,Rawst Berry,1,20
-117,Aspear Berry,1,20
-118,Leppa Berry,1,20
-119,Oran Berry,1,20
-120,Persim Berry,1,20
-121,Lum Berry,1,20
-122,Sitrus Berry,1,20
-123,Figy Berry,1,20
-124,Wiki Berry,1,20
-125,Mago Berry,1,20
-126,Aguav Berry,1,20
-127,Iapapa Berry,1,20
-128,Razz Berry,1,20
-129,Bluk Berry,1,20
-130,Nanab Berry,1,20
-131,Wepear Berry,1,20
-132,Pinap Berry,1,20
-133,Pomeg Berry,1,20
-134,Kelpsy Berry,1,20
-135,Qualot Berry,1,20
-136,Hondew Berry,1,20
-137,Grepa Berry,1,20
-138,Tamato Berry,1,20
-139,Cornn Berry,1,20
-140,Magost Berry,1,20
-141,Rabuta Berry,1,20
-142,Nomel Berry,1,20
-143,Spelon Berry,1,20
-144,Pamtre Berry,1,20
-145,Watmel Berry,1,20
-146,Durin Berry,1,20
-147,Belue Berry,1,20
-148,Occa Berry,1,20
-149,Passho Berry,1,20
-150,Wacan Berry,1,20
-151,Rindo Berry,1,20
-152,Yache Berry,1,20
-153,Chople Berry,1,20
-154,Kebia Berry,1,20
-155,Shuca Berry,1,20
-156,Coba Berry,1,20
-157,Payapa Berry,1,20
-158,Tanga Berry,1,20
-159,Charti Berry,1,20
-160,Kasib Berry,1,20
-161,Haban Berry,1,20
-162,Colbur Berry,1,20
-163,Babiri Berry,1,20
-164,Chilan Berry,1,20
-165,Liechi Berry,1,20
-166,Ganlon Berry,1,20
-167,Salac Berry,1,20
-168,Petaya Berry,1,20
-169,Apicot Berry,1,20
-170,Lansat Berry,1,20
-171,Starf Berry,1,20
-172,Enigma Berry,1,20
-173,Micle Berry,1,20
-174,Custap Berry,1,20
-175,Jaboca Berry,1,20
-176,Rowap Berry,1,20
-177,Bright Powder,12,4000
-178,White Herb,12,4000
-179,Macho Brace,14,3000
-180,Exp. Share,16,0
-181,Quick Claw,12,4000
-182,Soothe Bell,16,4000
-183,Mental Herb,12,4000
-184,Choice Band,13,4000
-185,King's Rock,12,5000
-186,Silver Powder,19,1000
-187,Amulet Coin,16,10000
-188,Cleanse Tag,16,5000
-189,Soul Dew,18,0
-190,Deep Sea Tooth,18,2000
-191,Deep Sea Scale,18,2000
-192,Smoke Ball,12,4000
-193,Everstone,16,3000
-194,Focus Band,12,4000
-195,Lucky Egg,16,10000
-196,Scope Lens,12,4000
-197,Metal Coat,19,2000
-198,Leftovers,12,4000
-199,Dragon Scale,10,2000
-200,Light Ball,18,1000
-201,Soft Sand,19,1000
-202,Hard Stone,19,1000
-203,Miracle Seed,19,1000
-204,Black Glasses,19,1000
-205,Black Belt,19,1000
-206,Magnet,19,1000
-207,Mystic Water,19,1000
-208,Sharp Beak,19,1000
-209,Poison Barb,19,1000
-210,Never-Melt Ice,19,1000
-211,Spell Tag,19,1000
-212,Twisted Spoon,19,1000
-213,Charcoal,19,1000
-214,Dragon Fang,19,1000
-215,Silk Scarf,19,1000
-216,Up-Grade,10,2000
-217,Shell Bell,12,4000
-218,Sea Incense,19,2000
-219,Lax Incense,12,5000
-220,Lucky Punch,18,1000
-221,Metal Powder,18,1000
-222,Thick Club,18,1000
-223,Stick,18,1000
-224,Red Scarf,36,100
-225,Blue Scarf,36,100
-226,Pink Scarf,36,100
-227,Green Scarf,36,100
-228,Yellow Scarf,36,100
-229,Wide Lens,12,4000
-230,Muscle Band,12,4000
-231,Wise Glasses,12,4000
-232,Expert Belt,12,4000
-233,Light Clay,12,4000
-234,Life Orb,12,4000
-235,Power Herb,12,4000
-236,Toxic Orb,15,4000
-237,Flame Orb,15,4000
-238,Quick Powder,18,1000
-239,Focus Sash,12,4000
-240,Zoom Lens,12,4000
-241,Metronome,12,4000
-242,Iron Ball,15,4000
-243,Lagging Tail,15,4000
-244,Destiny Knot,12,4000
-245,Black Sludge,12,4000
-246,Icy Rock,12,4000
-247,Smooth Rock,12,4000
-248,Heat Rock,12,4000
-249,Damp Rock,12,4000
-250,Grip Claw,12,4000
-251,Choice Scarf,13,4000
-252,Sticky Barb,15,4000
-253,Power Bracer,14,3000
-254,Power Belt,14,3000
-255,Power Lens,14,3000
-256,Power Band,14,3000
-257,Power Anklet,14,3000
-258,Power Weight,14,3000
-259,Shed Shell,12,4000
-260,Big Root,12,4000
-261,Choice Specs,13,4000
-262,Flame Plate,17,1000
-263,Splash Plate,17,1000
-264,Zap Plate,17,1000
-265,Meadow Plate,17,1000
-266,Icicle Plate,17,1000
-267,Fist Plate,17,1000
-268,Toxic Plate,17,1000
-269,Earth Plate,17,1000
-270,Sky Plate,17,1000
-271,Mind Plate,17,1000
-272,Insect Plate,17,1000
-273,Stone Plate,17,1000
-274,Spooky Plate,17,1000
-275,Draco Plate,17,1000
-276,Dread Plate,17,1000
-277,Iron Plate,17,1000
-278,Odd Incense,19,2000
-279,Rock Incense,19,2000
-280,Full Incense,15,5000
-281,Wave Incense,19,2000
-282,Rose Incense,19,2000
-283,Luck Incense,16,11000
-284,Pure Incense,16,6000
-285,Protector,10,2000
-286,Electirizer,10,2000
-287,Magmarizer,10,2000
-288,Dubious Disc,10,2000
-289,Reaper Cloth,10,2000
-290,Razor Claw,12,5000
-291,Razor Fang,12,5000
+item_id,name,category_id,cost,description
+0,Master Ball,0,0,The best Ball with the ultimate level of performance. It will catch any wild Pokemon without fail.
+1,Ultra Ball,0,800,An ultra-performance Ball that provides a higher Pokemon catch rate than a Great Ball.
+2,Great Ball,0,600,A good$ high-performance Ball that provides a higher Pokemon catch rate than a standard Poke Ball.
+3,Poke Ball,0,200,A device for catching wild Pokemon. It is thrown like a ball at the target. It is designed as a capsule system.
+4,Safari Ball,0,0,A special Poke Ball that is used only in the Great Marsh. It is decorated in a camouflage pattern.
+5,Net Ball,0,1000,A somewhat different Poke Ball that works especially well on Water- and Bug-type Pokemon.
+6,Dive Ball,0,1000,A somewhat different Poke Ball that works especially well on Pokemon that live underwater.
+7,Nest Ball,0,1000,A somewhat different Poke Ball that works especially well on weaker Pokemon in the wild.
+8,Repeat Ball,0,1000,A somewhat different Poke Ball that works especially well on Pokemon species that were previously caught.
+9,Timer Ball,0,1000,A somewhat different Ball that becomes progressively better the more turns there are in a battle.
+10,Luxury Ball,0,1000,A comfortable Poke Ball that makes a caught wild Pokemon quickly grow friendly.
+11,Premier Ball,0,20,A somewhat rare Poke Ball that has been specially made to commemorate an event of some sort.
+12,Dusk Ball,0,1000,A somewhat different Poke Ball that makes it easier to catch wild Pokemon at night or in dark places like caves.
+13,Heal Ball,0,300,A remedial Poke Ball that restores the caught Pokemon's HP and eliminates any status problem.
+14,Quick Ball,0,1000,A somewhat different Poke Ball that provides a better catch rate if it is used at the start of a wild encounter.
+15,Cherish Ball,0,0,A quite rare Poke Ball that has been specially crafted to commemorate an occasion of some sort.
+16,Potion,2,200,A spray-type medicine for wounds. It restores the HP of one Pokemon by just 20 points.
+17,Antidote,2,200,A spray-type medicine. It lifts the effect of poison from one Pokemon.
+18,Burn Heal,2,300,A spray-type medicine. It heals a single Pokemon that is suffering from a burn.
+19,Ice Heal,2,100,A spray-type medicine. It defrosts a Pokemon that has been frozen solid.
+20,Awakening,2,100,A spray-type medicine. It awakens a Pokemon from the clutches of sleep.
+21,Paralyze Heal,2,300,A spray-type medicine. It eliminates paralysis from a single Pokemon.
+22,Full Restore,2,3000,A medicine that fully restores the HP and heals any status problems of a single Pokemon.
+23,Max Potion,2,2500,A spray-type medicine for wounds. It completely restores the HP of a single Pokemon.
+24,Hyper Potion,2,1500,A spray-type medicine for wounds. It restores the HP of one Pokemon by 200 points.
+25,Super Potion,2,700,A spray-type medicine for wounds. It restores the HP of one Pokemon by 50 points.
+26,Full Heal,2,400,A spray-type medicine. It heals all the status problems of a single Pokemon.
+27,Revive,2,2000,A medicine that revives a fainted Pokemon. It restores half the Pokemon's maximum HP.
+28,Max Revive,2,4000,A medicine that revives a fainted Pokemon. It fully restores the Pokemon's HP.
+29,Fresh Water,2,200,Water with a high mineral content. It restores the HP of one Pokemon by 50 points.
+30,Soda Pop,2,300,A fizzy soda drink. It restores the HP of one Pokemon by 60 points.
+31,Lemonade,2,400,A very sweet drink. It restores the HP of one Pokemon by 80 points.
+32,Moomoo Milk,2,600,Milk with a very high nutrition content. It restores the HP of one Pokemon by 100 points.
+33,Energy Powder,2,500,A very bitter medicine powder. It restores the HP of one Pokemon by 50 points.
+34,Energy Root,2,1200,A very bitter root. It restores the HP of one Pokemon by 200 points.
+35,Heal Powder,2,300,A very bitter medicine powder. It heals all the status problems of a single Pokemon.
+36,Revival Herb,2,2800,A very bitter medicinal herb. It revives a fainted Pokemon$ fully restoring its HP.
+37,Ether,2,1200,It restores the PP of a Pokemon's selected move by a maximum of 10 points.
+38,Max Ether,2,2000,It fully restores the PP of a single selected move that has been learned by the target Pokemon.
+39,Elixir,2,3000,It restores the PP of all the moves learned by the targeted Pokemon by 10 points each.
+40,Max Elixir,2,4500,It fully restores the PP of all the moves learned by the targeted Pokemon.
+41,Lava Cookie,2,350,Lavaridge Town's local specialty. It heals all the status problems of one Pokemon.
+42,Berry Juice,2,200,A 100% pure juice made of Berries. It restores the HP of one Pokemon by just 20 points.
+43,Sacred Ash,2,50000,It revives all fainted Pokemon. In doing so$ it also fully restores their HP.
+44,HP Up,2,10000,A nutritious drink for Pokemon. It raises the base HP of a single Pokemon.
+45,Protein,2,10000,A nutritious drink for Pokemon. It raises the base Attack stat of a single Pokemon.
+46,Iron,2,10000,A nutritious drink for Pokemon. It raises the base Defense stat of a single Pokemon.
+47,Carbos,2,10000,A nutritious drink for Pokemon. It raises the base Speed stat of a single Pokemon.
+48,Calcium,2,10000,A nutritious drink for Pokemon. It raises the base Sp. Atk (Special Attack) stat of a single Pokemon.
+49,Rare Candy,2,10000,A candy that is packed with energy. It raises the level of a single Pokemon by one.
+50,PP Up,2,10000,It slightly raises the maximum PP of a selected move that has been learned by the target Pokemon.
+51,Zinc,2,10000,A nutritious drink for Pokemon. It raises the base Sp. Def (Special Defense) stat of a single Pokemon.
+52,PP Max,2,10000,It maximally raises the top PP of a selected move that has been learned by the target Pokemon.
+53,Old Gateau,2,350,Old Chateau's hidden specialty. It heals all the status problems of a single Pokemon.
+54,Guard Spec.,2,1500,An item that prevents stat reduction among the Trainer's party Pokemon for five turns after use.
+55,Dire Hit,2,1000,It raises the critical-hit ratio greatly. It can be used only once and wears off if the Pokemon is withdrawn.
+56,X Attack,2,1000,An item that raises the Attack stat of a Pokemon in battle. It wears off if the Pokemon is withdrawn.
+57,X Defense,2,2000,An item that raises the Defense stat of a Pokemon in battle. It wears off if the Pokemon is withdrawn.
+58,X Speed,2,1000,An item that raises the Speed stat of a Pokemon in battle. It wears off if the Pokemon is withdrawn.
+59,X Accuracy,2,1000,An item that raises the accuracy of a Pokemon in battle. It wears off if the Pokemon is withdrawn.
+60,X Sp. Atk,2,1000,An item that raises the Sp. Atk stat of a Pokemon in battle. It wears off if the Pokemon is withdrawn.
+61,X Sp. Def,2,2000,An item that raises the Sp. Def stat of a Pokemon in battle. It wears off if the Pokemon is withdrawn.
+62,Pok\u00E9 Doll,2,100,A doll that attracts Pokemon. Use it to flee from any battle with a wild Pokemon.
+63,Fluffy Tail,2,100,An item that attracts Pokemon. Use it to flee from any battle with a wild Pokemon.
+64,Blue Flute,2,20,A toy flute made from blue glass. A maniac will buy it for a high price.
+65,Yellow Flute,2,20,A toy flute made from yellow glass. A maniac will buy it for a high price.
+66,Red Flute,2,20,A toy flute made from red glass. A maniac will buy it for a high price.
+67,Black Flute,2,20,A toy flute made from black glass. A maniac will buy it for a high price.
+68,White Flute,2,20,A toy flute made from white glass. A maniac will buy it for a high price.
+69,Shoal Salt,2,20,Pure salt that can be discovered deep inside the Shoal Cave. A maniac will buy it for a high price.
+70,Shoal Shell,2,20,A pretty seashell that can be found deep inside the Shoal Cave. A maniac will buy it for a high price.
+71,Red Shard,2,1000,A small red shard. It appears to be from some sort of implement made long ago.
+72,Blue Shard,2,1000,A small blue shard. It appears to be from some sort of implement made long ago.
+73,Yellow Shard,2,1000,A small yellow shard. It appears to be from some sort of implement made long ago.
+74,Green Shard,2,1000,A small green shard. It appears to be from some sort of implement made long ago.
+75,Super Repel,2,700,An item that prevents weak wild Pokemon from appearing for 200 steps after its use.
+76,Max Repel,2,900,An item that prevents weak wild Pokemon from appearing for 250 steps after its use.
+77,Escape Rope,2,1000,A long$ durable rope. Use it to escape instantly from a cave or a dungeon.
+78,Repel,2,400,An item that prevents weak wild Pokemon from appearing for 100 steps after its use.
+79,Sun Stone,2,3000,A peculiar stone that makes certain species of Pokemon evolve. It is as red as the sun.
+80,Moon Stone,2,3000,A peculiar stone that makes certain species of Pokemon evolve. It is as black as the night sky.
+81,Fire Stone,2,3000,A peculiar stone that makes certain species of Pokemon evolve. It is colored orange.
+82,Thunder Stone,2,3000,A peculiar stone that makes certain species of Pokemon evolve. It has a thunderbolt pattern.
+83,Water Stone,2,3000,A peculiar stone that makes certain species of Pokemon evolve. It is a clear$ light blue.
+84,Leaf Stone,2,3000,A peculiar stone that makes certain species of Pokemon evolve. It has a leaf pattern.
+85,Tiny Mushroom,2,500,A small and rare mushroom. It is sought after by collectors.
+86,Big Mushroom,2,5000,A large and rare mushroom. It is sought after by collectors.
+87,Pearl,2,2000,A somewhat-small pearl that sparkles in a pretty silver color. It can be sold cheaply to shops.
+88,Big Pearl,2,8000,A quite-large pearl that sparkles in a pretty silver color. It can be sold at a high price to shops.
+89,Stardust,2,3000,Lovely$ red-colored sand with a loose$ silky feel. It can be sold at a high price to shops.
+90,Star Piece,2,12000,A shard of a pretty gem that sparkles in a red color. It can be sold at a high price to shops.
+91,Nugget,2,10000,A nugget of pure gold that gives off a lustrous gleam. It can be sold at a high price to shops.
+92,Heart Scale,2,100,A pretty$ heart-shaped scale that is extremely rare. It glows faintly in the colors of the rainbow.
+93,Honey,2,300,A sweet honey with a lush aroma that attracts wild Pokemon when it is used in grass$ caves$ or on special trees.
+94,Growth Mulch,2,200,A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
+95,Damp Mulch,2,200,A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
+96,Stable Mulch,2,200,A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
+97,Gooey Mulch,2,200,A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
+98,Root Fossil,3,7000,A fossil of an ancient Pokemon that lived in the sea. It appears to be part of a plant root.
+99,Claw Fossil,3,7000,A fossil of an ancient Pokemon that lived in the sea. It appears to be part of a claw.
+100,Helix Fossil,3,7000,A fossil of an ancient Pokemon that lived in the sea. It appears to be part of a seashell.
+101,Dome Fossil,3,7000,A fossil of an ancient Pokemon that lived in the sea. It appears to be part of a shell.
+102,Old Amber,3,10000,A piece of amber that contains the genetic material of an ancient Pokemon. It is clear with a reddish tint.
+103,Armor Fossil,3,7000,A fossil from a prehistoric Pokemon that lived on the land. It appears to be part of a collar.
+104,Skull Fossil,3,7000,A fossil from a prehistoric Pokemon that lived on the land. It appears to be part of a head.
+105,Rare Bone,2,5000,A bone that is extremely valuable for Pokemon archeology. It can be sold for a high price to shops.
+106,Shiny Stone,2,3000,A peculiar stone that makes certain species of Pokemon evolve. It shines with a dazzling light.
+107,Dusk Stone,2,3000,A peculiar stone that makes certain species of Pokemon evolve. It is as dark as dark can be.
+108,Dawn Stone,2,3000,A peculiar stone that makes certain species of Pokemon evolve. It sparkles like eyes.
+109,Oval Stone,2,2000,A peculiar stone that makes certain species of Pokemon evolve. It is shaped like an egg.
+110,Odd Keystone,2,2100,A vital item that is needed to keep a stone tower from collapsing. Voices can be heard from it occasionally.
+111,Adamant Orb,2,0,A brightly gleaming orb to be held by Dialga. It boosts the power of Dragon-​ and Steel-type moves.
+112,Lustrous Orb,2,0,A beautifully glowing orb to be held by Palkia. It boosts the power of Dragon-​ and Water-type moves.
+113,Cheri Berry,1,20,If held by a Pokemon$ it recovers from paralysis.
+114,Chesto Berry,1,20,If held by a Pokemon$ it recovers from sleep.
+115,Pecha Berry,1,20,If held by a Pokemon$ it recovers from poison.
+116,Rawst Berry,1,20,If held by a Pokemon$ it recovers from a burn.
+117,Aspear Berry,1,20,If held by a Pokemon$ it defrosts it.
+118,Leppa Berry,1,20,If held by a Pokemon$ it restores a move's PP by 10.
+119,Oran Berry,1,20,If held by a Pokemon$ it heals the user by just 10 HP.
+120,Persim Berry,1,20,If held by a Pokemon$ it recovers from confusion.
+121,Lum Berry,1,20,If held by a Pokemon$ it recovers from any status problem.
+122,Sitrus Berry,1,20,If held by a Pokemon$ it heals the user's HP a little.
+123,Figy Berry,1,20,If held by a Pokemon$ it restores the user's HP in a pinch$ but will cause confusion if it hates the taste.
+124,Wiki Berry,1,20,If held by a Pokemon$ it restores the user's HP in a pinch$ but will cause confusion if it hates the taste.
+125,Mago Berry,1,20,If held by a Pokemon$ it restores the user's HP in a pinch$ but will cause confusion if it hates the taste.
+126,Aguav Berry,1,20,If held by a Pokemon$ it restores the user's HP in a pinch$ but will cause confusion if it hates the taste.
+127,Iapapa Berry,1,20,If held by a Pokemon$ it restores the user's HP in a pinch$ but will cause confusion if it hates the taste.
+128,Razz Berry,1,20,A Berry which is very rare in the Unova region. A maniac will buy it for a high price.
+129,Bluk Berry,1,20,A Berry which is very rare in the Unova region. A maniac will buy it for a high price.
+130,Nanab Berry,1,20,A Berry which is very rare in the Unova region. A maniac will buy it for a high price.
+131,Wepear Berry,1,20,A Berry which is very rare in the Unova region. A maniac will buy it for a high price.
+132,Pinap Berry,1,20,A Berry which is very rare in the Unova region. A maniac will buy it for a high price.
+133,Pomeg Berry,1,20,Using it on a Pokemon makes it more friendly$ but it also lowers its base HP.
+134,Kelpsy Berry,1,20,Using it on a Pokemon makes it more friendly$ but it also lowers its base Attack stat.
+135,Qualot Berry,1,20,Using it on a Pokemon makes it more friendly$ but it also lowers its base Defense stat.
+136,Hondew Berry,1,20,Using it on a Pokemon makes it more friendly$ but it also lowers its base Sp. Atk stat.
+137,Grepa Berry,1,20,Using it on a Pokemon makes it more friendly$ but it also lowers its base Sp. Def stat.
+138,Tamato Berry,1,20,Using it on a Pokemon makes it more friendly$ but it also lowers its base Speed stat.
+139,Cornn Berry,1,20,A Berry which is very rare in the Unova region. A maniac will buy it for a high price.
+140,Magost Berry,1,20,A Berry which is very rare in the Unova region. A maniac will buy it for a high price.
+141,Rabuta Berry,1,20,A Berry which is very rare in the Unova region. A maniac will buy it for a high price.
+142,Nomel Berry,1,20,A Berry which is very rare in the Unova region. A maniac will buy it for a high price.
+143,Spelon Berry,1,20,A Berry which is very rare in the Unova region. A maniac will buy it for a high price.
+144,Pamtre Berry,1,20,A Berry which is very rare in the Unova region. A maniac will buy it for a high price.
+145,Watmel Berry,1,20,A Berry which is very rare in the Unova region. A maniac will buy it for a high price.
+146,Durin Berry,1,20,A Berry which is very rare in the Unova region. A maniac will buy it for a high price.
+147,Belue Berry,1,20,A Berry which is very rare in the Unova region. A maniac will buy it for a high price.
+148,Occa Berry,1,20,Weakens a supereffective Fire-type attack against the holding Pokemon.
+149,Passho Berry,1,20,Weakens a supereffective Water-type attack against the holding Pokemon.
+150,Wacan Berry,1,20,Weakens a supereffective Electric-type attack against the holding Pokemon.
+151,Rindo Berry,1,20,Weakens a supereffective Grass-type attack against the holding Pokemon.
+152,Yache Berry,1,20,Weakens a supereffective Ice-type attack against the holding Pokemon.
+153,Chople Berry,1,20,Weakens a supereffective Fighting-type attack against the holding Pokemon.
+154,Kebia Berry,1,20,Weakens a supereffective Poison-type attack against the holding Pokemon.
+155,Shuca Berry,1,20,Weakens a supereffective Ground-type attack against the holding Pokemon.
+156,Coba Berry,1,20,Weakens a supereffective Flying-type attack against the holding Pokemon.
+157,Payapa Berry,1,20,Weakens a supereffective Psychic-type attack against the holding Pokemon.
+158,Tanga Berry,1,20,Weakens a supereffective Bug-type attack against the holding Pokemon.
+159,Charti Berry,1,20,Weakens a supereffective Rock-type attack against the holding Pokemon.
+160,Kasib Berry,1,20,Weakens a supereffective Ghost-type attack against the holding Pokemon.
+161,Haban Berry,1,20,Weakens a supereffective Dragon-type attack against the holding Pokemon.
+162,Colbur Berry,1,20,Weakens a supereffective Dark-type attack against the holding Pokemon.
+163,Babiri Berry,1,20,Weakens a supereffective Steel-type attack against the holding Pokemon.
+164,Chilan Berry,1,20,Weakens a Normal-type attack against the Pokemon holding this berry.
+165,Liechi Berry,1,20,If held by a Pokemon$ it raises its Attack stat in a pinch.
+166,Ganlon Berry,1,20,If held by a Pokemon$ it raises its Defense stat in a pinch.
+167,Salac Berry,1,20,If held by a Pokemon$ it raises its Speed stat in a pinch.
+168,Petaya Berry,1,20,If held by a Pokemon$ it raises its Sp. Atk stat in a pinch.
+169,Apicot Berry,1,20,If held by a Pokemon$ it raises its Sp. Def stat in a pinch.
+170,Lansat Berry,1,20,If held by a Pokemon$ it raises its critical-hit ratio in a pinch.
+171,Starf Berry,1,20,If held by a Pokemon$ it sharply raises one of its stats in a pinch.
+172,Enigma Berry,1,20,If held by a Pokemon$ it restores its HP if it is hit by any supereffective attack.
+173,Micle Berry,1,20,If held by a Pokemon$ it raises the accuracy of a move just once in a pinch.
+174,Custap Berry,1,20,If held by a Pokemon$ it gets to move first just once in a pinch.
+175,Jaboca Berry,1,20,If held by a Pokemon and a physical attack lands$ the attacker also takes damage.
+176,Rowap Berry,1,20,If held by a Pokemon and a special attack lands$ the attacker also takes damage.
+177,Bright Powder,12,4000,An item to be held by a Pokemon. It casts a tricky glare that lowers the opponent's accuracy.
+178,White Herb,12,4000,An item to be held by a Pokemon. It restores any lowered stat in battle. It can be used only once.
+179,Macho Brace,14,3000,An item to be held by a Pokemon. It is a stiff and heavy brace that promotes strong growth but lowers Speed.
+180,Exp. Share,16,0,An item to be held by a Pokemon. The holder gets a share of a battle's Exp. Points without battling.
+181,Quick Claw,12,4000,An item to be held by a Pokemon. A light$ sharp claw that lets the bearer move first occasionally.
+182,Soothe Bell,16,4000,An item to be held by a Pokemon. It is a bell with a comforting chime that calms the holder and makes it friendly.
+183,Mental Herb,12,4000,An item to be held by a Pokemon. It snaps the holder out of infatuation. It can be used only once.
+184,Choice Band,13,4000,An item to be held by a Pokemon. This headband ups Attack$ but allows the use of only one of its moves.
+185,King's Rock,12,5000,An item to be held by a Pokemon. When the holder inflicts damage$ the target may flinch.
+186,Silver Powder,19,1000,An item to be held by a Pokemon. It is a shiny$ silver powder that ups the power of Bug-type moves.
+187,Amulet Coin,16,10000,An item to be held by a Pokemon. It doubles a battle's prize money if the holding Pokemon joins in.
+188,Cleanse Tag,16,5000,An item to be held by a Pokemon. It helps keep wild Pokemon away if the holder is the first one in the party.
+189,Soul Dew,18,0,A wondrous orb to be held by Latios or Latias. It raises both the Sp. Atk and Sp. Def stats.
+190,Deep Sea Tooth,18,2000,An item to be held by Clamperl. A fang that gleams a sharp silver$ it raises the Sp. Atk stat.
+191,Deep Sea Scale,18,2000,An item to be held by Clamperl. A scale that shines a faint pink$ it raises the Sp. Def stat.
+192,Smoke Ball,12,4000,An item to be held by a Pokemon. It enables the holder to flee from any wild Pokemon without fail.
+193,Everstone,16,3000,An item to be held by a Pokemon. The Pokemon holding this peculiar stone is prevented from evolving.
+194,Focus Band,12,4000,An item to be held by a Pokemon. The holder may endure a potential KO attack$ leaving it with just 1 HP.
+195,Lucky Egg,16,10000,An item to be held by a Pokemon. It is an egg filled with happiness that earns extra Exp. Points in battle.
+196,Scope Lens,12,4000,An item to be held by a Pokemon. It is a lens that boosts the holder's critical-hit ratio.
+197,Metal Coat,19,2000,An item to be held by a Pokemon. It is a special metallic film that ups the power of Steel-type moves.
+198,Leftovers,12,4000,An item to be held by a Pokemon. The holder's HP is gradually restored during battle.
+199,Dragon Scale,10,2000,A thick and tough scale. Dragon-type Pokemon may be holding this item when caught.
+200,Light Ball,18,1000,An item to be held by Pikachu. It is a puzzling orb that raises the Attack and Sp. Atk stat.
+201,Soft Sand,19,1000,An item to be held by a Pokemon. It is a loose$ silky sand that boosts the power of Ground-type moves.
+202,Hard Stone,19,1000,An item to be held by a Pokemon. It is an unbreakable stone that ups the power of Rock-type moves.
+203,Miracle Seed,19,1000,An item to be held by a Pokemon. It is a seed imbued with life that ups the power of Grass-type moves.
+204,Black Glasses,19,1000,An item to be held by a Pokemon. It is a shady-looking pair of glasses that boosts Dark-type moves.
+205,Black Belt,19,1000,An item to be held by a Pokemon. It is a belt that boosts determination and Fighting-type moves.
+206,Magnet,19,1000,An item to be held by a Pokemon. It is a powerful magnet that boosts the power of Electric-type moves.
+207,Mystic Water,19,1000,An item to be held by a Pokemon. It is a teardrop-shaped gem that ups the power of Water-type moves.
+208,Sharp Beak,19,1000,An item to be held by a Pokemon. It is a long$ sharp beak that boosts the power of Flying-type moves.
+209,Poison Barb,19,1000,An item to be held by a Pokemon. It is a small$ poisonous barb that ups the power of Poison-type moves.
+210,Never-Melt Ice,19,1000,An item to be held by a Pokemon. It is a piece of ice that repels heat and boosts Ice-type moves.
+211,Spell Tag,19,1000,An item to be held by a Pokemon. It is a sinister$ eerie tag that boosts the power of Ghost-type moves.
+212,Twisted Spoon,19,1000,An item to be held by a Pokemon. It is a spoon imbued with telekinetic power that boosts Psychic-type moves.
+213,Charcoal,19,1000,An item to be held by a Pokemon. It is a combustible fuel that boosts the power of Fire-type moves.
+214,Dragon Fang,19,1000,An item to be held by a Pokemon. It is a hard and sharp fang that ups the power of Dragon-type moves.
+215,Silk Scarf,19,1000,An item to be held by a Pokemon. It is a sumptuous scarf that boosts the power of Normal-type moves.
+216,Up-Grade,10,2000,A transparent device filled with all sorts of data. It was produced by Silph Co.
+217,Shell Bell,12,4000,An item to be held by a Pokemon. The holder's HP is restored a little every time it inflicts damage.
+218,Sea Incense,19,2000,An item to be held by a Pokemon. It is incense with a curious aroma that boosts the power of Water-type moves.
+219,Lax Incense,12,5000,An item to be held by a Pokemon. The tricky aroma of this incense may make attacks miss the holder.
+220,Lucky Punch,18,1000,An item to be held by Chansey. It is a pair of gloves that boosts Chansey's critical-hit ratio.
+221,Metal Powder,18,1000,An item to be held by Ditto. Extremely fine yet hard$ this odd powder boosts the Defense stat.
+222,Thick Club,18,1000,An item to be held by Cubone or Marowak. It is a hard bone of some sort that boosts the Attack stat.
+223,Stick,18,1000,An item to be held by Farfetch'd. It is a very long and stiff stalk of leek that boosts the critical-hit ratio.
+224,Red Scarf,36,100,An item to be held by a Pokemon. It boosts the Cool aspect of the holder in a Contest.
+225,Blue Scarf,36,100,An item to be held by a Pokemon. It boosts the Beauty aspect of the holder in a Contest.
+226,Pink Scarf,36,100,An item to be held by a Pokemon. It boosts the Cute aspect of the holder in a Contest.
+227,Green Scarf,36,100,An item to be held by a Pokemon. It boosts the Smart aspect of the holder in a Contest.
+228,Yellow Scarf,36,100,An item to be held by a Pokemon. It boosts the Tough aspect of the holder in a Contest.
+229,Wide Lens,12,4000,An item to be held by a Pokemon. It is a magnifying lens that slightly boosts the accuracy of moves.
+230,Muscle Band,12,4000,An item to be held by a Pokemon. It is a headband that slightly boosts the power of physical moves.
+231,Wise Glasses,12,4000,An item to be held by a Pokemon. It is a thick pair of glasses that slightly boosts the power of special moves.
+232,Expert Belt,12,4000,An item to be held by a Pokemon. It is a well-worn belt that slightly boosts the power of supereffective moves.
+233,Light Clay,12,4000,A Pokemon held item that extends the duration of barrier moves like Light Screen and Reflect used by the holder.
+234,Life Orb,12,4000,An item to be held by a Pokemon. It boosts the power of moves$ but at the cost of some HP on each hit.
+235,Power Herb,12,4000,A single-use item to be held by a Pokemon. It allows the immediate use of a move that charges on the first turn.
+236,Toxic Orb,15,4000,An item to be held by a Pokemon. It is a bizarre orb that badly poisons the holder in battle.
+237,Flame Orb,15,4000,An item to be held by a Pokemon. It is a bizarre orb that inflicts a burn on the holder in battle.
+238,Quick Powder,18,1000,An item to be held by Ditto. Extremely fine yet hard$ this odd powder boosts the Speed stat.
+239,Focus Sash,12,4000,An item to be held by a Pokemon. If it has full HP$ the holder will endure one potential KO attack$ leaving 1 HP.
+240,Zoom Lens,12,4000,An item to be held by a Pokemon. If the holder moves after its target$ its accuracy will be boosted.
+241,Metronome,12,4000,A Pokemon held item that boosts a move used consecutively. Its effect is reset if another move is used.
+242,Iron Ball,15,4000,A Pokemon held item that cuts Speed. It makes Flying-type and levitating holders susceptible to Ground moves.
+243,Lagging Tail,15,4000,An item to be held by a Pokemon. It is tremendously heavy and makes the holder move slower than usual.
+244,Destiny Knot,12,4000,A long$ thin$ bright-red string to be held by a Pokemon. If the holder becomes infatuated$ the foe does too.
+245,Black Sludge,12,4000,A held item that gradually restores the HP of Poison-type Pokemon. It inflicts damage on all other types.
+246,Icy Rock,12,4000,A Pokemon held item that extends the duration of the move Hail used by the holder.
+247,Smooth Rock,12,4000,A Pokemon held item that extends the duration of the move Sandstorm used by the holder.
+248,Heat Rock,12,4000,A Pokemon held item that extends the duration of the move Sunny Day used by the holder.
+249,Damp Rock,12,4000,A Pokemon held item that extends the duration of the move Rain Dance used by the holder.
+250,Grip Claw,12,4000,A Pokemon held item that extends the duration of multiturn attacks like Bind and Wrap.
+251,Choice Scarf,13,4000,An item to be held by a Pokemon. This scarf boosts Speed$ but allows the use of only one of its moves.
+252,Sticky Barb,15,4000,A held item that damages the holder on every turn. It may latch on to foes and allies that touch the holder.
+253,Power Bracer,14,3000,A Pokemon held item that promotes Attack gain on leveling$ but reduces the Speed stat.
+254,Power Belt,14,3000,A Pokemon held item that promotes Defense gain on leveling$ but reduces the Speed stat.
+255,Power Lens,14,3000,A Pokemon held item that promotes Sp. Atk gain on leveling$ but reduces the Speed stat.
+256,Power Band,14,3000,A Pokemon held item that promotes Sp. Def gain on leveling$ but reduces the Speed stat.
+257,Power Anklet,14,3000,A Pokemon held item that promotes Speed gain on leveling$ but reduces the Speed stat.
+258,Power Weight,14,3000,A Pokemon held item that promotes HP gain on leveling$ but reduces the Speed stat.
+259,Shed Shell,12,4000,A tough$ discarded carapace to be held by a Pokemon. It enables the holder to switch with a waiting Pokemon in battle.
+260,Big Root,12,4000,A Pokemon held item that boosts the power of HP-stealing moves to let the holder recover more HP.
+261,Choice Specs,13,4000,An item to be held by a Pokemon. These distinctive glasses boost Sp. Atk but allow the use of only one of its moves.
+262,Flame Plate,17,1000,An item to be held by a Pokemon. It is a stone tablet that boosts the power of Fire-type moves.
+263,Splash Plate,17,1000,An item to be held by a Pokemon. It is a stone tablet that boosts the power of Water-type moves.
+264,Zap Plate,17,1000,An item to be held by a Pokemon. It is a stone tablet that boosts the power of Electric-type moves.
+265,Meadow Plate,17,1000,An item to be held by a Pokemon. It is a stone tablet that boosts the power of Grass-type moves.
+266,Icicle Plate,17,1000,An item to be held by a Pokemon. It is a stone tablet that boosts the power of Ice-type moves.
+267,Fist Plate,17,1000,An item to be held by a Pokemon. It is a stone tablet that boosts the power of Fighting-type moves.
+268,Toxic Plate,17,1000,An item to be held by a Pokemon. It is a stone tablet that boosts the power of Poison-type moves.
+269,Earth Plate,17,1000,An item to be held by a Pokemon. It is a stone tablet that boosts the power of Ground-type moves.
+270,Sky Plate,17,1000,An item to be held by a Pokemon. It is a stone tablet that boosts the power of Flying-type moves.
+271,Mind Plate,17,1000,An item to be held by a Pokemon. It is a stone tablet that boosts the power of Psychic-type moves.
+272,Insect Plate,17,1000,An item to be held by a Pokemon. It is a stone tablet that boosts the power of Bug-type moves.
+273,Stone Plate,17,1000,An item to be held by a Pokemon. It is a stone tablet that boosts the power of Rock-type moves.
+274,Spooky Plate,17,1000,An item to be held by a Pokemon. It is a stone tablet that boosts the power of Ghost-type moves.
+275,Draco Plate,17,1000,An item to be held by a Pokemon. It is a stone tablet that boosts the power of Dragon-type moves.
+276,Dread Plate,17,1000,An item to be held by a Pokemon. It is a stone tablet that boosts the power of Dark-type moves.
+277,Iron Plate,17,1000,An item to be held by a Pokemon. It is a stone tablet that boosts the power of Steel-type moves.
+278,Odd Incense,19,2000,An item to be held by a Pokemon. It is an exotic-smelling incense that boosts the power of Psychic-type moves.
+279,Rock Incense,19,2000,An item to be held by a Pokemon. It is an exotic-smelling incense that boosts the power of Rock-type moves.
+280,Full Incense,15,5000,An item to be held by a Pokemon. It is an exotic-smelling incense that makes the holder bloated and slow moving.
+281,Wave Incense,19,2000,An item to be held by a Pokemon. It is incense with a curious aroma that boosts the power of Water-type moves.
+282,Rose Incense,19,2000,An item to be held by a Pokemon. It is an exotic-smelling incense that boosts the power of Grass-type moves.
+283,Luck Incense,16,11000,An item to be held by a Pokemon. It doubles a battle's prize money if the holding Pokemon joins in.
+284,Pure Incense,16,6000,An item to be held by a Pokemon. It helps keep wild Pokemon away if the holder is the first one in the party.
+285,Protector,10,2000,A protective item of some sort. It is extremely stiff and heavy. It is loved by a certain Pokemon.
+286,Electirizer,10,2000,A box packed with a tremendous amount of electric energy. It is loved by a certain Pokemon.
+287,Magmarizer,10,2000,A box packed with a tremendous amount of magma energy. It is loved by a certain Pokemon.
+288,Dubious Disc,10,2000,A transparent device overflowing with dubious data. Its producer is unknown.
+289,Reaper Cloth,10,2000,A cloth imbued with horrifyingly strong spiritual energy. It is loved by a certain Pokemon.
+290,Razor Claw,12,5000,An item to be held by a Pokemon. It is a sharply hooked claw that ups the holder's critical-hit ratio.
+291,Razor Fang,12,5000,An item to be held by a Pokemon. It may make foes and allies flinch when the holder inflicts damage.
+,,,,The user sharpens its claws to boost its Attack stat and accuracy.
+,,,,The user slashes the target with huge$ sharp claws.
+,,,,The user materializes an odd psychic wave to attack the target. This attack does physical damage.
+,,,,The user quietly focuses its mind and calms its spirit to raise its Sp. Atk and Sp. Def stats.
+,,,,The target is scared off and replaced by another Pokemon in its party. In the wild$ the battle ends.
+,,,,A move that leaves the target badly poisoned. Its poison damage worsens every turn.
+,,,,Summons a hailstorm that lasts for five turns. The hailstorm damages all types except Ice.
+,,,,The user tenses its muscles to bulk up its body$ boosting both its Attack and Defense stats.
+,,,,The user drenches the target in a special poisonous liquid. Its power is doubled if the target is poisoned.
+,,,,A unique attack that varies in type and intensity depending on the Pokemon using it.
+,,,,The user intensifies the sun for five turns$ powering up Fire-type moves.
+,,,,The target is taunted into a rage that allows it to use only attack moves for three turns.
+,,,,The target is struck with an icy-cold beam of energy. It may also freeze the target solid.
+,,,,A howling blizzard is summoned to strike the opposing team. It may also freeze them solid.
+,,,,The target is attacked with a powerful beam. The user must rest on the next turn to regain its energy.
+,,,,A wondrous wall of light is put up to suppress damage from special attacks for five turns.
+,,,,It enables the user to evade all attacks. Its chance of failing rises if it is used in succession.
+,,,,The user summons a heavy rain that falls for five turns$ powering up Water-type moves.
+,,,,The user makes the target float with its psychic power. The target is easier to hit for three turns.
+,,,,The user creates a protective field that prevents status problems for five turns.
+,,,,A full-power attack that grows more powerful the less the user likes its Trainer.
+,,,,A two-turn attack. The user gathers light$ then blasts a bundled beam on the second turn.
+,,,,The user throws a stone or projectile to attack an opponent. A flying Pokemon will fall to the ground when it's hit.
+,,,,A strong electric blast is loosed at the target. It may also leave the target with paralysis.
+,,,,A wicked thunderbolt is dropped on the target to inflict damage. It may also leave the target with paralysis.
+,,,,The user sets off an earthquake that strikes every Pokemon around it.
+,,,,A full-power attack that grows more powerful the more the user likes its Trainer.
+,,,,The user burrows$ then attacks on the second turn. It can also be used to exit dungeons.
+,,,,The target is hit by a strong telekinetic force. It may also reduce the target's Sp. Def stat.
+,,,,The user hurls a shadowy blob at the target. It may also lower the target's Sp. Def stat.
+,,,,The user attacks with tough fists$ etc. It can also break any barrier such as Light Screen and Reflect.
+,,,,By moving rapidly$ the user makes illusory copies of itself to raise its evasiveness.
+,,,,A wondrous wall of light is put up to suppress damage from physical attacks for five turns.
+,,,,It swamps the area around the user with a giant sludge wave. It may also poison those hit.
+,,,,The target is scorched with an intense blast of fire. It may also leave the target with a burn.
+,,,,Unsanitary sludge is hurled at the target. It may also poison the target.
+,,,,A five-turn sandstorm is summoned to hurt all combatants except the Rock$ Ground$ and Steel types.
+,,,,The target is attacked with an intense blast of all-consuming fire. It may also leave the target with a burn.
+,,,,Boulders are hurled at the target. It also lowers the target's Speed by preventing its movement.
+,,,,The user confounds the target with speed$ then slashes. The attack lands without fail.
+,,,,The user torments and enrages the target$ making it incapable of using the same move twice in a row.
+,,,,An attack move that doubles its power if the user is poisoned$ paralyzed$ or has a burn.
+,,,,The user cloaks itself with flame and attacks. Building up more power$ it raises the user's Speed stat.
+,,,,The user goes to sleep for two turns. It fully restores the user's HP and heals any status problem.
+,,,,If it is the opposite gender of the user$ the target becomes infatuated and less likely to attack.
+,,,,The user attacks and steals the target's held item simultaneously. It can't steal if the user holds an item.
+,,,,The user attacks the target's legs swiftly$ reducing the target's Speed stat.
+,,,,The user attacks the target with a song. Others can join in the Round and make the attack do greater damage.
+,,,,The user attacks the target with an echoing voice. If this move is used every turn$ it does greater damage.
+,,,,The user attacks the target at full power. The attack's recoil harshly reduces the user's Sp. Atk stat.
+,,,,The user teleports using a strange power and switches its place with one of its allies.
+,,,,The user heightens its mental focus and unleashes its power. It may also lower the target's Sp. Def.
+,,,,The user draws power from nature and fires it at the target. It may also lower the target's Sp. Def.
+,,,,A restrained attack that prevents the target from fainting. The target is left with at least 1 HP.
+,,,,The user shoots boiling hot water at its target. It may also leave the target with a burn.
+,,,,The user flings its held item at the target as an attack. Its power and effects depend on the item.
+,,,,The user attacks with an electric charge. The user may use any remaining electricity to raise its Sp. Atk stat.
+,,,,The user hurls the target into the air$ then drops it on the second turn. The target cannot attack while in the air.
+,,,,The user attacks the target with fire. If the target is holding a Berry$ the Berry becomes burnt up and unusable.
+,,,,The user suppresses the target and makes its move go last.
+,,,,The user shoots a sinister$ bluish-white flame at the target to inflict a burn.
+,,,,The user nimbly strikes the target. If the user is not holding an item$ this attack inflicts massive damage.
+,,,,It prevents the target from using its held item. Its Trainer is also prevented from using items on it.
+,,,,The user explodes to inflict damage on those around it. The user faints upon using this move.
+,,,,The user slashes with a sharp claw made from shadows. It has a high critical-hit ratio.
+,,,,The user stores power$ then attacks. If the user can use this attack after the target$ its power is doubled.
+,,,,The user gets revenge for a fainted ally. If an ally fainted in the previous turn$ this attack's damage increases.
+,,,,The user charges at the target using every bit of its power. The user must rest on the next turn.
+,,,,The user polishes its body to reduce drag. It sharply raises the Speed stat.
+,,,,The user flashes a bright light that cuts the target's accuracy. It can also be used to illuminate caves.
+,,,,The user stabs the foe with sharpened stones from below. It has a high critical-hit ratio.
+,,,,After making its attack$ the user rushes back to switch places with a party Pokemon in waiting.
+,,,,A weak electric charge is launched at the target. It causes paralysis if it hits.
+,,,,The user tackles the target with a high-speed spin. The slower the user$ the greater the damage.
+,,,,A frenetic dance to uplift the fighting spirit. It sharply raises the user's Attack stat.
+,,,,Resisting$ the user attacks the opposing Pokemon. The targets' Sp. Atk stat is reduced.
+,,,,The user hypnotizes itself into copying any stat change made by the target.
+,,,,The user stomps down on the ground and attacks everything in the area. The targets' Speed stat is reduced.
+,,,,The user blows a cold breath on the target. This attack always results in a critical hit.
+,,,,Large boulders are hurled at the opposing team to inflict damage. They may also make the targets flinch.
+,,,,The user slashes at the target by crossing its scythes or claws as if they were a pair of scissors.
+,,,,The user knocks away the target and drags out another Pokemon in its party. In the wild$ the battle ends.
+,,,,The user is roused$ and its Attack and Sp. Atk stats increase.
+,,,,The target is stabbed with a tentacle or arm steeped in poison. It may also poison the target.
+,,,,The user eats the dreams of a sleeping target. It absorbs half the damage caused to heal the user's HP.
+,,,,The user snares the target with grass and trips it. The heavier the target$ the greater the damage.
+,,,,The user enrages and confuses the target. However$ it also sharply raises the target's Attack stat.
+,,,,The user pecks the target. If the target is holding a Berry$ the user plucks it and gains its effect.
+,,,,After making its attack$ the user rushes back to switch places with a party Pokemon in waiting.
+,,,,The user makes a copy of itself using some of its HP. The copy serves as the user's decoy.
+,,,,The user gathers all its light energy and releases it at once. It may also lower the target's Sp. Def stat.
+,,,,The user creates a bizarre space in which slower Pokemon get to move first for five turns.
+,,,,The target is cut with a scythe or claw. It can also be used to cut down thin trees.
+,,,,The user soars$ then strikes on the second turn. It can also be used to fly to any familiar town.
+,,,,It swamps the area around the user with a giant wave. It can also be used for crossing water.
+,,,,The target is slugged with a punch thrown at maximum power. This move can also be used to move boulders.
+,,,,The user charges the target at an awesome speed. It can also be used to climb a waterfall.
+,,,,Diving on the first turn$ the user floats up and attacks on the second. It can be used for diving in the ocean.
+,,,,A bag filled with convenient tools for exploring. It provides access to the Underground.
+,,,,A sturdy$ spacious bag that is used to carry loot obtained in the coal mine.
+,,,,It lists the rules for holding battles. For linked battles$ you may choose which set of rules you wish to use.
+,,,,A tool that can search out Pokemon that are hiding in grass. Its battery is recharged as you walk.
+,,,,A card that lists the Battle Points you have earned. 
+,,,,A notebook that keeps a day-to-day record of your adventure so far. 
+,,,,A case for storing Seals that can be applied to the Capsule cases of Poke Balls.
+,,,,A lovely case to store colorful Props for your Pokemon to wear in a musical.
+,,,,A tiny bag that can hold 10 Seals for decorating Poke Balls.
+,,,,A convenient notepad that is used for registering your friends$ Friend Codes$ and keeping a record of game play.
+,,,,A large key for operating the doors of the Valley Windworks in the canyon. It was held by a Team Galactic Grunt.
+,,,,An ancient good-luck charm made of Pokemon bones to be taken to the elder of Celestic Town.
+,,,,A card key for disengaging security systems in the Galactic HQ. Losing it can result in punishment$ apparently.
+,,,,A mythical chain that is said to link the legendary Pokemon that created the Sinnoh region.
+,,,,A very convenient map that can be viewed anytime. It even shows your present location.
+,,,,A device that indicates Trainers who want to battle. Its battery charges while you walk.
+,,,,A case for holding coins obtained at the Game Corner. It holds up to 50$000 coins.
+,,,,An old and beat-up fishing rod. Use it by any body of water to fish for wild aquatic Pokemon.
+,,,,A new$ good-quality fishing rod. Use it by any body of water to fish for wild aquatic Pokemon.
+,,,,An awesome$ high-tech fishing rod. Use it by any body of water to fish for wild aquatic Pokemon.
+,,,,A watering can shaped like a Psyduck. It helps promote healthy growth of Berries planted in soft soil.
+,,,,A case for storing Poffin cooked from Berries. 
+,,,,A folding Bicycle that enables much faster movement than the Running Shoes.
+,,,,A key to one of the suites at the luxury hotel by a lake. For some odd reason$ it often disappears.
+,,,,A letter from Prof. Oak. Written in it is a request for you to go to Rt. 224.
+,,,,A feather that glows like the moon. It is said to possess the power to dispel nightmares.
+,,,,A card needed for entering the inn in Canalave City. Oddly$ the last date marked on it was 50 years ago.
+,,,,A flute that puts out echoing sounds that do not seem to be of this world. It is unknown who made it.
+,,,,The ticket required for sailing on the ferry S.S. Aqua. It has a drawing of a ship on it.
+,,,,The pass required for entering Pokemon Contests. It has a drawing of an award ribbon on it.
+,,,,A stone formed when boulders melted in intensely hot magma$ then hardened. Magma remains sealed inside.
+,,,,A parcel entrusted in your care. You are supposed to deliver it to your childhood friend who left Twinleaf Town.
+,,,,A coupon to be exchanged for a Pokemon Watch (Poketch for short). Three coupons are needed.
+,,,,A coupon to be exchanged for a Pokemon Watch (Poketch for short). Three coupons are needed.
+,,,,A coupon to be exchanged for a Pokemon Watch (Poketch for short). Three coupons are needed.
+,,,,The key to Team Galactic's sinister warehouse located at the edge of Veilstone City.
+,,,,A fantastic medicine dispensed by the pharmacy in Cianwood City. It fully heals a Pokemon of any ailment.
+,,,,A glowing orb to be held by Giratina. It boosts the power of Dragon- and Ghost-type moves.
+,,,,An amazing device that can record a battle either between friends or at a special battle facility.
+,,,,A flower sometimes bundled in bouquets to convey gratitude on special occasions like birthdays.
+,,,,A high-tech key that has to be used at a specific location. It emits a special electric signal to open a door.
+,,,,A handy box where you can store up to 99 Apricorns of each kind.
+,,,,Handy containers for cultivating Berries wherever you go.
+,,,,A bottle used for watering plants in the Berry Pots.
+,,,,A Poke Ball for catching Pokemon hooked by a Rod when fishing.
+,,,,A Poke Ball for catching Pokemon that are a lower level than your own.
+,,,,A Poke Ball for catching Pokemon that evolve using the Moon Stone.
+,,,,A Poke Ball for catching very heavy Pokemon.
+,,,,A Poke Ball that makes it easier to catch Pokemon which are quick to run away.
+,,,,A Poke Ball that makes caught Pokemon more friendly.
+,,,,Poke Ball for catching Pokemon that are the opposite gender of your Pokemon.
+,,,,A special Poke Ball for the Pal Park.
+,,,,A special Poke Ball for the Bug-Catching Contest.
+,,,,A red Apricorn. It assails your nostrils.
+,,,,A blue Apricorn. It smells a bit like grass.
+,,,,A yellow Apricorn. It has an invigorating scent.
+,,,,A green Apricorn. It has a mysterious$ aromatic scent.
+,,,,A pink Apricorn. It has a nice$ sweet scent.
+,,,,A white Apricorn. It doesn't smell like anything.
+,,,,A black Apricorn It has an indescribable scent.
+,,,,It checks for unseen items in the area and makes noise and lights when it finds something.
+,,,,A famous Mahogany Town candy tourists like to buy and take home. It restores the HP of one Pokemon by 20 points.
+,,,,A shiny red orb that is said to have a legend and has a deep connection with the Hoenn region.
+,,,,A shiny blue orb that is said to have a legend and has a deep connection with the Hoenn region.
+,,,,A shiny green orb that is said to have a legend and has a deep connection with the Hoenn region.
+,,,,A crystal ball that was excavated from the ground. A very beautiful stone that is covered with bits of rock and earth.
+,,,,A report of all the discovered kinds of Unown.
+,,,,A card to save points for the Buena's Password show.
+,,,,A very tasty tail of something. It sells for a high price.
+,,,,A very old-fashioned bell that makes a gentle ringing.
+,,,,A card key that opens a shutter in the Radio Tower.
+,,,,A key that opens a door in the Goldenrod Tunnel.
+,,,,A scale from the red Gyarados. It glows red like a flame.
+,,,,The Mime Jr. doll that was lost by the Copycat.
+,,,,A ticket required for riding the Magnet Train. It allows you to ride whenever and however much you'd like.
+,,,,An important machine part for the Power Plant that was stolen.
+,,,,A strange$ silvery feather that sparkles.
+,,,,A mystical rainbow feather that sparkles.
+,,,,A mysterious Egg obtained from Mr. Pokemon. What's in the Egg is unknown.
+,,,,A music player that allows you to listen to nostalgic songs. It's operated with a single switch.
+,,,,A very old-fashioned bell that makes a gentle ringing.
+,,,,It holds Pokeathlon records. It's a card that shows how many victories you've had.
+,,,,It holds Pokeathlon records. It's a card that shows how many losses you've had.
+,,,,It holds Pokeathlon records. It's a card that shows how many times your Pokemon have dashed.
+,,,,It holds Pokeathlon records. It's a card that shows how many times your Pokemon have jumped.
+,,,,It holds Pokeathlon records. It's a card that shows how many times you've won the Hurdle Dash.
+,,,,It holds Pokeathlon records. It's a card that shows how many times you've won the Relay Run.
+,,,,It holds Pokeathlon records. It's a card that shows how many times you've won Pennant Capture.
+,,,,It holds Pokeathlon records. It's a card that shows how many times you've won Block Smash.
+,,,,It holds Pokeathlon records. It's a card that shows how many times you've won Disc Catch.
+,,,,It holds Pokeathlon records. It's a card that shows how many times you've won Snow Throw.
+,,,,It holds Pokeathlon records. It's a card that shows how many points your Pokemon scored.
+,,,,It holds Pokeathlon records. It's a card that shows how many times your Pokemon have failed.
+,,,,It holds Pokeathlon records. It's a card that shows how many times your Pokemon impeded themselves.
+,,,,It holds Pokeathlon records. It's a card that shows how many times your Pokemon have tackled.
+,,,,It holds Pokeathlon records. It's a card that shows how many times your Pokemon have fallen down.
+,,,,It holds Pokeathlon records. It's a card that shows how many times you've won Ring Drop.
+,,,,It holds Pokeathlon records. It's a card that shows how many times you've won Lamp Jump.
+,,,,It holds Pokeathlon records. It's a card that shows how many times you've won Circle Push.
+,,,,It holds Pokeathlon records. It's a card that shows how many Link Pokeathlon wins you've had.
+,,,,It holds Pokeathlon records. It's a card that shows how many Link Pokeathlon losses you've had.
+,,,,It holds Pokeathlon records. It's a card that shows how many times you've won an event.
+,,,,It holds Pokeathlon records. It's a card that shows how many times you've lost an event.
+,,,,It holds Pokeathlon records. It's a card that shows how many times you've switched Pokemon.
+,,,,It holds Pokeathlon records. It's a card that shows how many times you've won Goal Roll.
+,,,,It holds Pokeathlon records. It's a card that shows how many times your Pokemon won individual prizes.
+,,,,It holds Pokeathlon records. It's a card that shows how many times you've instructed your Pokemon.
+,,,,It holds Pokeathlon records. It's a card that shows how much time you've spent in the Pokeathlon.
+,,,,A sturdy Capsule that can only be opened with a special key.
+,,,,A nice photo album for storing all the photos taken along your adventure.
+,,,,A cassette to be held by Genesect. It changes Techno Blast to a Water-type move.
+,,,,A cassette to be held by Genesect. It changes Techno Blast to an Electric-type move.
+,,,,A cassette to be held by Genesect. It changes Techno Blast to a Fire-type move.
+,,,,A cassette to be held by Genesect. It changes Techno Blast to an Ice-type move.
+,,,,Very sweet chocolate. It restores the HP of one Pokemon by only 20 points.
+,,,,Stationery designed for introductory greetings. Let a Pokemon hold it for delivery.
+,,,,Stationery designed for writing about your favorite things. Let a Pokemon hold it for delivery.
+,,,,Stationery designed for invitations. Let a Pokemon hold it for delivery.
+,,,,Stationery designed for a thank-you note. Let a Pokemon hold it for delivery.
+,,,,Stationery designed for writing questions. Let a Pokemon hold it for delivery.
+,,,,Stationery designed for writing recommendations. Let a Pokemon hold it for delivery.
+,,,,Stationery designed for writing a reply. Let a Pokemon hold it for delivery.
+,,,,Stationery featuring a print of a sky-piercing bridge. Let a Pokemon hold it for use.
+,,,,Stationery featuring a print of a red drawbridge. Let a Pokemon hold it for use.
+,,,,Stationery featuring a print of a steel suspension bridge. Let a Pokemon hold it for use.
+,,,,Stationery featuring a print of a brick bridge. Let a Pokemon hold it for use.
+,,,,Stationery featuring a print of an arched bridge. Let a Pokemon hold it for use.
+,,,,A mysterious scale that evolves certain Pokemon. It shines in rainbow colors.
+,,,,A mysterious evolutionary lump. When held$ it raises the Defense and Sp. Def of a Pokemon that can still evolve.
+,,,,A very light stone. It reduces the weight of a Pokemon when held.
+,,,,If the holder of this item takes damage$ the attacker will also be damaged upon contact.
+,,,,When held by a Pokemon$ the Pokemon will float into the air. When the holder is attacked$ this item will burst.
+,,,,A card with a mysterious power. When the holder is struck by a foe$ the attacker is removed from battle.
+,,,,Moves that would otherwise have no effect will land on the Pokemon that holds it.
+,,,,A band that increases the power of binding moves when held.
+,,,,A consumable bulb. If the holder is hit by a Water-type move$ its Sp. Atk will rise.
+,,,,A consumable battery. If the holder is hit by an Electric-type move$ its Attack will rise.
+,,,,If the holder is hit by an attack$ it will switch with another Pokemon in your party.
+,,,,A gem with an essence of fire. When held$ it strengthens the power of a Fire-type move only once.
+,,,,A gem with an essence of water. When held$ it strengthens the power of a Water-type move only once.
+,,,,A gem with an essence of electricity. When held$ it strengthens the power of an Electric-type move only once.
+,,,,A gem with an essence of nature. When held$ it strengthens the power of a Grass-type move only once.
+,,,,A gem with an essence of ice. When held$ it strengthens the power of an Ice-type move only once.
+,,,,A gem with an essence of combat. When held$ it strengthens the power of a Fighting-type move only once.
+,,,,A gem with an essence of poison. When held$ it strengthens the power of a Poison-type move only once.
+,,,,A gem with an essence of land. When held$ it strengthens the power of a Ground-type move only once.
+,,,,A gem with an essence of air. When held$ it strengthens the power of a Flying-type move only once.
+,,,,A gem with an essence of the mind. When held$ it strengthens the power of a Psychic-type move only once.
+,,,,A gem with an insect-like essence. When held$ it strengthens the power of a Bug-type move only once.
+,,,,A gem with an essence of rock. When held$ it strengthens the power of a Rock-type move only once.
+,,,,A gem with a spectral essence. When held$ it strengthens the power of a Ghost-type move only once.
+,,,,A gem with an essence of darkness. When held$ it strengthens the power of a Dark-type move only once.
+,,,,A gem with an essence of steel. When held$ it strengthens the power of a Steel-type move only once.
+,,,,An item for use on a Pokemon. It slightly increases the base HP of a single Pokemon.
+,,,,An item for use on a Pokemon. It slightly increases the base Attack stat of a single Pokemon.
+,,,,An item for use on a Pokemon. It slightly increases the base Defense stat of a single Pokemon.
+,,,,An item for use on a Pokemon. It slightly increases the base Sp. Atk stat of a single Pokemon.
+,,,,An item for use on a Pokemon. It slightly increases the base Sp. Def stat of a single Pokemon.
+,,,,An item for use on a Pokemon. It slightly increases the base Speed stat of a single Pokemon.
+,,,,Though this feather is beautiful$ it's just a regular feather and has no effect on Pokemon.
+,,,,A fossil of an ancient Pokemon that lived in the sea in ancient times. It appears to be part of its back.
+,,,,A fossil of an ancient Pokemon that flew in the sky in ancient times. It appears to be part of its wing.
+,,,,A special pass to go to Liberty Garden. Board the ship in Castelia City.
+,,,,A mysterious orb containing the power of the Unova region$ to be used when generating Pass Power.
+,,,,A special Poke Ball that appears out of nowhere in a bag at the Entree Forest. It can catch any Pokemon.
+,,,,An item that attracts Pokemon. Use it to flee from any battle with a wild Pokemon.
+,,,,A lovely case to store colorful Props for your Pokemon to wear in a musical.
+,,,,A skull of a Pokemon which was said to have braved the angry waters to fly around the world.
+,,,,A rare mushroom which gives off a nice fragrance. A maniac will buy it for a high price.
+,,,,A big nugget of pure gold that gives off a lustrous gleam. A maniac will buy it for a high price.
+,,,,Very large pearls that sparkle in a pretty silver color. A maniac will buy them for a high price.
+,,,,A shard which fell to the ground when a comet approached. A maniac will buy it for a high price.
+,,,,A copper coin used in a civilization about 3$000 years ago. A maniac will buy it for a high price.
+,,,,A silver coin used in a civilization about 3$000 years ago. A maniac will buy it for a high price.
+,,,,A gold coin used in a civilization about 3$000 years ago. A maniac will buy it for a high price.
+,,,,A vase made in a civilization about 3$000 years ago. A maniac will buy it for a high price.
+,,,,A bracelet made in a civilization about 3$000 years ago. A maniac will buy it for a high price.
+,,,,A stone figure made in a civilization about 3$000 years ago. A maniac will buy it for a high price.
+,,,,A crown made in a civilization about 3$000 years ago. A maniac will buy it for a high price.
+,,,,Castelia City's specialty$ soft-serve ice cream. It heals all the status problems of a single Pokemon.
+,,,,It can be used many times to raise the critical-hit ratio of one Pokemon. It wears off if the Pokemon is withdrawn.
+,,,,It sharply raises the Speed stat of a Pokemon in battle. It wears off if the Pokemon is withdrawn.
+,,,,It sharply raises the Sp. Atk stat of a Pokemon in battle. It wears off if the Pokemon is withdrawn.
+,,,,It sharply raises the Sp. Def stat of a Pokemon in battle. It wears off if the Pokemon is withdrawn.
+,,,,It sharply raises the Defense stat of a Pokemon in battle. It wears off if the Pokemon is withdrawn.
+,,,,It sharply raises the Attack stat of a Pokemon in battle. It wears off if the Pokemon is withdrawn.
+,,,,It sharply raises the accuracy of a Pokemon in battle. It wears off if the Pokemon is withdrawn.
+,,,,It drastically raises the Speed stat of a Pokemon in battle. It wears off if the Pokemon is withdrawn.
+,,,,It drastically raises the Sp. Atk stat of a Pokemon in battle. It wears off if the Pokemon is withdrawn.
+,,,,It drastically raises the Sp. Def stat of a Pokemon in battle. It wears off if the Pokemon is withdrawn.
+,,,,It drastically raises the Defense stat of a Pokemon in battle. It wears off if the Pokemon is withdrawn.
+,,,,It drastically raises the Attack stat of a Pokemon in battle. It wears off if the Pokemon is withdrawn.
+,,,,It drastically raises the accuracy of a Pokemon in battle. It wears off if the Pokemon is withdrawn.
+,,,,It raises the Speed stat of a Pokemon in battle immensely. It wears off if the Pokemon is withdrawn.
+,,,,It raises the Sp. Atk stat of a Pokemon in battle immensely. It wears off if the Pokemon is withdrawn.
+,,,,It raises the Sp. Def stat of a Pokemon in battle immensely. It wears off if the Pokemon is withdrawn.
+,,,,It raises the Defense stat of a Pokemon in battle immensely. It wears off if the Pokemon is withdrawn.
+,,,,It raises the Attack stat of a Pokemon in battle immensely. It wears off if the Pokemon is withdrawn.
+,,,,It raises the accuracy of a Pokemon in battle immensely. It wears off if the Pokemon is withdrawn.
+,,,,When used$ it activates the Ability of an ally Pokemon.
+,,,,When used$ it causes an ally Pokemon to drop a held item.
+,,,,When used$ it causes an ally Pokemon to use its held item.
+,,,,When used$ it restores any stat changes of an ally Pokemon.
+,,,,It can be used many times to greatly raise a Pokemon's critical-hit ratio. It wears off if the Pokemon is withdrawn.
+,,,,Reshiram's body was destroyed and changed into this stone. It is said to be waiting for the emergence of a hero.
+,,,,Zekrom's body was destroyed and changed into this stone. It is said to be waiting for the emergence of a hero.
+,,,,The user shrouds itself in electricity and smashes into its target. It also damages the user a little.
+,,,,The user attacks with a punch that can shatter a rock. It may also lower the target's Defense stat.
+,,,,The user yells as if it is ranting about something$ making the target's Sp. Atk stat decrease.
+,,,,A high-tech transceiver with a camera function. It allows up to four-way calls.
+,,,,A rare stone.
+,,,,An important letter which Wingull delivers.
+,,,,An important letter which Wingull delivers.
+,,,,An important letter which Wingull delivers.
+,,,,A gem with a draconic essence. When held$ it strengthens the power of a Dragon-type move only once.
+,,,,A gem with an ordinary essence. When held$ it strengthens the power of a Normal-type move only once.
+,,,,A box-shaped machine that stores Medals and Medal information.
+,,,,A splicer that fuses Kyurem and a certain Pokemon. They are said to have been one in the beginning.
+,,,,A permit needed to enter the Nature Preserve. Only a few know about this place.
+,,,,An oval charm said to increase the chance of Eggs being found at the Day Care.
+,,,,A shiny charm said to increase the chance of finding a Shiny Pokemon.
+,,,,A card key needed to enter the password inside the Plasma Frigate.
+,,,,A handkerchief dropped by a regular at Cafe Warehouse. It smells faintly like a Pokemon.
+,,,,A special device that wrings out the potential of Pokemon. It is an imperfect prototype.
+,,,,The Xtransceiver found at the Nimbasa City amusement park. It seems it belongs to a boy.
+,,,,A glass that reveals the truth. It is a mysterious glass that returns a Pokemon back to its original shape.

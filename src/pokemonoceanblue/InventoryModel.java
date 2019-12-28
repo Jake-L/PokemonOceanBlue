@@ -168,6 +168,7 @@ public class InventoryModel {
         public String name;
         public int categoryId;
         public int cost;
+        public String description;
 
         public ItemModel(int itemId, int quantity)
         {
@@ -193,6 +194,7 @@ public class InventoryModel {
                 this.name = rs.getString("name");
                 this.categoryId = rs.getInt("category_id");
                 this.cost = rs.getInt("cost");
+                this.description = rs.getString("description");
             }
             catch (SQLException e) 
             {

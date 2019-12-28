@@ -207,16 +207,17 @@ public class DatabaseUtility
                 + "item_id INT NOT NULL,"
                 + "name VARCHAR(50) NOT NULL,"
                 + "category_id INT NOT NULL,"
-                + "cost INT NOT NULL)";
+                + "cost INT NOT NULL,"
+                + "[description] VARCHAR(150) NOT NULL)";
         runUpdate(query);
 
         // fill items table with data
         path = "src/rawdata/items.csv";
         query = "INSERT INTO items ("
-                    + "item_id, name, category_id, cost)"
-                    + "VALUES (?, ?, ?, ?)";
+                    + "item_id, name, category_id, cost, [description])"
+                    + "VALUES (?, ?, ?, ?, ?)";
 
-        dataTypes = new String[] {"int", "String", "int", "int"};
+        dataTypes = new String[] {"int", "String", "int", "int", "String"};
         loadTable(path, query, dataTypes);
 
         conn.commit();
