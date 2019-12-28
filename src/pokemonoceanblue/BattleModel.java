@@ -323,7 +323,9 @@ public class BattleModel
             }
             if (this.events.get(0).damage > -1)
             {
-                this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP -= Math.min((this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP), (this.events.get(0).damage));
+                this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP -= 
+                    Math.min((this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP), 
+                    (this.events.get(0).damage));
 
                 // only check if a Pokemon was defeated if damage was applied
                 if (this.team[1][this.currentPokemon[1]].currentHP == 0)
