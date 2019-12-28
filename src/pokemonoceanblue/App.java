@@ -27,7 +27,7 @@ public class App extends JFrame implements KeyListener
     ViewManager viewManager;
     List<Integer> keysDown = new ArrayList<Integer>(); 
     OverworldModel overworldModel;
-    PokemonModel[] pokemonTeam = new PokemonModel[5];
+    PokemonModel[] pokemonTeam = new PokemonModel[6];
     BattleModel battleModel;
     BattleController battleController;
     PartyController partyController;
@@ -104,6 +104,7 @@ public class App extends JFrame implements KeyListener
         pokemonTeam[2] = new PokemonModel(9, 40, true);
         pokemonTeam[3] = new PokemonModel(34, 5, false);
         pokemonTeam[4] = new PokemonModel(150, 5, false);
+        pokemonTeam[5] = new PokemonModel(94, 30, false);
 
         this.update();
     }
@@ -118,18 +119,6 @@ public class App extends JFrame implements KeyListener
         if (!keysDown.contains(e.getKeyCode()))
         {
             keysDown.add(e.getKeyCode());
-
-            // pressing 'p' opens the party view
-            if (e.getKeyCode() == KeyEvent.VK_P)
-            {
-                openParty();
-            }
-            
-            // pressing 'i' opens the items view
-            if (e.getKeyCode() == KeyEvent.VK_I)
-            {
-                openInventory();
-            }
         }
 
         // pressing any key will advance from the title screen
@@ -199,9 +188,9 @@ public class App extends JFrame implements KeyListener
         inventoryController = new InventoryController(inventoryModel);
     }
 
-    public void openParty()
+    public void openParty(int currentPokemon)
     {
-        partyModel = new PartyModel(pokemonTeam);
+        partyModel = new PartyModel(pokemonTeam, currentPokemon);
         viewManager.setView(new PartyView(partyModel));
         partyController = new PartyController(partyModel);
     }

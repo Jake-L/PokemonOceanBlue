@@ -370,7 +370,7 @@ public class OverworldModel {
     {
         if (this.textOptions[this.optionIndex] == "Pokemon")
         {
-            app.openParty();
+            app.openParty(-1);
             this.openMenu();
         }
         else if (this.textOptions[this.optionIndex] == "Bag")

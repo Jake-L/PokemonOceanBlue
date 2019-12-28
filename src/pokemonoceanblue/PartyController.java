@@ -20,12 +20,16 @@ public class PartyController
 
         if (this.model.counter == 0)
         {
-            if (keysDown.contains(KeyEvent.VK_ENTER))
+            if ((keysDown.contains(KeyEvent.VK_ENTER)) && (this.model.team[this.model.optionIndex].currentHP > 0 || !this.model.isBattle))
             {
-                //TODO: add possiblity of confirm selection outside of battle (isBattle not working)
-                if (this.model.team[this.model.optionIndex].currentHP > 0)
+                if (this.model.optionIndex != this.model.currentPokemon)
                 {
                     this.model.confirmSelection();
+                }
+
+                else
+                {
+                    this.model.returnValue = -1;
                 }
             }
 

@@ -6,22 +6,25 @@ public class PartyModel
     public int optionIndex = 0;
     public int INPUTDELAY = 5;
     public int counter = this.INPUTDELAY;
-    private int currentPokemon = -1;
+    public int currentPokemon = -1;
     public boolean isBattle;
     
     public int returnValue = -2;
-
-    public PartyModel(PokemonModel[] model)
-    {
-        this.team = model;
-        this.isBattle = false;
-    }
 
     public PartyModel(PokemonModel[] model, int currentPokemon)
     {
         this.team = model;
         this.currentPokemon = currentPokemon;
-        this.isBattle = true;
+        
+        if (this.currentPokemon == -1)
+        {
+            this.isBattle = false;
+        }
+
+        else
+        {
+            this.isBattle = true;
+        }
     }
 
     public void update()
