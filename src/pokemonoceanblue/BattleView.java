@@ -17,6 +17,7 @@ public class BattleView extends ViewBase {
     private Image[] statusWindow = new Image[2];
     private Image background;
     private Image xp;
+    private Image[] pokeballSprite = new Image[4];
     
     /** 
      * Constructor for the overworld view
@@ -61,6 +62,13 @@ public class BattleView extends ViewBase {
             healthBarFill[i] = ii.getImage();
         }
 
+        //loads pokeball sprites
+        for (int i = 0; i < this.pokeballSprite.length; i ++)
+        {
+            ii = new ImageIcon("src/inventory/" + i + ".png");
+            pokeballSprite[i] = ii.getImage();
+        }
+
         //loads status window images and xp
         ii = new ImageIcon("src/battle/TrainerStatusWindow.png");
         this.statusWindow[0] = ii.getImage();
@@ -102,13 +110,28 @@ public class BattleView extends ViewBase {
             this.pokemonSprite[0][this.model.currentPokemon[0]].getHeight(null) * graphicsScaling,
             canvas);
 
-        //renders opposing trainers current pokemon
-        g.drawImage(pokemonSprite[1][this.model.currentPokemon[1]],
-            width / 2,
-            height / 2 - (pokemonSprite[1][this.model.currentPokemon[1]].getHeight(null) * graphicsScaling),
-            this.pokemonSprite[1][this.model.currentPokemon[1]].getWidth(null) * graphicsScaling,
-            this.pokemonSprite[1][this.model.currentPokemon[1]].getHeight(null) * graphicsScaling,
-            canvas);
+        if (this.model.events.size() > 0 && this.model.events.get(0).itemId > -1)
+        {
+            int pokeballSpriteIndex = this.model.events.get(0).itemId;
+            //renders a pokeball in place of enemy pokemon
+            g.drawImage(this.pokeballSprite[pokeballSpriteIndex],
+                width / 2,
+                height / 2 - (this.pokeballSprite[pokeballSpriteIndex].getHeight(null) * graphicsScaling),
+                this.pokeballSprite[pokeballSpriteIndex].getWidth(null) * graphicsScaling,
+                this.pokeballSprite[pokeballSpriteIndex].getHeight(null) * graphicsScaling,
+                canvas);
+        }
+
+        else if (!this.model.isCaught)
+        {
+            //renders current enemy pokemon
+            g.drawImage(pokemonSprite[1][this.model.currentPokemon[1]],
+                width / 2,
+                height / 2 - (pokemonSprite[1][this.model.currentPokemon[1]].getHeight(null) * graphicsScaling),
+                this.pokemonSprite[1][this.model.currentPokemon[1]].getWidth(null) * graphicsScaling,
+                this.pokemonSprite[1][this.model.currentPokemon[1]].getHeight(null) * graphicsScaling,
+                canvas);
+        }
 
         //renders player status window
         g.drawImage(this.statusWindow[0],

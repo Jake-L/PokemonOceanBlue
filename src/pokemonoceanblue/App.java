@@ -136,7 +136,7 @@ public class App extends JFrame implements KeyListener
     public void createBattle(int battleId)
     {
         MusicPlayer.setSong("18");
-        battleModel = new BattleModel(pokemonTeam, pokemonTeam, this);
+        battleModel = new BattleModel(pokemonTeam, pokemonTeam, this, false);
         BattleView battleView = new BattleView(this.battleModel);
         viewManager.setView(battleView);
         battleController = new BattleController(battleModel);
@@ -145,7 +145,7 @@ public class App extends JFrame implements KeyListener
     public void createBattle(PokemonModel[] team)
     {
         MusicPlayer.setSong("18");
-        battleModel = new BattleModel(team, pokemonTeam, this);
+        battleModel = new BattleModel(team, pokemonTeam, this, true);
         BattleView battleView = new BattleView(this.battleModel);
         viewManager.setView(battleView);
         battleController = new BattleController(battleModel);

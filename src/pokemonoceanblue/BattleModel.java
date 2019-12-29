@@ -23,13 +23,15 @@ public class BattleModel
     private float[][] typeEffectiveness = new float[19][19];
     private float[] modifier = new float[2];
     private int enemyMove;
+    public boolean isCaught = false;
+    public boolean isWild;
 
     /** 
      * Constructor
      * @param opponentTeam the opposing trainers pokemon team
      * @param playerTeam the players pokemon team
      */
-    public BattleModel(PokemonModel[] opponentTeam, PokemonModel[] playerTeam, App app)
+    public BattleModel(PokemonModel[] opponentTeam, PokemonModel[] playerTeam, App app, boolean isWild)
     {
         this.team[0] = playerTeam;
         this.team[1] = opponentTeam;
@@ -39,6 +41,7 @@ public class BattleModel
             this.currentPokemon[0]++;
         }
         this.currentPokemon[1] = 0;
+        this.isWild = isWild;
         this.loadBattleMenu();
         loadData();
         this.app = app;
@@ -225,6 +228,7 @@ public class BattleModel
     
     /** 
      * @param effectiveness damage modifier
+     * @param attacker the team that is using the attack
      */
     private void effectivenessMessage(float effectiveness, int attacker)
     {
@@ -233,9 +237,14 @@ public class BattleModel
             BattleEvent event = new BattleEvent("It's super effective!", attacker);
             this.events.add(event);
         }
+        else if (effectiveness == 0)
+        {
+            BattleEvent event = new BattleEvent("It doesn't affect " + this.team[(attacker + 1) % 2] + "...", attacker);
+            this.events.add(event);
+        }
         else if (effectiveness < 1)
         {
-            BattleEvent event = new BattleEvent("It's not very effective.", attacker);
+            BattleEvent event = new BattleEvent("It's not very effective...", attacker);
             this.events.add(event);
         }
     }
@@ -270,10 +279,17 @@ public class BattleModel
      */
     public void loadBattleMenu()
     {
-        this.battleOptions = new String[3];
+        if (this.isWild)
+        {
+            this.battleOptions = new String[3];
+            this.battleOptions[2] = "POKEBALLS";
+        }
+        else
+        {
+            this.battleOptions = new String[2];
+        }
         this.battleOptions[0] = "FIGHT";
         this.battleOptions[1] = "POKEMON";
-        this.battleOptions[2] = "POKEBALLS";
         this.optionIndex = 0;
         this.counter = INPUTDELAY;
     }
@@ -288,7 +304,7 @@ public class BattleModel
             return false;
         }
 
-        if (teamFainted(0) || teamFainted(1))
+        if (teamFainted(0) || teamFainted(1) || this.isCaught)
         {
             return true;
         }
@@ -323,7 +339,7 @@ public class BattleModel
 
     private int xpCalc(int enemyLevel)
     {
-        return (int) Math.pow(enemyLevel, 2) * 3;
+        return (int) Math.pow(enemyLevel, 2) * 2;
     }
 
     public void update()
@@ -381,7 +397,7 @@ public class BattleModel
                     int i = 0;
                     while (i < this.events.size())
                     {
-                        if (this.events.get(i).attacker == 0)
+                        if (this.events.get(i).attacker == 1)
                         {
                             this.events.remove(i);
                         }
@@ -405,6 +421,32 @@ public class BattleModel
                     this.currentPokemon[0] = this.events.get(0).newPokemonIndex;
                     this.events.add(this.enemyAttackEvent());
                     effectivenessMessage(modifier[1], 1);
+                }
+            }
+            if (this.events.get(0).itemId > -1)
+            {
+                if (ranNum.nextInt(2) == 0)
+                {
+                    int i = 0;
+                    while (i < this.events.size())
+                    {
+                        if (this.events.get(i).attacker == 1)
+                        {
+                            this.events.remove(i);
+                        }
+                        else
+                        {
+                            i++;
+                        }
+                    }
+                    BattleEvent event = new BattleEvent("Trainer caught wild " + this.team[1][currentPokemon[1]].name + "!", 0);
+                    this.events.add(event);
+                    this.isCaught = true;
+                }
+                else
+                {
+                    BattleEvent event = new BattleEvent("The wild " + this.team[1][currentPokemon[1]].name + " escaped!", 0);
+                    this.events.add(0, event);
                 }
             }
             this.events.remove(0);
