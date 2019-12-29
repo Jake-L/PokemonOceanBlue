@@ -18,6 +18,7 @@ public class BattleView extends ViewBase {
     private Image background;
     private Image xp;
     private Image[] pokeballSprite = new Image[4];
+    private Image[][] pokemonIconSprites = new Image[2][];
     
     /** 
      * Constructor for the overworld view
@@ -59,14 +60,25 @@ public class BattleView extends ViewBase {
         for (int i = 0; i < 3; i++)
         {  
             ii = new ImageIcon("src/battle/hp" + i + ".png");
-            healthBarFill[i] = ii.getImage();
+            this.healthBarFill[i] = ii.getImage();
         }
 
         //loads pokeball sprites
         for (int i = 0; i < this.pokeballSprite.length; i ++)
         {
             ii = new ImageIcon("src/inventory/" + i + ".png");
-            pokeballSprite[i] = ii.getImage();
+            this.pokeballSprite[i] = ii.getImage();
+        }
+
+        //loads pokemon icons for both teams
+        for (int i = 0; i < this.pokemonIconSprites.length; i++)
+        {
+            this.pokemonIconSprites[i] = new Image[this.model.team[i].length];
+            for (int j = 0; j < this.pokemonIconSprites[i].length; j++)
+            {
+                ii = new ImageIcon("src/pokemonicons/" + this.model.team[i][j].id + ".png");
+                this.pokemonIconSprites[i][j] = ii.getImage();
+            }
         }
 
         //loads status window images and xp
@@ -230,6 +242,20 @@ public class BattleView extends ViewBase {
         g.drawString(String.valueOf(this.model.team[1][this.model.currentPokemon[1]].level),
             width / 10 + 84 * graphicsScaling,
             height / 10 + 17 * graphicsScaling);
+
+        //renders player  and enemy team at sides of the screen
+        for (int j = 0; j < this.pokemonIconSprites.length; j++)
+        {
+            for (int i = 0; i < this.pokemonIconSprites[j].length; i++)
+            {
+                g.drawImage(this.pokemonIconSprites[j][i],
+                    (int)((width - (this.pokemonIconSprites[j][i].getWidth(null) * graphicsScaling)) * j - (8 * graphicsScaling) * Math.pow(-1 , j + 1)),
+                    (int) (i * height * (0.75 / 6.0)), 
+                    this.pokemonIconSprites[j][i].getWidth(null) * graphicsScaling,
+                    this.pokemonIconSprites[j][i].getHeight(null) * graphicsScaling,
+                    canvas);
+            }
+        }
         
         displayTextbox(this.textDisplayBox, 0, height * 3 / 4, width, height / 4, g, canvas);
         

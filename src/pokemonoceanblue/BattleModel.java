@@ -25,6 +25,7 @@ public class BattleModel
     private int enemyMove;
     public boolean isCaught = false;
     public boolean isWild;
+    private boolean[] attackMissed = new boolean[2];
 
     /** 
      * Constructor
@@ -229,19 +230,30 @@ public class BattleModel
 
         else
         {
+            this.attackMissed[attacker] = false;
             return 0;
         }
 
-        for (int i = 0; i < this.team[defender][this.currentPokemon[defender]].types.length; i++)
+        if (this.ranNum.nextInt(100) <= this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].accuracy)
         {
-            this.modifier[attacker] = this.typeEffectiveness[this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].typeId][this.team[defender][this.currentPokemon[defender]].types[i]] * this.modifier[attacker];
+            for (int i = 0; i < this.team[defender][this.currentPokemon[defender]].types.length; i++)
+            {
+                this.modifier[attacker] = this.typeEffectiveness[this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].typeId][this.team[defender][this.currentPokemon[defender]].types[i]] * this.modifier[attacker];
+            }
+
+            if (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].typeId == this.team[attacker][this.currentPokemon[attacker]].types[0] || this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].typeId == this.team[attacker][this.currentPokemon[attacker]].types[this.team[attacker][this.currentPokemon[attacker]].types.length - 1])
+            {
+                stab = 1.5f;
+            }
+            this.attackMissed[attacker] = false;
+            return (int)Math.ceil(((this.team[attacker][this.currentPokemon[attacker]].level * 2.0 / 5.0 + 2.0) * (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].power) * (this.team[attacker][this.currentPokemon[attacker]].stats[attack_stat] * 1.0 / this.team[defender][this.currentPokemon[defender]].stats[defense_stat]) / 50 + 2) * this.modifier[attacker] * stab);
         }
 
-        if (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].typeId == this.team[attacker][this.currentPokemon[attacker]].types[0] || this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].typeId == this.team[attacker][this.currentPokemon[attacker]].types[this.team[attacker][this.currentPokemon[attacker]].types.length - 1])
+        else
         {
-            stab = 1.5f;
+            this.attackMissed[attacker] = true;
+            return 0;
         }
-        return (int)Math.ceil(((this.team[attacker][this.currentPokemon[attacker]].level * 2.0 / 5.0 + 2.0) * (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].power) * (this.team[attacker][this.currentPokemon[attacker]].stats[attack_stat] * 1.0 / this.team[defender][this.currentPokemon[defender]].stats[defense_stat]) / 50 + 2) * this.modifier[attacker] * stab);
     }
     
     /** 
@@ -250,7 +262,12 @@ public class BattleModel
      */
     private void effectivenessMessage(float effectiveness, int attacker)
     {
-        if (effectiveness > 1)
+        if (this.attackMissed[attacker])
+        {
+            BattleEvent event = new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + "'s attack missed!", attacker);
+            this.events.add(event);
+        }
+        else if (effectiveness > 1)
         {
             BattleEvent event = new BattleEvent("It's super effective!", attacker);
             this.events.add(event);
@@ -415,7 +432,7 @@ public class BattleModel
                     int i = 0;
                     while (i < this.events.size())
                     {
-                        if (this.events.get(i).attacker == 1)
+                        if (this.events.get(i).attacker == 0)
                         {
                             this.events.remove(i);
                         }
