@@ -20,6 +20,7 @@ public class PartyView extends ViewBase {
     private PartyModel model;
     private Image[] pokemonWindows = new Image[4];
     private Image hpBar;
+    private Image[] faintedPokemonWindows = new Image[3];
     
     /** 
      * Constructor for the overworld view
@@ -58,6 +59,12 @@ public class PartyView extends ViewBase {
             this.pokemonWindows[i] = ii.getImage();
         }
 
+        for (int i = 0; i < this.faintedPokemonWindows.length; i++)  
+        {
+            ii = new ImageIcon("src/menus/partyfainted" + i + ".png");
+            this.faintedPokemonWindows[i] = ii.getImage();
+        }
+
         ii = new ImageIcon("src/menus/hpBar.png");
         this.hpBar = ii.getImage();
     }
@@ -87,18 +94,31 @@ public class PartyView extends ViewBase {
                 renderIndex = 3;
             }
 
-            g.drawImage(pokemonWindows[renderIndex],
-                        (i % 2) * (width / 3 + 8 * graphicsScaling) + 8 * graphicsScaling,
-                        (i / 2) * (height / 4 + 8 * graphicsScaling) + 8 * graphicsScaling,
-                        width / 3,
-                        height / 4,
-                        canvas);
+            if (this.model.team[i].currentHP > 0)
+            {
+                g.drawImage(this.pokemonWindows[renderIndex],
+                    (i % 2) * (width / 3 + 8 * graphicsScaling) + 8 * graphicsScaling,
+                    (i / 2) * (height / 4 + 8 * graphicsScaling) + 8 * graphicsScaling,
+                    width / 3,
+                    height / 4,
+                    canvas);
+            }
+
+            else
+            {
+                g.drawImage(this.faintedPokemonWindows[renderIndex],
+                    (i % 2) * (width / 3 + 8 * graphicsScaling) + 8 * graphicsScaling,
+                    (i / 2) * (height / 4 + 8 * graphicsScaling) + 8 * graphicsScaling,
+                    width / 3,
+                    height / 4,
+                    canvas);
+            }
         }
 
         for (int i = 0; i < this.model.team.length; i++)
         {
             // display the Pokemon's icons
-            g.drawImage(pokemonSprite[i], 
+            g.drawImage(this.pokemonSprite[i], 
                 (i % 2) * (width / 3 + 8 * graphicsScaling) + 12 * graphicsScaling, 
                 (i / 2) * (height / 4 + 8 * graphicsScaling) + 14 * graphicsScaling, 
                 pokemonSprite[i].getWidth(null) * graphicsScaling, 
