@@ -116,7 +116,7 @@ public class InventoryView extends ViewBase {
         {
             this.minIndex = 0;
             this.oldItemIndex = 0;
-            this.oldBagIndex = 0;
+            this.oldBagIndex = this.model.bagIndex;
         }
         if (this.model.itemIndex != this.oldItemIndex)
         {
@@ -126,7 +126,7 @@ public class InventoryView extends ViewBase {
         // determine the number of item names to show
         this.rowLimit = Math.min(
             this.model.items[this.model.bagIndex].size() - this.minIndex, 
-            (int)Math.floor((height * 0.7 - 36 * graphicsScaling) / fontSpacing)
+            (int)Math.floor((height * 0.7 - 20 * graphicsScaling) / fontSpacing)
         );
 
         // if the screen resolution changes and the item the player selected is no longer displayed
@@ -136,7 +136,7 @@ public class InventoryView extends ViewBase {
             this.minIndex = this.model.itemIndex - this.rowLimit;
         }
 
-        for (int i = 0; i <= this.rowLimit; i++)
+        for (int i = 0; i < this.rowLimit; i++)
         {
             Image sprite = this.itemSprite[this.model.items[this.model.bagIndex].get(this.minIndex + i).itemId];
 
@@ -184,7 +184,7 @@ public class InventoryView extends ViewBase {
         }
         // if the player is moving down at the bottom of the inventory
         if (this.model.itemIndex > this.oldItemIndex 
-            && this.model.itemIndex > this.rowLimit + this.minIndex 
+            && this.model.itemIndex >= this.rowLimit + this.minIndex 
             // make sure there is still room to move down
             && this.rowLimit + this.minIndex < this.model.items[this.model.bagIndex].size())
         {
