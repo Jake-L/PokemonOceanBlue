@@ -124,7 +124,7 @@ public class App extends JFrame implements KeyListener
         // pressing any key will advance from the title screen
         if (viewManager.getCurrentView() == "TitleScreenView" && System.currentTimeMillis() - startTime > 1000 && playerModel == null )
         {
-            setMap(0, 4, 4);
+            setMap(0, 7, 7);
         }
     }
      
@@ -136,7 +136,7 @@ public class App extends JFrame implements KeyListener
     public void createBattle(int battleId)
     {
         MusicPlayer.setSong("18");
-        battleModel = new BattleModel(pokemonTeam, pokemonTeam, this, false);
+        battleModel = new BattleModel(pokemonTeam, battleId, this);
         BattleView battleView = new BattleView(this.battleModel);
         viewManager.setView(battleView);
         battleController = new BattleController(battleModel);
@@ -164,11 +164,11 @@ public class App extends JFrame implements KeyListener
         {
             // if the player moved from another map, keep them facing the same direction as before
             oldPlayerModel = playerModel;
-            playerModel = new CharacterModel("red", playerX, playerY, -1, oldPlayerModel.getDirection());
+            playerModel = new CharacterModel("red", playerX, playerY, -1, -1, 0, oldPlayerModel.getDirection());
         }
         else
         {
-            playerModel = new CharacterModel("red", playerX, playerY, -1);
+            playerModel = new CharacterModel("red", playerX, playerY, -1, -1);
         }
 
         // create the overworld

@@ -55,7 +55,8 @@ public class ViewManager extends JPanel {
         }
         if (this.view != null && 
             (this.view.toString().equals("TitleScreenView")
-            || (this.view.toString().equals("OverworldView") && view.toString().equals("BattleView"))))
+            || (this.view.toString().equals("OverworldView") && view.toString().equals("BattleView"))
+            || (this.view.toString().equals("BattleView") && view.toString().equals("OverworldView"))))
         {
             this.newView = view;
             this.transitionCounter = 120;

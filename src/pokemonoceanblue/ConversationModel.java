@@ -10,14 +10,18 @@ public class ConversationModel
     private final int conversationId;
     private int counter = 0;
     private List<ConversationEvent> events = new ArrayList<ConversationEvent>();
+    private CharacterModel player;
+    private CharacterModel cpu;
     
     /** 
      * Constructor
      * @param conversationId the unique identifier of this converstaion
      */
-    public ConversationModel(int conversationId)
+    public ConversationModel(int conversationId, CharacterModel player, CharacterModel cpu)
     {
         this.conversationId = conversationId;
+        this.player = player;
+        this.cpu = cpu;
         this.counter = TEXT_LENGTH;
 
         this.loadEvents();
@@ -28,6 +32,29 @@ public class ConversationModel
      */
     private void loadEvents()
     {
+        ConversationEvent event;
+        int xDistance = player.getX() - cpu.getX();
+        if (xDistance < -1)
+        {
+            event = new ConversationEvent(
+                cpu.characterId,
+                -1,
+                0,
+                xDistance * -1 - 1
+            );
+            this.events.add(event);
+        }
+        else if (xDistance > 1)
+        {
+            event = new ConversationEvent(
+                cpu.characterId,
+                1,
+                0,
+                xDistance - 1
+            );
+            this.events.add(event);
+        }
+
         try
         {
             DatabaseUtility db = new DatabaseUtility();
@@ -40,10 +67,12 @@ public class ConversationModel
             while(rs.next()) 
             {
                 // add the conversation event to the list of events
-                ConversationEvent event = new ConversationEvent(rs.getInt("conversationEventId"),
-                                                                rs.getString("text"),
-                                                                rs.getInt("battleId"));
-                events.add(event);
+                event = new ConversationEvent(
+                    rs.getInt("conversationEventId"),
+                    rs.getString("text"),
+                    rs.getInt("battleId")
+                );
+                this.events.add(event);
             }
         }
         catch (SQLException e) 
@@ -69,7 +98,7 @@ public class ConversationModel
      */
     public void nextEvent()
     {
-        if (this.counter == 0 && this.events.size() > 0)
+        if (this.counter == 0 && this.events.size() > 0 && this.events.get(0).distance <= 0)
         {
             this.events.remove(0);
             this.counter = TEXT_LENGTH;
@@ -81,7 +110,7 @@ public class ConversationModel
      */
     public int getBattleId()
     {
-        if (this.events.size() > 0)
+        if (this.events.size() > 0 && this.counter == 0)
         {
             return this.events.get(0).battleId;
         }
@@ -97,6 +126,11 @@ public class ConversationModel
         {
             this.counter--;
         }
+        // auto advance through some events without waiting for player to press anything
+        if (!this.isComplete() && this.counter == 0 && this.events.get(0).autoAdvance)
+        {
+            this.nextEvent();
+        }
     }
 
     /** 
@@ -104,18 +138,79 @@ public class ConversationModel
      */
     public boolean isComplete()
     {
-        if (this.events.size() == 0 || (this.events.size() == 1 && this.counter == 0))
+        if (this.events.size() == 0)
         {
             return true;
         }
         return false;
     }
 
+    /**
+     * @return the characterId to be moved
+     */
+    public int getMovementCharacterId()
+    {
+        if (this.events.size() > 0 && this.events.get(0).distance > 0)
+        {
+            return this.events.get(0).characterId;
+        }
+        else
+        {
+            return -2;
+        }
+    }
+
+    /**
+     * @return the x-direction to move the character
+     */
+    public int getMovementDx()
+    {
+        if (this.events.size() > 0 && this.events.get(0).distance > 0)
+        {
+            return this.events.get(0).dx;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    /**
+     * @return the y-direction to move the character
+     */
+    public int getMovementDy()
+    {
+        if (this.events.size() > 0 && this.events.get(0).distance > 0)
+        {
+            return this.events.get(0).dy;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+    /**
+     * Confirm that a character has moved and decrease the remaining distance the need to move
+     */
+    public void setCharacterMoved()
+    {
+        this.events.get(0).distance--;
+        this.counter = 16;
+    }
+
     class ConversationEvent
     {
-        private final int conversationEventId;
-        public final String text;
-        public final int battleId;
+        private int conversationEventId;
+        public String text;
+        public int battleId;
+        public boolean autoAdvance = false;
+
+        // variables for moving CPUs
+        public int characterId;
+        public int dx;
+        public int dy;
+        public int distance;
 
         /** 
          * Constructor
@@ -128,6 +223,22 @@ public class ConversationModel
             this.conversationEventId = conversationEventId;
             this.text = text;
             this.battleId = battleId;
+        }
+
+        /**
+         * Constructor
+         * @param characterId the character to be moved
+         * @param dx the x-direction to move the character
+         * @param dy the y-direction to move the character
+         * @param distance the distance to move the character
+         */
+        public ConversationEvent(int characterId, int dx, int dy, int distance)
+        {
+            this.characterId = characterId;
+            this.dx = dx;
+            this.dy = dy;
+            this.distance = distance;
+            this.autoAdvance = true;
         }
     }
 }

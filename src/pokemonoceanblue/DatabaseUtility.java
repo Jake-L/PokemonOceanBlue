@@ -61,7 +61,7 @@ public class DatabaseUtility
         // remove all the existing tables first
         String[] table_list = {
             "evolution_methods", "pokemon", "pokemon_moves", "pokemon_location", 
-            "conversation", "moves", "type_effectiveness", "items"
+            "conversation", "moves", "type_effectiveness", "items", "battle"
         };
 
         for (String t : table_list)
@@ -218,6 +218,22 @@ public class DatabaseUtility
                     + "VALUES (?, ?, ?, ?, ?)";
 
         dataTypes = new String[] {"int", "String", "int", "int", "String"};
+        loadTable(path, query, dataTypes);
+
+        // store the teams used by trainers in battle
+        query = "CREATE TABLE battle("
+                + "battle_id INT NOT NULL,"
+                + "pokemon_id INT NOT NULL,"
+                + "level INT NOT NULL)";
+        runUpdate(query);
+
+        // fill battle table with data
+        path = "src/rawdata/battle.csv";
+        query = "INSERT INTO battle ("
+                    + "battle_id, pokemon_id, level)"
+                    + "VALUES (?, ?, ?)";
+
+        dataTypes = new String[] {"int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         conn.commit();

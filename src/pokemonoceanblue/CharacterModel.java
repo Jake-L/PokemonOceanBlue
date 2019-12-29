@@ -20,6 +20,8 @@ public class CharacterModel {
     public final int spawn_x;
     public final int spawn_y;
     public final int conversationId;
+    public final int characterId;
+    public final int wanderRange;
 
     public boolean surf = false;
 
@@ -28,10 +30,11 @@ public class CharacterModel {
      * @param x x position of the sprite
      * @param y y position of the sprite
      * @param conversationId a unique identifier for their conversation or -1 otherwise
+     * @param characterId a unique identifier for their character
      * sets direction to default value of DOWN
      */
-    public CharacterModel(String spriteName, int x, int y, int conversationId){
-        this(spriteName, x, y, conversationId, Direction.DOWN);
+    public CharacterModel(String spriteName, int x, int y, int conversationId, int characterId){
+        this(spriteName, x, y, conversationId, characterId, 0, Direction.DOWN);
     }
 
     /** 
@@ -39,9 +42,11 @@ public class CharacterModel {
      * @param x x position of the sprite
      * @param y y position of the sprite
      * @param conversationId a unique identifier for their conversation or -1 otherwise
+     * @param characterId a unique identifier for their character
+     * @param wanderRange the distance from the character's initial position that they are allowed to move
      * @param direction the direction the character initially faces 
      */
-    public CharacterModel(String spriteName, int x, int y, int conversationId, Direction direction){
+    public CharacterModel(String spriteName, int x, int y, int conversationId, int characterId, int wanderRange, Direction direction){
         this.spriteName = spriteName;
         this.x = x;
         this.y = y;
@@ -49,6 +54,8 @@ public class CharacterModel {
         this.spawn_x = x;
         this.spawn_y = y;
         this.conversationId = conversationId;
+        this.characterId = characterId;
+        this.wanderRange = wanderRange;
 
         // get the sprite's height
         ImageIcon ii = new ImageIcon(String.format("src/characters/%sDown0.png", spriteName));
@@ -138,7 +145,7 @@ public class CharacterModel {
     public void setMovement(int dx, int dy, int movementSpeed)
     {
         // can only specify movement when not already moving
-        if (this.movementCounter <= 0 && this.overworldModel.canMove())
+        if (this.movementCounter <= 0 && this.overworldModel.canMove(this.characterId))
         {
             // toggle animation offset between 0 and 1
             animationOffset = Math.abs(animationOffset - 1);

@@ -35,16 +35,33 @@ public class BattleModel
     {
         this.team[0] = playerTeam;
         this.team[1] = opponentTeam;
+        this.app = app;
+        this.isWild = isWild;
+        this.initialize();
+    }
+
+    public BattleModel(PokemonModel[] playerTeam, int battleId, App app)
+    {
+        this.team[0] = playerTeam;
+        this.loadTeam(battleId);
+        this.app = app;
+        this.isWild = false;
+        this.initialize();
+    }
+
+    /**
+     * Set initial variable values
+     */
+    private void initialize()
+    {
         this.currentPokemon[0] = 0;
         while (this.team[0][currentPokemon[0]].currentHP == 0)
         {
             this.currentPokemon[0]++;
         }
         this.currentPokemon[1] = 0;
-        this.isWild = isWild;
         this.loadBattleMenu();
-        loadData();
-        this.app = app;
+        this.loadData();
     }
 
     public void confirmSelection()
@@ -85,7 +102,7 @@ public class BattleModel
                         1,
                         0);
                     this.counter = 60;
-
+                    
                     BattleEvent enemyAttackEvent = enemyAttackEvent();
                     
                     if (this.team[0][this.currentPokemon[0]].moves[optionIndex].priority > this.team[1][this.currentPokemon[1]].moves[enemyMove].priority)
@@ -133,6 +150,7 @@ public class BattleModel
         }
     }
 
+    
     /**
      * @param itemId is the item that will be used
      */
@@ -146,7 +164,7 @@ public class BattleModel
         {
             BattleEvent event = new BattleEvent("Trainer used a " + itemId + ".", itemId, false, 0);
             this.events.add(event);
-            this.counter = 60;
+            this.counter = 60;            
             this.events.add(this.enemyAttackEvent());
             effectivenessMessage(modifier[1], 1);
         }
@@ -163,7 +181,7 @@ public class BattleModel
         }
         else
         {
-            BattleEvent event = new BattleEvent("Trainer withdrew " + this.team[0][currentPokemon[0]].name + ".", 0); 
+            BattleEvent event = new BattleEvent("Trainer withdrew " + this.team[0][currentPokemon[0]].name + ".", 0);
             this.events.add(event);
             event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", pokemon, true, 0);
             this.events.add(event);
@@ -228,7 +246,7 @@ public class BattleModel
     
     /** 
      * @param effectiveness damage modifier
-     * @param attacker the team that is using the attack
+     * @param attacker the team using the attack
      */
     private void effectivenessMessage(float effectiveness, int attacker)
     {
@@ -482,6 +500,37 @@ public class BattleModel
             return this.events.get(0).text;
         }
         return null;
+    }
+
+    /**
+     * Load the enemy team
+     * @param battleId unique identifier for the enemy's team
+     */
+    private void loadTeam(int battleId)
+    {
+        List<PokemonModel> loadTeam = new ArrayList<PokemonModel>();
+        
+        try
+        {
+            DatabaseUtility db = new DatabaseUtility();
+
+            String query = "SELECT pokemon_id, level "
+                         + "FROM battle";
+
+            ResultSet rs = db.runQuery(query);
+
+            while(rs.next()) 
+            {
+                loadTeam.add(new PokemonModel(rs.getInt(1), rs.getInt(2), false));
+            }       
+            
+            this.team[1] = new PokemonModel[loadTeam.size()];
+            loadTeam.toArray(this.team[1]);
+        }
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+        }  
     }
 
     class BattleEvent

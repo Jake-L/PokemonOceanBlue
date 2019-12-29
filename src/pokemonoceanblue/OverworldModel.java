@@ -22,6 +22,7 @@ public class OverworldModel {
     private List<Integer> wildPokemon = new ArrayList<Integer>();
     public String[] textOptions;
     public int optionIndex;
+    private List<ConversationTrigger> conversationTrigger = new ArrayList<ConversationTrigger>();
 
     // prevent players from accidently repeating actions by holdings keys
     private int actionCounter = 15;
@@ -38,20 +39,24 @@ public class OverworldModel {
         loadWildPokemon();
         if (this.mapId == 0)
         {
-            cpuModel = new CharacterModel[1];
-            cpuModel[0] = new CharacterModel("cassie", 6, 6, 3);
-            cpuModel[0].setOverworldModel(this);
+            this.cpuModel = new CharacterModel[1];
+            this.cpuModel[0] = new CharacterModel("campBoy", 6, 6, 4, 3, 0, Direction.RIGHT);
+            this.cpuModel[0].setOverworldModel(this);
 
-            portals = new Portal[6];
-            // houses
-            portals[0] = new Portal(8, 35, 1, 3, 8);
-            portals[1] = new Portal(19, 35, 2, 3, 8);
-            portals[2] = new Portal(8, 42, 3, 3, 8);
-            portals[3] = new Portal(19, 42, 4, 3, 8);
-            portals[4] = new Portal(19, 49, 5, 3, 8);
+            this.conversationTrigger.add(new ConversationTrigger(4, cpuModel[0], 7, 6, true));
+            this.conversationTrigger.add(new ConversationTrigger(4, cpuModel[0], 8, 6, true));
+            this.conversationTrigger.add(new ConversationTrigger(4, cpuModel[0], 9, 6, true));
 
-            // oak's lab
-            portals[5] = new Portal(10, 49, 6, 6, 12);
+            // portals = new Portal[6];
+            // // houses
+            // portals[0] = new Portal(8, 35, 1, 3, 8);
+            // portals[1] = new Portal(19, 35, 2, 3, 8);
+            // portals[2] = new Portal(8, 42, 3, 3, 8);
+            // portals[3] = new Portal(19, 42, 4, 3, 8);
+            // portals[4] = new Portal(19, 49, 5, 3, 8);
+
+            // // oak's lab
+            // portals[5] = new Portal(10, 49, 6, 6, 12);
         }
         else if (mapId == 1)
         {
@@ -84,9 +89,9 @@ public class OverworldModel {
             portals[0] = new Portal(6, 13, 0, 10, 25);
 
             cpuModel = new CharacterModel[2];
-            cpuModel[0] = new CharacterModel("oak", 6, 3, 0);
+            cpuModel[0] = new CharacterModel("oak", 6, 3, 1, 0, 0, Direction.DOWN);
             cpuModel[0].setOverworldModel(this);
-            cpuModel[1] = new CharacterModel("scientist", 8, 8, 2);
+            cpuModel[1] = new CharacterModel("scientist", 8, 8, 2, 2);
             cpuModel[1].setOverworldModel(this);
         }
     }
@@ -158,7 +163,7 @@ public class OverworldModel {
             cpuModel[i].update(false);
             
             // generate random movement
-            if (cpuModel[i].getMovementCounter() < 0)
+            if (cpuModel[i].getMovementCounter() < 0 && cpuModel[i].wanderRange > 0)
             {
                 int n = rand.nextInt(100);
                 int dx = 0;
@@ -175,7 +180,7 @@ public class OverworldModel {
 
                 if (dx != 0 || dy != 0)
                 {
-                    if (Math.abs(cpuModel[i].spawn_x - cpuModel[i].getX() - dx) + Math.abs(cpuModel[i].spawn_y - cpuModel[i].getY() - dy) <= 2)
+                    if (Math.abs(cpuModel[i].spawn_x - cpuModel[i].getX() - dx) + Math.abs(cpuModel[i].spawn_y - cpuModel[i].getY() - dy) <= cpuModel[i].wanderRange)
                     {
                         cpuModel[i].setMovement(dx, dy, 1);
                     }
@@ -186,6 +191,25 @@ public class OverworldModel {
         // update the current conversation
         if (this.conversation != null)
         {
+            // determine if a character needs to be moved
+            int characterId = this.conversation.getMovementCharacterId();
+            if (characterId > -1)
+            {
+                for (int i = 0; i < this.cpuModel.length; i++)
+                {
+                    if (this.cpuModel[i].characterId == characterId && this.cpuModel[i].getMovementCounter() <= 0)
+                    {
+                        // move the character
+                        this.cpuModel[i].setMovement(
+                            this.conversation.getMovementDx(), 
+                            this.conversation.getMovementDy(), 
+                            1
+                        );
+                        this.conversation.setCharacterMoved();
+                        break;
+                    }
+                }                
+            }
             this.conversation.update();
         }
     }
@@ -243,9 +267,9 @@ public class OverworldModel {
      * Prevent characters from moving during conversations
      * @return true if characters can walk around or false otherwise
      */
-    public boolean canMove()
+    public boolean canMove(int characterId)
     {
-        if (this.conversation != null)
+        if (this.conversation != null && this.conversation.getMovementCharacterId() != characterId)
         {
             return false;
         }
@@ -268,11 +292,23 @@ public class OverworldModel {
             {
                 this.conversation = null;
                 this.actionCounter = 15;
-                this.app.createBattle(0);
             }
             else
             {
+                // start a battle
+                if (this.conversation.getBattleId() >= 0)
+                {
+                    this.app.createBattle(this.conversation.getBattleId());
+                }
+
                 this.conversation.nextEvent();
+
+                // delete the conversation if it is over
+                if (this.conversation.isComplete())
+                {
+                    this.conversation = null;
+                    this.actionCounter = 15;
+                }
             }
         }
         // surf if facing water
@@ -314,7 +350,7 @@ public class OverworldModel {
                         }
 
                         // start the conversation
-                        this.conversation = new ConversationModel(cpu.conversationId);
+                        this.conversation = new ConversationModel(cpu.conversationId, this.playerModel, cpu);
                         break;
                     }
                 }
@@ -345,8 +381,49 @@ public class OverworldModel {
         {
             this.playerModel.surf = false;
         }
+
+        ConversationTrigger current;
+        for (int i = 0; i < this.conversationTrigger.size(); i++)
+        {
+            current = this.conversationTrigger.get(i);
+            if (current.x == x && current.y == y)
+            {
+                this.conversation = new ConversationModel(current.conversationId, this.playerModel, current.cpuModel);
+                
+                // clear the trigger
+                if (current.clearAfterUse)
+                {
+                    this.clearTriggers(current.conversationId);
+                }
+
+                break;
+            }
+        }
     }
 
+    /**
+     * After a conversationTrigger has been used, remove all the triggers for that conversation
+     * @param conversationId the identifier for the triggers to be removed
+     */
+    private void clearTriggers(int conversationId)
+    {
+        int i = 0;
+        while (i < this.conversationTrigger.size())
+        {
+            if (this.conversationTrigger.get(i).conversationId == conversationId)
+            {
+                this.conversationTrigger.remove(i);
+            }
+            else
+            {
+                i++;
+            }
+        } 
+    }
+
+    /**
+     * Opens the main menu, allowing the player to look at their Pokemon, inventory, etc
+     */
     public void openMenu()
     {
         if (this.actionCounter == 0)
@@ -366,6 +443,9 @@ public class OverworldModel {
         }
     }
 
+    /**
+     * Take action based on what the player selects in the menu
+     */
     public void confirmSelection()
     {
         if (this.textOptions[this.optionIndex] == "Pokemon")
@@ -380,6 +460,10 @@ public class OverworldModel {
         }
     }
 
+    /**
+     * Change the currently selected option
+     * @param dy the direction to move the cursor
+     */
     public void moveCursor(int dy)
     {
         if (dy > 0 && this.optionIndex < this.textOptions.length - 1)
@@ -416,5 +500,34 @@ public class OverworldModel {
         {
             e.printStackTrace();
         }  
+    }
+
+    /**
+     * Holds a specific location on the map that starts a conversation when the player steps on it
+     */
+    class ConversationTrigger
+    {
+        public final int conversationId;
+        public final CharacterModel cpuModel; 
+        public final int x; 
+        public final int y;
+        public final boolean clearAfterUse;
+
+        /**
+         * Constructor
+         * @param conversationId unique identifier for the conversation
+         * @param cpuModel the cpu involved in the conversation
+         * @param x the x-coordinate of the trigger
+         * @param y the y-coordinate of the trigger
+         * @param clearAfterUse whether the trigger remains after it's first use
+         */
+        public ConversationTrigger(int conversationId, CharacterModel cpuModel, int x, int y, boolean clearAfterUse)
+        {
+            this.conversationId = conversationId;
+            this.cpuModel = cpuModel;
+            this.x = x;
+            this.y = y;
+            this.clearAfterUse = clearAfterUse;
+        }
     }
 }
