@@ -98,13 +98,14 @@ public class App extends JFrame implements KeyListener
         viewManager.setView(titleView);
         MusicPlayer.setSong("0");
 
-        PokemonModel[] pokemonTeam = new PokemonModel[5];
-        pokemonTeam[0] = new PokemonModel(1, 5, false);
+        PokemonModel[] pokemonTeam = new PokemonModel[6];
+        pokemonTeam[0] = new PokemonModel(125, 5, false);
         pokemonTeam[0].xp = 215;
         pokemonTeam[1] = new PokemonModel(26, 30, true);
         pokemonTeam[2] = new PokemonModel(9, 40, true);
         pokemonTeam[3] = new PokemonModel(34, 5, false);
         pokemonTeam[4] = new PokemonModel(150, 5, false);
+        pokemonTeam[5] = new PokemonModel(4, 5, false);
 
         partyModel = new PartyModel(pokemonTeam);
         inventoryModel = new InventoryModel();
@@ -371,6 +372,24 @@ public class App extends JFrame implements KeyListener
         }
     }    
 
+    /**
+     * @param path the sound to be played
+     */
+    public void playSound(String path)
+    {
+        try
+        {
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(String.format("src/sounds/%s.wav", path)).getAbsoluteFile());
+            Clip currentClip = AudioSystem.getClip();
+            currentClip.open(audioStream);
+            currentClip.start();
+        }
+        catch (Exception e)
+        {
+            System.out.println("Error playing sound: " + path);
+        }
+    }
+
     /** 
      * Plays background music
      */
@@ -425,7 +444,6 @@ public class App extends JFrame implements KeyListener
                 currentClip.open(audioStream);
                 fadeVolume();
                 currentClip.loop(Clip.LOOP_CONTINUOUSLY);
-                //currentClip.start();
             }
             catch (Exception e)
             {
