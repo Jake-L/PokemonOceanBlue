@@ -1,20 +1,35 @@
 package pokemonoceanblue;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class PartyModel 
 {
     public PokemonModel[] team;
-    public int optionIndex = 0;
-    public int INPUTDELAY = 6;
-    public int counter = this.INPUTDELAY;
-    public int currentPokemon = -1;
+    public int optionIndex;
+    public final int INPUTDELAY = 6;
+    public int counter;
+    public int currentPokemon;
     public boolean isBattle;
     
-    public int returnValue = -2;
+    public int returnValue;
+    public List<PokemonModel> pokemonStorage = new ArrayList<PokemonModel>();
 
-    public PartyModel(PokemonModel[] model, int currentPokemon)
+    public PartyModel(PokemonModel[] model)
     {
         this.team = model;
+    }
+
+    /**
+     * Set variables when creating a new view
+     * @param currentPokemon the Pokemon currently selected, or -1 if not in a battle
+     */
+    public void initialize(int currentPokemon)
+    {
         this.currentPokemon = currentPokemon;
+        this.counter = this.INPUTDELAY;
+        this.optionIndex = 0;
+        this.returnValue = -2;
         
         if (this.currentPokemon == -1)
         {

@@ -27,13 +27,13 @@ public class App extends JFrame implements KeyListener
     ViewManager viewManager;
     List<Integer> keysDown = new ArrayList<Integer>(); 
     OverworldModel overworldModel;
-    PokemonModel[] pokemonTeam = new PokemonModel[6];
     BattleModel battleModel;
     BattleController battleController;
     PartyController partyController;
     PartyModel partyModel;
     InventoryController inventoryController;
     InventoryModel inventoryModel;
+    NewPokemonController newPokemonController;
 
     // number of milliseconds between frames
     private final byte FRAME_LENGTH = 32;
@@ -45,7 +45,7 @@ public class App extends JFrame implements KeyListener
     
     public static void main(String[] args) throws Exception 
     {
-        JFrame frame = new App();
+        new App();
     }
 
     private void createAndShowGUI() {
@@ -98,13 +98,16 @@ public class App extends JFrame implements KeyListener
         viewManager.setView(titleView);
         MusicPlayer.setSong("0");
 
+        PokemonModel[] pokemonTeam = new PokemonModel[5];
         pokemonTeam[0] = new PokemonModel(1, 5, false);
         pokemonTeam[0].xp = 215;
         pokemonTeam[1] = new PokemonModel(26, 30, true);
         pokemonTeam[2] = new PokemonModel(9, 40, true);
         pokemonTeam[3] = new PokemonModel(34, 5, false);
         pokemonTeam[4] = new PokemonModel(150, 5, false);
-        pokemonTeam[5] = new PokemonModel(94, 30, false);
+
+        partyModel = new PartyModel(pokemonTeam);
+        inventoryModel = new InventoryModel();
 
         this.update();
     }
@@ -136,7 +139,7 @@ public class App extends JFrame implements KeyListener
     public void createBattle(int battleId)
     {
         MusicPlayer.setSong("18");
-        battleModel = new BattleModel(pokemonTeam, battleId, this);
+        battleModel = new BattleModel(partyModel.team, battleId, this);
         BattleView battleView = new BattleView(this.battleModel);
         viewManager.setView(battleView);
         battleController = new BattleController(battleModel);
@@ -145,7 +148,7 @@ public class App extends JFrame implements KeyListener
     public void createBattle(PokemonModel[] team)
     {
         MusicPlayer.setSong("18");
-        battleModel = new BattleModel(team, pokemonTeam, this, true);
+        battleModel = new BattleModel(team, partyModel.team, this, true);
         BattleView battleView = new BattleView(this.battleModel);
         viewManager.setView(battleView);
         battleController = new BattleController(battleModel);
@@ -183,14 +186,14 @@ public class App extends JFrame implements KeyListener
 
     public void openInventory()
     {
-        inventoryModel = new InventoryModel();
+        inventoryModel.initialize();
         viewManager.setView(new InventoryView(inventoryModel));
         inventoryController = new InventoryController(inventoryModel);
     }
 
     public void openParty(int currentPokemon)
     {
-        partyModel = new PartyModel(pokemonTeam, currentPokemon);
+        partyModel.initialize(currentPokemon);
         viewManager.setView(new PartyView(partyModel));
         partyController = new PartyController(partyModel);
     }
@@ -218,9 +221,21 @@ public class App extends JFrame implements KeyListener
                     
                     if (this.battleModel.isComplete())
                     {
+                        // if a new Pokemon was caught, show it
+                        if (this.battleModel.getNewPokemon() != null)
+                        {
+                            this.partyModel.initialize(-1);
+                            NewPokemonModel newPokemonModel = new NewPokemonModel(this.battleModel.getNewPokemon(), partyModel);
+                            viewManager.setView(new NewPokemonView(newPokemonModel));
+                            newPokemonController = new NewPokemonController(newPokemonModel);
+                        }
                         // return to overworld screen
-                        OverworldView overworldView = new OverworldView(overworldModel);
-                        viewManager.setView(overworldView);
+                        else
+                        {
+                            OverworldView overworldView = new OverworldView(overworldModel);
+                            viewManager.setView(overworldView);
+                        }
+
                         this.battleModel = null;
                     }
                 }
@@ -310,6 +325,20 @@ public class App extends JFrame implements KeyListener
                                 OverworldView overworldView = new OverworldView(overworldModel);
                                 viewManager.setView(overworldView);
                             }
+                        }
+                    }
+                }
+                else if (viewManager.getCurrentView().equals("NewPokemonView"))
+                {
+                    if (newPokemonController != null)
+                    {
+                        newPokemonController.userInput(keysDown);
+
+                        if (newPokemonController.isComplete())
+                        {
+                            OverworldView overworldView = new OverworldView(overworldModel);
+                            viewManager.setView(overworldView);
+                            newPokemonController = null;
                         }
                     }
                 }

@@ -1,11 +1,7 @@
 package pokemonoceanblue;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import java.awt.Font;

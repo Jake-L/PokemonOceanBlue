@@ -371,7 +371,7 @@ public class OverworldModel {
             if (n < this.wildPokemon.size())
             {
                 PokemonModel[] team = new PokemonModel[1];
-                boolean shiny = rand.nextInt(5) == 1 ? true : false;
+                boolean shiny = rand.nextInt(50) == 1 ? true : false;
                 team[0] = new PokemonModel(this.wildPokemon.get(n), 5, shiny);
                 this.app.createBattle(team);
             }

@@ -347,6 +347,18 @@ public class BattleModel
         return false;
     }
 
+    public PokemonModel getNewPokemon()
+    {
+        if (this.isComplete() && this.isWild && this.isCaught)
+        {
+            return this.team[1][0];
+        }
+        else
+        {
+            return null;
+        }
+    }
+
     /**
      * Determines if all the Pokemon have fainted in one team
      * @param teamIndex 0 for player's team, 1 for enemy's team

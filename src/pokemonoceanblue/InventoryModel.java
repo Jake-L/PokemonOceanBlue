@@ -9,17 +9,18 @@ import java.sql.*;
  */
 public class InventoryModel {
 
-    public List<ItemModel>[] items = new ArrayList[3]; 
-    public int itemIndex = 0;
-    public int bagIndex = 1;
-    public int counter = 5;
-    public int returnValue = -2;
+    public List<ItemModel>[] items; 
+    public int itemIndex;
+    public int bagIndex;
+    public int counter;
+    public int returnValue;
     
     /** 
      * Constructor
      */
     public InventoryModel()
     {
+        this.items = new ArrayList[3];
         for (int i = 0; i < items.length; i++)
         {
             items[i] = new ArrayList<ItemModel>();
@@ -40,6 +41,19 @@ public class InventoryModel {
         this.addItem(133, 8);
         this.addItem(113, 8);
         this.addItem(116, 8);
+
+        this.initialize();
+    }
+
+    /**
+     * Set variables when creating a new view
+     */
+    public void initialize()
+    {
+        this.itemIndex = 0;
+        this.bagIndex = 0;
+        this.counter = 5;
+        this.returnValue = -2;
     }
 
     public void update()
@@ -84,7 +98,7 @@ public class InventoryModel {
     public boolean removeItem(int itemId, int quantity)
     {
         ItemModel newItem = new ItemModel(itemId, quantity);
-        int categoryIndex = Math.max(newItem.categoryId, 2);
+        int categoryIndex = Math.min(newItem.categoryId, 2);
 
         for (int i = 0; i < this.items[categoryIndex].size(); i++)
         {

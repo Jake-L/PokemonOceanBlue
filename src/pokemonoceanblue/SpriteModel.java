@@ -1,7 +1,7 @@
 package pokemonoceanblue;
 
 /** 
- * A class used for simple objects on the map that only require a spruit and x,y coordinates
+ * A class used for simple objects on the map that only require a sprite and x,y coordinates
  */
 public class SpriteModel {
     public String spriteName;
