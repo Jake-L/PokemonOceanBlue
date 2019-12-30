@@ -34,6 +34,7 @@ public class App extends JFrame implements KeyListener
     InventoryController inventoryController;
     InventoryModel inventoryModel;
     NewPokemonController newPokemonController;
+    SummaryController summaryController;
 
     // number of milliseconds between frames
     private final byte FRAME_LENGTH = 32;
@@ -199,6 +200,13 @@ public class App extends JFrame implements KeyListener
         partyController = new PartyController(partyModel);
     }
 
+    public void openSummary(int currentPokemon)
+    {
+        partyModel.initialize(currentPokemon);
+        viewManager.setView(new SummaryView(partyModel));
+        summaryController = new SummaryController(partyModel);
+    }
+
     public void update()
     {
         // the last time the function was run
@@ -281,7 +289,13 @@ public class App extends JFrame implements KeyListener
                     {
                         partyController.userInput(keysDown);
                         int returnValue = partyModel.getSelection();
-                        if (returnValue >= -1)
+                        if (partyModel.isSummary)
+                        {
+                            this.partyController = null;
+                            this.openSummary(partyModel.currentPokemon);
+                        }
+                        
+                        else if (returnValue >= -1)
                         {
                             this.partyController = null;
 
@@ -298,6 +312,21 @@ public class App extends JFrame implements KeyListener
                                 OverworldView overworldView = new OverworldView(overworldModel);
                                 viewManager.setView(overworldView);
                             }
+
+                            this.partyModel.optionIndex = 0;
+                        }
+                    }
+                }
+                else if (viewManager.getCurrentView().equals("SummaryView"))
+                {
+                    partyModel.update();
+                    if (summaryController != null)
+                    {
+                        summaryController.userInput(keysDown);
+                        if (!partyModel.isSummary)
+                        {
+                            this.summaryController = null;
+                            this.openParty(partyModel.currentPokemon);
                         }
                     }
                 }

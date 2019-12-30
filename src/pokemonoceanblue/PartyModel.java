@@ -6,12 +6,12 @@ import java.util.List;
 public class PartyModel 
 {
     public PokemonModel[] team;
-    public int optionIndex;
+    public int optionIndex = 0;
     public final int INPUTDELAY = 6;
     public int counter;
     public int currentPokemon;
     public boolean isBattle;
-    
+    public boolean isSummary = false;
     public int returnValue;
     public List<PokemonModel> pokemonStorage = new ArrayList<PokemonModel>();
 
@@ -28,7 +28,6 @@ public class PartyModel
     {
         this.currentPokemon = currentPokemon;
         this.counter = this.INPUTDELAY;
-        this.optionIndex = 0;
         this.returnValue = -2;
         
         if (this.currentPokemon == -1)
@@ -52,7 +51,14 @@ public class PartyModel
 
     public void confirmSelection()
     {
-        this.returnValue = this.optionIndex;
+        if (this.isBattle)
+        {
+            this.returnValue = this.optionIndex;
+        }
+        else
+        {
+            this.isSummary = true;
+        }
     }
 
     public int getSelection()

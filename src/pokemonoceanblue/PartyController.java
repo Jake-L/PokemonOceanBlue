@@ -14,14 +14,14 @@ public class PartyController
 
     public void userInput(List<Integer> keysDown)
     {
-        if (keysDown.contains(KeyEvent.VK_ESCAPE))
-        {
-            this.model.returnValue = -1;
-        }
-
         if (this.model.counter == 0 && keysDown.size() > 0)
         {
-            if ((keysDown.contains(KeyEvent.VK_ENTER)) && (this.model.team[this.model.optionIndex].currentHP > 0 || !this.model.isBattle))
+            if (keysDown.contains(KeyEvent.VK_ESCAPE))
+            {
+                this.model.returnValue = -1;
+            }
+
+            else if ((keysDown.contains(KeyEvent.VK_ENTER)) && (this.model.team[this.model.optionIndex].currentHP > 0 || !this.model.isBattle))
             {
                 if (this.model.optionIndex != this.model.currentPokemon)
                 {

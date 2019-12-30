@@ -19,6 +19,7 @@ public class PartyView extends ViewBase {
     private Image hpBar;
     private Image[] faintedPokemonWindows = new Image[3];
     private Image[] pokemonImages;
+    private Image background;
     
     /** 
      * Constructor for the party view
@@ -68,6 +69,8 @@ public class PartyView extends ViewBase {
 
         ii = new ImageIcon("src/menus/hpBar.png");
         this.hpBar = ii.getImage();
+        ii = new ImageIcon("src/inventory/background.png");
+        this.background = ii.getImage();
     }
 
     /** 
@@ -81,6 +84,16 @@ public class PartyView extends ViewBase {
         g.setFont(new Font("Pokemon Fire Red", Font.PLAIN, 16 * graphicsScaling));
 
         this.teamSize = this.model.team.length;
+
+        //draw the background
+        int blockSize = background.getWidth(null);
+        for (int i = 0; i < Math.ceil((double)width / blockSize); i++)
+        {
+            for (int j = 0; j < Math.ceil((double)height / blockSize); j++)
+            {
+                g.drawImage(background, i * blockSize, j * blockSize, blockSize, blockSize, canvas);
+            }
+        }
 
         //display pokemon windows
         for (int i = 0; i < 6; i++)
