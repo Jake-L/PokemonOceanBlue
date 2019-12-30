@@ -7,40 +7,45 @@ import javax.swing.JPanel;
 import java.awt.Font;
 
 /** 
- * Renders the overworld
+ * Renders the party screen
  */
 public class PartyView extends ViewBase {
 
+    private int teamSize;
     private Image[] pokemonSprite;
     private Image[] healthBarFill = new Image[3];
     private PartyModel model;
     private Image[] pokemonWindows = new Image[4];
     private Image hpBar;
     private Image[] faintedPokemonWindows = new Image[3];
+    private Image[] pokemonImages;
     
     /** 
-     * Constructor for the overworld view
-     * @param model model for the overworld to be displayed
-     * @param playerModel model for the player to display it and calculate screen offset
+     * Constructor for the party view
+     * @param model model for the party to be displayed
      */
     public PartyView(PartyModel model)
     {
         this.model = model;
-        pokemonSprite = new Image[model.team.length];
-        loadImage();
+        this.teamSize = this.model.team.length;
+        this.pokemonSprite = new Image[this.teamSize];
+        this.pokemonImages = new Image[this.teamSize];
+        this.loadImage();
     }
 
     /** 
-     * loads all the Pokemon's sprite icons
+     * loads all the images used in partyview
      */
     private void loadImage() 
     {
         ImageIcon ii;
 
-        for (int i = 0; i < this.model.team.length; i++)
+        for (int i = 0; i < this.teamSize; i++)
         {
             ii = new ImageIcon("src/pokemonicons/" + this.model.team[i].id + ".png");
-            this.pokemonSprite[i]  = ii.getImage();
+            this.pokemonSprite[i] = ii.getImage();
+            ii = new ImageIcon("src/pokemon/frame0/" + this.model.team[i].id + ".png");
+            this.pokemonImages[i] = ii.getImage();
         }
 
         for (int i = 0; i < this.healthBarFill.length; i++)
@@ -73,19 +78,35 @@ public class PartyView extends ViewBase {
     @Override
     public void render(Graphics g, JPanel canvas) 
     {
-        g.setFont(new Font("Pokemon Fire Red", Font.PLAIN, 18 * graphicsScaling));
+        g.setFont(new Font("Pokemon Fire Red", Font.PLAIN, 16 * graphicsScaling));
+
+        this.teamSize = this.model.team.length;
 
         //display pokemon windows
         for (int i = 0; i < 6; i++)
         {
             int renderIndex = 0;
 
-            if (i < this.model.team.length && i == this.model.optionIndex)
+            if (i < this.teamSize && i == this.model.optionIndex)
             {
                 renderIndex = 2;
+                g.drawImage(this.pokemonImages[i],
+                    (int)(width * (3.0 / 4.0)),
+                    8 * graphicsScaling,
+                    this.pokemonImages[i].getWidth(null) * graphicsScaling,
+                    this.pokemonImages[i].getHeight(null) * graphicsScaling,
+                    canvas);
+                for (int j = 0; j < this.model.team[i].moves.length; j++)
+                {
+                    g.drawString(this.model.team[i].moves[j].name,
+                        (int)(width * 0.72),
+                        (int)(height * (2.0 / 5.0) + 14 * j * graphicsScaling));
+
+                    //g.drawString(this.)
+                }
             }
 
-            else if (i >= this.model.team.length)
+            else if (i >= this.teamSize)
             {
                 renderIndex = 3;
             }
@@ -111,7 +132,7 @@ public class PartyView extends ViewBase {
             }
         }
 
-        for (int i = 0; i < this.model.team.length; i++)
+        for (int i = 0; i < this.teamSize; i++)
         {
             // display the Pokemon's icons
             g.drawImage(this.pokemonSprite[i], 
