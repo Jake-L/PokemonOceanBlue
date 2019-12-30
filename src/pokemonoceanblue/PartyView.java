@@ -90,7 +90,7 @@ public class PartyView extends ViewBase {
                 renderIndex = 3;
             }
 
-            if (this.model.team[i].currentHP > 0)
+            if (renderIndex == 3 || this.model.team[i].currentHP > 0)
             {
                 g.drawImage(this.pokemonWindows[renderIndex],
                     (i % 2) * (width / 3 + 8 * graphicsScaling) + 8 * graphicsScaling,

@@ -61,7 +61,19 @@ public class BattleModel
             this.currentPokemon[0]++;
         }
         this.currentPokemon[1] = 0;
-        this.loadBattleMenu();
+        if (this.isWild)
+        {
+            BattleEvent event = new BattleEvent("A wild " + this.team[1][this.currentPokemon[1]].name + " appeared!", 1);
+            this.events.add(event);
+        }
+        else
+        {
+            BattleEvent event = new BattleEvent("Enemy Trainer sent out " + this.team[1][currentPokemon[1]].name + ".", 1);
+            this.events.add(event);
+        }
+        BattleEvent event = new BattleEvent("Trainer sent out " + this.team[0][currentPokemon[0]].name + ".", 0);
+        this.events.add(event);
+        this.counter = 60;
         this.loadData();
     }
 
