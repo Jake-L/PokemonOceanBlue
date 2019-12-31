@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 public class OverworldView extends ViewBase {
 
     private OverworldModel model;
-    private Image[] tileSprite = new Image[40];
+    private Image[] tileSprite = new Image[55];
     private Map<String, Image> animatedTileSprite = new HashMap<String, Image>();
     private Map<String, Image> mapObjectSprite = new HashMap<String, Image>();
     private Map<String, Image> characterSprite = new HashMap<String, Image>();
