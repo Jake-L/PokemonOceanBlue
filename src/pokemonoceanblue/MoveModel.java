@@ -37,7 +37,7 @@ public class MoveModel
 
             ResultSet rs = db.runQuery(query);
 
-            this.name = rs.getString("name");
+            this.name = rs.getString("name").toUpperCase();
             this.typeId = rs.getInt("type_id");
             this.power = rs.getInt("power");
             this.accuracy = rs.getInt("accuracy");

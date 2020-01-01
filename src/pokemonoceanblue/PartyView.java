@@ -86,7 +86,7 @@ public class PartyView extends ViewBase {
         this.teamSize = this.model.team.length;
 
         //draw the background
-        int blockSize = background.getWidth(null);
+        int blockSize = background.getWidth(null) * graphicsScaling;
         for (int i = 0; i < Math.ceil((double)width / blockSize); i++)
         {
             for (int j = 0; j < Math.ceil((double)height / blockSize); j++)
