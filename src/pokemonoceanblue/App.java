@@ -140,7 +140,7 @@ public class App extends JFrame implements KeyListener
 
     public void createBattle(int battleId)
     {
-        MusicPlayer.setSong("18");
+        MusicPlayer.setSong("14");
         battleModel = new BattleModel(partyModel.team, battleId, this);
         BattleView battleView = new BattleView(this.battleModel);
         viewManager.setView(battleView);
@@ -243,6 +243,7 @@ public class App extends JFrame implements KeyListener
                         {
                             OverworldView overworldView = new OverworldView(overworldModel);
                             viewManager.setView(overworldView);
+                            MusicPlayer.setSong("1");
                         }
 
                         this.battleModel = null;
