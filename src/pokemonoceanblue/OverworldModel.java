@@ -25,7 +25,7 @@ public class OverworldModel {
     private List<ConversationTrigger> conversationTrigger = new ArrayList<ConversationTrigger>();
 
     // prevent players from accidently repeating actions by holdings keys
-    private int actionCounter = 15;
+    public int actionCounter = 15;
     
     /** 
      * @param mapId unique identifier for the current map
@@ -298,7 +298,7 @@ public class OverworldModel {
                 // start a battle
                 if (this.conversation.getBattleId() >= 0)
                 {
-                    this.app.createBattle(this.conversation.getBattleId());
+                    this.app.createTrainerBattle(this.conversation.getBattleId());
                 }
 
                 this.conversation.nextEvent();
@@ -370,10 +370,7 @@ public class OverworldModel {
             int n = rand.nextInt(this.wildPokemon.size() * 5);
             if (n < this.wildPokemon.size())
             {
-                PokemonModel[] team = new PokemonModel[1];
-                boolean shiny = rand.nextInt(50) == 1 ? true : false;
-                team[0] = new PokemonModel(this.wildPokemon.get(n), 5, shiny);
-                this.app.createBattle(team);
+                this.app.createWildBattle(this.wildPokemon.get(n), 5);
             }
         }
         // player is no longer surfing when they step onto solid land
@@ -426,12 +423,12 @@ public class OverworldModel {
      */
     public void openMenu()
     {
-        if (this.actionCounter == 0)
+        if (this.actionCounter == 0 && this.conversation == null)
         {
             // open the menu
             if (this.textOptions == null)
             {
-                this.textOptions = new String[]{"Pokemon", "Bag"};
+                this.textOptions = new String[]{"Pokedex", "Pokemon", "Bag"};
                 this.actionCounter = 15;
             }
             // exit the menu if it was already open
@@ -448,15 +445,24 @@ public class OverworldModel {
      */
     public void confirmSelection()
     {
-        if (this.textOptions[this.optionIndex] == "Pokemon")
+        if (this.actionCounter == 0)
         {
-            app.openParty(-1);
-            this.openMenu();
-        }
-        else if (this.textOptions[this.optionIndex] == "Bag")
-        {
-            app.openInventory();
-            this.openMenu();
+            if (this.textOptions[this.optionIndex] == "Pokedex")
+            {
+                app.openPokedex();
+                this.openMenu();
+            }
+            else if (this.textOptions[this.optionIndex] == "Pokemon")
+            {
+                app.openParty(-1);
+                this.openMenu();
+            }
+            else if (this.textOptions[this.optionIndex] == "Bag")
+            {
+                app.openInventory();
+                this.openMenu();
+            }
+            this.actionCounter = 15;
         }
     }
 
@@ -466,15 +472,18 @@ public class OverworldModel {
      */
     public void moveCursor(int dy)
     {
-        if (dy > 0 && this.optionIndex < this.textOptions.length - 1)
+        if (this.actionCounter == 0)
         {
-            this.optionIndex++;
-            this.actionCounter = 10;
-        }
-        else if (dy < 0 && this.optionIndex > 0)
-        {
-            this.optionIndex--;
-            this.actionCounter = 10;
+            if (dy > 0 && this.optionIndex < this.textOptions.length - 1)
+            {
+                this.optionIndex++;
+                this.actionCounter = 10;
+            }
+            else if (dy < 0 && this.optionIndex > 0)
+            {
+                this.optionIndex--;
+                this.actionCounter = 10;
+            }
         }
     }
 

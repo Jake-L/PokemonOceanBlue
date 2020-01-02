@@ -74,7 +74,7 @@ public class InventoryView extends ViewBase {
     public void render(Graphics g, JPanel canvas) 
     {
         // draw the background
-        int blockSize = background.getWidth(null);
+        int blockSize = background.getWidth(null) * graphicsScaling;
         for (int i = 0; i < width / blockSize; i++)
         {
             for (int j = 0; j < height / blockSize; j++)
