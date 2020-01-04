@@ -12,6 +12,8 @@ import java.awt.event.KeyListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import javax.swing.JFrame;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
@@ -35,6 +37,8 @@ public class App extends JFrame implements KeyListener
     InventoryModel inventoryModel;
     NewPokemonController newPokemonController;
     SummaryController summaryController;
+    PokedexModel pokedexModel;
+    PokedexController pokedexController;
 
     // number of milliseconds between frames
     private final byte FRAME_LENGTH = 32;
@@ -110,6 +114,7 @@ public class App extends JFrame implements KeyListener
 
         partyModel = new PartyModel(pokemonTeam);
         inventoryModel = new InventoryModel();
+        pokedexModel = new PokedexModel();
 
         this.update();
     }
@@ -138,7 +143,7 @@ public class App extends JFrame implements KeyListener
         keysDown.remove(Integer.valueOf(e.getKeyCode()));
     }
 
-    public void createBattle(int battleId)
+    public void createTrainerBattle(int battleId)
     {
         MusicPlayer.setSong("14");
         battleModel = new BattleModel(partyModel.team, battleId, this);
@@ -147,9 +152,17 @@ public class App extends JFrame implements KeyListener
         battleController = new BattleController(battleModel);
     }
 
-    public void createBattle(PokemonModel[] team)
+    public void createWildBattle(int pokemonId, int level)
     {
         MusicPlayer.setSong("18");
+
+        //determine if the wild Pokemon is shiny
+        Random rand = new Random();
+        boolean shiny = rand.nextDouble() < (Math.log10(pokedexModel.caughtPokemon[pokemonId] + 0.1) + 1) / 10000 ? true : false;;
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(pokemonId, level, shiny);
+
+        // create the battle
         battleModel = new BattleModel(team, partyModel.team, this, true);
         BattleView battleView = new BattleView(this.battleModel);
         viewManager.setView(battleView);
@@ -207,6 +220,12 @@ public class App extends JFrame implements KeyListener
         summaryController = new SummaryController(partyModel);
     }
 
+    public void openPokedex()
+    {
+        viewManager.setView(new PokedexView(pokedexModel));
+        pokedexController = new PokedexController(pokedexModel);
+    }
+
     public void update()
     {
         // the last time the function was run
@@ -233,6 +252,9 @@ public class App extends JFrame implements KeyListener
                         // if a new Pokemon was caught, show it
                         if (this.battleModel.getNewPokemon() != null)
                         {
+                            // register the new pokemon in pokedex
+                            this.pokedexModel.setCaught(this.battleModel.getNewPokemon().id);
+
                             this.partyModel.initialize(-1);
                             NewPokemonModel newPokemonModel = new NewPokemonModel(this.battleModel.getNewPokemon(), partyModel);
                             viewManager.setView(new NewPokemonView(newPokemonModel));
@@ -373,6 +395,21 @@ public class App extends JFrame implements KeyListener
                         }
                     }
                 }
+                else if (viewManager.getCurrentView().equals("PokedexView"))
+                {
+                    if (pokedexController != null)
+                    {
+                        pokedexController.userInput(keysDown);
+                        pokedexModel.update();
+
+                        if (pokedexController.isComplete())
+                        {
+                            OverworldView overworldView = new OverworldView(overworldModel);
+                            viewManager.setView(overworldView);
+                            pokedexController = null;
+                        }
+                    }
+                }
 
                 // fade music during transition
                 MusicPlayer.fadeVolume();
@@ -442,6 +479,7 @@ public class App extends JFrame implements KeyListener
                 newSong = song;
                 transitionCounter = 0;
                 playSong();
+                setVolume(0.25);
             }
             else if (song != currentSong)
             {
