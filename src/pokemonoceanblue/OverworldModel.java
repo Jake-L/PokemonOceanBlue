@@ -47,16 +47,16 @@ public class OverworldModel {
             this.conversationTrigger.add(new ConversationTrigger(4, cpuModel[0], 8, 6, true));
             this.conversationTrigger.add(new ConversationTrigger(4, cpuModel[0], 9, 6, true));
 
-            // portals = new Portal[6];
-            // // houses
-            // portals[0] = new Portal(8, 35, 1, 3, 8);
-            // portals[1] = new Portal(19, 35, 2, 3, 8);
-            // portals[2] = new Portal(8, 42, 3, 3, 8);
-            // portals[3] = new Portal(19, 42, 4, 3, 8);
-            // portals[4] = new Portal(19, 49, 5, 3, 8);
+            portals = new Portal[6];
+            // houses
+            portals[0] = new Portal(8, 35, 1, 3, 8);
+            portals[1] = new Portal(19, 35, 2, 3, 8);
+            portals[2] = new Portal(8, 42, 3, 3, 8);
+            portals[3] = new Portal(19, 42, 4, 3, 8);
+            portals[4] = new Portal(19, 49, 5, 3, 8);
 
-            // // oak's lab
-            // portals[5] = new Portal(10, 49, 6, 6, 12);
+            // oak's lab
+            portals[5] = new Portal(10, 49, 6, 6, 12);
         }
         else if (mapId == 1)
         {
@@ -72,16 +72,29 @@ public class OverworldModel {
         {
             portals = new Portal[1];
             portals[0] = new Portal(3, 9, 0, 8, 18);
+            cpuModel = new CharacterModel[3];
+            cpuModel[0] = new CharacterModel("scientist", 2, 7, 6, 5);
+            cpuModel[0].setOverworldModel(this);
+            cpuModel[1] = new CharacterModel("scientist", 5, 5, 7, 6);
+            cpuModel[1].setOverworldModel(this);
+            cpuModel[2] = new CharacterModel("scientist", 6, 3, 8, 7);
+            cpuModel[2].setOverworldModel(this);
         }
         else if (mapId == 4)
         {
             portals = new Portal[1];
             portals[0] = new Portal(3, 9, 0, 19, 18);
+            cpuModel = new CharacterModel[1];
+            cpuModel[0] = new CharacterModel("scientist", 4, 6, 9, 4);
+            cpuModel[0].setOverworldModel(this);
         }
         else if (mapId == 5)
         {
             portals = new Portal[1];
             portals[0] = new Portal(3, 9, 0, 19, 25);
+            cpuModel = new CharacterModel[1];
+            cpuModel[0] = new CharacterModel("scientist", 4, 4, 10, 3);
+            cpuModel[0].setOverworldModel(this);
         }
         else if (mapId == 6)
         {
