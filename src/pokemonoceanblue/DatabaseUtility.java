@@ -61,7 +61,8 @@ public class DatabaseUtility
         // remove all the existing tables first
         String[] table_list = {
             "evolution_methods", "pokemon", "pokemon_moves", "pokemon_location", 
-            "conversation", "moves", "type_effectiveness", "items", "battle"
+            "conversation", "moves", "type_effectiveness", "items", "battle",
+            "portal", "map_object", "area"
         };
 
         for (String t : table_list)
@@ -122,12 +123,80 @@ public class DatabaseUtility
         dataTypes = new String[] {"int", "int", "int"};
         loadTable(path, query, dataTypes);
 
+        // divides a map into areas, such as different routes or cities
+        query = "CREATE TABLE area("
+                + "map_id INT NOT NULL, "
+                + "area_id INT NOT NULL, "
+                + "name VARCHAR(20) NOT NULL, "
+                + "min_x INT NOT NULL, "
+                + "max_x INT NOT NULL, "
+                + "min_y INT NOT NULL, "
+                + "max_y INT NOT NULL, "
+                + "music_id INT NOT NULL)";
+        runUpdate(query);
+
+        // fills area table with data
+        path = "src/rawdata/areas.csv";
+        query = "INSERT INTO area ("
+                    + "map_id, area_id, name, " 
+                    + "min_x, max_x, "
+                    + "min_y, max_y, "
+                    + "music_id) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int"};
+        loadTable(path, query, dataTypes);
+
+        // the various objects that appear on the map, like trees and houses
+        query = "CREATE TABLE map_object ("
+                + "map_id INT NOT NULL, "
+                + "area_id INT NOT NULL, "
+                + "name VARCHAR(20) NOT NULL, "
+                + "x INT NOT NULL, "
+                + "y INT NOT NULL)";
+        runUpdate(query);
+
+        // fills map objects table with data
+        path = "src/rawdata/mapObjects.csv";
+        query = "INSERT INTO map_object ("
+                    + "map_id, area_id, name, " 
+                    + "x, y) "
+                    + "VALUES (?, ?, ?, ?, ?)";
+        
+        dataTypes = new String[] {"int", "int", "String","int", "int"};
+        loadTable(path, query, dataTypes);
+
+        // portals that teleport players from one map to another
+        query = "CREATE TABLE portal ("
+                + "map_id INT NOT NULL, "
+                + "area_id INT NOT NULL, "
+                + "x INT NOT NULL, "
+                + "y INT NOT NULL, "
+                + "dest_map_id INT NOT NULL, "
+                + "dest_area_id INT NOT NULL, "
+                + "dest_x INT NOT NULL, "
+                + "dest_y INT NOT NULL)";
+        runUpdate(query);
+
+        // fills portal table with data
+        path = "src/rawdata/portals.csv";
+        query = "INSERT INTO portal ("
+                    + "map_id, area_id, " 
+                    + "x, y, "
+                    + "dest_map_id, dest_area_id, "
+                    + "dest_x, dest_y) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        dataTypes = new String[] {"int", "int", "int", "int", "int", "int", "int", "int"};
+        loadTable(path, query, dataTypes);
+
         // CREATE TABLE pokemon_location
         // the map location where a Pokemon can be found
         // and in what type of tile, such as in grass or water
         query = "CREATE TABLE pokemon_location("
-                + "pokemon_id INT NOT NULL, "
                 + "map_id INT NOT NULL, "
+                + "area_id INT NOT NULL, "
+                + "pokemon_id INT NOT NULL, "
                 + "tile_id INT NOT NULL)";
         runUpdate(query);
 
@@ -135,11 +204,12 @@ public class DatabaseUtility
         path = "src/rawdata/pokemonLocation.csv";
         query = "INSERT INTO pokemon_location ("
                     + "map_id, " 
+                    + "area_id, "
                     + "pokemon_id, "
                     + "tile_id) "
-                    + "VALUES (?, ?, ?)";
+                    + "VALUES (?, ?, ?, ?)";
         
-        dataTypes = new String[] {"int", "int", "int"};
+        dataTypes = new String[] {"int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         // CREATE TABLE moves
@@ -230,7 +300,7 @@ public class DatabaseUtility
         // fill battle table with data
         path = "src/rawdata/battle.csv";
         query = "INSERT INTO battle ("
-                    + "battle_id, pokemon_id, level)"
+                    + "battle_id, pokemon_id, level) "
                     + "VALUES (?, ?, ?)";
 
         dataTypes = new String[] {"int", "int", "int"};

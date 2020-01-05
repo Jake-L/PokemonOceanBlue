@@ -1,0 +1,13 @@
+map_id,area_id,x,y,dest_map_id,dest_area_id,dest_x,dest_y,comment
+0,0,9,8,1,0,3,8,red's house
+0,0,20,8,2,0,3,8,blue's house
+0,0,9,15,3,0,3,8,middle left house
+0,0,20,15,4,0,3,8,middle right house
+0,0,20,22,5,0,3,8,oak's lab
+0,0,11,22,6,0,6,12,bottom left house
+1,0,3,9,0,0,9,9,back to pallet town
+2,0,3,9,0,0,20,9,back to pallet town
+3,0,3,9,0,0,9,16,back to pallet town
+4,0,3,9,0,0,20,16,back to pallet town
+5,0,3,9,0,0,20,23,back to pallet town
+6,0,6,13,0,0,11,23,back to pallet town

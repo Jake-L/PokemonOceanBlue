@@ -589,7 +589,8 @@ public class BattleModel
             DatabaseUtility db = new DatabaseUtility();
 
             String query = "SELECT pokemon_id, level "
-                         + "FROM battle";
+                         + "FROM battle "
+                         + "WHERE battle_id = " + battleId;
 
             ResultSet rs = db.runQuery(query);
 

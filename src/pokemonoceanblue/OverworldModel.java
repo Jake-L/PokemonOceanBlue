@@ -16,13 +16,14 @@ public class OverworldModel {
     public List<SpriteModel> mapObjects = new ArrayList<SpriteModel>(); 
     public CharacterModel[] cpuModel = new CharacterModel[0];
     public CharacterModel playerModel;
-    private Portal[] portals = new Portal[0];
+    private List<PortalModel> portals = new ArrayList<PortalModel>();
     public ConversationModel conversation;
     private App app;
     private List<Integer> wildPokemon = new ArrayList<Integer>();
     public String[] textOptions;
     public int optionIndex;
     private List<ConversationTrigger> conversationTrigger = new ArrayList<ConversationTrigger>();
+    private int area_id = 0;
 
     // prevent players from accidently repeating actions by holdings keys
     public int actionCounter = 15;
@@ -35,8 +36,10 @@ public class OverworldModel {
         this.mapId = mapId;
         this.playerModel = playerModel;
         this.app = app;
-        readMapFile();
-        loadWildPokemon();
+        this.readMapFile();
+        this.loadWildPokemon();
+        this.loadMapObjects();
+        this.loadPortals();
         if (this.mapId == 0)
         {
             this.cpuModel = new CharacterModel[1];
@@ -46,32 +49,17 @@ public class OverworldModel {
             this.conversationTrigger.add(new ConversationTrigger(4, cpuModel[0], 7, 6, true));
             this.conversationTrigger.add(new ConversationTrigger(4, cpuModel[0], 8, 6, true));
             this.conversationTrigger.add(new ConversationTrigger(4, cpuModel[0], 9, 6, true));
-
-            portals = new Portal[6];
-            // houses
-            portals[0] = new Portal(8, 35, 1, 3, 8);
-            portals[1] = new Portal(19, 35, 2, 3, 8);
-            portals[2] = new Portal(8, 42, 3, 3, 8);
-            portals[3] = new Portal(19, 42, 4, 3, 8);
-            portals[4] = new Portal(19, 49, 5, 3, 8);
-
-            // oak's lab
-            portals[5] = new Portal(10, 49, 6, 6, 12);
         }
         else if (mapId == 1)
         {
-            portals = new Portal[1];
-            portals[0] = new Portal(3, 9, 0, 8, 11);
+
         }
         else if (mapId == 2)
         {
-            portals = new Portal[1];
-            portals[0] = new Portal(3, 9, 0, 19, 11);
+
         }
         else if (mapId == 3)
         {
-            portals = new Portal[1];
-            portals[0] = new Portal(3, 9, 0, 8, 18);
             cpuModel = new CharacterModel[3];
             cpuModel[0] = new CharacterModel("scientist", 2, 7, 6, 5);
             cpuModel[0].setOverworldModel(this);
@@ -82,25 +70,18 @@ public class OverworldModel {
         }
         else if (mapId == 4)
         {
-            portals = new Portal[1];
-            portals[0] = new Portal(3, 9, 0, 19, 18);
             cpuModel = new CharacterModel[1];
             cpuModel[0] = new CharacterModel("scientist", 4, 6, 9, 4);
             cpuModel[0].setOverworldModel(this);
         }
         else if (mapId == 5)
         {
-            portals = new Portal[1];
-            portals[0] = new Portal(3, 9, 0, 19, 25);
             cpuModel = new CharacterModel[1];
             cpuModel[0] = new CharacterModel("scientist", 4, 4, 10, 3);
             cpuModel[0].setOverworldModel(this);
         }
         else if (mapId == 6)
         {
-            portals = new Portal[1];
-            portals[0] = new Portal(6, 13, 0, 10, 25);
-
             cpuModel = new CharacterModel[2];
             cpuModel[0] = new CharacterModel("oak", 6, 3, 1, 0, 0, Direction.DOWN);
             cpuModel[0].setOverworldModel(this);
@@ -142,21 +123,8 @@ public class OverworldModel {
                 line = br.readLine();
                 lineCounter++;
             }
-
-            // loop through all the mapObjects
-            while (line != null) 
-            {
-                // split the line into an array of values
-                String[] data = line.split(",");
-
-                // create the mapObject
-                mapObjects.add(new SpriteModel(data[0], Integer.parseInt(data[1]), Integer.parseInt(data[2])));
-
-                // read next line before looping
-                line = br.readLine();
-            }
-
-        } catch (IOException e) {
+        } 
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -264,13 +232,13 @@ public class OverworldModel {
      * @param y y position of the character
      * @return portal that the player stepped on or null if there is no portal at that position
      */
-    public Portal checkPortal(int x, int y)
+    public PortalModel checkPortalModel(int x, int y)
     {
-        for (int i = 0; i < portals.length; i++)
+        for (int i = 0; i < portals.size(); i++)
         {
-            if (x == portals[i].x && y == portals[i].y)
+            if (x == portals.get(i).x && y == portals.get(i).y)
             {
-                return portals[i];
+                return portals.get(i);
             }
         }
         return null;
@@ -516,6 +484,83 @@ public class OverworldModel {
             while(rs.next()) 
             {
                 this.wildPokemon.add(rs.getInt("pokemon_id"));
+            }            
+        }
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+        }  
+    }
+
+    /** 
+     * load a list of map objects that can appear on the current map
+     */
+    private void loadMapObjects()
+    {
+        try
+        {
+            DatabaseUtility db = new DatabaseUtility();
+
+            String query = "SELECT mo.name, "
+                         + "mo.x + IFNULL(a.min_x,0) as x, "
+                         + "mo.y + IFNULL(a.min_y,0) as y "
+                         + "FROM map_object mo "
+                         + "LEFT JOIN area a "
+                         + "ON a.area_id = mo.area_id "
+                         + "AND a.map_id = mo.map_id "
+                         + "WHERE mo.map_id = " + this.mapId;
+
+            ResultSet rs = db.runQuery(query);
+
+            while(rs.next()) 
+            {
+                this.mapObjects.add(new SpriteModel(
+                    rs.getString("name"), 
+                    rs.getInt("x"), 
+                    rs.getInt("y")
+                ));
+            }            
+        }
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+        }  
+    }
+
+    /** 
+     * load a list of portals that can appear on the current map
+     */
+    private void loadPortals()
+    {
+        try
+        {
+            DatabaseUtility db = new DatabaseUtility();
+
+            String query = "SELECT p.x + IFNULL(a.min_x,0) as x, "
+                         + "p.y + IFNULL(a.min_y,0) as y, "
+                         + "p.dest_map_id, "
+                         + "p.dest_x + IFNULL(dest.min_x,0) as dest_x, "
+                         + "p.dest_y + IFNULL(dest.min_y,0) as dest_y "
+                         + "FROM portal p "
+                         + "LEFT JOIN area a "
+                         + "ON a.area_id = p.area_id "
+                         + "AND a.map_id = p.map_id "
+                         + "LEFT JOIN area dest "
+                         + "ON dest.area_id = p.dest_area_id "
+                         + "AND dest.map_id = p.dest_map_id "
+                         + "WHERE p.map_id = " + this.mapId;
+
+            ResultSet rs = db.runQuery(query);
+
+            while(rs.next()) 
+            {
+                this.portals.add(new PortalModel(
+                    rs.getInt("x"),
+                    rs.getInt("y"),
+                    rs.getInt("dest_map_id"),
+                    rs.getInt("dest_x"),
+                    rs.getInt("dest_y")
+                ));
             }            
         }
         catch (SQLException e) 

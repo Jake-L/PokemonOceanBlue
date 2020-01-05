@@ -1,0 +1,5 @@
+map_id,area_id,name,min_x,max_x,min_y,max_y,music_id
+0,2,Viridian City,0,41,0,41,1
+0,1,Route 1,0,41,42,75,3
+0,0,Pallet Town,0,41,76,107,1
+6,0,Prof. Oak's Lab,0,0,0,0,2

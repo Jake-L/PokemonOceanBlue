@@ -296,7 +296,7 @@ public class App extends JFrame implements KeyListener
                     // check if player is entering a portal
                     if (playerModel.getMovementCounter() == 14)
                     {
-                        Portal portal = overworldModel.checkPortal(playerModel.getX(), playerModel.getY());
+                        PortalModel portal = overworldModel.checkPortalModel(playerModel.getX(), playerModel.getY());
                         if (portal != null)
                         {
                             // move to the new map
