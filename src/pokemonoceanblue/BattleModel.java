@@ -323,7 +323,7 @@ public class BattleModel
         }
         else if (effectiveness == 0)
         {
-            BattleEvent event = new BattleEvent("It doesn't affect " + this.team[(attacker + 1) % 2] + "...", attacker, null);
+            BattleEvent event = new BattleEvent("It doesn't affect " + this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]].name + "...", attacker, null);
             this.events.add(event);
         }
         else if (effectiveness < 1)
@@ -457,7 +457,7 @@ public class BattleModel
                 this.team[0][currentPokemon[0]].xp += xpCalc(this.team[1][currentPokemon[1]].level);
                 this.team[0][currentPokemon[0]].calcLevel();
             }
-            if (this.events.get(0).damage > -1)
+            else if (this.events.get(0).damage > -1)
             {
                 this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP -= 
                     Math.min((this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP), 
@@ -515,7 +515,7 @@ public class BattleModel
                     this.events.add(event);
                 }
             }
-            if (this.events.get(0).newPokemonIndex > -1)
+            else if (this.events.get(0).newPokemonIndex > -1)
             {
                 int attacker = this.events.get(0).attacker;
                 if (this.team[attacker][this.currentPokemon[attacker]].currentHP == 0)
@@ -532,7 +532,7 @@ public class BattleModel
                     }
                 }
             }
-            if (this.events.get(0).itemId > -1)
+            else if (this.events.get(0).itemId > -1)
             {
                 if (ranNum.nextInt(2) == 0)
                 {
