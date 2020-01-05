@@ -29,3 +29,12 @@ conversationId,conversationEventId,text,battleId
 9,1,But the price was right and it's so close to my work at Oak's Lab!,-1
 10,0,Hey$ can I let you in a secret? I wish I could go live somewhere else further from work.,-1
 10,1,I'm always running into people from work on the weekends and it's just kinda weird y'know?,-1
+11,0,Hi$ my friend just helped me catch this Ralts. But I won't need help to defeat you!,1
+12,0,Hey$ have you seen my brother Gary? ,-1
+12,1,No? Okay well he wanted me to tell you that he already has his pokemon and he wants to battle.,-1
+12,2,I think he's on his way to Viridian City if you want to find him. Good luck!,-1
+13,0,Hey$ it sure took you long enough to get here!,-1
+13,1,Your pokemon look almost as weak as their trainer!,-1
+13,2,All right$ let's battle!,2
+13,3,Ha! Maybe I won't go so easy on you next time.,-1
+13,4,Smell ya later!,-1
