@@ -26,6 +26,7 @@ public class BattleModel
     public boolean isCaught = false;
     public boolean isWild;
     private boolean[] attackMissed = new boolean[2];
+    private boolean[] isCrit = new boolean[2];
 
     /** 
      * Constructor
@@ -250,6 +251,8 @@ public class BattleModel
         int defense_stat;
         float stab = 1.0f;
         this.modifier[attacker] = 1;
+        float crit = 1.0f;
+        this.isCrit[attacker] = false;
 
         if (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].damageClassId == 2)
         {
@@ -280,8 +283,14 @@ public class BattleModel
             {
                 stab = 1.5f;
             }
+
+            if (this.ranNum.nextInt(9) == 0 && this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].power > 0)
+            {
+                crit = 1.5f;                        
+                this.isCrit[attacker] = true;
+            }
             this.attackMissed[attacker] = false;
-            return (int)Math.ceil(((this.team[attacker][this.currentPokemon[attacker]].level * 2.0 / 5.0 + 2.0) * (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].power) * (this.team[attacker][this.currentPokemon[attacker]].stats[attack_stat] * 1.0 / this.team[defender][this.currentPokemon[defender]].stats[defense_stat]) / 50 + 2) * this.modifier[attacker] * stab);
+            return (int)Math.ceil(((this.team[attacker][this.currentPokemon[attacker]].level * 2.0 / 5.0 + 2.0) * (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].power) * (this.team[attacker][this.currentPokemon[attacker]].stats[attack_stat] * 1.0 / this.team[defender][this.currentPokemon[defender]].stats[defense_stat]) / 50 + 2) * this.modifier[attacker] * stab * crit);
         }
 
         else
@@ -297,6 +306,11 @@ public class BattleModel
      */
     private void effectivenessMessage(float effectiveness, int attacker)
     {
+        if (this.isCrit[attacker])
+        {
+            BattleEvent event = new BattleEvent("A critical hit!", attacker, null);
+            this.events.add(event);
+        }
         if (this.attackMissed[attacker])
         {
             BattleEvent event = new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + "'s attack missed!", attacker, null);
@@ -473,8 +487,7 @@ public class BattleModel
 
                     if (!teamFainted(1))
                     {
-                        event = new BattleEvent(
-                            "Enemy trainer sent out " + this.team[1][this.currentPokemon[1] + 1].name, 
+                        event = new BattleEvent("Enemy trainer sent out " + this.team[1][this.currentPokemon[1] + 1].name, 
                             this.currentPokemon[1] + 1, 
                             true, 
                             1,
@@ -504,15 +517,19 @@ public class BattleModel
             }
             if (this.events.get(0).newPokemonIndex > -1)
             {
-                if (this.team[0][this.currentPokemon[0]].currentHP == 0)
+                int attacker = this.events.get(0).attacker;
+                if (this.team[attacker][this.currentPokemon[attacker]].currentHP == 0)
                 {
-                    this.currentPokemon[0] = this.events.get(0).newPokemonIndex;
+                    this.currentPokemon[attacker] = this.events.get(0).newPokemonIndex;
                 }
                 else
                 {
-                    this.currentPokemon[0] = this.events.get(0).newPokemonIndex;
-                    this.events.add(this.enemyAttackEvent());
-                    effectivenessMessage(modifier[1], 1);
+                    this.currentPokemon[attacker] = this.events.get(0).newPokemonIndex;
+                    if (attacker == 0)
+                    {
+                        this.events.add(this.enemyAttackEvent());
+                        effectivenessMessage(modifier[1], 1);
+                    }
                 }
             }
             if (this.events.get(0).itemId > -1)
