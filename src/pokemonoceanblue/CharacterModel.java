@@ -31,18 +31,6 @@ public class CharacterModel {
      * @param y y position of the sprite
      * @param conversationId a unique identifier for their conversation or -1 otherwise
      * @param characterId a unique identifier for their character
-     * sets direction to default value of DOWN
-     */
-    public CharacterModel(String spriteName, int x, int y, int conversationId, int characterId){
-        this(spriteName, x, y, conversationId, characterId, 0, Direction.DOWN);
-    }
-
-    /** 
-     * @param spriteName name of the sprite used in the image filename
-     * @param x x position of the sprite
-     * @param y y position of the sprite
-     * @param conversationId a unique identifier for their conversation or -1 otherwise
-     * @param characterId a unique identifier for their character
      * @param wanderRange the distance from the character's initial position that they are allowed to move
      * @param direction the direction the character initially faces 
      */

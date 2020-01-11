@@ -62,7 +62,7 @@ public class DatabaseUtility
         String[] table_list = {
             "evolution_methods", "pokemon", "pokemon_moves", "pokemon_location", 
             "conversation", "moves", "type_effectiveness", "items", "battle",
-            "portal", "map_object", "area"
+            "portal", "map_object", "area", "character"
         };
 
         for (String t : table_list)
@@ -304,6 +304,31 @@ public class DatabaseUtility
                     + "VALUES (?, ?, ?)";
 
         dataTypes = new String[] {"int", "int", "int"};
+        loadTable(path, query, dataTypes);
+
+        // store the characters that appear in the overworld
+        query = "CREATE TABLE character("
+                + "character_id INT NOT NULL,"
+                + "map_id INT NOT NULL,"
+                + "area_id INT NOT NULL,"
+                + "name VARCHAR(50) NULL,"
+                + "sprite_name VARCHAR(50) NOT NULL,"
+                + "x INT NOT NULL,"
+                + "y INT NOT NULL,"
+                + "conversation_id INT NOT NULL,"
+                + "wander_range INT NOT NULL,"
+                + "direction INT NULL)";
+        runUpdate(query);
+
+        // fill battle table with data
+        path = "src/rawdata/characters.csv";
+        query = "INSERT INTO character ("
+                    + "character_id, map_id, area_id, "
+                    + "name, sprite_name, x, y, "
+                    + "conversation_id, wander_range, direction) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        dataTypes = new String[] {"int", "int", "int", "String", "String", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         conn.commit();

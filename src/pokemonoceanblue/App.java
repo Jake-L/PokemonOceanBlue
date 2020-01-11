@@ -186,7 +186,7 @@ public class App extends JFrame implements KeyListener
         }
         else
         {
-            playerModel = new CharacterModel("red", playerX, playerY, -1, -1);
+            playerModel = new CharacterModel("red", playerX, playerY, -1, -1, 0, Direction.DOWN);
         }
 
         // create the overworld

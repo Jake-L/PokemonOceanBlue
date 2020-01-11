@@ -1,0 +1,9 @@
+character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,direction
+0,0,1,Camper Jimmy,campBoy,6,6,4,0,1
+1,3,0,,guitarist,2,7,6,2,2
+2,3,0,,childBoy,5,5,7,2,2
+3,3,0,,lady,6,3,8,2,2
+4,4,0,,scientist,4,6,9,2,2
+5,5,0,,scientist,4,4,10,2,2
+6,6,0,Prof. Oak,oak,6,3,1,0,2
+7,6,0,,scientist,8,8,2,2,2

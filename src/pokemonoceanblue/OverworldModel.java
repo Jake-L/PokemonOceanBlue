@@ -14,7 +14,7 @@ public class OverworldModel {
     public int mapId;
     public byte[][] tiles;
     public List<SpriteModel> mapObjects = new ArrayList<SpriteModel>(); 
-    public CharacterModel[] cpuModel = new CharacterModel[0];
+    public List<CharacterModel> cpuModel = new ArrayList<CharacterModel>();
     public CharacterModel playerModel;
     private List<PortalModel> portals = new ArrayList<PortalModel>();
     public ConversationModel conversation;
@@ -40,53 +40,13 @@ public class OverworldModel {
         this.loadWildPokemon();
         this.loadMapObjects();
         this.loadPortals();
+        this.loadCharacters();
+
         if (this.mapId == 0)
         {
-            this.cpuModel = new CharacterModel[1];
-            this.cpuModel[0] = new CharacterModel("campBoy", 6, 6, 4, 3, 0, Direction.RIGHT);
-            this.cpuModel[0].setOverworldModel(this);
-
-            this.conversationTrigger.add(new ConversationTrigger(4, cpuModel[0], 7, 6, true));
-            this.conversationTrigger.add(new ConversationTrigger(4, cpuModel[0], 8, 6, true));
-            this.conversationTrigger.add(new ConversationTrigger(4, cpuModel[0], 9, 6, true));
-        }
-        else if (mapId == 1)
-        {
-
-        }
-        else if (mapId == 2)
-        {
-
-        }
-        else if (mapId == 3)
-        {
-            cpuModel = new CharacterModel[3];
-            cpuModel[0] = new CharacterModel("scientist", 2, 7, 6, 5);
-            cpuModel[0].setOverworldModel(this);
-            cpuModel[1] = new CharacterModel("scientist", 5, 5, 7, 6);
-            cpuModel[1].setOverworldModel(this);
-            cpuModel[2] = new CharacterModel("scientist", 6, 3, 8, 7);
-            cpuModel[2].setOverworldModel(this);
-        }
-        else if (mapId == 4)
-        {
-            cpuModel = new CharacterModel[1];
-            cpuModel[0] = new CharacterModel("scientist", 4, 6, 9, 4);
-            cpuModel[0].setOverworldModel(this);
-        }
-        else if (mapId == 5)
-        {
-            cpuModel = new CharacterModel[1];
-            cpuModel[0] = new CharacterModel("scientist", 4, 4, 10, 3);
-            cpuModel[0].setOverworldModel(this);
-        }
-        else if (mapId == 6)
-        {
-            cpuModel = new CharacterModel[2];
-            cpuModel[0] = new CharacterModel("oak", 6, 3, 1, 0, 0, Direction.DOWN);
-            cpuModel[0].setOverworldModel(this);
-            cpuModel[1] = new CharacterModel("scientist", 8, 8, 2, 2);
-            cpuModel[1].setOverworldModel(this);
+            this.conversationTrigger.add(new ConversationTrigger(4, cpuModel.get(0), 7, 6, true));
+            this.conversationTrigger.add(new ConversationTrigger(4, cpuModel.get(0), 8, 6, true));
+            this.conversationTrigger.add(new ConversationTrigger(4, cpuModel.get(0), 9, 6, true));
         }
     }
 
@@ -139,12 +99,12 @@ public class OverworldModel {
 
         // update the CPUs
         Random rand = new Random();
-        for (int i = 0; i < cpuModel.length; i++)
+        for (int i = 0; i < cpuModel.size(); i++)
         {
-            cpuModel[i].update(false);
+            cpuModel.get(i).update(false);
             
             // generate random movement
-            if (cpuModel[i].getMovementCounter() < 0 && cpuModel[i].wanderRange > 0)
+            if (cpuModel.get(i).getMovementCounter() < 0 && cpuModel.get(i).wanderRange > 0)
             {
                 int n = rand.nextInt(100);
                 int dx = 0;
@@ -161,9 +121,9 @@ public class OverworldModel {
 
                 if (dx != 0 || dy != 0)
                 {
-                    if (Math.abs(cpuModel[i].spawn_x - cpuModel[i].getX() - dx) + Math.abs(cpuModel[i].spawn_y - cpuModel[i].getY() - dy) <= cpuModel[i].wanderRange)
+                    if (Math.abs(cpuModel.get(i).spawn_x - cpuModel.get(i).getX() - dx) + Math.abs(cpuModel.get(i).spawn_y - cpuModel.get(i).getY() - dy) <= cpuModel.get(i).wanderRange)
                     {
-                        cpuModel[i].setMovement(dx, dy, 1);
+                        cpuModel.get(i).setMovement(dx, dy, 1);
                     }
                 }
             }
@@ -176,12 +136,12 @@ public class OverworldModel {
             int characterId = this.conversation.getMovementCharacterId();
             if (characterId > -1)
             {
-                for (int i = 0; i < this.cpuModel.length; i++)
+                for (int i = 0; i < this.cpuModel.size(); i++)
                 {
-                    if (this.cpuModel[i].characterId == characterId && this.cpuModel[i].getMovementCounter() <= 0)
+                    if (this.cpuModel.get(i).characterId == characterId && this.cpuModel.get(i).getMovementCounter() <= 0)
                     {
                         // move the character
-                        this.cpuModel[i].setMovement(
+                        this.cpuModel.get(i).setMovement(
                             this.conversation.getMovementDx(), 
                             this.conversation.getMovementDy(), 
                             1
@@ -216,9 +176,9 @@ public class OverworldModel {
             return false;
         }
         // check if a CPU is already standing there
-        for (int i = 0; i < cpuModel.length; i++)
+        for (int i = 0; i < cpuModel.size(); i++)
         {
-            if (x == cpuModel[i].getX() && y == cpuModel[i].getY())
+            if (x == cpuModel.get(i).getX() && y == cpuModel.get(i).getY())
             {
                 return false;
             }
@@ -568,6 +528,52 @@ public class OverworldModel {
             e.printStackTrace();
         }  
     }
+
+    /** 
+     * load a list of characters that can appear on the current map
+     */
+    private void loadCharacters()
+    {
+        try
+        {
+            DatabaseUtility db = new DatabaseUtility();
+
+            String query = "SELECT c.character_id, "
+                         + "c.name, c.sprite_name, "
+                         + "c.x + IFNULL(a.min_x,0) as x, "
+                         + "c.y + IFNULL(a.min_y,0) as y, "
+                         + "c.conversation_id, "
+                         + "c.wander_range, c.direction "
+                         + "FROM character c "
+                         + "LEFT JOIN area a "
+                         + "ON a.area_id = c.area_id "
+                         + "AND a.map_id = c.map_id "
+                         + "WHERE c.map_id = " + this.mapId;
+
+            ResultSet rs = db.runQuery(query);
+
+            while(rs.next()) 
+            {
+                CharacterModel currentModel = new CharacterModel(
+                    rs.getString("sprite_name"), 
+                    rs.getInt("x"), 
+                    rs.getInt("y"),
+                    rs.getInt("conversation_id"),
+                    rs.getInt("character_id"),
+                    rs.getInt("wander_range"),
+                    Direction.DOWN.getDirection(rs.getInt("direction"))
+                );
+                
+                currentModel.setOverworldModel(this);
+                this.cpuModel.add(currentModel);
+            }            
+        }
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+        }  
+    }
+
 
     /**
      * Holds a specific location on the map that starts a conversation when the player steps on it
