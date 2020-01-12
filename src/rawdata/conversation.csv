@@ -1,4 +1,4 @@
-conversationId,conversationEventId,text,battleId
+conversation_id,conversation_event_id,text,battle_id
 0,0,Hello young trainer my name is Professor Oak$ the leading Pokemon researcher in Kanto,-1
 0,1,Today is the day I give new trainers their first Pokemon,-1
 0,2,All I ask in return is that you take this Pokedex and catch as many Pokemon as you can,-1

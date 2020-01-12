@@ -27,6 +27,8 @@ public class BattleModel
     public boolean isWild;
     private boolean[] attackMissed = new boolean[2];
     private boolean[] isCrit = new boolean[2];
+    public String trainerName;
+    public String trainerSpriteName;
 
     /** 
      * Constructor
@@ -69,7 +71,7 @@ public class BattleModel
         }
         else
         {
-            BattleEvent event = new BattleEvent("Enemy Trainer sent out " + this.team[1][currentPokemon[1]].name + ".", 1, String.valueOf(this.team[1][this.currentPokemon[1]].id));
+            BattleEvent event = new BattleEvent(this.trainerName + " sent out " + this.team[1][currentPokemon[1]].name + ".", 1, String.valueOf(this.team[1][this.currentPokemon[1]].id));
             this.events.add(event);
         }
         BattleEvent event = new BattleEvent("Trainer sent out " + this.team[0][currentPokemon[0]].name + ".", 0, String.valueOf(this.team[0][currentPokemon[0]].id));
@@ -487,7 +489,7 @@ public class BattleModel
 
                     if (!teamFainted(1))
                     {
-                        event = new BattleEvent("Enemy trainer sent out " + this.team[1][this.currentPokemon[1] + 1].name, 
+                        event = new BattleEvent(this.trainerName + " sent out " + this.team[1][this.currentPokemon[1] + 1].name, 
                             this.currentPokemon[1] + 1, 
                             true, 
                             1,
@@ -605,15 +607,21 @@ public class BattleModel
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            String query = "SELECT pokemon_id, level "
-                         + "FROM battle "
-                         + "WHERE battle_id = " + battleId;
+            String query = "SELECT b.pokemon_id, b.level, ch.name, ch.sprite_name "
+                         + "FROM battle b "
+                         + "INNER JOIN conversation cv "
+                         + "ON b.battle_id = cv.battle_id "
+                         + "INNER JOIN character ch "
+                         + "ON ch.conversation_id = cv.conversation_id "
+                         + "WHERE b.battle_id = " + battleId;
 
             ResultSet rs = db.runQuery(query);
 
             while(rs.next()) 
             {
                 loadTeam.add(new PokemonModel(rs.getInt(1), rs.getInt(2), false));
+                this.trainerName = rs.getString(3);
+                this.trainerSpriteName = rs.getString(4);
             }       
             
             this.team[1] = new PokemonModel[loadTeam.size()];

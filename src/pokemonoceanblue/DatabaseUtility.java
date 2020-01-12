@@ -257,16 +257,16 @@ public class DatabaseUtility
         // CREATE TABLE conversation
         // all the text displayed in conversations
         query = "CREATE TABLE conversation("
-                + "conversationId INT NOT NULL, "
-                + "conversationEventId INT NOT NULL, "
+                + "conversation_id INT NOT NULL, "
+                + "conversation_event_id INT NOT NULL, "
                 + "text VARCHAR(100) NOT NULL, "
-                + "battleId INT NOT NULL)";
+                + "battle_id INT NOT NULL)";
         runUpdate(query);
 
         // fill conversation table with data
         path = "src/rawdata/conversation.csv";
         query = "INSERT INTO conversation ("
-                + "conversationId, conversationEventId, text, battleId)"
+                + "conversation_id, conversation_event_id, text, battle_id)"
                 + "VALUES (?, ?, ?, ?)";
 
         dataTypes = new String[] {"int", "int", "String", "int"};

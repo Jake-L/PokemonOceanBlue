@@ -100,7 +100,7 @@ public class PokemonModel
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            String query = "SELECT move_id FROM pokemon_moves WHERE pokemon_id = " + this.id + " LIMIT 4";
+            String query = "SELECT move_id FROM pokemon_moves WHERE pokemon_id = " + this.id + " ORDER BY level DESC LIMIT 4";
 
             ResultSet rs = db.runQuery(query);
 

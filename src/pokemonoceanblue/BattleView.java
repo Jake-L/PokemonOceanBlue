@@ -19,6 +19,7 @@ public class BattleView extends ViewBase {
     private Image xp;
     private Image[] pokeballSprite = new Image[4];
     private Image[][] pokemonIconSprites = new Image[2][];
+    private Image trainerSprite;
     
     /** 
      * Constructor for the overworld view
@@ -89,10 +90,16 @@ public class BattleView extends ViewBase {
         ii = new ImageIcon("src/battle/exp.png");
         this.xp = ii.getImage();
         
-
         //loads background image
         ii = new ImageIcon("src/battle/Background" + model.areaType + model.daytimeType + ".png");
         this.background = ii.getImage();
+
+        //load trainer sprite
+        if (this.model.trainerSpriteName != null)
+        {
+            ii = new ImageIcon("src/trainerBattleSprite/" + model.trainerSpriteName + ".png");
+            this.trainerSprite = ii.getImage();
+        }
     }
 
     /** 
@@ -142,6 +149,17 @@ public class BattleView extends ViewBase {
                 height / 2 - (pokemonSprite[1][this.model.currentPokemon[1]].getHeight(null) * graphicsScaling),
                 this.pokemonSprite[1][this.model.currentPokemon[1]].getWidth(null) * graphicsScaling,
                 this.pokemonSprite[1][this.model.currentPokemon[1]].getHeight(null) * graphicsScaling,
+                canvas);
+        }
+
+        // render enemy trainer
+        if (this.trainerSprite != null)
+        {
+            g.drawImage(this.trainerSprite,
+                width * 17 / 20 - this.trainerSprite.getWidth(null) * graphicsScaling,
+                height * 5 / 12 - this.trainerSprite.getHeight(null) * graphicsScaling,
+                this.trainerSprite.getWidth(null) * graphicsScaling,
+                this.trainerSprite.getHeight(null) * graphicsScaling,
                 canvas);
         }
 

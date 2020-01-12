@@ -59,8 +59,8 @@ public class ConversationModel
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            String query = "SELECT conversationEventId, text, battleId "
-                        + " FROM conversation WHERE conversationId = " + this.conversationId;
+            String query = "SELECT conversation_event_id, text, battle_id "
+                        + " FROM conversation WHERE conversation_id = " + this.conversationId;
 
             ResultSet rs = db.runQuery(query);
 
@@ -68,9 +68,9 @@ public class ConversationModel
             {
                 // add the conversation event to the list of events
                 event = new ConversationEvent(
-                    rs.getInt("conversationEventId"),
+                    rs.getInt("conversation_event_id"),
                     rs.getString("text"),
-                    rs.getInt("battleId")
+                    rs.getInt("battle_id")
                 );
                 this.events.add(event);
             }
