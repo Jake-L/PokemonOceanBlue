@@ -38,3 +38,6 @@ conversationId,conversationEventId,text,battleId
 13,2,All right$ let's battle!,2
 13,3,Ha! Maybe I won't go so easy on you next time.,-1
 13,4,Smell ya later!,-1
+14,0,I just caught this super rare Pokemon! Let's battle!,3
+15,0,Hey$ I haven't had a chance to fight with my first Pokemon yet!,-1
+15,1,Wanna battle?,4
