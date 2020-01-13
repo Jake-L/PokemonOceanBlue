@@ -41,7 +41,7 @@ public class PokemonModel
      */
     public void calcLevel()
     {
-        this.level = (int) Math.pow(xp, 1.00 / 3.00);
+        this.level = (int) Math.floor(Math.cbrt(xp));
     }
 
     /** 

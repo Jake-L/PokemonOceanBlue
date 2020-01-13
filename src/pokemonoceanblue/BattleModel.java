@@ -456,8 +456,27 @@ public class BattleModel
         {
             if (this.events.get(0).xp > 0)
             {
-                this.team[0][currentPokemon[0]].xp += xpCalc(this.team[1][currentPokemon[1]].level);
-                this.team[0][currentPokemon[0]].calcLevel();
+                int xpGain = this.events.get(0).xp;
+                int xpMax = (int) Math.pow(this.team[0][currentPokemon[0]].level + 1, 3.0);
+            
+                // check if the pokemon levels up from the xp gain
+                if (this.team[0][this.currentPokemon[0]].xp + xpGain >= xpMax)
+                {
+                    BattleEvent event = new BattleEvent(this.team[0][currentPokemon[0]].name + " reached level " + (this.team[0][currentPokemon[0]].level + 1) + "!", 0, null);
+                    this.events.add(event);   
+
+                    // add a new event that shows the progress bar moving with XP remaining after leveling up
+                    event = new BattleEvent("", xpGain + this.team[0][currentPokemon[0]].xp - xpMax, 0);
+                    this.events.add(event);
+
+                    this.team[0][currentPokemon[0]].xp = xpMax;
+                    this.team[0][currentPokemon[0]].calcLevel();
+                }
+                else
+                {
+                    // add the remianing XP that isn't enough to level up
+                    this.team[0][currentPokemon[0]].xp += this.events.get(0).xp;
+                }
             }
             else if (this.events.get(0).damage > -1)
             {

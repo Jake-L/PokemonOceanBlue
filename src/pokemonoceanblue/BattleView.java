@@ -224,12 +224,17 @@ public class BattleView extends ViewBase {
 
         int xpMin = (int) Math.pow(this.model.team[0][this.model.currentPokemon[0]].level, 3.0);
         int xpMax = (int) Math.pow(this.model.team[0][this.model.currentPokemon[0]].level + 1, 3.0);
+        int xpCurrent = this.model.team[0][this.model.currentPokemon[0]].xp;
 
         //renders player xp bar fill
+        if (this.model.events.size() > 0)
+        {
+            xpCurrent = (int) Math.min(xpCurrent + (this.model.events.get(0).xp * (60 - this.model.counter)) / 60.0, xpMax);
+        }
         g.drawImage(this.xp,
             (int)(width * (9.0 / 10.0)) - (this.statusWindow[0].getWidth(null) * graphicsScaling) + (24 * graphicsScaling),
             height / 2 + (42 * graphicsScaling),
-            (int)(96 * ((double)(this.model.team[0][this.model.currentPokemon[0]].xp - xpMin) / (xpMax - xpMin)) * graphicsScaling),
+            (int)(96 * ((double)(xpCurrent - xpMin) / (xpMax - xpMin)) * graphicsScaling),
             this.xp.getHeight(null) * graphicsScaling,
             canvas);
 
