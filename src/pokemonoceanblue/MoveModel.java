@@ -11,6 +11,10 @@ public class MoveModel
     public int accuracy;
     public int priority;
     public int damageClassId;
+    public int targetId;
+    public int flinchChance;
+    public int effectChance;
+    public int ailmentId;
     
     /** 
      * Constructor
@@ -43,6 +47,10 @@ public class MoveModel
             this.accuracy = rs.getInt("accuracy");
             this.priority = rs.getInt("priority");
             this.damageClassId = rs.getInt("damage_class_id");   
+            this.targetId = rs.getInt("target_id");
+            this.flinchChance = rs.getInt("flinch_chance");
+            this.effectChance = rs.getInt("effect_chance");
+            this.ailmentId = rs.getInt("ailment_id");
         }
         catch (SQLException e) 
         {
