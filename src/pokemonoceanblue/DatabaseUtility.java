@@ -221,7 +221,11 @@ public class DatabaseUtility
                 + "power INT NULL, "
                 + "accuracy INT NULL, "
                 + "priority INT NOT NULL, "
-                + "damage_class_id INT NOT NULL)";
+                + "damage_class_id INT NOT NULL, "
+                + "target_id INT NOT NULL, "
+                + "flinch_chance INT NULL, "
+                + "effect_chance INT NULL, "
+                + "ailment_id INT NULL)";
         runUpdate(query);
 
         // fill moves table with data
@@ -229,10 +233,12 @@ public class DatabaseUtility
         query = "INSERT INTO moves ("
                     + "move_id, name, type_id, " 
                     + "power, accuracy, priority, "
-                    + "damage_class_id) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                    + "damage_class_id, target_id, "
+                    + "flinch_chance, effect_chance, "
+                    + "ailment_id) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        dataTypes = new String[] {"int", "String", "int", "int", "int", "int", "int"};
+        dataTypes = new String[] {"int", "String", "int", "int", "int", "int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         // CREATE TABLE move_effects
