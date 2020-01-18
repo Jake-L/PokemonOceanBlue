@@ -308,7 +308,7 @@ public class BattleModel
      */
     private void effectivenessMessage(float effectiveness, int attacker)
     {
-        if (this.isCrit[attacker])
+        if (this.isCrit[attacker] && this.modifier[attacker] > 0)
         {
             BattleEvent event = new BattleEvent("A critical hit!", attacker, null);
             this.events.add(event);

@@ -74,7 +74,7 @@ public class OverworldModel {
                 String[] data = line.split(",");
 
                 // convert the string into a byte and insert into the array
-                for (var i = 0; i < data.length; i++)
+                for (var i = 0; i < Math.min(data.length, tiles[lineCounter].length); i++)
                 {
                     tiles[lineCounter][i] = Byte.parseByte(data[i]);
                 }
