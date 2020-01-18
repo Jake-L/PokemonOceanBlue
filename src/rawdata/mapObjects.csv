@@ -8,8 +8,8 @@ map_id,area_id,name,x,y
 0,2,rock,11,33
 0,2,rock,13,35
 0,2,house2,14,26
-0,2,gymSign,33,4
-0,2,gym,34,4
+0,2,gymSign,34,4
+0,2,gym,35,4
 0,2,pokemart,15,36
 0,2,pokemonCenter,27,36
 0,0,house1,8,8
