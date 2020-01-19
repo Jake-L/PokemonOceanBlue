@@ -29,6 +29,7 @@ public class BattleModel
     private boolean[] isCrit = new boolean[2];
     public String trainerName;
     public String trainerSpriteName;
+    private boolean[] isOneHit = new boolean[2];
 
     /** 
      * Constructor
@@ -255,6 +256,7 @@ public class BattleModel
         this.modifier[attacker] = 1;
         float crit = 1.0f;
         this.isCrit[attacker] = false;
+        this.isOneHit[attacker] = false;
 
         if (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].damageClassId == 2)
         {
@@ -274,8 +276,9 @@ public class BattleModel
             return 0;
         }
 
-        if (this.ranNum.nextInt(100) <= this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].accuracy)
+        if (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].accuracy == -1 || this.ranNum.nextInt(100) <= this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].accuracy)
         {
+            this.attackMissed[attacker] = false;
             for (int i = 0; i < this.team[defender][this.currentPokemon[defender]].types.length; i++)
             {
                 this.modifier[attacker] = this.typeEffectiveness[this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].typeId][this.team[defender][this.currentPokemon[defender]].types[i]] * this.modifier[attacker];
@@ -286,12 +289,17 @@ public class BattleModel
                 stab = 1.5f;
             }
 
+            if (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].power == -1)
+            {
+                this.isOneHit[attacker] = true;
+                return this.team[defender][this.currentPokemon[defender]].currentHP;
+            }
+
             if (this.ranNum.nextInt(9) == 0 && this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].power > 0)
             {
                 crit = 1.5f;                        
                 this.isCrit[attacker] = true;
             }
-            this.attackMissed[attacker] = false;
             return (int)Math.ceil(((this.team[attacker][this.currentPokemon[attacker]].level * 2.0 / 5.0 + 2.0) * (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].power) * (this.team[attacker][this.currentPokemon[attacker]].stats[attack_stat] * 1.0 / this.team[defender][this.currentPokemon[defender]].stats[defense_stat]) / 50 + 2) * this.modifier[attacker] * stab * crit);
         }
 
@@ -308,6 +316,11 @@ public class BattleModel
      */
     private void effectivenessMessage(float effectiveness, int attacker)
     {
+        if (this.isOneHit[attacker])
+        {
+            BattleEvent event = new BattleEvent("It's a one hit KO!", attacker, null);
+            this.events.add(event);
+        }
         if (this.isCrit[attacker] && this.modifier[attacker] > 0)
         {
             BattleEvent event = new BattleEvent("A critical hit!", attacker, null);
