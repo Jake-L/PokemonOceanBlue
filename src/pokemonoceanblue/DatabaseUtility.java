@@ -62,7 +62,7 @@ public class DatabaseUtility
         String[] table_list = {
             "evolution_methods", "pokemon", "pokemon_moves", "pokemon_location", 
             "conversation", "moves", "type_effectiveness", "items", "battle",
-            "portal", "map_object", "area", "character"
+            "portal", "map_object", "area", "character", "move_stat_effect"
         };
 
         for (String t : table_list)
@@ -241,8 +241,22 @@ public class DatabaseUtility
         dataTypes = new String[] {"int", "String", "int", "int", "int", "int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
-        // CREATE TABLE move_effects
-        // effect type, probability
+        // CREATE TABLE move_stat_effect
+        // stats that are increased or decreased by using a move
+        query = "CREATE TABLE move_stat_effect("
+                + "move_id INT NOT NULL, "
+                + "stat_id INT NOT NULL, "
+                + "stat_change INT NOT NULL)";
+        runUpdate(query);
+
+        // fill move_stat_effect table with data
+        path = "src/rawdata/moveStatEffect.csv";
+        query = "INSERT INTO move_stat_effect ("
+                    + "move_id, stat_id, stat_change) "
+                    + "VALUES (?, ?, ?)";
+
+        dataTypes = new String[] {"int", "int", "int"};
+        loadTable(path, query, dataTypes);
 
         // store the multipliers for different types
         query = "CREATE TABLE type_effectiveness("

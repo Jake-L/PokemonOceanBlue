@@ -15,6 +15,7 @@ public class MoveModel
     public int flinchChance;
     public int effectChance;
     public int ailmentId;
+    public MoveStatEffect[] moveStatEffects;
     
     /** 
      * Constructor
@@ -37,6 +38,7 @@ public class MoveModel
         {
             DatabaseUtility db = new DatabaseUtility();
 
+            // load move data
             String query = "SELECT * FROM moves WHERE move_id = " + this.moveId;
 
             ResultSet rs = db.runQuery(query);
@@ -51,10 +53,46 @@ public class MoveModel
             this.flinchChance = rs.getInt("flinch_chance");
             this.effectChance = rs.getInt("effect_chance");
             this.ailmentId = rs.getInt("ailment_id");
+
+            // get number of stat effects
+            query = "SELECT COUNT(*) FROM move_stat_effect WHERE move_id = " + this.moveId;
+            rs = db.runQuery(query);
+            moveStatEffects = new MoveStatEffect[rs.getInt(1)];
+
+            // get stat effects
+            query = "SELECT stat_id, stat_change FROM move_stat_effect WHERE move_id = " + this.moveId;
+            rs = db.runQuery(query);
+            int index = 0;
+
+            while(rs.next()) 
+            {
+                moveStatEffects[index] = new MoveStatEffect(rs.getInt(1), rs.getInt(2));
+                index++;
+            }      
         }
         catch (SQLException e) 
         {
             e.printStackTrace();
         }  
+    }
+
+    /**
+     * Store stat change effects
+     */
+    class MoveStatEffect
+    {
+        public int statId;
+        public int statChange;
+
+        /** 
+         * Constructor
+         * @param statId the stat that is affected
+         * @param statChange the amount to modify the stat
+         */
+        public MoveStatEffect(int statId, int statChange)
+        {
+            this.statId = statId;
+            this.statChange = statChange;
+        }
     }
 }
