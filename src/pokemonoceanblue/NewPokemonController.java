@@ -24,6 +24,19 @@ public class NewPokemonController
     {
         if (this.model.counter > 0)
         {
+            // update the player's team to reflect the change
+            if (this.model.counter == 60)
+            {
+                if (this.model.pokemon.length > 1)
+                {
+                    this.model.evolvePokemon();
+                }
+                else
+                {
+                    this.model.addPokemon();
+                }
+            }
+
             this.model.counter--;
         }
 

@@ -30,6 +30,7 @@ public class BattleModel
     public String trainerName;
     public String trainerSpriteName;
     private boolean[] isOneHit = new boolean[2];
+    private boolean[] evolveQueue = new boolean[6];
 
     /** 
      * Constructor
@@ -484,6 +485,9 @@ public class BattleModel
 
                     this.team[0][currentPokemon[0]].xp = xpMax;
                     this.team[0][currentPokemon[0]].calcLevel();
+
+                    // flag that the pokemon leveled up and may evolve
+                    this.evolveQueue[currentPokemon[0]] = true;
                 }
                 else
                 {
@@ -663,6 +667,14 @@ public class BattleModel
         {
             e.printStackTrace();
         }  
+    }
+
+    /**
+     * @return a boolean for each IPokemon on the team, true if the Pokemon levelup up
+     */
+    public boolean[] getEvolveQueue()
+    {
+        return this.evolveQueue;
     }
 
     class BattleEvent

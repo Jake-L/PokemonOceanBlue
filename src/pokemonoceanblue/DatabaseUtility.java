@@ -62,7 +62,8 @@ public class DatabaseUtility
         String[] table_list = {
             "evolution_methods", "pokemon", "pokemon_moves", "pokemon_location", 
             "conversation", "moves", "type_effectiveness", "items", "battle",
-            "portal", "map_object", "area", "character", "move_stat_effect"
+            "portal", "map_object", "area", "character", "move_stat_effect",
+            "evolution_methods"
         };
 
         for (String t : table_list)
@@ -74,9 +75,6 @@ public class DatabaseUtility
         conn.setAutoCommit(false);
 
         String dataTypes[];
-
-        // CREATE TABLE evolution_methods
-        // how specific Pokemon evolve, such as by level, item, or trade
 
         // CREATE TABLE pokemon
         // each Pokemon's name, stats, types
@@ -122,6 +120,25 @@ public class DatabaseUtility
        
         dataTypes = new String[] {"int", "int", "int"};
         loadTable(path, query, dataTypes);
+
+        // CREATE TABLE evolution_methods
+        // how specific Pokemon evolve, such as by level, item, or trade
+        query = "CREATE TABLE evolution_methods("
+                + "pre_species_id INT NOT NULL, "
+                + "evolved_species_id INT NOT NULL, "
+                + "minimum_level INT NULL, "
+                + "minimum_happiness INT NULL)";
+        runUpdate(query);
+
+        // fill pokemon moves table with data
+        path = "src/rawdata/evolutionMethods.csv";
+        query = "INSERT INTO evolution_methods ("
+                    + "pre_species_id, evolved_species_id, minimum_level, minimum_happiness)"
+                    + "VALUES (?, ?, ?, ?)";
+       
+        dataTypes = new String[] {"int", "int", "int", "int"};
+        loadTable(path, query, dataTypes);
+
 
         // divides a map into areas, such as different routes or cities
         query = "CREATE TABLE area("
@@ -379,8 +396,16 @@ public class DatabaseUtility
                 {
                     if (dataTypes[i] == "int")
                     {
-                        // use setObject to allow for null values
-                        statement.setObject(i+1, data[i].equals("") ? null : Integer.parseInt(data[i]));
+                        if (i >= data.length)
+                        {
+                            // set null value, since there was no value
+                            statement.setObject(i+1, null);
+                        }
+                        else
+                        {
+                            // use setObject to allow for null values
+                            statement.setObject(i+1, data[i].equals("") ? null : Integer.parseInt(data[i]));
+                        }
                     }
                     else if (dataTypes[i] == "String")
                     {

@@ -22,7 +22,7 @@ public class NewPokemonView extends ViewBase {
     public NewPokemonView(NewPokemonModel model)
     {
         this.model = model;
-        this.pokemonSprite = new Image[1];
+        this.pokemonSprite = new Image[this.model.pokemon.length];
         loadImage();
     }
 
@@ -31,11 +31,14 @@ public class NewPokemonView extends ViewBase {
      */
     private void loadImage() 
     {
-        ImageIcon ii = new ImageIcon("src/pokemon/frame0/" + this.model.pokemon.id + ".png");
-        this.pokemonSprite[0]  = ii.getImage();
-
-        ii = new ImageIcon("src/menus/pokemonBackground.png");
+        ImageIcon ii = new ImageIcon("src/menus/pokemonBackground.png");
         this.background = ii.getImage();
+
+        for (int i = 0; i < this.pokemonSprite.length; i++)
+        {
+            ii = new ImageIcon("src/pokemon/frame0/" + this.model.pokemon[i].id + ".png");
+            this.pokemonSprite[i]  = ii.getImage();
+        }
     }
 
     /** 
@@ -57,8 +60,15 @@ public class NewPokemonView extends ViewBase {
             canvas
         );
 
+        int renderIndex = this.pokemonSprite.length - 1;
+
+        if (this.model.counter > 60)
+        {
+            renderIndex = 0;
+        }
+
         g.drawImage(
-            this.pokemonSprite[0],
+            this.pokemonSprite[renderIndex],
             width / 2 - this.pokemonSprite[0].getWidth(null) / 2 * graphicsScaling,
             height / 2 - this.pokemonSprite[0].getHeight(null) / 2 * graphicsScaling,
             this.pokemonSprite[0].getWidth(null) * graphicsScaling,

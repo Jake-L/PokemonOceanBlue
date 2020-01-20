@@ -19,6 +19,7 @@ public class PokemonModel
     MoveModel[] moves;
     public final boolean shiny;
     int pokeballId = 3;
+    int happiness = 70;
     
     /** 
      * Constructor
@@ -42,6 +43,15 @@ public class PokemonModel
     public void calcLevel()
     {
         this.level = (int) Math.floor(Math.cbrt(xp));
+    }
+
+    /**
+     * @param evolvedPokemonId the new Id the Pokemon evolves into
+     */
+    public void evolve(int evolvedPokemonId)
+    {
+        this.id = evolvedPokemonId;
+        this.loadStats();
     }
 
     /** 
