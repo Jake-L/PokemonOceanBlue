@@ -11,7 +11,8 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 8,2,0,Daisy,daisy,5,5,12,2,0
 10,6,0,,scientist,3,4,3,0,1
 11,0,0,,familyMan,12,18,5,0,3
-12,0,1,Camper Kimmy,campGirl,16,30,11,0,2
+12,0,1,Camper Kimmy,campGirl,16,30,16,0,2
 13,0,1,Rival Gary,gary,20,1,13,0,0
 14,0,1,Youngster Jimmothy,youngsterBoy,10,23,14,0,1
 15,0,1,Youngster Timmy,youngsterBoy,22,20,15,0,3
+16,0,2,Dreamer Wally,wally,39,7,11,0,0
