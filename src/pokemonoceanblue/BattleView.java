@@ -20,6 +20,7 @@ public class BattleView extends ViewBase {
     private Image[] pokeballSprite = new Image[4];
     private Image[][] pokemonIconSprites = new Image[2][];
     private Image trainerSprite;
+    private Image[] statusEffectImages = new Image[6];
     
     /** 
      * Constructor for the overworld view
@@ -80,6 +81,13 @@ public class BattleView extends ViewBase {
                 ii = new ImageIcon("src/pokemonicons/" + this.model.team[i][j].id + ".png");
                 this.pokemonIconSprites[i][j] = ii.getImage();
             }
+        }
+
+        //loads status effect images
+        for (int i = 0; i < this.statusEffectImages.length; i++)
+        {
+            ii = new ImageIcon("src/menus/ailment" + (i + 1) + ".png");
+            this.statusEffectImages[i] = ii.getImage();
         }
 
         //loads status window images and xp
@@ -265,6 +273,28 @@ public class BattleView extends ViewBase {
         g.drawString(String.valueOf(this.model.team[1][this.model.currentPokemon[1]].level),
             width / 10 + 84 * graphicsScaling,
             height / 10 + 17 * graphicsScaling);
+
+        //display player team status condition
+        if (this.model.team[0][this.model.currentPokemon[0]].statusEffect > 0)
+        {
+            g.drawImage(this.statusEffectImages[this.model.team[0][this.model.currentPokemon[0]].statusEffect - 1],
+                (int)(width * (9.0 / 10.0)) - (this.statusWindow[0].getWidth(null) * graphicsScaling) + (34 * graphicsScaling),
+                height / 2 + (24 * graphicsScaling),
+                this.statusEffectImages[0].getWidth(null) * graphicsScaling,
+                this.statusEffectImages[0].getHeight(null) * graphicsScaling,
+                canvas);
+        }
+
+        //display player team status condition
+        if (this.model.team[1][this.model.currentPokemon[1]].statusEffect > 0)
+        {
+            g.drawImage(this.statusEffectImages[this.model.team[1][this.model.currentPokemon[1]].statusEffect - 1],
+                width / 10 + (12 * graphicsScaling),
+                height / 10 + (22 * graphicsScaling),
+                this.statusEffectImages[0].getWidth(null) * graphicsScaling,
+                this.statusEffectImages[0].getHeight(null) * graphicsScaling,
+                canvas);
+        }
 
         //renders player  and enemy team at sides of the screen
         for (int j = 0; j < this.pokemonIconSprites.length; j++)

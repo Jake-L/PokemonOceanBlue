@@ -88,7 +88,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 89,Earthquake,5,100,100,0,2,9,0,0,0
 90,Fissure,5,-1,30,0,2,10,0,0,0
 91,Dig,5,80,100,0,2,10,0,0,0
-92,Toxic,4,,90,0,1,10,0,0,5
+92,Toxic,4,,90,0,1,10,0,100,5
 93,Confusion,14,50,100,0,3,10,0,10,6
 94,Psychic,14,90,100,0,3,10,0,10,0
 95,Hypnosis,14,,60,0,1,10,0,0,2

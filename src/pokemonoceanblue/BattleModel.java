@@ -124,12 +124,12 @@ public class BattleModel
                     
                     BattleEvent enemyAttackEvent = enemyAttackEvent();
                     
-                    if (this.team[0][this.currentPokemon[0]].moves[optionIndex].priority > this.team[1][this.currentPokemon[1]].moves[enemyMove].priority)
+                    if (this.team[0][this.currentPokemon[0]].moves[this.optionIndex].priority > this.team[1][this.currentPokemon[1]].moves[this.enemyMove].priority)
                     {
                         firstAttacker = 0;
                     }
     
-                    else if (this.team[0][this.currentPokemon[0]].moves[optionIndex].priority < this.team[1][this.currentPokemon[1]].moves[enemyMove].priority)
+                    else if (this.team[0][this.currentPokemon[0]].moves[this.optionIndex].priority < this.team[1][this.currentPokemon[1]].moves[this.enemyMove].priority)
                     {
                         firstAttacker = 1;
                     }
@@ -153,16 +153,32 @@ public class BattleModel
                     {
                         this.events.add(enemyAttackEvent);
                         effectivenessMessage(modifier[1], 1);
+                        if (this.team[1][this.currentPokemon[1]].moves[this.enemyMove].ailmentId > 0)
+                        {
+                            this.statusEffect(1, 0, this.team[1][this.currentPokemon[1]].moves[this.enemyMove]);
+                        }
                         this.events.add(playerAttackEvent);
                         effectivenessMessage(modifier[0], 0);
+                        if (this.team[0][this.currentPokemon[0]].moves[this.optionIndex].ailmentId > 0)
+                        {
+                            this.statusEffect(0, 1, this.team[0][this.currentPokemon[0]].moves[this.optionIndex]);
+                        }
                     }
                     
                     else
                     {
                         this.events.add(playerAttackEvent);
                         effectivenessMessage(modifier[0], 0);
+                        if (this.team[0][this.currentPokemon[0]].moves[this.optionIndex].ailmentId > 0)
+                        {
+                            this.statusEffect(0, 1, this.team[0][this.currentPokemon[0]].moves[this.optionIndex]);
+                        }
                         this.events.add(enemyAttackEvent);
                         effectivenessMessage(modifier[1], 1);
+                        if (this.team[1][this.currentPokemon[1]].moves[this.enemyMove].ailmentId > 0)
+                        {
+                            this.statusEffect(1, 0, this.team[1][this.currentPokemon[1]].moves[this.enemyMove]);
+                        }
                     }
                 }
             }
@@ -185,7 +201,11 @@ public class BattleModel
             this.events.add(event);
             this.counter = 60;            
             this.events.add(this.enemyAttackEvent());
-            effectivenessMessage(modifier[1], 1);
+            this.effectivenessMessage(modifier[1], 1);
+            if (this.team[1][this.currentPokemon[1]].moves[this.enemyMove].ailmentId > 0)
+            {
+                this.statusEffect(1, 0, this.team[1][this.currentPokemon[1]].moves[this.enemyMove]);
+            }
         }
     }
 
@@ -244,6 +264,25 @@ public class BattleModel
     }
 
     /** 
+     * creates event for the status effect inflicted by current move
+     * @param attacker the attacking team
+     * @param defender the defending team
+     * @param move the move that inflicts the status effect
+     */
+    private void statusEffect(int attacker, int defender, MoveModel move)
+    {
+        if (this.ranNum.nextInt(101) <= move.effectChance)
+        {
+            if (move.ailmentId == 5)
+            {
+                BattleEvent event = new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + " was badly poisoned.",
+                    move.ailmentId, defender, null);
+                this.events.add(event);
+            }
+        }
+    }
+    
+    /** 
      * @param moveIndex the current move of the attacker
      * @param attacker the attacking team
      * @param defender the defending team
@@ -277,7 +316,7 @@ public class BattleModel
             return 0;
         }
 
-        if (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].accuracy == -1 || this.ranNum.nextInt(100) <= this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].accuracy)
+        if (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].accuracy == -1 || this.ranNum.nextInt(101) <= this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].accuracy)
         {
             this.attackMissed[attacker] = false;
             for (int i = 0; i < this.team[defender][this.currentPokemon[defender]].types.length; i++)
@@ -495,6 +534,10 @@ public class BattleModel
                     this.team[0][currentPokemon[0]].xp += this.events.get(0).xp;
                 }
             }
+            else if (this.events.get(0).statusEffect > -1)
+            {
+                this.team[this.events.get(0).target][currentPokemon[this.events.get(0).target]].statusEffect = (byte)this.events.get(0).statusEffect;
+            }
             else if (this.events.get(0).damage > -1)
             {
                 this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP -= 
@@ -567,6 +610,10 @@ public class BattleModel
                     {
                         this.events.add(this.enemyAttackEvent());
                         effectivenessMessage(modifier[1], 1);
+                        if (this.team[1][this.currentPokemon[1]].moves[this.enemyMove].ailmentId > 0)
+                        {
+                            this.statusEffect(1, 0, this.team[1][this.currentPokemon[1]].moves[this.enemyMove]);
+                        }
                     }
                 }
             }
@@ -687,6 +734,7 @@ public class BattleModel
         public int attacker;
         public int xp = 0;
         public String sound;
+        public int statusEffect = -1;
 
         /** 
          * Constructor
@@ -697,6 +745,20 @@ public class BattleModel
             this.text = text;
             this.attacker = attacker;
             this.sound = sound;
+        }
+
+                /** 
+         * Constructor
+         * @param text the text that will be displayed
+         * @param damage the damage that will be taken by target
+         * @param target the pokemon that will recieve the damage
+         * @param attacker the team performing event
+         */
+        public BattleEvent(String text, int statusEffect, int target, String sound)
+        {
+            this(text, target, sound);
+            this.statusEffect = statusEffect;
+            this.target = target;
         }
 
         /** 
