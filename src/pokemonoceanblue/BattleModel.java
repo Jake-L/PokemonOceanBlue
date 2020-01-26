@@ -61,25 +61,29 @@ public class BattleModel
      */
     private void initialize()
     {
-        this.currentPokemon[0] = 0;
-        while (this.team[0][currentPokemon[0]].currentHP == 0)
+        this.currentPokemon[0] = -1;
+        this.currentPokemon[1] = -1;
+        int firstPokemon = 0;
+        BattleEvent event;
+
+        while (this.team[0][firstPokemon].currentHP == 0)
         {
-            this.currentPokemon[0]++;
+            firstPokemon++;
         }
-        this.currentPokemon[1] = 0;
+
         if (this.isWild)
         {
-            BattleEvent event = new BattleEvent("A wild " + this.team[1][this.currentPokemon[1]].name + " appeared!", 1, String.valueOf(this.team[1][this.currentPokemon[1]].id));
+            event = new BattleEvent("A wild " + this.team[1][0].name + " appeared!", 0, true, 1, String.valueOf(this.team[1][0].id));
             this.events.add(event);
         }
         else
         {
-            BattleEvent event = new BattleEvent(this.trainerName + " sent out " + this.team[1][currentPokemon[1]].name + ".", 1, String.valueOf(this.team[1][this.currentPokemon[1]].id));
+            event = new BattleEvent(this.trainerName + " sent out " + this.team[1][0].name + ".", 0, true, 1, String.valueOf(this.team[1][0].id));
             this.events.add(event);
         }
-        BattleEvent event = new BattleEvent("Trainer sent out " + this.team[0][currentPokemon[0]].name + ".", 0, String.valueOf(this.team[0][currentPokemon[0]].id));
+        event = new BattleEvent("Trainer sent out " + this.team[0][firstPokemon].name + ".", firstPokemon, true, 0, String.valueOf(this.team[0][firstPokemon].id));
         this.events.add(event);
-        this.counter = 60;
+        this.counter = 100;
         this.loadData();
     }
 
@@ -235,6 +239,18 @@ public class BattleModel
             this.events.add(event);
             event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", pokemon, true, 0, String.valueOf(this.team[0][pokemon].id));
             this.events.add(event);
+
+            if (this.team[0][this.currentPokemon[0]].currentHP > 0)
+            {
+                // let the enemy attack after player switches
+                this.events.add(this.enemyAttackEvent());
+                this.effectivenessMessage(modifier[1], 1);
+                if (this.team[1][this.currentPokemon[1]].moves[this.enemyMove].ailmentId > 0)
+                {
+                    this.statusEffect(1, 0, this.team[1][this.currentPokemon[1]].moves[this.enemyMove]);
+                }
+            }
+
             this.counter = 60;
         }
     }
@@ -519,34 +535,17 @@ public class BattleModel
 
     public void update()
     {
-        if (this.counter == 50 && this.events.size() > 0 && this.events.get(0).sound != null)
-        {
-            this.app.playSound(this.events.get(0).sound);
-        }
-
         // switch the current Pokemon
         // do this at the start of counter to show the switching animation
         if (this.counter == 100 && this.events.get(0).newPokemonIndex > -1)
         {
             int attacker = this.events.get(0).attacker;
-            if (this.team[attacker][this.currentPokemon[attacker]].currentHP == 0)
-            {
-                this.currentPokemon[attacker] = this.events.get(0).newPokemonIndex;
-            }
-            else
-            {
-                this.currentPokemon[attacker] = this.events.get(0).newPokemonIndex;
-                if (attacker == 0)
-                {
-                    // let the enemy attack after player switches
-                    this.events.add(this.enemyAttackEvent());
-                    effectivenessMessage(modifier[1], 1);
-                    if (this.team[1][this.currentPokemon[1]].moves[this.enemyMove].ailmentId > 0)
-                    {
-                        this.statusEffect(1, 0, this.team[1][this.currentPokemon[1]].moves[this.enemyMove]);
-                    }
-                }
-            }
+            this.currentPokemon[attacker] = this.events.get(0).newPokemonIndex;
+        }
+
+        if (this.counter == 50 && this.events.size() > 0 && this.events.get(0).sound != null)
+        {
+            this.app.playSound(this.events.get(0).sound);
         }
 
         if (this.counter > 0)
@@ -565,11 +564,11 @@ public class BattleModel
                 if (this.team[0][this.currentPokemon[0]].xp + xpGain >= xpMax)
                 {
                     BattleEvent event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " reached level " + (this.team[0][this.currentPokemon[0]].level + 1) + "!", 0, null);
-                    this.events.add(event);   
+                    this.events.add(1, event);   
 
                     // add a new event that shows the progress bar moving with XP remaining after leveling up
                     event = new BattleEvent("", xpGain + this.team[0][this.currentPokemon[0]].xp - xpMax, 0);
-                    this.events.add(event);
+                    this.events.add(2, event);
 
                     this.team[0][this.currentPokemon[0]].xp = xpMax;
                     this.team[0][this.currentPokemon[0]].calcLevel();
