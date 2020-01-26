@@ -73,9 +73,9 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 74,Growth,1,,-1,0,1,7,0,100,0
 75,Razor Leaf,12,55,95,0,2,11,0,0,0
 76,Solar Beam,12,120,100,0,3,10,0,0,0
-77,Poison Powder,4,,75,0,1,10,0,0,5
-78,Stun Spore,12,,75,0,1,10,0,0,1
-79,Sleep Powder,12,,75,0,1,10,0,0,2
+77,Poison Powder,4,,75,0,1,10,0,100,5
+78,Stun Spore,12,,75,0,1,10,0,100,1
+79,Sleep Powder,12,,75,0,1,10,0,100,2
 80,Petal Dance,12,120,100,0,3,8,0,0,0
 81,String Shot,7,,95,0,1,11,0,100,0
 82,Dragon Rage,16,,100,0,3,10,0,0,0

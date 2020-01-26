@@ -31,6 +31,7 @@ public class BattleModel
     public String trainerSpriteName;
     private boolean[] isOneHit = new boolean[2];
     private boolean[] evolveQueue = new boolean[6];
+    private boolean[] isParalyzed = new boolean[2];
 
     /** 
      * Constructor
@@ -133,6 +134,16 @@ public class BattleModel
                     {
                         firstAttacker = 1;
                     }
+
+                    else if (this.team[0][this.currentPokemon[0]].statusEffect != 1 && this.team[1][this.currentPokemon[1]].statusEffect == 1)
+                    {
+                        firstAttacker = 0;
+                    }
+
+                    else if (this.team[1][this.currentPokemon[1]].statusEffect != 1 && this.team[0][this.currentPokemon[0]].statusEffect == 1)
+                    {
+                        firstAttacker = 1;
+                    }
     
                     else if (this.team[0][this.currentPokemon[0]].stats[Stat.SPEED] < this.team[1][this.currentPokemon[1]].stats[Stat.SPEED])
                     {
@@ -220,7 +231,7 @@ public class BattleModel
         }
         else
         {
-            BattleEvent event = new BattleEvent("Trainer withdrew " + this.team[0][currentPokemon[0]].name + ".", 0, null);
+            BattleEvent event = new BattleEvent("Trainer withdrew " + this.team[0][this.currentPokemon[0]].name + ".", 0, null);
             this.events.add(event);
             event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", pokemon, true, 0, String.valueOf(this.team[0][pokemon].id));
             this.events.add(event);
@@ -271,7 +282,7 @@ public class BattleModel
      */
     private void statusEffect(int attacker, int defender, MoveModel move)
     {
-        if (this.ranNum.nextInt(101) <= move.effectChance)
+        if (this.ranNum.nextInt(101) <= move.effectChance && this.team[defender][this.currentPokemon[defender]].statusEffect == 0)
         {
             if (move.ailmentId == 1)
             {
@@ -321,6 +332,7 @@ public class BattleModel
         float crit = 1.0f;
         this.isCrit[attacker] = false;
         this.isOneHit[attacker] = false;
+        this.isParalyzed[attacker] = false;
 
         if (this.team[attacker][this.currentPokemon[attacker]].moves[moveIndex].damageClassId == 2)
         {
@@ -337,6 +349,12 @@ public class BattleModel
         else
         {
             this.attackMissed[attacker] = false;
+            return 0;
+        }
+
+        if (this.team[attacker][this.currentPokemon[attacker]].statusEffect == 1 && this.ranNum.nextInt(3) == 0)
+        {
+            this.isParalyzed[attacker] = true;
             return 0;
         }
 
@@ -380,6 +398,11 @@ public class BattleModel
      */
     private void effectivenessMessage(float effectiveness, int attacker)
     {
+        if (this.isParalyzed[attacker])
+        {
+            BattleEvent event = new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + " is paralyzed and unable to move.", attacker, null);
+            this.events.add(event);
+        }
         if (this.isOneHit[attacker])
         {
             BattleEvent event = new BattleEvent("It's a one hit KO!", attacker, null);
@@ -454,7 +477,7 @@ public class BattleModel
         this.battleOptions[0] = "FIGHT";
         this.battleOptions[1] = "POKEMON";
         this.optionIndex = 0;
-        this.counter = INPUTDELAY;
+        this.counter = this.INPUTDELAY;
     }
 
     /** 
@@ -534,33 +557,33 @@ public class BattleModel
             if (this.events.get(0).xp > 0)
             {
                 int xpGain = this.events.get(0).xp;
-                int xpMax = (int) Math.pow(this.team[0][currentPokemon[0]].level + 1, 3.0);
+                int xpMax = (int) Math.pow(this.team[0][this.currentPokemon[0]].level + 1, 3.0);
             
                 // check if the pokemon levels up from the xp gain
                 if (this.team[0][this.currentPokemon[0]].xp + xpGain >= xpMax)
                 {
-                    BattleEvent event = new BattleEvent(this.team[0][currentPokemon[0]].name + " reached level " + (this.team[0][currentPokemon[0]].level + 1) + "!", 0, null);
+                    BattleEvent event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " reached level " + (this.team[0][this.currentPokemon[0]].level + 1) + "!", 0, null);
                     this.events.add(event);   
 
                     // add a new event that shows the progress bar moving with XP remaining after leveling up
-                    event = new BattleEvent("", xpGain + this.team[0][currentPokemon[0]].xp - xpMax, 0);
+                    event = new BattleEvent("", xpGain + this.team[0][this.currentPokemon[0]].xp - xpMax, 0);
                     this.events.add(event);
 
-                    this.team[0][currentPokemon[0]].xp = xpMax;
-                    this.team[0][currentPokemon[0]].calcLevel();
+                    this.team[0][this.currentPokemon[0]].xp = xpMax;
+                    this.team[0][this.currentPokemon[0]].calcLevel();
 
                     // flag that the pokemon leveled up and may evolve
-                    this.evolveQueue[currentPokemon[0]] = true;
+                    this.evolveQueue[this.currentPokemon[0]] = true;
                 }
                 else
                 {
                     // add the remianing XP that isn't enough to level up
-                    this.team[0][currentPokemon[0]].xp += this.events.get(0).xp;
+                    this.team[0][this.currentPokemon[0]].xp += this.events.get(0).xp;
                 }
             }
             else if (this.events.get(0).statusEffect > -1)
             {
-                this.team[this.events.get(0).target][currentPokemon[this.events.get(0).target]].statusEffect = (byte)this.events.get(0).statusEffect;
+                this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].statusEffect = (byte)this.events.get(0).statusEffect;
             }
             else if (this.events.get(0).damage > -1)
             {
@@ -586,8 +609,8 @@ public class BattleModel
                     BattleEvent event = new BattleEvent(this.team[1][this.currentPokemon[1]].name + " fainted.", 1, null);
                     this.events.add(event);
 
-                    event = new BattleEvent(this.team[0][currentPokemon[0]].name + " gained " + xpCalc(this.team[1][currentPokemon[1]].level) + " experience.",
-                        xpCalc(this.team[1][currentPokemon[1]].level), 0);
+                    event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " gained " + xpCalc(this.team[1][this.currentPokemon[1]].level) + " experience.",
+                        xpCalc(this.team[1][this.currentPokemon[1]].level), 0);
                     this.events.add(event);
 
                     if (!teamFainted(1))
@@ -657,13 +680,13 @@ public class BattleModel
                             i++;
                         }
                     }
-                    BattleEvent event = new BattleEvent("Trainer caught wild " + this.team[1][currentPokemon[1]].name + "!", 0, null);
+                    BattleEvent event = new BattleEvent("Trainer caught wild " + this.team[1][this.currentPokemon[1]].name + "!", 0, null);
                     this.events.add(event);
                     this.isCaught = true;
                 }
                 else
                 {
-                    BattleEvent event = new BattleEvent("The wild " + this.team[1][currentPokemon[1]].name + " escaped!", 0, null);
+                    BattleEvent event = new BattleEvent("The wild " + this.team[1][this.currentPokemon[1]].name + " escaped!", 0, null);
                     this.events.add(0, event);
                 }
             }
@@ -678,7 +701,7 @@ public class BattleModel
         //player sends out new pokemon to replace fainted one or battle returns to battle menu
         else if (this.battleOptions == null && this.counter == 0)
         {
-            if (!teamFainted(0) && this.team[0][currentPokemon[0]].currentHP == 0)
+            if (!teamFainted(0) && this.team[0][this.currentPokemon[0]].currentHP == 0)
             {
                 this.battleOptions = null;
                 this.app.openParty(this.currentPokemon[0]);
