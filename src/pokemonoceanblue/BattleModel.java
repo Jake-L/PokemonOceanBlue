@@ -284,33 +284,10 @@ public class BattleModel
     {
         if (this.ranNum.nextInt(101) <= move.effectChance && this.team[defender][this.currentPokemon[defender]].statusEffect == 0)
         {
-            if (move.ailmentId == 1)
+            String[] statusEffectMessages = {" was paralyzed."," fell asleep."," was frozen solid."," was burned."," was badly poisoned"};
+            if (move.ailmentId < 6)
             {
-                BattleEvent event = new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + " was paralyzed.", 
-                    move.ailmentId, defender, null);
-                this.events.add(event);
-            }
-            else if (move.ailmentId == 2)
-            {
-                BattleEvent event = new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + " fell asleep.", 
-                    move.ailmentId, defender, null);
-                this.events.add(event);
-            }
-            else if (move.ailmentId == 3)
-            {
-                BattleEvent event = new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + " was frozen solid.", 
-                    move.ailmentId, defender, null);
-                this.events.add(event);
-            }
-            else if (move.ailmentId == 4)
-            {
-                BattleEvent event = new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + " was burned.",
-                    move.ailmentId, defender, null);
-                this.events.add(event);
-            }
-            else if (move.ailmentId == 5)
-            {
-                BattleEvent event = new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + " was badly poisoned.",
+                BattleEvent event = new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + statusEffectMessages[move.ailmentId - 1], 
                     move.ailmentId, defender, null);
                 this.events.add(event);
             }
