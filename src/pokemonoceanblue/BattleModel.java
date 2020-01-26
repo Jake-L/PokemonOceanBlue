@@ -547,6 +547,31 @@ public class BattleModel
             this.app.playSound(this.events.get(0).sound);
         }
 
+        // switch the current Pokemon
+        // do this at the start of counter to show the switching animation
+        if (this.counter == 100 && this.events.get(0).newPokemonIndex > -1)
+        {
+            int attacker = this.events.get(0).attacker;
+            if (this.team[attacker][this.currentPokemon[attacker]].currentHP == 0)
+            {
+                this.currentPokemon[attacker] = this.events.get(0).newPokemonIndex;
+            }
+            else
+            {
+                this.currentPokemon[attacker] = this.events.get(0).newPokemonIndex;
+                if (attacker == 0)
+                {
+                    // let the enemy attack after player switches
+                    this.events.add(this.enemyAttackEvent());
+                    effectivenessMessage(modifier[1], 1);
+                    if (this.team[1][this.currentPokemon[1]].moves[this.enemyMove].ailmentId > 0)
+                    {
+                        this.statusEffect(1, 0, this.team[1][this.currentPokemon[1]].moves[this.enemyMove]);
+                    }
+                }
+            }
+        }
+
         if (this.counter > 0)
         {
             this.counter--;
@@ -643,27 +668,6 @@ public class BattleModel
                     this.events.add(event);
                 }
             }
-            else if (this.events.get(0).newPokemonIndex > -1)
-            {
-                int attacker = this.events.get(0).attacker;
-                if (this.team[attacker][this.currentPokemon[attacker]].currentHP == 0)
-                {
-                    this.currentPokemon[attacker] = this.events.get(0).newPokemonIndex;
-                }
-                else
-                {
-                    this.currentPokemon[attacker] = this.events.get(0).newPokemonIndex;
-                    if (attacker == 0)
-                    {
-                        this.events.add(this.enemyAttackEvent());
-                        effectivenessMessage(modifier[1], 1);
-                        if (this.team[1][this.currentPokemon[1]].moves[this.enemyMove].ailmentId > 0)
-                        {
-                            this.statusEffect(1, 0, this.team[1][this.currentPokemon[1]].moves[this.enemyMove]);
-                        }
-                    }
-                }
-            }
             else if (this.events.get(0).itemId > -1)
             {
                 if (ranNum.nextInt(2) == 0)
@@ -694,7 +698,16 @@ public class BattleModel
 
             if (this.events.size() > 0)
             {
-                this.counter = 60;
+                // use a larger counter when switching Pokemon
+                // to show switching animation
+                if (this.events.get(0).newPokemonIndex > -1)
+                {
+                    this.counter = 100;
+                }
+                else
+                {
+                    this.counter = 60;
+                }
             }
         }
 

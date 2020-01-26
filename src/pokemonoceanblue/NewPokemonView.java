@@ -7,7 +7,6 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.IOException;
 import java.awt.AlphaComposite;
@@ -52,7 +51,7 @@ public class NewPokemonView extends ViewBase {
             {
                 // load a copy of the Pokemon's sprite recoloured white
                 this.pokemonBufferedSprite[i] = ImageIO.read(new File("src/pokemon/frame0/" + this.model.pokemon[i].id + ".png"));   
-                colorImage(this.pokemonBufferedSprite[i]);
+                this.pokemonBufferedSprite[i] = this.colorImage(this.pokemonBufferedSprite[i], 255, 255, 255);
             }
             catch (IOException e)
             {
@@ -112,32 +111,11 @@ public class NewPokemonView extends ViewBase {
                 canvas
             );
         }
-        
     }
 
     @Override
     public String toString()
     {
         return "NewPokemonView";
-    }
-
-    /**
-     * @param image image to be recoloured white
-     */
-    private void colorImage(BufferedImage image) 
-    {
-        WritableRaster raster = image.getRaster();
-
-        for (int x = 0; x < image.getWidth(); x++) 
-        {
-            for (int y = 0; y < image.getHeight(); y++) 
-            {
-                int[] pixels = raster.getPixel(x, y, (int[]) null);
-                pixels[0] = 255;
-                pixels[1] = 255;
-                pixels[2] = 255;
-                raster.setPixel(x, y, pixels);
-            }
-        }
     }
 }

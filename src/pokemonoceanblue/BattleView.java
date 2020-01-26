@@ -1,10 +1,16 @@
 package pokemonoceanblue;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import java.awt.Font;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.awt.AlphaComposite;
+import javax.imageio.ImageIO;
 
 /** 
  * Renders the Battle
@@ -12,7 +18,8 @@ import java.awt.Font;
 public class BattleView extends ViewBase {
 
     private BattleModel model;
-    private Image[][] pokemonSprite = new Image[2][];
+    private Image[][][] pokemonSprite = new Image[2][][];
+    private BufferedImage[][] pokemonBufferedSprite = new BufferedImage[2][];
     private Image[] healthBarFill = new Image[3];
     private Image[] statusWindow = new Image[2];
     private Image background;
@@ -39,23 +46,53 @@ public class BattleView extends ViewBase {
     {
         ImageIcon ii;
         String shinyPrefix;
-        this.pokemonSprite[0] = new Image[model.team[0].length];
-        this.pokemonSprite[1] = new Image[model.team[1].length];
+        this.pokemonSprite[0] = new Image[model.team[0].length][2];
+        this.pokemonSprite[1] = new Image[model.team[1].length][2];
+        this.pokemonBufferedSprite[0] = new BufferedImage[model.team[0].length];
+        this.pokemonBufferedSprite[1] = new BufferedImage[model.team[1].length];
 
         //load players pokemon back sprites
         for (int i = 0; i < pokemonSprite[0].length; i++)
         {
-            shinyPrefix = model.team[0][i].shiny ? "shiny" : "";
-            ii = new ImageIcon("src/pokemonback/" + shinyPrefix + "frame0/" + model.team[0][i].id + ".png");
-            pokemonSprite[0][i]  = ii.getImage();
+            for (int j = 0; j < 2; j++)
+            {
+                shinyPrefix = model.team[0][i].shiny ? "shiny" : "";
+                ii = new ImageIcon("src/pokemonback/" + shinyPrefix + "frame" + j + "/" + this.model.team[0][i].id + ".png");
+                pokemonSprite[0][i][j]  = ii.getImage();
+            }
+
+            try
+            {
+                // load a copy of the Pokemon's sprite recoloured white
+                this.pokemonBufferedSprite[0][i] = ImageIO.read(new File("src/pokemonback/frame0/" + this.model.team[0][i].id + ".png"));   
+                this.pokemonBufferedSprite[0][i] = this.colorImage(this.pokemonBufferedSprite[0][i], 255, 255, 255);
+            }
+            catch (IOException e)
+            {
+                System.out.println("Error loading src/pokemon/frame0/" + this.model.team[0][i].id + ".png");
+            }
         }
 
         //load opponents pokemon front sprites
         for (int i = 0; i < pokemonSprite[1].length; i++)
         {
-            shinyPrefix = model.team[1][i].shiny ? "shiny" : "";
-            ii = new ImageIcon("src/pokemon/" + shinyPrefix + "frame0/" + model.team[1][i].id + ".png");
-            this.pokemonSprite[1][i]  = ii.getImage();
+            for (int j = 0; j < 2; j++)
+            {
+                shinyPrefix = model.team[1][i].shiny ? "shiny" : "";
+                ii = new ImageIcon("src/pokemon/" + shinyPrefix + "frame" + j + "/" + model.team[1][i].id + ".png");
+                this.pokemonSprite[1][i][j]  = ii.getImage();
+            }
+
+            try
+            {
+                // load a copy of the Pokemon's sprite recoloured white
+                this.pokemonBufferedSprite[1][i] = ImageIO.read(new File("src/pokemon/frame0/" + this.model.team[1][i].id + ".png"));   
+                this.pokemonBufferedSprite[1][i] = this.colorImage(this.pokemonBufferedSprite[1][i], 255, 255, 255);
+            }
+            catch (IOException e)
+            {
+                System.out.println("Error loading src/pokemon/frame0/" + this.model.team[1][i].id + ".png");
+            }
         }
 
         //loads health bar fill images
@@ -129,13 +166,7 @@ public class BattleView extends ViewBase {
             height * 3 / 4,
             canvas);
 
-        //renders players current pokemon
-        g.drawImage(pokemonSprite[0][this.model.currentPokemon[0]],
-            width / 8,
-            (int)(height * (3.0 / 4.0) - (this.pokemonSprite[0][this.model.currentPokemon[0]].getHeight(null) * graphicsScaling)),
-            this.pokemonSprite[0][this.model.currentPokemon[0]].getWidth(null) * graphicsScaling,
-            this.pokemonSprite[0][this.model.currentPokemon[0]].getHeight(null) * graphicsScaling,
-            canvas);
+        this.renderPokemon(0, g, canvas);
 
         if (this.model.events.size() > 0 && this.model.events.get(0).itemId > -1)
         {
@@ -151,13 +182,7 @@ public class BattleView extends ViewBase {
 
         else if (!this.model.isCaught)
         {
-            //renders current enemy pokemon
-            g.drawImage(pokemonSprite[1][this.model.currentPokemon[1]],
-                width / 2,
-                height / 2 - (pokemonSprite[1][this.model.currentPokemon[1]].getHeight(null) * graphicsScaling),
-                this.pokemonSprite[1][this.model.currentPokemon[1]].getWidth(null) * graphicsScaling,
-                this.pokemonSprite[1][this.model.currentPokemon[1]].getHeight(null) * graphicsScaling,
-                canvas);
+            this.renderPokemon(1, g, canvas);
         }
 
         // render enemy trainer
@@ -321,6 +346,74 @@ public class BattleView extends ViewBase {
         {
             displayBattleText(g, canvas);
         }
+    }
+
+    private void renderPokemon(int teamIndex, Graphics g, JPanel canvas)
+    {
+        float pokemonScale = getPokemonScale(teamIndex);
+
+        // set x position
+        double x = width * 0.25;
+        if (teamIndex == 1)
+        {
+            x = width * 0.6;
+        }
+
+        // set y position
+        double y = height * 0.75;
+        if (teamIndex == 1)
+        {
+            y = height * 0.5;
+        }
+
+        //renders players current pokemon
+        g.drawImage(pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][this.getPokemonFrame(teamIndex)],
+            (int) (x - (this.pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][0].getWidth(null) * pokemonScale * graphicsScaling) / 2),
+            (int) (y - (this.pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][0].getHeight(null) * pokemonScale * graphicsScaling)),
+            (int) (this.pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][0].getWidth(null) * pokemonScale * graphicsScaling),
+            (int) (this.pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][0].getHeight(null) * pokemonScale * graphicsScaling),
+            canvas);
+
+        if (pokemonScale < 1.0)
+        {
+            // render white version of Pokemon overtop of coloured sprite
+            ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f - pokemonScale));
+
+            g.drawImage(pokemonBufferedSprite[teamIndex][this.model.currentPokemon[teamIndex]],
+                (int) (x - (this.pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][0].getWidth(null) * pokemonScale * graphicsScaling) / 2),
+                (int) (y - (this.pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][0].getHeight(null) * pokemonScale * graphicsScaling)),
+                (int) (this.pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][0].getWidth(null) * pokemonScale * graphicsScaling),
+                (int) (this.pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][0].getHeight(null) * pokemonScale * graphicsScaling),
+                canvas);
+
+            ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        }
+    }
+
+    private int getPokemonFrame(int teamIndex)
+    {
+        if (this.model.events.size() > 0 && this.model.events.get(0).newPokemonIndex > -1 && this.model.counter < 60)
+        {
+            if (this.model.events.get(0).attacker == teamIndex)
+            {
+                return this.model.counter / 12 % 2;
+            }
+        }
+
+        return 0;
+    }
+
+    private float getPokemonScale(int teamIndex)
+    {
+        if (this.model.events.size() > 0 && this.model.events.get(0).newPokemonIndex > -1 && this.model.counter > 60)
+        {
+            if (this.model.events.get(0).attacker == teamIndex)
+            {
+                return 1.0f - (this.model.counter - 60) / 40.0f;
+            }
+        }
+
+        return 1;
     }
 
     //displays battle options in a text box

@@ -5,6 +5,8 @@ import java.awt.Graphics;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 
 public class ViewBase {
     protected byte graphicsScaling;
@@ -218,4 +220,26 @@ public class ViewBase {
 
     // render function that gets implemented by extended class
     public void render(Graphics g, JPanel canvas) {}
+
+    /**
+     * @param image image to be recoloured white
+     */
+    protected BufferedImage colorImage(BufferedImage image, int red, int green, int blue) 
+    {
+        WritableRaster raster = image.getRaster();
+
+        for (int x = 0; x < image.getWidth(); x++) 
+        {
+            for (int y = 0; y < image.getHeight(); y++) 
+            {
+                int[] pixels = raster.getPixel(x, y, (int[]) null);
+                pixels[0] = red;
+                pixels[1] = green;
+                pixels[2] = blue;
+                raster.setPixel(x, y, pixels);
+            }
+        }
+
+        return image;
+    }
 }
