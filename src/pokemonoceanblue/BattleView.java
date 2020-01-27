@@ -28,6 +28,7 @@ public class BattleView extends ViewBase {
     private Image[][] pokemonIconSprites = new Image[2][];
     private Image trainerSprite;
     private Image[] statusEffectImages = new Image[6];
+    private boolean[] hidePokemon = new boolean[2];
     
     /** 
      * Constructor for the overworld view
@@ -168,7 +169,11 @@ public class BattleView extends ViewBase {
 
         if (this.model.currentPokemon[0] >= 0)
         {
-            this.renderPokemon(0, g, canvas);
+            if (!this.hidePokemon[0]
+                || (this.model.events.size() > 0 && this.model.events.get(0).newPokemonIndex > -1))
+            {
+                this.renderPokemon(0, g, canvas);
+            }
             this.renderPokemonStatusWindow(0, g, canvas);
 
             //renders player xp bar fill
@@ -210,7 +215,8 @@ public class BattleView extends ViewBase {
 
         else if (this.model.currentPokemon[1] >= 0)
         {
-            if (!this.model.isCaught)
+            if ((!this.model.isCaught && !this.hidePokemon[1])
+                || (this.model.events.size() > 0 && this.model.events.get(0).newPokemonIndex > -1))
             {
                 this.renderPokemon(1, g, canvas);
             }
@@ -323,7 +329,8 @@ public class BattleView extends ViewBase {
 
     private void renderPokemon(int teamIndex, Graphics g, JPanel canvas)
     {
-        float pokemonScale = getPokemonScale(teamIndex);
+        float pokemonScale = this.getPokemonScale(teamIndex);
+        int pokemonFrame = this.getPokemonFrame(teamIndex);
 
         // set x position
         double x = width * 0.25;
@@ -340,11 +347,11 @@ public class BattleView extends ViewBase {
         }
 
         //renders players current pokemon
-        g.drawImage(pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][this.getPokemonFrame(teamIndex)],
-            (int) (x - (this.pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][0].getWidth(null) * pokemonScale * graphicsScaling) / 2),
-            (int) (y - (this.pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][0].getHeight(null) * pokemonScale * graphicsScaling)),
-            (int) (this.pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][0].getWidth(null) * pokemonScale * graphicsScaling),
-            (int) (this.pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][0].getHeight(null) * pokemonScale * graphicsScaling),
+        g.drawImage(pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][pokemonFrame],
+            (int) (x - (this.pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][pokemonFrame].getWidth(null) * pokemonScale * graphicsScaling) / 2),
+            (int) (y - (this.pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][pokemonFrame].getHeight(null) * pokemonScale * graphicsScaling)),
+            (int) (this.pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][pokemonFrame].getWidth(null) * pokemonScale * graphicsScaling),
+            (int) (this.pokemonSprite[teamIndex][this.model.currentPokemon[teamIndex]][pokemonFrame].getHeight(null) * pokemonScale * graphicsScaling),
             canvas);
 
         if (pokemonScale < 1.0)
@@ -382,7 +389,21 @@ public class BattleView extends ViewBase {
         {
             if (this.model.events.get(0).attacker == teamIndex)
             {
+                this.hidePokemon[teamIndex] = false;
                 return 1.0f - (this.model.counter - 60) / 40.0f;
+            }
+        }
+        else if (this.model.events.size() > 0 
+            && this.model.events.get(0).newPokemonIndex == -1
+            && this.model.counter <= 40)
+        {
+            if (this.model.events.get(0).attacker == teamIndex)
+            {
+                if (this.model.counter == 1)
+                {
+                    this.hidePokemon[teamIndex] = true;
+                }
+                return this.model.counter / 40.0f;
             }
         }
 
