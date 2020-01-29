@@ -17,3 +17,5 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 15,0,1,Youngster Timmy,youngsterBoy,22,20,15,0,3
 16,0,2,Dreamer Wally,wally,39,7,11,0,0
 17,7,0,,joy,5,2,17,0,2
+18,8,0,,hiker,4,4,18,0,3
+19,9,0,,hiker,5,8,19,0,0

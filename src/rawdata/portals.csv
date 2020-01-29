@@ -15,3 +15,7 @@ map_id,area_id,x,y,dest_map_id,dest_area_id,dest_x,dest_y,comment
 7,0,5,10,0,2,29,37,back to viridian city
 0,2,16,17,8,0,3,8,top left house
 8,0,3,9,0,2,16,18,back to viridian city
+0,2,26,17,9,0,3,8,top middle house
+9,0,3,9,0,2,26,18,back to viridian city
+0,2,33,17,10,0,3,8,top right house
+10,0,3,9,0,2,33,18,back to viridian city

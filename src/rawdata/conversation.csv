@@ -42,3 +42,9 @@ conversation_id,conversation_event_id,text,battle_id
 15,0,Hey$ I haven't had a chance to fight with my first Pokemon yet!,-1
 15,1,Wanna battle?,4
 16,0,Check out my adorable Pokemon!,5
+18,0,Hey$ yeah sure you can come into my house without knocking.,-1
+18,1,Uhh$ sorry. I didn't mean that.,-1
+18,2,I've just been a little on edge lately what with all the team rocket guys around.,-1
+19,0,*sigh*,-1
+19,1,I haven't been able to see my family in months.,-1
+19,2,They only live in Celadon$ but GioCorp's been giving me so many hours I barely have time to sleep.,-1
