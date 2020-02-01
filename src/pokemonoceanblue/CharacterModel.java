@@ -59,6 +59,10 @@ public class CharacterModel {
         return this.spriteName;
     }
 
+    public int getMovementSpeed(){
+        return this.movementSpeed;
+    }
+
     public void setDirection(Direction direction)
     {
         this.direction = direction;

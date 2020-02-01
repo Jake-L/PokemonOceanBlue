@@ -21,8 +21,8 @@ public class OverworldView extends ViewBase {
     private Map<String, Image> animatedTileSprite = new HashMap<String, Image>();
     private Map<String, Image> mapObjectSprite = new HashMap<String, Image>();
     private Map<String, Image> characterSprite = new HashMap<String, Image>();
-    private int xOffset;
-    private int yOffset;
+    private int xOffset = -1;
+    private int yOffset = -1;
     
     /** 
      * Constructor for the overworld view
@@ -125,7 +125,7 @@ public class OverworldView extends ViewBase {
         
         Image sprite;
 
-        calcOffset(model.playerModel.getRenderX(), model.playerModel.getRenderY());
+        calcOffset(model.playerModel);
 
         // display the ground tiles
         for (int y = 0; y < model.tiles.length; y++)
@@ -245,56 +245,86 @@ public class OverworldView extends ViewBase {
      * @param playerRenderX the x position to render the player, before applying graphics scaling multiplier
      * @param playerRenderY the y position to render the player, before applying graphics scaling multiplier
      */
-    public void calcOffset(int playerRenderX, int playerRenderY){
-        /* 
-        / get horizontal offset
-        */
-        int leftOffset = (int) (playerRenderX - (Math.ceil(width / (2.00 * graphicsScaling))));
-		int rightOffset = (int) (playerRenderX + (Math.floor(width / (2.00 * graphicsScaling))));
+    public void calcOffset(CharacterModel player)
+    {
+        // set initial x offset
+        if (this.xOffset == -1)
+        {
+            this.xOffset = this.calcOffsetAux(player.getRenderX(), player.getDx(), width, model.tiles[player.getY()].length);
+        }
+        // shift the x offset while the player moves
+        else if (player.getMovementCounter() >= 0)
+        {
+            int newXOffset = this.calcOffsetAux(player.getRenderX(), player.getDx(), width, model.tiles[player.getY()].length);
+
+            if (newXOffset > this.xOffset && player.getDx() > 0)
+            {
+                this.xOffset += player.getMovementSpeed();
+            }
+            else if (newXOffset < this.xOffset && player.getDx() < 0)
+            {
+                this.xOffset -= player.getMovementSpeed();
+            }
+        }
+        // set initial y offset
+        if (this.yOffset == -1)
+        {
+            this.yOffset = this.calcOffsetAux(player.getRenderY(), player.getDy(), height, columnHeight(player.getX()));
+        }
+        // shift the y offset while the player moves
+        else if (player.getMovementCounter() >= 0)
+        {
+            int newYOffset = this.calcOffsetAux(player.getRenderY(), player.getDy(), height, columnHeight(player.getX()));
+
+            if (newYOffset > this.yOffset && player.getDy() > 0)
+            {
+                this.yOffset += player.getMovementSpeed();
+            }
+            else if (newYOffset < this.yOffset && player.getDy() < 0)
+            {
+                this.yOffset -= player.getMovementSpeed();
+            }
+        }
+    }
+
+    private int calcOffsetAux(int playerRenderPosition, int movement, int maximumPixels, int maximumPosition)
+    {
+        int negOffset = playerRenderPosition - (int)(Math.round(maximumPixels / (graphicsScaling * 2.0)));
+        int posOffset = playerRenderPosition + (int)(Math.round(maximumPixels / (graphicsScaling * 2.0)));
+        int newOffset = 0;
 
 		// if the map doesn't fill the whole screen, center it
-		if (model.tiles[0].length * 16 <= width / graphicsScaling)
+		if (maximumPosition * 16 <= maximumPixels / graphicsScaling)
 		{
-			xOffset = (int) ((model.tiles[0].length * 16 - Math.ceil(width / graphicsScaling)) / 2);
+			newOffset = Math.round((maximumPosition * 16 - (maximumPixels / graphicsScaling)) / 2);
 		}
-		// check if the player is moving in the middle of the map and the screen needs to be moved
-		else if (leftOffset > 0 && rightOffset <= model.tiles[0].length * 16)
+		else if (negOffset > 0 && posOffset <= maximumPosition * 16)
 		{
-            xOffset = leftOffset;
-        }
-        // check if player is on right side of the map and screen stops scrolling
-		else if (leftOffset > 0 && rightOffset > model.tiles[0].length * 16)
+            newOffset = negOffset;
+		}
+		else if (negOffset > 0 && posOffset > maximumPosition * 16)
 		{
-            xOffset = (int) (model.tiles[0].length * 16 - Math.ceil(width / graphicsScaling));
+            newOffset = (int)(maximumPosition * 16 - Math.ceil(maximumPixels / graphicsScaling));
 		}
 		else
 		{
-			xOffset = 0;
+			newOffset = 0;
         }
-        
-        /* 
-        / get vertical offset
-        */
-        var topOffset = playerRenderY - (Math.round(height / graphicsScaling) / 2);
-        var botOffset = playerRenderY + (Math.round(height / graphicsScaling) / 2);
 
-		// if the map doesn't fill the whole screen, center it
-		if (model.tiles.length * 16 <= height / graphicsScaling)
-		{
-			yOffset = Math.round((model.tiles.length * 16 - (height / graphicsScaling)) / 2);
-		}
-		else if (topOffset > 0 && botOffset <= model.tiles.length * 16)
-		{
-			yOffset = topOffset;
-		}
-		else if (topOffset > 0 && botOffset > model.tiles.length * 16)
-		{
-			yOffset = (int)(model.tiles.length * 16 - Math.ceil(height / graphicsScaling));
-		}
-		else
-		{
-			yOffset = 0;
+        return newOffset;
+    }
+
+    private int columnHeight(int x)
+    {
+        int columnHeight = 0;
+
+        while (columnHeight < this.model.tiles.length 
+            && this.model.tiles[columnHeight].length > x)
+        {
+            columnHeight++;
         }
+
+        return columnHeight;
     }
 
     @Override

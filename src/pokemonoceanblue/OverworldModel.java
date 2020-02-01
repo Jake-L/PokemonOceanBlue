@@ -75,7 +75,7 @@ public class OverworldModel {
 
             // read the first line which gives the number of rows and columns
             String line = br.readLine();
-            tiles = new byte[Integer.parseInt(line.split(",")[0])][Integer.parseInt(line.split(",")[1])];
+            tiles = new byte[Integer.parseInt(line.split(",")[0])][];
             int lineCounter = 0;
             
             // loop through all the lines of tile data
@@ -84,9 +84,10 @@ public class OverworldModel {
 
                 // split the line into an array of values
                 String[] data = line.split(",");
+                tiles[lineCounter] = new byte[data.length];
 
                 // convert the string into a byte and insert into the array
-                for (var i = 0; i < Math.min(data.length, tiles[lineCounter].length); i++)
+                for (var i = 0; i < data.length; i++)
                 {
                     tiles[lineCounter][i] = Byte.parseByte(data[i]);
                 }
@@ -503,7 +504,8 @@ public class OverworldModel {
                          + "LEFT JOIN area a "
                          + "ON a.area_id = mo.area_id "
                          + "AND a.map_id = mo.map_id "
-                         + "WHERE mo.map_id = " + this.mapId;
+                         + "WHERE mo.map_id = " + this.mapId
+                         + " ORDER BY mo.y ASC";
 
             ResultSet rs = db.runQuery(query);
 
