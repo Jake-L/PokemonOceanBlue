@@ -418,12 +418,12 @@ public class BattleModel
             BattleEvent event = new BattleEvent(this.team[attacker][calcCurrentPokemon[attacker]].name + " is paralyzed and unable to move.", attacker, null);
             this.events.add(event);
         }
-        if (this.isOneHit[attacker])
+        else if (this.isOneHit[attacker])
         {
             BattleEvent event = new BattleEvent("It's a one hit KO!", attacker, null);
             this.events.add(event);
         }
-        if (this.isCrit[attacker] && this.modifier[attacker] > 0)
+        else if (this.isCrit[attacker] && this.modifier[attacker] > 0)
         {
             BattleEvent event = new BattleEvent("A critical hit!", attacker, null);
             this.events.add(event);
