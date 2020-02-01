@@ -50,7 +50,24 @@ public class OverworldModel {
      */
     public void readMapFile()
     {
-        Path pathToFile = Paths.get(String.format("src/maps/map%s.csv", mapId));
+        int mapTemplateId = this.mapId;
+
+        try
+        {
+            DatabaseUtility db = new DatabaseUtility();
+
+            String query = "SELECT map_template_id FROM map_template WHERE map_id = " + this.mapId;
+
+            ResultSet rs = db.runQuery(query);
+
+            mapTemplateId = rs.getInt("map_template_id");
+        }
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+        }  
+
+        Path pathToFile = Paths.get(String.format("src/maps/map%s.csv", mapTemplateId));
 
         // create an instance of BufferedReader
         try (BufferedReader br = Files.newBufferedReader(pathToFile,

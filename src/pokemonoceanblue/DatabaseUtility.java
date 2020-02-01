@@ -63,7 +63,7 @@ public class DatabaseUtility
             "evolution_methods", "pokemon", "pokemon_moves", "pokemon_location", 
             "conversation", "moves", "type_effectiveness", "items", "battle",
             "portal", "map_object", "area", "character", "move_stat_effect",
-            "evolution_methods", "conversation_trigger"
+            "evolution_methods", "conversation_trigger", "map_template"
         };
 
         for (String t : table_list)
@@ -162,6 +162,22 @@ public class DatabaseUtility
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         
         dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int"};
+        loadTable(path, query, dataTypes);
+
+        //==================================================================================
+        // re-use the same tile layout for multiple maps
+        query = "CREATE TABLE map_template("
+                + "map_id INT NOT NULL, "
+                + "map_template_id INT NOT NULL)";
+        runUpdate(query);
+
+        // fills map_template table with data
+        path = "src/rawdata/mapTemplate.csv";
+        query = "INSERT INTO map_template ("
+                    + "map_id, map_template_id) "
+                    + "VALUES (?, ?)";
+        
+        dataTypes = new String[] {"int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================
@@ -460,21 +476,6 @@ public class DatabaseUtility
         {
             e.printStackTrace();
         }
-    }
-
-    /** 
-     * Creates a BufferedReader object with proper decoding
-     * @param filename path to the filename to be read
-     * @return A BufferedReader for reading the given file
-     */
-    private BufferedReader getFileReader(String filename) throws FileNotFoundException, IOException
-    {
-        // prepare to read the file and handle any encoding errors
-        FileInputStream input = new FileInputStream(new File(filename));
-        CharsetDecoder decoder = Charset.forName("UTF-8").newDecoder();
-        decoder.onMalformedInput(CodingErrorAction.IGNORE);
-        InputStreamReader reader = new InputStreamReader(input, decoder);
-        return new BufferedReader(reader);
     }
 
     /** 
