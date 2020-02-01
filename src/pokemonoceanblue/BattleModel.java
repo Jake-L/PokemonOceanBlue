@@ -32,6 +32,7 @@ public class BattleModel
     private boolean[] isOneHit = new boolean[2];
     private boolean[] evolveQueue = new boolean[6];
     private boolean[] isParalyzed = new boolean[2];
+    private BattleEvent attackEvent[] = new BattleEvent[2];
 
     /** 
      * Constructor
@@ -122,14 +123,15 @@ public class BattleModel
                     default:
                         
                         this.battleOptions = null;
-                        BattleEvent playerAttackEvent = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " used " + this.team[0][this.currentPokemon[0]].moves[optionIndex].name + ".",
-                            this.damageCalc(optionIndex, 0, 1, this.currentPokemon),
+                        this.attackEvent[0] = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " used " + this.team[0][this.currentPokemon[0]].moves[this.optionIndex].name + ".",
+                            1,
                             1,
                             0,
+                            this.team[0][this.currentPokemon[0]].moves[optionIndex],
                             getAttackSound(0));
                         this.counter = 60;
                         
-                        BattleEvent enemyAttackEvent = enemyAttackEvent(this.currentPokemon);
+                        this.attackEvent[1] = enemyAttackEvent(this.currentPokemon);
                         
                         if (this.team[0][this.currentPokemon[0]].moves[this.optionIndex].priority > this.team[1][this.currentPokemon[1]].moves[this.enemyMove].priority)
                         {
@@ -166,38 +168,7 @@ public class BattleModel
                             firstAttacker = ranNum.nextInt(2);
                         }
                         
-                        if (firstAttacker == 1)
-                        {
-                            this.events.add(enemyAttackEvent);
-                            effectivenessMessage(modifier[1], 1, this.currentPokemon);
-                            if (this.team[1][this.currentPokemon[1]].moves[this.enemyMove].ailmentId > 0)
-                            {
-                                this.statusEffect(1, 0, this.team[1][this.currentPokemon[1]].moves[this.enemyMove]);
-                            }
-                            this.events.add(playerAttackEvent);
-                            effectivenessMessage(modifier[0], 0, this.currentPokemon);
-                            if (this.team[0][this.currentPokemon[0]].moves[this.optionIndex].ailmentId > 0)
-                            {
-                                this.statusEffect(0, 1, this.team[0][this.currentPokemon[0]].moves[this.optionIndex]);
-                            }
-                        }
-                        
-                        else
-                        {
-                            this.events.add(playerAttackEvent);
-                            effectivenessMessage(modifier[0], 0, this.currentPokemon);
-                            if (this.team[0][this.currentPokemon[0]].moves[this.optionIndex].ailmentId > 0)
-                            {
-                                this.statusEffect(0, 1, this.team[0][this.currentPokemon[0]].moves[this.optionIndex]);
-                            }
-                            this.events.add(enemyAttackEvent);
-                            effectivenessMessage(modifier[1], 1, this.currentPokemon);
-                            if (this.team[1][this.currentPokemon[1]].moves[this.enemyMove].ailmentId > 0)
-                            {
-                                this.statusEffect(1, 0, this.team[1][this.currentPokemon[1]].moves[this.enemyMove]);
-                            }
-                        }
-                    
+                        this.events.add(this.attackEvent[firstAttacker]);
                 }
             }
         }
@@ -219,11 +190,6 @@ public class BattleModel
             this.events.add(event);
             this.counter = 60;            
             this.events.add(this.enemyAttackEvent(this.currentPokemon));
-            this.effectivenessMessage(modifier[1], 1, this.currentPokemon);
-            if (this.team[1][this.currentPokemon[1]].moves[this.enemyMove].ailmentId > 0)
-            {
-                this.statusEffect(1, 0, this.team[1][this.currentPokemon[1]].moves[this.enemyMove]);
-            }
         }
     }
 
@@ -255,11 +221,6 @@ public class BattleModel
 
             // let the enemy attack after player switches
             this.events.add(this.enemyAttackEvent(tempCurrentPokemon));
-            this.effectivenessMessage(modifier[1], 1, tempCurrentPokemon);
-            if (this.team[1][this.currentPokemon[1]].moves[this.enemyMove].ailmentId > 0)
-            {
-                this.statusEffect(1, 0, this.team[1][this.currentPokemon[1]].moves[this.enemyMove]);
-            }
         }
         else
         {
@@ -276,9 +237,10 @@ public class BattleModel
     {
         this.enemyMove = ranNum.nextInt(this.team[1][this.currentPokemon[1]].moves.length);
         BattleEvent enemyAttackEvent = new BattleEvent("Enemy " + this.team[1][this.currentPokemon[1]].name + " used " + this.team[1][this.currentPokemon[1]].moves[enemyMove].name + ".",
-            this.damageCalc(enemyMove, 1, 0, calcCurrentPokemon),
+            1,
             0,
             1,
+            this.team[1][this.currentPokemon[1]].moves[enemyMove],
             getAttackSound(1));
         return enemyAttackEvent;
     }
@@ -330,7 +292,7 @@ public class BattleModel
      * @param defender the defending team
      * @return damage
      */
-    private int damageCalc(int moveIndex, int attacker, int defender, int[] calcCurrentPokemon)
+    private int damageCalc(MoveModel move, int attacker, int defender, int[] calcCurrentPokemon)
     {
         int attack_stat;
         int defense_stat;
@@ -343,13 +305,13 @@ public class BattleModel
         PokemonModel attackingPokemon = this.team[attacker][calcCurrentPokemon[attacker]];
         PokemonModel defendingPokemon = this.team[defender][calcCurrentPokemon[defender]];
 
-        if (attackingPokemon.moves[moveIndex].damageClassId == 2)
+        if (move.damageClassId == 2)
         {
             attack_stat = Stat.ATTACK;
             defense_stat = Stat.DEFENSE;
         }
 
-        else if (attackingPokemon.moves[moveIndex].damageClassId == 3)
+        else if (move.damageClassId == 3)
         {
             attack_stat = Stat.SPECIAL_ATTACK;
             defense_stat = Stat.SPECIAL_DEFENSE;
@@ -367,34 +329,34 @@ public class BattleModel
             return 0;
         }
 
-        if (attackingPokemon.moves[moveIndex].accuracy == -1 || this.ranNum.nextInt(101) <= attackingPokemon.moves[moveIndex].accuracy)
+        if (move.accuracy == -1 || this.ranNum.nextInt(101) <= move.accuracy)
         {
             this.attackMissed[attacker] = false;
             for (int i = 0; i < defendingPokemon.types.length; i++)
             {
-                this.modifier[attacker] = this.typeEffectiveness[attackingPokemon.moves[moveIndex].typeId][defendingPokemon.types[i]] * this.modifier[attacker];
+                this.modifier[attacker] = this.typeEffectiveness[move.typeId][defendingPokemon.types[i]] * this.modifier[attacker];
             }
 
-            if (attackingPokemon.moves[moveIndex].typeId == attackingPokemon.types[0] 
-                || attackingPokemon.moves[moveIndex].typeId == attackingPokemon.types[attackingPokemon.types.length - 1])
+            if (move.typeId == attackingPokemon.types[0] 
+                || move.typeId == attackingPokemon.types[attackingPokemon.types.length - 1])
             {
                 stab = 1.5f;
             }
 
-            if (attackingPokemon.moves[moveIndex].power == -1)
+            if (move.power == -1)
             {
                 this.isOneHit[attacker] = true;
                 return defendingPokemon.currentHP;
             }
 
-            if (this.ranNum.nextInt(9) == 0 && attackingPokemon.moves[moveIndex].power > 0)
+            if (this.ranNum.nextInt(9) == 0 && move.power > 0)
             {
                 crit = 1.5f;                        
                 this.isCrit[attacker] = true;
             }
             return (int)Math.ceil((
                         (attackingPokemon.level * 2.0 / 5.0 + 2.0) 
-                        * (attackingPokemon.moves[moveIndex].power) 
+                        * (move.power) 
                         * (attackingPokemon.stats[attack_stat] * 1.0
                         / defendingPokemon.stats[defense_stat]) / 50 + 2) 
                     * this.modifier[attacker] * stab * crit);
@@ -563,6 +525,23 @@ public class BattleModel
         {
             int attacker = this.events.get(0).attacker;
             this.currentPokemon[attacker] = this.events.get(0).newPokemonIndex;
+        }
+
+        if (this.counter == 60 && this.events.size() > 0 && this.events.get(0).damage > -1)
+        {
+            int attacker = this.events.get(0).attacker;
+            this.events.get(0).damage = damageCalc(this.events.get(0).move, attacker, (attacker + 1) % 2, this.currentPokemon);
+            this.effectivenessMessage(this.modifier[attacker], attacker, this.currentPokemon);
+            if (this.events.get(0).move.ailmentId > 0)
+            {
+                this.statusEffect(attacker, (attacker + 1) % 2, this.events.get(0).move);
+            }
+            if (this.attackEvent[(attacker + 1) % 2] != null)
+            {
+                this.events.add(this.attackEvent[(attacker + 1) % 2]);
+            }
+            this.attackEvent[0] = null;
+            this.attackEvent[1] = null;
         }
 
         if (this.counter == 50 && this.events.size() > 0 && this.events.get(0).sound != null)
@@ -803,6 +782,7 @@ public class BattleModel
         public int xp = 0;
         public String sound;
         public int statusEffect = -1;
+        public MoveModel move;
 
         /** 
          * Constructor
@@ -836,11 +816,12 @@ public class BattleModel
          * @param target the pokemon that will recieve the damage
          * @param attacker the team performing event
          */
-        public BattleEvent(String text, int damage, int target, int attacker, String sound)
+        public BattleEvent(String text, int damage, int target, int attacker, MoveModel move, String sound)
         {
             this(text, attacker, sound);
             this.damage = damage;
             this.target = target;
+            this.move = move;
         }
 
         /** 
