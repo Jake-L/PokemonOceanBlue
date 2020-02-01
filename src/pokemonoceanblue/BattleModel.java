@@ -95,106 +95,109 @@ public class BattleModel
             
             if (this.battleOptions != null)
             {
-                if (this.battleOptions[this.optionIndex].equals("FIGHT"))
-                {
-                    this.battleOptions = new String[this.team[0][this.currentPokemon[0]].moves.length];
-            
-                    for (int i = 0; i < this.team[0][this.currentPokemon[0]].moves.length; i++)
-                    {
-                        this.battleOptions[i] = String.valueOf(this.team[0][this.currentPokemon[0]].moves[i].name);
-                    }
-                }
-
-                else if (this.battleOptions[this.optionIndex].equals("POKEMON"))
-                {
-                    this.battleOptions = null;
-                    this.app.openParty(this.currentPokemon[0]);
-                }
-
-                else if (this.battleOptions[this.optionIndex].equals("POKEBALLS"))
-                {
-                    this.battleOptions = null;
-                    this.app.openInventory();
-                }
-
-                else
-                {
-                    this.battleOptions = null;
-                    BattleEvent playerAttackEvent = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " used " + this.team[0][this.currentPokemon[0]].moves[optionIndex].name + ".",
-                        this.damageCalc(optionIndex, 0, 1, this.currentPokemon),
-                        1,
-                        0,
-                        getAttackSound(0));
-                    this.counter = 60;
-                    
-                    BattleEvent enemyAttackEvent = enemyAttackEvent(this.currentPokemon);
-                    
-                    if (this.team[0][this.currentPokemon[0]].moves[this.optionIndex].priority > this.team[1][this.currentPokemon[1]].moves[this.enemyMove].priority)
-                    {
-                        firstAttacker = 0;
-                    }
-    
-                    else if (this.team[0][this.currentPokemon[0]].moves[this.optionIndex].priority < this.team[1][this.currentPokemon[1]].moves[this.enemyMove].priority)
-                    {
-                        firstAttacker = 1;
-                    }
-
-                    else if (this.team[0][this.currentPokemon[0]].statusEffect != 1 && this.team[1][this.currentPokemon[1]].statusEffect == 1)
-                    {
-                        firstAttacker = 0;
-                    }
-
-                    else if (this.team[1][this.currentPokemon[1]].statusEffect != 1 && this.team[0][this.currentPokemon[0]].statusEffect == 1)
-                    {
-                        firstAttacker = 1;
-                    }
-    
-                    else if (this.team[0][this.currentPokemon[0]].stats[Stat.SPEED] < this.team[1][this.currentPokemon[1]].stats[Stat.SPEED])
-                    {
-                        firstAttacker = 1;
-                    }
-    
-                    else if (this.team[0][this.currentPokemon[0]].stats[Stat.SPEED] > this.team[1][this.currentPokemon[1]].stats[Stat.SPEED])
-                    {
-                        firstAttacker = 0;
-                    }
-    
-                    else 
-                    {
-                        firstAttacker = ranNum.nextInt(2);
-                    }
-                    
-                    if (firstAttacker == 1)
-                    {
-                        this.events.add(enemyAttackEvent);
-                        effectivenessMessage(modifier[1], 1, this.currentPokemon);
-                        if (this.team[1][this.currentPokemon[1]].moves[this.enemyMove].ailmentId > 0)
+                switch(this.battleOptions[this.optionIndex])
+                {    
+                    case "FIGHT":
+                        
+                        this.battleOptions = new String[this.team[0][this.currentPokemon[0]].moves.length];
+                
+                        for (int i = 0; i < this.team[0][this.currentPokemon[0]].moves.length; i++)
                         {
-                            this.statusEffect(1, 0, this.team[1][this.currentPokemon[1]].moves[this.enemyMove]);
-                        }
-                        this.events.add(playerAttackEvent);
-                        effectivenessMessage(modifier[0], 0, this.currentPokemon);
-                        if (this.team[0][this.currentPokemon[0]].moves[this.optionIndex].ailmentId > 0)
+                            this.battleOptions[i] = String.valueOf(this.team[0][this.currentPokemon[0]].moves[i].name);
+                        } 
+                        break;
+
+                    case "POKEMON":
+
+                        this.battleOptions = null;
+                        this.app.openParty(this.currentPokemon[0]); 
+                        break;
+
+                    case "POKEBALLS":
+                
+                        this.battleOptions = null;
+                        this.app.openInventory(); 
+                        break;
+
+                    default:
+                        
+                        this.battleOptions = null;
+                        BattleEvent playerAttackEvent = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " used " + this.team[0][this.currentPokemon[0]].moves[optionIndex].name + ".",
+                            this.damageCalc(optionIndex, 0, 1, this.currentPokemon),
+                            1,
+                            0,
+                            getAttackSound(0));
+                        this.counter = 60;
+                        
+                        BattleEvent enemyAttackEvent = enemyAttackEvent(this.currentPokemon);
+                        
+                        if (this.team[0][this.currentPokemon[0]].moves[this.optionIndex].priority > this.team[1][this.currentPokemon[1]].moves[this.enemyMove].priority)
                         {
-                            this.statusEffect(0, 1, this.team[0][this.currentPokemon[0]].moves[this.optionIndex]);
+                            firstAttacker = 0;
                         }
-                    }
+        
+                        else if (this.team[0][this.currentPokemon[0]].moves[this.optionIndex].priority < this.team[1][this.currentPokemon[1]].moves[this.enemyMove].priority)
+                        {
+                            firstAttacker = 1;
+                        }
+
+                        else if (this.team[0][this.currentPokemon[0]].statusEffect != 1 && this.team[1][this.currentPokemon[1]].statusEffect == 1)
+                        {
+                            firstAttacker = 0;
+                        }
+
+                        else if (this.team[1][this.currentPokemon[1]].statusEffect != 1 && this.team[0][this.currentPokemon[0]].statusEffect == 1)
+                        {
+                            firstAttacker = 1;
+                        }
+        
+                        else if (this.team[0][this.currentPokemon[0]].stats[Stat.SPEED] < this.team[1][this.currentPokemon[1]].stats[Stat.SPEED])
+                        {
+                            firstAttacker = 1;
+                        }
+        
+                        else if (this.team[0][this.currentPokemon[0]].stats[Stat.SPEED] > this.team[1][this.currentPokemon[1]].stats[Stat.SPEED])
+                        {
+                            firstAttacker = 0;
+                        }
+        
+                        else 
+                        {
+                            firstAttacker = ranNum.nextInt(2);
+                        }
+                        
+                        if (firstAttacker == 1)
+                        {
+                            this.events.add(enemyAttackEvent);
+                            effectivenessMessage(modifier[1], 1, this.currentPokemon);
+                            if (this.team[1][this.currentPokemon[1]].moves[this.enemyMove].ailmentId > 0)
+                            {
+                                this.statusEffect(1, 0, this.team[1][this.currentPokemon[1]].moves[this.enemyMove]);
+                            }
+                            this.events.add(playerAttackEvent);
+                            effectivenessMessage(modifier[0], 0, this.currentPokemon);
+                            if (this.team[0][this.currentPokemon[0]].moves[this.optionIndex].ailmentId > 0)
+                            {
+                                this.statusEffect(0, 1, this.team[0][this.currentPokemon[0]].moves[this.optionIndex]);
+                            }
+                        }
+                        
+                        else
+                        {
+                            this.events.add(playerAttackEvent);
+                            effectivenessMessage(modifier[0], 0, this.currentPokemon);
+                            if (this.team[0][this.currentPokemon[0]].moves[this.optionIndex].ailmentId > 0)
+                            {
+                                this.statusEffect(0, 1, this.team[0][this.currentPokemon[0]].moves[this.optionIndex]);
+                            }
+                            this.events.add(enemyAttackEvent);
+                            effectivenessMessage(modifier[1], 1, this.currentPokemon);
+                            if (this.team[1][this.currentPokemon[1]].moves[this.enemyMove].ailmentId > 0)
+                            {
+                                this.statusEffect(1, 0, this.team[1][this.currentPokemon[1]].moves[this.enemyMove]);
+                            }
+                        }
                     
-                    else
-                    {
-                        this.events.add(playerAttackEvent);
-                        effectivenessMessage(modifier[0], 0, this.currentPokemon);
-                        if (this.team[0][this.currentPokemon[0]].moves[this.optionIndex].ailmentId > 0)
-                        {
-                            this.statusEffect(0, 1, this.team[0][this.currentPokemon[0]].moves[this.optionIndex]);
-                        }
-                        this.events.add(enemyAttackEvent);
-                        effectivenessMessage(modifier[1], 1, this.currentPokemon);
-                        if (this.team[1][this.currentPokemon[1]].moves[this.enemyMove].ailmentId > 0)
-                        {
-                            this.statusEffect(1, 0, this.team[1][this.currentPokemon[1]].moves[this.enemyMove]);
-                        }
-                    }
                 }
             }
         }
