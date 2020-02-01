@@ -408,7 +408,8 @@ public class DatabaseUtility
     {
         try
         {
-            BufferedReader br = getFileReader(path);
+            InputStreamReader istreamReader = new InputStreamReader(new FileInputStream(path),"UTF-8");
+            BufferedReader br = new BufferedReader(istreamReader);
 
             // skip the first line which just has column names
             String line = br.readLine();

@@ -27,10 +27,10 @@ id,name,type1,type2,hp,attack,defense,special attack,special defense,speed
 26,Raichu,13,0,60,90,55,90,80,110
 27,Sandshrew,5,0,50,75,85,20,30,40
 28,Sandslash,5,0,75,100,110,45,55,65
-29,Nidoran,4,0,55,47,52,40,40,41
+29,Nidoran ¬,4,0,55,47,52,40,40,41
 30,Nidorina,4,0,70,62,67,55,55,56
 31,Nidoqueen,4,5,90,92,87,75,85,76
-32,Nidoran,4,0,46,57,40,40,40,50
+32,Nidoran £,4,0,46,57,40,40,40,50
 33,Nidorino,4,0,61,72,57,55,55,65
 34,Nidoking,4,5,81,102,77,85,75,85
 35,Clefairy,18,0,70,45,48,60,65,35
