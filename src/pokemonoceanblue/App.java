@@ -107,8 +107,8 @@ public class App extends JFrame implements KeyListener
         MusicPlayer.setSong("0");
 
         PokemonModel[] pokemonTeam = new PokemonModel[6];
-        pokemonTeam[0] = new PokemonModel(340, 70, false);
-        pokemonTeam[1] = new PokemonModel(26, 30, true);
+        pokemonTeam[1] = new PokemonModel(315, 46, false);
+        pokemonTeam[0] = new PokemonModel(182, 7, true);
         pokemonTeam[2] = new PokemonModel(9, 40, true);
         pokemonTeam[3] = new PokemonModel(34, 5, false);
         pokemonTeam[4] = new PokemonModel(150, 5, false);
