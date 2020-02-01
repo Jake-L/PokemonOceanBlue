@@ -36,18 +36,13 @@ public class OverworldModel {
         this.mapId = mapId;
         this.playerModel = playerModel;
         this.app = app;
+        
         this.readMapFile();
         this.loadWildPokemon();
         this.loadMapObjects();
         this.loadPortals();
         this.loadCharacters();
-
-        if (this.mapId == 0)
-        {
-            this.conversationTrigger.add(new ConversationTrigger(4, cpuModel.get(0), 7, 6, true));
-            this.conversationTrigger.add(new ConversationTrigger(4, cpuModel.get(0), 8, 6, true));
-            this.conversationTrigger.add(new ConversationTrigger(4, cpuModel.get(0), 9, 6, true));
-        }
+        this.loadConversationTriggers();
     }
 
     /** 
@@ -150,6 +145,11 @@ public class OverworldModel {
                         break;
                     }
                 }                
+            }
+            // check if the player's team should be healed as a result of the conversation
+            if (this.conversation.isHealTeam())
+            {
+                app.healTeam();
             }
             this.conversation.update();
         }
@@ -291,9 +291,27 @@ public class OverworldModel {
                         }
 
                         // start the conversation
-                        this.conversation = new ConversationModel(cpu.conversationId, this.playerModel, cpu);
+                        this.conversation = new ConversationModel(cpu.conversationId, this.playerModel, cpu, false);
                         break;
                     }
+                }
+            }
+        
+
+            // check for an object to interact with
+            for (ConversationTrigger current : this.conversationTrigger)
+            {
+                if (current.x == x && current.y == y && !current.autoTrigger)
+                {
+                    this.conversation = new ConversationModel(current.conversationId, this.playerModel, current.cpuModel, false);
+                    
+                    // clear the trigger
+                    if (current.clearAfterUse)
+                    {
+                        this.clearTriggers(current.conversationId);
+                    }
+
+                    break;
                 }
             }
         }
@@ -324,9 +342,9 @@ public class OverworldModel {
         for (int i = 0; i < this.conversationTrigger.size(); i++)
         {
             current = this.conversationTrigger.get(i);
-            if (current.x == x && current.y == y)
+            if (current.x == x && current.y == y && current.autoTrigger)
             {
-                this.conversation = new ConversationModel(current.conversationId, this.playerModel, current.cpuModel);
+                this.conversation = new ConversationModel(current.conversationId, this.playerModel, current.cpuModel, true);
                 
                 // clear the trigger
                 if (current.clearAfterUse)
@@ -574,6 +592,65 @@ public class OverworldModel {
         }  
     }
 
+    /** 
+     * load a list of conversation triggers that can appear on the current map
+     */
+    private void loadConversationTriggers()
+    {
+        try
+        {
+            DatabaseUtility db = new DatabaseUtility();
+
+            String query = "SELECT c.conversation_id, "
+                         + "c.x + IFNULL(a.min_x,0) as x, "
+                         + "c.y + IFNULL(a.min_y,0) as y, "
+                         + "c.character_id, "
+                         + "c.clear_after_use, c.auto_trigger "
+                         + "FROM conversation_trigger c "
+                         + "LEFT JOIN area a "
+                         + "ON a.area_id = c.area_id "
+                         + "AND a.map_id = c.map_id "
+                         + "WHERE c.map_id = " + this.mapId;
+
+            ResultSet rs = db.runQuery(query);
+
+            while(rs.next()) 
+            {
+                ConversationTrigger currentModel = new ConversationTrigger(
+                    rs.getInt("conversation_id"), 
+                    getCharacterModel(rs.getInt("character_id")),
+                    rs.getInt("x"), 
+                    rs.getInt("y"),
+                    rs.getInt("clear_after_use") == 1,
+                    rs.getInt("auto_trigger") == 1
+                );
+                
+                this.conversationTrigger.add(currentModel);
+            }            
+        }
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+        }  
+    }
+
+    /**
+     * @param characterId the id of the character to be returned
+     * @return CharacterModel the character object corresponding to the given id
+     */
+    private CharacterModel getCharacterModel(int characterId)
+    {
+        for (CharacterModel current : this.cpuModel)
+        {
+            if (current.characterId == characterId)
+            {
+                return current;
+            }
+        }  
+
+        return null;
+    }
+
 
     /**
      * Holds a specific location on the map that starts a conversation when the player steps on it
@@ -585,6 +662,7 @@ public class OverworldModel {
         public final int x; 
         public final int y;
         public final boolean clearAfterUse;
+        public final boolean autoTrigger;
 
         /**
          * Constructor
@@ -594,13 +672,14 @@ public class OverworldModel {
          * @param y the y-coordinate of the trigger
          * @param clearAfterUse whether the trigger remains after it's first use
          */
-        public ConversationTrigger(int conversationId, CharacterModel cpuModel, int x, int y, boolean clearAfterUse)
+        public ConversationTrigger(int conversationId, CharacterModel cpuModel, int x, int y, boolean clearAfterUse, boolean autoTrigger)
         {
             this.conversationId = conversationId;
             this.cpuModel = cpuModel;
             this.x = x;
             this.y = y;
             this.clearAfterUse = clearAfterUse;
+            this.autoTrigger = autoTrigger;
         }
     }
 }

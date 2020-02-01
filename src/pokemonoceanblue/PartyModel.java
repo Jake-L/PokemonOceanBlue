@@ -65,4 +65,15 @@ public class PartyModel
     {
         return this.returnValue;
     }
+
+    /**
+     * Fully heals all the Pokemon in the player's team
+     */
+    public void healTeam()
+    {
+        for (PokemonModel pokemon : this.team)
+        {
+            pokemon.currentHP = pokemon.stats[0];
+        }
+    }
 }

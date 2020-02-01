@@ -484,6 +484,14 @@ public class App extends JFrame implements KeyListener
     }
 
     /**
+     * Fully heals all the Pokemon in the player's team
+     */
+    public void healTeam()
+    {
+        this.partyModel.healTeam();
+    }
+
+    /**
      * @param path the sound to be played
      */
     public void playSound(String path)

@@ -63,7 +63,7 @@ public class DatabaseUtility
             "evolution_methods", "pokemon", "pokemon_moves", "pokemon_location", 
             "conversation", "moves", "type_effectiveness", "items", "battle",
             "portal", "map_object", "area", "character", "move_stat_effect",
-            "evolution_methods"
+            "evolution_methods", "conversation_trigger"
         };
 
         for (String t : table_list)
@@ -76,7 +76,7 @@ public class DatabaseUtility
 
         String dataTypes[];
 
-        // CREATE TABLE pokemon
+        //==================================================================================
         // each Pokemon's name, stats, types
         query = "CREATE TABLE pokemon("
                 + "id INT NOT NULL, "
@@ -104,7 +104,7 @@ public class DatabaseUtility
         dataTypes = new String[] {"int", "String", "int", "int", "int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
-        // CREATE TABLE pokemon_moves
+        //==================================================================================
         // each move a Pokemon can learn and at which level
         query = "CREATE TABLE pokemon_moves("
                 + "pokemon_id INT NOT NULL, "
@@ -121,7 +121,7 @@ public class DatabaseUtility
         dataTypes = new String[] {"int", "int", "int"};
         loadTable(path, query, dataTypes);
 
-        // CREATE TABLE evolution_methods
+        //==================================================================================
         // how specific Pokemon evolve, such as by level, item, or trade
         query = "CREATE TABLE evolution_methods("
                 + "pre_species_id INT NOT NULL, "
@@ -139,7 +139,7 @@ public class DatabaseUtility
         dataTypes = new String[] {"int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
-
+        //==================================================================================
         // divides a map into areas, such as different routes or cities
         query = "CREATE TABLE area("
                 + "map_id INT NOT NULL, "
@@ -164,6 +164,7 @@ public class DatabaseUtility
         dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
+        //==================================================================================
         // the various objects that appear on the map, like trees and houses
         query = "CREATE TABLE map_object ("
                 + "map_id INT NOT NULL, "
@@ -183,6 +184,7 @@ public class DatabaseUtility
         dataTypes = new String[] {"int", "int", "String","int", "int"};
         loadTable(path, query, dataTypes);
 
+        //==================================================================================
         // portals that teleport players from one map to another
         query = "CREATE TABLE portal ("
                 + "map_id INT NOT NULL, "
@@ -207,7 +209,7 @@ public class DatabaseUtility
         dataTypes = new String[] {"int", "int", "int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
-        // CREATE TABLE pokemon_location
+        //==================================================================================
         // the map location where a Pokemon can be found
         // and in what type of tile, such as in grass or water
         query = "CREATE TABLE pokemon_location("
@@ -229,7 +231,7 @@ public class DatabaseUtility
         dataTypes = new String[] {"int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
-        // CREATE TABLE moves
+        //==================================================================================
         // move's name, damage, accuracy, type
         query = "CREATE TABLE moves("
                 + "move_id INT NOT NULL, "
@@ -258,7 +260,7 @@ public class DatabaseUtility
         dataTypes = new String[] {"int", "String", "int", "int", "int", "int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
-        // CREATE TABLE move_stat_effect
+        //==================================================================================
         // stats that are increased or decreased by using a move
         query = "CREATE TABLE move_stat_effect("
                 + "move_id INT NOT NULL, "
@@ -275,6 +277,7 @@ public class DatabaseUtility
         dataTypes = new String[] {"int", "int", "int"};
         loadTable(path, query, dataTypes);
 
+        //==================================================================================
         // store the multipliers for different types
         query = "CREATE TABLE type_effectiveness("
                 + "src_type_id INT NOT NULL, "
@@ -291,24 +294,49 @@ public class DatabaseUtility
         dataTypes = new String[] {"int", "int", "float"};
         loadTable(path, query, dataTypes);
 
-        // CREATE TABLE conversation
+        //==================================================================================
         // all the text displayed in conversations
         query = "CREATE TABLE conversation("
                 + "conversation_id INT NOT NULL, "
                 + "conversation_event_id INT NOT NULL, "
                 + "text VARCHAR(100) NOT NULL, "
-                + "battle_id INT NOT NULL)";
+                + "battle_id INT NOT NULL, "
+                + "heal_team INT NOT NULL)";
         runUpdate(query);
 
         // fill conversation table with data
         path = "src/rawdata/conversation.csv";
         query = "INSERT INTO conversation ("
-                + "conversation_id, conversation_event_id, text, battle_id)"
-                + "VALUES (?, ?, ?, ?)";
+                + "conversation_id, conversation_event_id, text, battle_id, heal_team)"
+                + "VALUES (?, ?, ?, ?, ?)";
 
-        dataTypes = new String[] {"int", "int", "String", "int"};
+        dataTypes = new String[] {"int", "int", "String", "int", "int"};
         loadTable(path, query, dataTypes);
 
+        //==================================================================================
+        // triggers to start conversations
+        query = "CREATE TABLE conversation_trigger("
+                + "map_id INT NOT NULL, "
+                + "area_id INT NOT NULL, "
+                + "x INT NOT NULL, "
+                + "y INT NOT NULL, "
+                + "conversation_id INT NOT NULL, "
+                + "character_id INT NOT NULL, "
+                + "clear_after_use INT NOT NULL, "
+                + "auto_trigger INT NOT NULL)";
+        runUpdate(query);
+
+        // fill conversation table with data
+        path = "src/rawdata/conversationTriggers.csv";
+        query = "INSERT INTO conversation_trigger ("
+                + "map_id, area_id, x, y, conversation_id, "
+                + "character_id, clear_after_use, auto_trigger)"
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        dataTypes = new String[] {"int", "int", "int", "int", "int", "int", "int", "int"};
+        loadTable(path, query, dataTypes);
+
+        //==================================================================================
         // store all the items
         query = "CREATE TABLE items("
                 + "item_id INT NOT NULL,"
@@ -327,6 +355,7 @@ public class DatabaseUtility
         dataTypes = new String[] {"int", "String", "int", "int", "String"};
         loadTable(path, query, dataTypes);
 
+        //==================================================================================
         // store the teams used by trainers in battle
         query = "CREATE TABLE battle("
                 + "battle_id INT NOT NULL,"
@@ -343,6 +372,7 @@ public class DatabaseUtility
         dataTypes = new String[] {"int", "int", "int"};
         loadTable(path, query, dataTypes);
 
+        //==================================================================================
         // store the characters that appear in the overworld
         query = "CREATE TABLE character("
                 + "character_id INT NOT NULL,"

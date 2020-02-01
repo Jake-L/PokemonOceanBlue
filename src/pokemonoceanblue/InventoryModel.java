@@ -74,7 +74,6 @@ public class InventoryModel {
         ItemModel newItem = new ItemModel(itemId, quantity);
         int categoryIndex = Math.min(newItem.categoryId, 2);
         
-
         for (ItemModel item : this.items[categoryIndex])
         {
             if (item.itemId == newItem.itemId)

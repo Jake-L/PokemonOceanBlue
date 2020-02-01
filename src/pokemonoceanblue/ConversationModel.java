@@ -12,17 +12,45 @@ public class ConversationModel
     private List<ConversationEvent> events = new ArrayList<ConversationEvent>();
     private CharacterModel player;
     private CharacterModel cpu;
+    private boolean initialMovement;
     
     /** 
      * Constructor
      * @param conversationId the unique identifier of this converstaion
      */
-    public ConversationModel(int conversationId, CharacterModel player, CharacterModel cpu)
+    public ConversationModel(int conversationId, CharacterModel player, CharacterModel cpu, boolean initialMovement)
     {
         this.conversationId = conversationId;
         this.player = player;
         this.cpu = cpu;
         this.counter = TEXT_LENGTH;
+        this.initialMovement = initialMovement;
+
+        // move trainer to approach the player at the start of the conversation
+        if (this.initialMovement)
+        {
+            int xDistance = player.getX() - cpu.getX();
+            if (xDistance < -1)
+            {
+                ConversationEvent event = new ConversationEvent(
+                    cpu.characterId,
+                    -1,
+                    0,
+                    xDistance * -1 - 1
+                );
+                this.events.add(event);
+            }
+            else if (xDistance > 1)
+            {
+                ConversationEvent event = new ConversationEvent(
+                    cpu.characterId,
+                    1,
+                    0,
+                    xDistance - 1
+                );
+                this.events.add(event);
+            }
+        }
 
         this.loadEvents();
     }
@@ -33,33 +61,12 @@ public class ConversationModel
     private void loadEvents()
     {
         ConversationEvent event;
-        int xDistance = player.getX() - cpu.getX();
-        if (xDistance < -1)
-        {
-            event = new ConversationEvent(
-                cpu.characterId,
-                -1,
-                0,
-                xDistance * -1 - 1
-            );
-            this.events.add(event);
-        }
-        else if (xDistance > 1)
-        {
-            event = new ConversationEvent(
-                cpu.characterId,
-                1,
-                0,
-                xDistance - 1
-            );
-            this.events.add(event);
-        }
 
         try
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            String query = "SELECT conversation_event_id, text, battle_id "
+            String query = "SELECT conversation_event_id, text, battle_id, heal_team "
                         + " FROM conversation WHERE conversation_id = " + this.conversationId;
 
             ResultSet rs = db.runQuery(query);
@@ -70,7 +77,8 @@ public class ConversationModel
                 event = new ConversationEvent(
                     rs.getInt("conversation_event_id"),
                     rs.getString("text"),
-                    rs.getInt("battle_id")
+                    rs.getInt("battle_id"),
+                    rs.getInt("heal_team") == 1
                 );
                 this.events.add(event);
             }
@@ -199,12 +207,18 @@ public class ConversationModel
         this.counter = 16;
     }
 
+    public boolean isHealTeam()
+    {
+        return !this.isComplete() && this.counter == 1 && this.events.get(0).healTeam;
+    }
+
     class ConversationEvent
     {
         private int conversationEventId;
         public String text;
         public int battleId;
         public boolean autoAdvance = false;
+        public boolean healTeam = false;
 
         // variables for moving CPUs
         public int characterId;
@@ -218,11 +232,12 @@ public class ConversationModel
          * @param text the text that will be displayed
          * @param battleId unique identifer for the battle that will be started or -1 otherwise
          */
-        public ConversationEvent(int conversationEventId, String text, int battleId)
+        public ConversationEvent(int conversationEventId, String text, int battleId, boolean healTeam)
         {
             this.conversationEventId = conversationEventId;
             this.text = text;
             this.battleId = battleId;
+            this.healTeam = healTeam;
         }
 
         /**

@@ -1,0 +1,5 @@
+map_id,area_id,x,y,conversation_id,character_id,clear_after_use,auto_trigger,comment
+0,1,7,6,4,0,1,1,Camper Jimmy
+0,1,8,6,4,0,1,1,Camper Jimmy
+0,1,9,6,4,0,1,1,Camper Jimmy
+7,0,5,3,17,17,0,0,Nurse Joy
