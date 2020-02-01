@@ -5,7 +5,7 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 0,0,1,Camper Jimmy,campBoy,6,6,4,0,1
 1,3,0,,guitarist,2,7,6,2,2
 2,3,0,,childBoy,5,5,7,2,2
-3,3,0,,lady,6,3,8,2,2
+3,3,0,,lady,6,3,8,0,2
 4,4,0,,scientist,4,6,9,2,2
 5,5,0,,scientist,4,4,10,2,2
 8,2,0,Daisy,daisy,5,5,12,2,0
@@ -19,3 +19,6 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 17,7,0,,joy,5,2,17,0,2
 18,8,0,,hiker,4,4,18,0,3
 19,9,0,,hiker,5,8,19,0,0
+20,10,0,,hiker,10,7,20,0,0
+21,0,2,,hiker,9,34,21,0,3
+22,0,2,,hiker,26,9,22,0,2

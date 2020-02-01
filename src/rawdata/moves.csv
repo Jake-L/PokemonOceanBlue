@@ -209,7 +209,6 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 210,Fury Cutter,7,40,95,0,2,10,0,0,0
 211,Steel Wing,9,70,90,0,2,10,0,10,0
 212,Mean Look,1,,-1,0,1,10,0,0,0
-213,Attract,1,,100,0,1,10,0,0,7
 214,Sleep Talk,1,,-1,0,1,7,0,0,0
 215,Heal Bell,1,,-1,0,1,13,0,0,0
 216,Return,1,,100,0,2,10,0,0,0

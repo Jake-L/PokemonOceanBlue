@@ -48,3 +48,10 @@ conversation_id,conversation_event_id,text,battle_id
 19,0,*sigh*,-1
 19,1,I haven't been able to see my family in months.,-1
 19,2,They only live in Celadon$ but GioCorp's been giving me so many hours I barely have time to sleep.,-1
+20,0,Hello there.,-1
+20,1,Have you seen the GioCorp Mine? There's some cool pokemon there.,-1
+20,2,Team Rocket guards the entrance during work hours$ but you could probably sneak in at night.,-1
+21,0,I can't believe I payed three months salary for this Magikarp...,-1
+22,0,Hmm?,-1
+22,1,Who are you?,-1
+22,2,Ah$ figures. Most the travellers we get around here are also trainers.,-1
