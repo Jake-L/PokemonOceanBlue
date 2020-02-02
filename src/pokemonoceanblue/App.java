@@ -278,6 +278,7 @@ public class App extends JFrame implements KeyListener
                         }
 
                         this.battleModel = null;
+                        this.overworldModel.battleComplete();
                     }
                 }
                 // update the players position

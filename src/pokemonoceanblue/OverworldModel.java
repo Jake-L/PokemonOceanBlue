@@ -145,31 +145,45 @@ public class OverworldModel {
         // update the current conversation
         if (this.conversation != null)
         {
-            // determine if a character needs to be moved
+            this.conversation.update();
             int characterId = this.conversation.getMovementCharacterId();
-            if (characterId > -1)
+
+            // delete the conversation if it is over
+            if (this.conversation.isComplete())
             {
-                for (int i = 0; i < this.cpuModel.size(); i++)
-                {
-                    if (this.cpuModel.get(i).characterId == characterId && this.cpuModel.get(i).getMovementCounter() <= 0)
-                    {
-                        // move the character
-                        this.cpuModel.get(i).setMovement(
-                            this.conversation.getMovementDx(), 
-                            this.conversation.getMovementDy(), 
-                            1
-                        );
-                        this.conversation.setCharacterMoved();
-                        break;
-                    }
-                }                
+                this.conversation = null;
+                this.actionCounter = 15;
             }
+
+            // determine if a character needs to be moved
+            else if (characterId >= -1)
+            {
+                CharacterModel character = this.getCharacterModel(characterId);
+            
+                if (character.getMovementCounter() <= 0)
+                {
+                    // move the character
+                    character.setMovement(
+                        this.conversation.getMovementDx(), 
+                        this.conversation.getMovementDy(), 
+                        1
+                    );
+                    this.conversation.setCharacterMoved();            
+                }
+            }
+
             // check if the player's team should be healed as a result of the conversation
-            if (this.conversation.isHealTeam())
+            else if (this.conversation.isHealTeam())
             {
                 app.healTeam();
             }
-            this.conversation.update();
+
+            // start a battle
+            else if (this.conversation.getBattleId() >= 0)
+            {
+                this.app.createTrainerBattle(this.conversation.getBattleId());
+                this.conversation.setBattleStarted();
+            }
         }
     }
 
@@ -246,29 +260,7 @@ public class OverworldModel {
         // if already in a conversation, check if it's time to move on to next dialog
         if (this.conversation != null)
         {
-            // delete the conversation if it is over
-            if (this.conversation.isComplete())
-            {
-                this.conversation = null;
-                this.actionCounter = 15;
-            }
-            else
-            {
-                // start a battle
-                if (this.conversation.getBattleId() >= 0)
-                {
-                    this.app.createTrainerBattle(this.conversation.getBattleId());
-                }
-
-                this.conversation.nextEvent();
-
-                // delete the conversation if it is over
-                if (this.conversation.isComplete())
-                {
-                    this.conversation = null;
-                    this.actionCounter = 15;
-                }
-            }
+            this.conversation.nextEvent();
         }
         // surf if facing water
         else if (!this.playerModel.surf && tiles[y][x] == 0 && this.playerModel.getMovementCounter() <= 0)
@@ -659,6 +651,10 @@ public class OverworldModel {
      */
     private CharacterModel getCharacterModel(int characterId)
     {
+        if (characterId == -1)
+        {
+            return playerModel;
+        }
         for (CharacterModel current : this.cpuModel)
         {
             if (current.characterId == characterId)
@@ -668,6 +664,14 @@ public class OverworldModel {
         }  
 
         return null;
+    }
+
+    public void battleComplete()
+    {
+        if (this.conversation != null)
+        {
+            this.conversation.setBattleComplete();
+        }
     }
 
 

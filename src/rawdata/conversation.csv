@@ -1,60 +1,63 @@
-conversation_id,conversation_event_id,text,battle_id,heal_team
-0,0,Hello young trainer my name is Professor Oak$ the leading Pokemon researcher in Kanto,-1,0
-0,1,Today is the day I give new trainers their first Pokemon,-1,0
-0,2,All I ask in return is that you take this Pokedex and catch as many Pokemon as you can,-1,0
-0,3,There was a time I would have done that myself$ but I'm not as young as I once was,-1,0
-0,4,Between you and me$ I can't even remember my grandson's name anymore,-1,0
-0,5,Anyhow$ now it's time to pick a Pokemon and begin your adventure!,-1,0
-1,0,I heard Professor Oak has been looking for you,-1,0
-1,1,Why don't you visit him and see what he wants,-1,0
-2,0,Many years ago there were less than 200 species of Pokemon in the Kanto region,-1,0
-2,1,Now there are over 400 different Pokemon to be found!,-1,0
-2,2,It is a great time to be a Pokemon scientist!,-1,0
-3,0,It is important to take good care of your Pokemon,-1,0
-3,1,If you are nice to them and take good care of them$ they may perform better in battle!,-1,0
-4,0,Hi$ I just caught my first Pokemon and I want to use it! Let's battle!,0,0
-5,0,Have you been to Viridian City?,-1,0
-5,1,I've heard the Gym Leader there is the strongest in all of Kanto.,-1,0
-5,2,I can't seem to remember his name though...,-1,0
-6,0,Our daughter left recently to begin her Pokemon journey...,-1,0
-6,1,She was sending us a letter almost every week to let us know how she was doing...,-1,0
-6,2,But the past month we haven't got any letters from her and I'm starting to get worried.,-1,0
-6,3,Do you think you could keep an eye out for her on your journey? Her name is Cassie.,-1,0
-6,4,Last we heard she was heading to Pewter City to fight the Gym Leader there.,-1,0
-6,5,Anyway$ if you hear anything$ let me know. I just want to know she is safe.,-1,0
-7,0,One day$ I'm going to start my own Pokemon journey just like my sister!,-1,0
-8,0,...,-1,0
-8,1,What could have happened to her?,-1,0
-9,0,Hi$ I know what you're thinking. This house is too big for one person...,-1,0
-9,1,But the price was right and it's so close to my work at Oak's Lab!,-1,0
-10,0,Hey$ can I let you in a secret? I wish I could go live somewhere else further from work.,-1,0
-10,1,I'm always running into people from work on the weekends and it's just kinda weird y'know?,-1,0
-11,0,Hi$ my friend just helped me catch this Ralts. But I won't need help to defeat you!,1,0
-12,0,Hey$ have you seen my brother Gary? ,-1,0
-12,1,No? Okay well he wanted me to tell you that he already has his pokemon and he wants to battle.,-1,0
-12,2,I think he's on his way to Viridian City if you want to find him. Good luck!,-1,0
-13,0,Hey$ it sure took you long enough to get here!,-1,0
-13,1,Your pokemon look almost as weak as their trainer!,-1,0
-13,2,All right$ let's battle!,2,0
-13,3,Ha! Maybe I won't go so easy on you next time.,-1,0
-13,4,Smell ya later!,-1,0
-14,0,I just caught this super rare Pokemon! Let's battle!,3,0
-15,0,Hey$ I haven't had a chance to fight with my first Pokemon yet!,-1,0
-15,1,Wanna battle?,4,0
-16,0,Check out my adorable Pokemon!,5,0
-17,0,Hi$ welcome to the Pokemon Center!,-1,0
-17,1,Your pokemon will be restored to full health.,-1,1
-17,2,Thanks$ we hope to see you again!,-1,0
-18,0,Hey$ yeah sure you can come into my house without knocking.,-1,0
-18,1,Uhh$ sorry. I didn't mean that.,-1,0
-18,2,I've just been a little on edge lately what with all the team rocket guys around.,-1,0
-19,0,*sigh*,-1,0
-19,1,I haven't been able to see my family in months.,-1,0
-19,2,They only live in Celadon$ but GioCorp's been giving me so many hours I barely have time to sleep.,-1,0
-20,0,Hello there.,-1,0
-20,1,Have you seen the GioCorp Mine? There's some cool pokemon there.,-1,0
-20,2,Team Rocket guards the entrance during work hours$ but you could probably sneak in at night.,-1,0
-21,0,I can't believe I paid three months salary for this Magikarp...,-1,0
-22,0,Hmm?,-1,0
-22,1,Who are you?,-1,0
-22,2,Ah$ figures. Most the travellers we get around here are also trainers.,-1,0
+conversation_id,conversation_event_id,text,battle_id,heal_team,character_id,movement_direction
+0,0,Hello young trainer my name is Professor Oak$ the leading Pokemon researcher in Kanto,-1,0,-1,-1
+0,1,Today is the day I give new trainers their first Pokemon,-1,0,-1,-1
+0,2,All I ask in return is that you take this Pokedex and catch as many Pokemon as you can,-1,0,-1,-1
+0,3,There was a time I would have done that myself$ but I'm not as young as I once was,-1,0,-1,-1
+0,4,Between you and me$ I can't even remember my grandson's name anymore,-1,0,-1,-1
+0,5,Anyhow$ now it's time to pick a Pokemon and begin your adventure!,-1,0,-1,-1
+1,0,I heard Professor Oak has been looking for you,-1,0,-1,-1
+1,1,Why don't you visit him and see what he wants,-1,0,-1,-1
+2,0,Many years ago there were less than 200 species of Pokemon in the Kanto region,-1,0,-1,-1
+2,1,Now there are over 400 different Pokemon to be found!,-1,0,-1,-1
+2,2,It is a great time to be a Pokemon scientist!,-1,0,-1,-1
+3,0,It is important to take good care of your Pokemon,-1,0,-1,-1
+3,1,If you are nice to them and take good care of them$ they may perform better in battle!,-1,0,-1,-1
+4,0,Hi$ I just caught my first Pokemon and I want to use it! Let's battle!,0,0,-1,-1
+5,0,Have you been to Viridian City?,-1,0,-1,-1
+5,1,I've heard the Gym Leader there is the strongest in all of Kanto.,-1,0,-1,-1
+5,2,I can't seem to remember his name though...,-1,0,-1,-1
+6,0,Our daughter left recently to begin her Pokemon journey...,-1,0,-1,-1
+6,1,She was sending us a letter almost every week to let us know how she was doing...,-1,0,-1,-1
+6,2,But the past month we haven't got any letters from her and I'm starting to get worried.,-1,0,-1,-1
+6,3,Do you think you could keep an eye out for her on your journey? Her name is Cassie.,-1,0,-1,-1
+6,4,Last we heard she was heading to Pewter City to fight the Gym Leader there.,-1,0,-1,-1
+6,5,Anyway$ if you hear anything$ let me know. I just want to know she is safe.,-1,0,-1,-1
+7,0,One day$ I'm going to start my own Pokemon journey just like my sister!,-1,0,-1,-1
+8,0,...,-1,0,-1,-1
+8,1,What could have happened to her?,-1,0,-1,-1
+9,0,Hi$ I know what you're thinking. This house is too big for one person...,-1,0,-1,-1
+9,1,But the price was right and it's so close to my work at Oak's Lab!,-1,0,-1,-1
+10,0,Hey$ can I let you in a secret? I wish I could go live somewhere else further from work.,-1,0,-1,-1
+10,1,I'm always running into people from work on the weekends and it's just kinda weird y'know?,-1,0,-1,-1
+11,0,Hi$ my friend just helped me catch this Ralts. But I won't need help to defeat you!,1,0,-1,-1
+12,0,Hey$ have you seen my brother Gary? ,-1,0,-1,-1
+12,1,No? Okay well he wanted me to tell you that he already has his pokemon and he wants to battle.,-1,0,-1,-1
+12,2,I think he's on his way to Viridian City if you want to find him. Good luck!,-1,0,-1,-1
+13,0,Hey$ it sure took you long enough to get here!,-1,0,-1,-1
+13,1,Your pokemon look almost as weak as their trainer!,-1,0,-1,-1
+13,2,All right$ let's battle!,2,0,-1,-1
+13,3,Ha! Maybe I won't go so easy on you next time.,-1,0,-1,-1
+13,4,Smell ya later!,-1,0,-1,-1
+14,0,I just caught this super rare Pokemon! Let's battle!,3,0,-1,-1
+15,0,Hey$ I haven't had a chance to fight with my first Pokemon yet!,-1,0,-1,-1
+15,1,Wanna battle?,4,0,-1,-1
+16,0,Check out my adorable Pokemon!,5,0,-1,-1
+17,0,Hi$ welcome to the Pokemon Center!,-1,0,-1,-1
+17,1,Your pokemon will be restored to full health.,-1,1,-1,-1
+17,2,Thanks$ we hope to see you again!,-1,0,-1,-1
+18,0,Hey$ yeah sure you can come into my house without knocking.,-1,0,-1,-1
+18,1,Uhh$ sorry. I didn't mean that.,-1,0,-1,-1
+18,2,I've just been a little on edge lately what with all the team rocket guys around.,-1,0,-1,-1
+19,0,*sigh*,-1,0,-1,-1
+19,1,I haven't been able to see my family in months.,-1,0,-1,-1
+19,2,They only live in Celadon$ but GioCorp's been giving me so many hours I barely have time to sleep.,-1,0,-1,-1
+20,0,Hello there.,-1,0,-1,-1
+20,1,Have you seen the GioCorp Mine? There's some cool pokemon there.,-1,0,-1,-1
+20,2,Team Rocket guards the entrance during work hours$ but you could probably sneak in at night.,-1,0,-1,-1
+21,0,I can't believe I paid three months salary for this Magikarp...,-1,0,-1,-1
+22,0,Hmm?,-1,0,-1,-1
+22,1,Who are you?,-1,0,-1,-1
+22,2,Ah$ figures. Most the travellers we get around here are also trainers.,-1,0,-1,-1
+23,0,You should go see Professor Oak to get a Pokemon before wandering into wild grass.,-1,0,-1,-1
+24,0,Sorry$ you can't enter wild grass without a Pokemon.,-1,0,-1,-1
+24,1,,-1,0,-1,2

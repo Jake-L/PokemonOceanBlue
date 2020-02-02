@@ -3,3 +3,7 @@ map_id,area_id,x,y,conversation_id,character_id,clear_after_use,auto_trigger,com
 0,1,8,6,4,0,1,1,Camper Jimmy
 0,1,9,6,4,0,1,1,Camper Jimmy
 7,0,5,3,17,17,0,0,Nurse Joy
+0,0,14,0,24,23,0,1,Pallet Town gatekeeper
+0,0,15,0,24,23,0,1,Pallet Town gatekeeper
+0,0,16,0,24,23,0,1,Pallet Town gatekeeper
+0,0,17,0,24,23,0,1,Pallet Town gatekeeper

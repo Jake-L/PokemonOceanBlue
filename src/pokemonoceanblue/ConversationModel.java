@@ -13,6 +13,7 @@ public class ConversationModel
     private CharacterModel player;
     private CharacterModel cpu;
     private boolean initialMovement;
+    private boolean battleStarted = false;
     
     /** 
      * Constructor
@@ -66,20 +67,53 @@ public class ConversationModel
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            String query = "SELECT conversation_event_id, text, battle_id, heal_team "
+            String query = "SELECT conversation_event_id, text, battle_id, heal_team, "
+                        + " movement_direction, character_id "
                         + " FROM conversation WHERE conversation_id = " + this.conversationId;
 
             ResultSet rs = db.runQuery(query);
 
             while(rs.next()) 
             {
-                // add the conversation event to the list of events
-                event = new ConversationEvent(
-                    rs.getInt("conversation_event_id"),
-                    rs.getString("text"),
-                    rs.getInt("battle_id"),
-                    rs.getInt("heal_team") == 1
-                );
+                // events where a person moves
+                if (rs.getInt("movement_direction") > -1)
+                {
+                    int dx = 0;
+                    int dy = 0;
+                    switch (rs.getInt("movement_direction"))
+                    {
+                        case 0:
+                            dy = -1;
+                            break;
+                        case 1:
+                            dx = 1;
+                            break;
+                        case 2:
+                            dy = 1;
+                            break;
+                        case 3:
+                            dx = -1;
+                            break;
+                    }
+
+                    event = new ConversationEvent(
+                        rs.getInt("character_id"),
+                        dx,
+                        dy,
+                        1
+                    );
+                }
+                else
+                {
+                    // add the conversation event to the list of events
+                    event = new ConversationEvent(
+                        rs.getInt("conversation_event_id"),
+                        rs.getString("text"),
+                        rs.getInt("battle_id"),
+                        rs.getInt("heal_team") == 1
+                    );
+                }
+
                 this.events.add(event);
             }
         }
@@ -106,7 +140,7 @@ public class ConversationModel
      */
     public void nextEvent()
     {
-        if (this.counter == 0 && this.events.size() > 0 && this.events.get(0).distance <= 0)
+        if (this.counter == 0 && this.events.size() > 0 && this.events.get(0).distance <= 0 && this.events.get(0).battleId == -1)
         {
             this.events.remove(0);
             this.counter = TEXT_LENGTH;
@@ -118,11 +152,22 @@ public class ConversationModel
      */
     public int getBattleId()
     {
-        if (this.events.size() > 0 && this.counter == 0)
+        if (this.events.size() > 0 && this.counter == 0 && !this.battleStarted)
         {
             return this.events.get(0).battleId;
         }
         return -1;
+    }
+
+    public void setBattleStarted()
+    {
+        this.battleStarted = true;
+    }
+
+    public void setBattleComplete()
+    {
+        this.events.get(0).battleId = -1;
+        this.nextEvent();
     }
 
     /** 
@@ -216,7 +261,7 @@ public class ConversationModel
     {
         private int conversationEventId;
         public String text;
-        public int battleId;
+        public int battleId = -1;
         public boolean autoAdvance = false;
         public boolean healTeam = false;
 

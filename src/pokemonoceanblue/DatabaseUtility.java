@@ -317,16 +317,19 @@ public class DatabaseUtility
                 + "conversation_event_id INT NOT NULL, "
                 + "text VARCHAR(100) NOT NULL, "
                 + "battle_id INT NOT NULL, "
-                + "heal_team INT NOT NULL)";
+                + "heal_team INT NOT NULL, "
+                + "character_id INT NOT NULL, "
+                + "movement_direction INT NOT NULL)";
         runUpdate(query);
 
         // fill conversation table with data
         path = "src/rawdata/conversation.csv";
         query = "INSERT INTO conversation ("
-                + "conversation_id, conversation_event_id, text, battle_id, heal_team)"
-                + "VALUES (?, ?, ?, ?, ?)";
+                + "conversation_id, conversation_event_id, text, "
+                + "battle_id, heal_team, character_id, movement_direction)"
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        dataTypes = new String[] {"int", "int", "String", "int", "int"};
+        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

@@ -22,3 +22,4 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 20,10,0,,hiker,10,7,20,0,0
 21,0,2,,hiker,9,34,21,0,3
 22,0,2,,hiker,26,9,22,0,2
+23,0,0,,aceBoy,15,0,23,0,2
