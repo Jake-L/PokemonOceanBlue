@@ -20,6 +20,7 @@ public class PartyView extends ViewBase {
     private Image[] faintedPokemonWindows = new Image[3];
     private Image[] pokemonImages;
     private Image background;
+    private Image[] statusEffectImages = new Image[6];
     
     /** 
      * Constructor for the party view
@@ -65,6 +66,13 @@ public class PartyView extends ViewBase {
         {
             ii = new ImageIcon("src/menus/partyfainted" + i + ".png");
             this.faintedPokemonWindows[i] = ii.getImage();
+        }
+
+        //loads status effect images
+        for (int i = 0; i < this.statusEffectImages.length; i++)
+        {
+            ii = new ImageIcon("src/menus/ailment" + (i + 1) + ".png");
+            this.statusEffectImages[i] = ii.getImage();
         }
 
         ii = new ImageIcon("src/menus/hpBar.png");
@@ -114,8 +122,6 @@ public class PartyView extends ViewBase {
                     g.drawString(this.model.team[i].moves[j].name,
                         (int)(width * 0.72),
                         (int)(height * (2.0 / 5.0) + 14 * j * graphicsScaling));
-
-                    //g.drawString(this.)
                 }
             }
 
@@ -162,12 +168,12 @@ public class PartyView extends ViewBase {
             
             //display text with pokemon name
             g.drawString(this.model.team[i].name, 
-                (i % 2) * (width / 3 + 8 * graphicsScaling) + 78 * graphicsScaling, 
+                (i % 2) * (width / 3 + 8 * graphicsScaling) + 94 * graphicsScaling, 
                 (i / 2) * (height / 4 + 8 * graphicsScaling) + 34 * graphicsScaling);
 
             //display hp bars
             g.drawImage(this.hpBar,
-                (i % 2) * (width / 3 + 8 * graphicsScaling) + 78 * graphicsScaling,
+                (i % 2) * (width / 3 + 8 * graphicsScaling) + 94 * graphicsScaling,
                 (i / 2) * (height / 4 + 8 * graphicsScaling) + 40 * graphicsScaling,
                 this.hpBar.getWidth(null) * graphicsScaling,
                 this.hpBar.getHeight(null) * graphicsScaling,
@@ -186,11 +192,23 @@ public class PartyView extends ViewBase {
             
             //fill health bars
             g.drawImage(healthBarFill[healthBarFillIndex],
-                (i % 2) * (width / 3 + 8 * graphicsScaling) + 94 * graphicsScaling, 
+                (i % 2) * (width / 3 + 8 * graphicsScaling) + 110 * graphicsScaling, 
                 (i / 2) * (height / 4 + 8 * graphicsScaling) + 42 * graphicsScaling,
                 (int)Math.ceil(healthBarFill[0].getWidth(null) * (this.model.team[i].currentHP * 48.0 / this.model.team[i].stats[Stat.HP]) * graphicsScaling),
                 healthBarFill[0].getHeight(null) * graphicsScaling,
                 canvas);
+            
+            //display status condition
+            int statusEffect = this.model.team[i].statusEffect;
+            if (statusEffect > 0 && statusEffect < 7)
+            {
+                g.drawImage(this.statusEffectImages[statusEffect - 1],
+                    (i % 2) * (width / 3 + 8 * graphicsScaling) + 72 * graphicsScaling,
+                    (i / 2) * (height / 4 + 8 * graphicsScaling) + 40 * graphicsScaling,
+                    this.statusEffectImages[0].getWidth(null) * graphicsScaling,
+                    this.statusEffectImages[0].getHeight(null) * graphicsScaling,
+                    canvas);
+            }
         }
     }
 

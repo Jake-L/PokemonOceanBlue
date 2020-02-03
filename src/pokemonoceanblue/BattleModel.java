@@ -18,7 +18,6 @@ public class BattleModel
     public byte counter = INPUTDELAY;
     public List<BattleEvent> events = new ArrayList<BattleEvent>();
     public Random ranNum = new Random();
-    private int firstAttacker;
     private App app;
     private float[][] typeEffectiveness = new float[19][19];
     private float[] modifier = new float[2];
@@ -31,7 +30,7 @@ public class BattleModel
     public String trainerSpriteName;
     private boolean[] isOneHit = new boolean[2];
     private boolean[] evolveQueue = new boolean[6];
-    private boolean[] isParalyzed = new boolean[2];
+    private boolean[] unableToMove = new boolean[2];
     private BattleEvent attackEvent[] = new BattleEvent[2];
 
     /** 
@@ -122,6 +121,7 @@ public class BattleModel
 
                     default:
                         
+                        int firstAttacker;
                         this.battleOptions = null;
                         this.attackEvent[0] = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " used " + this.team[0][this.currentPokemon[0]].moves[this.optionIndex].name + ".",
                             1,
@@ -173,7 +173,6 @@ public class BattleModel
             }
         }
     }
-
     
     /**
      * @param itemId is the item that will be used
@@ -301,7 +300,7 @@ public class BattleModel
         float crit = 1.0f;
         this.isCrit[attacker] = false;
         this.isOneHit[attacker] = false;
-        this.isParalyzed[attacker] = false;
+        this.unableToMove[attacker] = false;
         PokemonModel attackingPokemon = this.team[attacker][calcCurrentPokemon[attacker]];
         PokemonModel defendingPokemon = this.team[defender][calcCurrentPokemon[defender]];
 
@@ -323,9 +322,12 @@ public class BattleModel
             return 0;
         }
 
-        if (attackingPokemon.statusEffect == 1 && this.ranNum.nextInt(3) == 0)
+        if ((attackingPokemon.statusEffect == 1 && this.ranNum.nextInt(101) < 34) ||
+            (attackingPokemon.statusEffect == 2 && this.ranNum.nextInt(101) < 34) ||
+            (attackingPokemon.statusEffect == 3 && this.ranNum.nextInt(101) < 51))
         {
-            this.isParalyzed[attacker] = true;
+            this.events.remove(0);
+            this.unableToMove[attacker] = true;
             return 0;
         }
 
@@ -372,12 +374,15 @@ public class BattleModel
     /** 
      * @param effectiveness damage modifier
      * @param attacker the team using the attack
+     * @param calcCurrentPokemon the pokemon that will be involved in the turn
      */
     private void effectivenessMessage(float effectiveness, int attacker, int[] calcCurrentPokemon)
     {
-        if (this.isParalyzed[attacker])
+        if (this.unableToMove[attacker])
         {
-            BattleEvent event = new BattleEvent(this.team[attacker][calcCurrentPokemon[attacker]].name + " is paralyzed and unable to move.", attacker, null);
+            String[] statusEffectMessages = {" is paralyzed and unable to move."," is fast asleep."," is frozen solid."};
+            BattleEvent event = new BattleEvent(this.team[attacker][calcCurrentPokemon[attacker]].name + statusEffectMessages[this.team[attacker][calcCurrentPokemon[attacker]].statusEffect - 1], 
+                attacker, null);
             this.events.add(event);
         }
         else if (this.isOneHit[attacker])
@@ -508,7 +513,6 @@ public class BattleModel
                 return true;
             }
         }
-
         return false;
     }
 
@@ -527,12 +531,13 @@ public class BattleModel
             this.currentPokemon[attacker] = this.events.get(0).newPokemonIndex;
         }
 
-        if (this.counter == 60 && this.events.size() > 0 && this.events.get(0).damage > -1)
+        //calculate damage for an upcoming attack event and add second attack event if applicable
+        else if (this.counter == 60 && this.events.size() > 0 && this.events.get(0).damage > -1 && this.events.get(0).move != null)
         {
             int attacker = this.events.get(0).attacker;
             this.events.get(0).damage = damageCalc(this.events.get(0).move, attacker, (attacker + 1) % 2, this.currentPokemon);
             this.effectivenessMessage(this.modifier[attacker], attacker, this.currentPokemon);
-            if (this.events.get(0).move.ailmentId > 0)
+            if (this.events.get(0).damage > -1 && this.events.get(0).move.ailmentId > 0)
             {
                 this.statusEffect(attacker, (attacker + 1) % 2, this.events.get(0).move);
             }
@@ -540,11 +545,25 @@ public class BattleModel
             {
                 this.events.add(this.attackEvent[(attacker + 1) % 2]);
             }
+            else
+            {
+                String[] statusEffectMessages = {" is hurt by burn."," is hurt by poison."};
+                for (int i = 0; i < 2; i++)
+                {
+                    if (this.team[i][this.currentPokemon[i]].statusEffect > 3 && this.team[i][this.currentPokemon[i]].statusEffect < 6)
+                    {
+                        BattleEvent event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + statusEffectMessages[this.team[i][this.currentPokemon[i]].statusEffect - 4],
+                            this.team[i][this.currentPokemon[i]].stats[0] / 8,
+                            i, i, null, null);
+                        this.events.add(event);
+                    }
+                }
+            }
             this.attackEvent[0] = null;
             this.attackEvent[1] = null;
         }
 
-        if (this.counter == 50 && this.events.size() > 0 && this.events.get(0).sound != null)
+        else if (this.counter == 50 && this.events.size() > 0 && this.events.get(0).sound != null)
         {
             this.app.playSound(this.events.get(0).sound);
         }
