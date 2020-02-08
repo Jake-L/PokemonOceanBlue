@@ -173,7 +173,7 @@ public class PokedexView extends ViewBase {
         );
 
         g.drawString(
-            "Shiny Rate: " + String.format("%.3f", (Math.log10(numberCaught + 0.1) + 1) / 100) + "%",
+            "Shiny Rate: " + String.format("%.3f", this.model.getShinyRate(this.model.optionIndex) * 100) + "%",
             2 * graphicsScaling,
             height * 19 / 20
         );

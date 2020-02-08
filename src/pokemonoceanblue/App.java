@@ -41,7 +41,7 @@ public class App extends JFrame implements KeyListener
     PokedexController pokedexController;
     EvolutionCheck evolveCheck;
 
-    private boolean[] evolveQueue;
+    List<NewPokemonModel> newPokemonQueue = new ArrayList<NewPokemonModel>();
 
     // number of milliseconds between frames
     private final byte FRAME_LENGTH = 32;
@@ -161,7 +161,7 @@ public class App extends JFrame implements KeyListener
 
         //determine if the wild Pokemon is shiny
         Random rand = new Random();
-        boolean shiny = rand.nextDouble() < (Math.log10(pokedexModel.caughtPokemon[pokemonId] + 0.1) + 1) / 10000 ? true : false;;
+        boolean shiny = rand.nextDouble() < this.pokedexModel.getShinyRate(pokemonId) ? true : false;
         PokemonModel[] team = new PokemonModel[1];
         team[0] = new PokemonModel(pokemonId, level, shiny);
 
@@ -229,6 +229,32 @@ public class App extends JFrame implements KeyListener
         pokedexController = new PokedexController(pokedexModel);
     }
 
+    /**
+     * Handles the catching of new Pokemon
+     * @param pokemon the Pokemon that was caught
+     */
+    public void addPokemon(PokemonModel pokemon)
+    {
+        // register the new pokemon in pokedex
+        this.pokedexModel.setCaught(pokemon.id);
+        NewPokemonModel newPokemonModel = new NewPokemonModel(pokemon, partyModel);
+        this.newPokemonQueue.add(newPokemonModel);
+    }
+
+    /**
+     * Handles the catching of new Pokemon
+     * This constructor is used when the calling class doesn't have access to pokedexModel
+     * so this function determines the shiny chance
+     * @param pokemonId the identifier of the Pokemon to be added
+     * @param pokemonLevel the level of the Pokemon to be added
+     */
+    public void addPokemon(int pokemonId, int pokemonLevel)
+    {
+        Random rand = new Random();
+        boolean shiny = rand.nextDouble() < this.pokedexModel.getShinyRate(pokemonId) ? true : false;
+        this.addPokemon(new PokemonModel(pokemonId, pokemonLevel, shiny));
+    }
+
     public void update()
     {
         // the last time the function was run
@@ -253,28 +279,29 @@ public class App extends JFrame implements KeyListener
                     if (this.battleModel.isComplete())
                     {
                         // check which pokemon leveled up
-                        this.evolveQueue = this.battleModel.getEvolveQueue();
+                        boolean[] evolveQueue = this.battleModel.getEvolveQueue();
 
                         // if a new Pokemon was caught, show it
                         if (this.battleModel.getNewPokemon() != null)
                         {
-                            // register the new pokemon in pokedex
-                            this.pokedexModel.setCaught(this.battleModel.getNewPokemon().id);
+                            this.addPokemon(this.battleModel.getNewPokemon());
+                        }
 
+                        this.checkEvolution(evolveQueue);
+
+                        if (newPokemonQueue.size() > 0)
+                        {
                             this.partyModel.initialize(-1);
-                            NewPokemonModel newPokemonModel = new NewPokemonModel(this.battleModel.getNewPokemon(), partyModel);
-                            viewManager.setView(new NewPokemonView(newPokemonModel));
-                            newPokemonController = new NewPokemonController(newPokemonModel);
+                            viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
+                            newPokemonController = new NewPokemonController(newPokemonQueue.get(0));
+                            newPokemonQueue.remove(0);
                         }
                         // return to overworld screen
                         else
                         {
-                            if (!this.checkEvolution())
-                            {
-                                OverworldView overworldView = new OverworldView(overworldModel);
-                                viewManager.setView(overworldView);
-                                MusicPlayer.setSong("1");
-                            }
+                            OverworldView overworldView = new OverworldView(overworldModel);
+                            viewManager.setView(overworldView);
+                            MusicPlayer.setSong("1");
                         }
 
                         this.battleModel = null;
@@ -296,6 +323,13 @@ public class App extends JFrame implements KeyListener
                         {
                             oldPlayerModel = null;
                         }
+                    }
+                    else if (newPokemonQueue.size() > 0 && overworldModel.conversation == null)
+                    {
+                        this.partyModel.initialize(-1);
+                        viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
+                        newPokemonController = new NewPokemonController(newPokemonQueue.get(0));
+                        newPokemonQueue.remove(0);
                     }
                     else if (this.battleModel == null)
                     {
@@ -399,7 +433,14 @@ public class App extends JFrame implements KeyListener
 
                         if (newPokemonController.isComplete())
                         {
-                            if (!this.checkEvolution())
+                            if (newPokemonQueue.size() > 0)
+                            {
+                                this.partyModel.initialize(-1);
+                                viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
+                                newPokemonController = new NewPokemonController(newPokemonQueue.get(0));
+                                newPokemonQueue.remove(0);
+                            }
+                            else
                             {
                                 OverworldView overworldView = new OverworldView(overworldModel);
                                 viewManager.setView(overworldView);
@@ -453,35 +494,29 @@ public class App extends JFrame implements KeyListener
     }    
 
     /**
-     * Checks if any Pokemon can evolve
-     * @return true if any Pokemon evolves
+     * Checks if any Pokemon can evolve, and adds the evolution to a queue
      */
-    public boolean checkEvolution()
+    public void checkEvolution(boolean[] evolveQueue)
     {
         int evolvedPokemonId = -1;
 
-        for (int i = 0; i < this.evolveQueue.length; i++)
+        for (int i = 0; i < evolveQueue.length; i++)
         {
-            if (this.evolveQueue[i])
+            if (evolveQueue[i])
             {
-                evolvedPokemonId = this.evolveCheck.checkEvolution(partyModel.team[i]);
+                evolvedPokemonId = evolveCheck.checkEvolution(partyModel.team[i]);
 
                 if (evolvedPokemonId != -1)
                 {
-                    this.evolveQueue[i] = false;
-
                     // register the new pokemon in pokedex
                     this.pokedexModel.setCaught(evolvedPokemonId);
 
+                    // add the evolution to a queue
                     NewPokemonModel newPokemonModel = new NewPokemonModel(partyModel.team[i], partyModel, evolvedPokemonId, i);
-                    viewManager.setView(new NewPokemonView(newPokemonModel));
-                    newPokemonController = new NewPokemonController(newPokemonModel);
-                    return true;
+                    this.newPokemonQueue.add(newPokemonModel);
                 }
             }
         }
-
-        return false;
     }
 
     /**

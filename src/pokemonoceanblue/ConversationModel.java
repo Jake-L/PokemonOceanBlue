@@ -34,20 +34,24 @@ public class ConversationModel
             if (xDistance < -1)
             {
                 ConversationEvent event = new ConversationEvent(
+                    0,
                     cpu.characterId,
                     -1,
                     0,
-                    xDistance * -1 - 1
+                    xDistance * -1 - 1,
+                    0
                 );
                 this.events.add(event);
             }
             else if (xDistance > 1)
             {
                 ConversationEvent event = new ConversationEvent(
+                    0,
                     cpu.characterId,
                     1,
                     0,
-                    xDistance - 1
+                    xDistance - 1,
+                    0
                 );
                 this.events.add(event);
             }
@@ -61,20 +65,24 @@ public class ConversationModel
      */
     private void loadEvents()
     {
-        ConversationEvent event;
+        
 
         try
         {
             DatabaseUtility db = new DatabaseUtility();
 
             String query = "SELECT conversation_event_id, text, battle_id, heal_team, "
-                        + " movement_direction, character_id "
+                        + " movement_direction, character_id, "
+                        + " option_id, next_conversation_event_id, "
+                        + " gift_pokemon_id, gift_pokemon_level"
                         + " FROM conversation WHERE conversation_id = " + this.conversationId;
 
             ResultSet rs = db.runQuery(query);
 
             while(rs.next()) 
             {
+                ConversationEvent event;
+
                 // events where a person moves
                 if (rs.getInt("movement_direction") > -1)
                 {
@@ -97,10 +105,12 @@ public class ConversationModel
                     }
 
                     event = new ConversationEvent(
+                        rs.getInt("conversation_event_id"),
                         rs.getInt("character_id"),
                         dx,
                         dy,
-                        1
+                        1,
+                        rs.getInt("next_conversation_event_id")
                     );
                 }
                 else
@@ -110,11 +120,39 @@ public class ConversationModel
                         rs.getInt("conversation_event_id"),
                         rs.getString("text"),
                         rs.getInt("battle_id"),
-                        rs.getInt("heal_team") == 1
+                        rs.getInt("heal_team") == 1,
+                        rs.getInt("option_id"),
+                        rs.getInt("next_conversation_event_id")
                     );
+
+                    event.setGiftPokemon(rs.getInt("gift_pokemon_id"), rs.getInt("gift_pokemon_level"));
+                    
                 }
 
                 this.events.add(event);
+            }
+
+            // load conversation options
+            for (ConversationEvent event : this.events)
+            {
+                if (event.optionId > -1)
+                {
+                    query = "SELECT text, next_conversation_event_id FROM conversation_options WHERE option_id = " + event.optionId;
+
+                    rs = db.runQuery(query);
+
+                    List<String> options = new ArrayList<String>();
+                    List<Integer> optionOutcome = new ArrayList<Integer>();
+        
+                    while(rs.next()) 
+                    {
+                        options.add(rs.getString("text"));
+                        optionOutcome.add(rs.getInt("next_conversation_event_id"));
+                    }   
+                    
+                    // convert lists into arrays and pass to ConverstaionEvent object
+                    event.setOptions(options.toArray(new String[1]), optionOutcome.stream().mapToInt(i->i).toArray());
+                }
             }
         }
         catch (SQLException e) 
@@ -135,6 +173,28 @@ public class ConversationModel
         return null;
     }
 
+    /**
+     * @return the current text options or null
+     */
+    public String[] getOptions()
+    {
+        if (this.events.size() > 0 && this.events.get(0).options.length > 0)
+        {
+            return this.events.get(0).options;
+        }
+        return null;
+    }
+
+    /**
+     * Process the player's selection
+     * @param index the index of the option picked by the player
+     */
+    public void setOption(int index)
+    {
+        this.events.get(0).nextConversationEventId = this.events.get(0).optionOutcome[index];
+        this.nextEvent();
+    }
+
     /** 
      * Check if the previous event completed, and more on to the next if it did
      */
@@ -142,8 +202,24 @@ public class ConversationModel
     {
         if (this.counter == 0 && this.events.size() > 0 && this.events.get(0).distance <= 0 && this.events.get(0).battleId == -1)
         {
-            this.events.remove(0);
-            this.counter = TEXT_LENGTH;
+            int conversationEventId = this.events.get(0).nextConversationEventId;
+
+            // clear all events if you've reached the end
+            if (conversationEventId == -1)
+            {
+                this.events.clear();
+            }
+            else
+            {
+                this.events.remove(0);
+                this.counter = TEXT_LENGTH;
+
+                // remove events until you reach the next step in your converstaion path
+                while (this.events.size() > 0 && conversationEventId > this.events.get(0).conversationEventId)
+                {
+                    this.events.remove(0);
+                }
+            }
         }
     }
 
@@ -257,13 +333,45 @@ public class ConversationModel
         return !this.isComplete() && this.counter == 1 && this.events.get(0).healTeam;
     }
 
+    /**
+     * @return pokemonId of the Pokemon to be received or -1
+     */
+    public int getGiftPokemonId()
+    {
+        if (this.events.size() > 0 && this.counter == 1)
+        {
+            return this.events.get(0).giftPokemonId;
+        }
+
+        return -1;
+    }
+
+    /**
+     * @return level of the Pokemon to be received or -1
+     */
+    public int getGiftPokemonLevel()
+    {
+        if (this.events.size() > 0 && this.counter == 1)
+        {
+            return this.events.get(0).giftPokemonLevel;
+        }
+
+        return -1;
+    }
+
     class ConversationEvent
     {
-        private int conversationEventId;
+        public int conversationEventId;
         public String text;
+        public String[] options = new String[0];
+        public int[] optionOutcome = new int[0];
         public int battleId = -1;
         public boolean autoAdvance = false;
         public boolean healTeam = false;
+        public int nextConversationEventId = -1;
+        public int giftPokemonId = -1;
+        public int giftPokemonLevel = -1;
+        private int optionId = -1;
 
         // variables for moving CPUs
         public int characterId;
@@ -277,12 +385,14 @@ public class ConversationModel
          * @param text the text that will be displayed
          * @param battleId unique identifer for the battle that will be started or -1 otherwise
          */
-        public ConversationEvent(int conversationEventId, String text, int battleId, boolean healTeam)
+        public ConversationEvent(int conversationEventId, String text, int battleId, boolean healTeam, int optionId, int nextConversationEventId)
         {
             this.conversationEventId = conversationEventId;
             this.text = text;
             this.battleId = battleId;
             this.healTeam = healTeam;
+            this.optionId = optionId;
+            this.nextConversationEventId = nextConversationEventId;
         }
 
         /**
@@ -292,13 +402,27 @@ public class ConversationModel
          * @param dy the y-direction to move the character
          * @param distance the distance to move the character
          */
-        public ConversationEvent(int characterId, int dx, int dy, int distance)
+        public ConversationEvent(int conversationEventId, int characterId, int dx, int dy, int distance, int nextConversationEventId)
         {
+            this.conversationEventId = conversationEventId;
             this.characterId = characterId;
             this.dx = dx;
             this.dy = dy;
             this.distance = distance;
             this.autoAdvance = true;
+            this.nextConversationEventId = nextConversationEventId;
+        }
+
+        public void setGiftPokemon(int pokemonId, int level)
+        {
+            this.giftPokemonId = pokemonId;
+            this.giftPokemonLevel = level;
+        }
+
+        public void setOptions(String[] options, int[] optionOutcome)
+        {
+            this.options = options;
+            this.optionOutcome = optionOutcome;
         }
     }
 }

@@ -63,7 +63,8 @@ public class DatabaseUtility
             "evolution_methods", "pokemon", "pokemon_moves", "pokemon_location", 
             "conversation", "moves", "type_effectiveness", "items", "battle",
             "portal", "map_object", "area", "character", "move_stat_effect",
-            "evolution_methods", "conversation_trigger", "map_template"
+            "evolution_methods", "conversation_trigger", "map_template",
+            "conversation_options"
         };
 
         for (String t : table_list)
@@ -316,20 +317,43 @@ public class DatabaseUtility
                 + "conversation_id INT NOT NULL, "
                 + "conversation_event_id INT NOT NULL, "
                 + "text VARCHAR(100) NOT NULL, "
-                + "battle_id INT NOT NULL, "
-                + "heal_team INT NOT NULL, "
+                + "battle_id INT DEFAULT -1, "
+                + "heal_team INT DEFAULT 0, "
                 + "character_id INT NOT NULL, "
-                + "movement_direction INT NOT NULL)";
+                + "movement_direction INT DEFAULT -1, "
+                + "option_id INT DEFAULT -1, "
+                + "next_conversation_event_id INT DEFAULT -1, " 
+                + "gift_pokemon_id INT DEFAULT -1, "
+                + "gift_pokemon_level INT DEFAULT -1)";
         runUpdate(query);
 
         // fill conversation table with data
         path = "src/rawdata/conversation.csv";
         query = "INSERT INTO conversation ("
                 + "conversation_id, conversation_event_id, text, "
-                + "battle_id, heal_team, character_id, movement_direction)"
-                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                + "battle_id, heal_team, character_id, movement_direction, "
+                + "option_id, next_conversation_event_id, "
+                + "gift_pokemon_id, gift_pokemon_level)"
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int"};
+        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int", "int", "int", "int"};
+        loadTable(path, query, dataTypes);
+
+        //==================================================================================
+        // options displayed in conversations
+        query = "CREATE TABLE conversation_options("
+                + "option_id INT NOT NULL, "
+                + "text VARCHAR(100) NOT NULL, "
+                + "next_conversation_event_id INT NOT NULL)";
+        runUpdate(query);
+
+        // fill conversation table with data
+        path = "src/rawdata/conversationOption.csv";
+        query = "INSERT INTO conversation_options ("
+                + "option_id, text, next_conversation_event_id)"
+                + "VALUES (?, ?, ?)";
+
+        dataTypes = new String[] {"int", "String", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

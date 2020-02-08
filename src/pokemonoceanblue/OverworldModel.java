@@ -178,6 +178,12 @@ public class OverworldModel {
                 app.healTeam();
             }
 
+            // get a gift Pokemon 
+            else if (this.conversation.getGiftPokemonId() > -1)
+            {
+                this.app.addPokemon(this.conversation.getGiftPokemonId(), this.conversation.getGiftPokemonLevel());
+            }
+
             // start a battle
             else if (this.conversation.getBattleId() >= 0)
             {
@@ -261,6 +267,12 @@ public class OverworldModel {
         if (this.conversation != null)
         {
             this.conversation.nextEvent();
+
+            if (this.conversation.getOptions() != null)
+            {
+                this.textOptions = this.conversation.getOptions();
+                this.actionCounter = 15;
+            }
         }
         // surf if facing water
         else if (!this.playerModel.surf && tiles[y][x] == 0 && this.playerModel.getMovementCounter() <= 0)
@@ -392,18 +404,19 @@ public class OverworldModel {
      */
     public void openMenu()
     {
-        if (this.actionCounter == 0 && this.conversation == null)
+        if (this.actionCounter == 0)
         {
-            // open the menu
-            if (this.textOptions == null)
-            {
-                this.textOptions = new String[]{"Pokedex", "Pokemon", "Bag"};
-                this.actionCounter = 15;
-            }
             // exit the menu if it was already open
-            else
+            if (this.textOptions != null)
             {
                 this.textOptions = null;
+                this.actionCounter = 15;
+                this.optionIndex = 0;
+            }
+            // open the menu
+            else if (this.conversation == null)
+            {
+                this.textOptions = new String[]{"Pokedex", "Pokemon", "Bag"};
                 this.actionCounter = 15;
             }
         }
@@ -416,7 +429,12 @@ public class OverworldModel {
     {
         if (this.actionCounter == 0)
         {
-            if (this.textOptions[this.optionIndex] == "Pokedex")
+            if (this.conversation != null)
+            {
+                this.conversation.setOption(this.optionIndex);
+                this.openMenu();
+            }
+            else if (this.textOptions[this.optionIndex] == "Pokedex")
             {
                 app.openPokedex();
                 this.openMenu();
@@ -431,7 +449,6 @@ public class OverworldModel {
                 app.openInventory();
                 this.openMenu();
             }
-            this.actionCounter = 15;
         }
     }
 

@@ -70,6 +70,16 @@ public class PokedexModel
     }
 
     /**
+     * get the shiny rate for a specific Pokemon
+     * @param pokemonId the Pokemon's identifier
+     * @return the probability that the Pokemon is shiny, in range (0,1)
+     */
+    public double getShinyRate(int pokemonId)
+    {
+        return (Math.log10(this.caughtPokemon[pokemonId] + 0.1) + 1) / 10000;
+    }
+
+    /**
      * Change the pokemon currently being hovered
      * @param dx x-direction movement
      * @param dy y-direction movement

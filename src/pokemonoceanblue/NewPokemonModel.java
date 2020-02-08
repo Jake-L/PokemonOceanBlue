@@ -21,7 +21,6 @@ public class NewPokemonModel {
         this.pokemon = new PokemonModel[1];
         this.pokemon[0] = pokemon;
         this.partyModel = partyModel;
-        this.addPokemon();
     }
 
     /**
