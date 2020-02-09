@@ -27,4 +27,5 @@ map_id,area_id,x,y,dest_map_id,dest_area_id,dest_x,dest_y,comment
 13,0,3,9,0,2,33,27,back to viridian city
 0,2,22,3,15,0,4,12,viridian city route building
 15,0,4,13,0,2,2,23,viridian city
-15,0,4,1,14,0,16,45,viridian forest
+15,0,4,0,14,0,20,46,viridian forest
+14,0,20,47,15,0,4,1,viridian city route building

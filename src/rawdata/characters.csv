@@ -23,3 +23,4 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 21,0,2,,hiker,9,34,21,0,3
 22,0,2,,hiker,26,9,22,0,2
 23,0,0,,aceBoy,15,0,23,0,2
+25,14,0,Youngster Sheldon,youngsterBoy,10,37,25,0,1

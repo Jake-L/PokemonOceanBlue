@@ -68,3 +68,4 @@ conversation_id,conversation_event_id,text,battle_id,heal_team,character_id,move
 23,0,You should go see Professor Oak to get a Pokemon before wandering into wild grass.,-1,-1,-1,-1,-1,-1,-1,-1
 24,0,Sorry$ you can't enter wild grass without a Pokemon.,-1,-1,-1,-1,-1,1,-1,-1
 24,1,,-1,-1,-1,2,-1,-1,-1,-1
+25,0,I like turtles.,6,-1,-1,-1,-1,-1,-1,-1

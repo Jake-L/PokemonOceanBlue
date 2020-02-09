@@ -1,4 +1,5 @@
 map_id,area_id,name,x,y
+14,0,routeBuilding,18,53
 0,2,routeBuilding,19,4
 0,2,house3,32,17
 0,2,house3,25,17
@@ -271,7 +272,6 @@ map_id,area_id,name,x,y
 14,0,forestTree,24,9
 14,0,forestTree,24,7
 14,0,forestTree,24,1
-14,0,forestTree,21,49
 14,0,forestTree,21,43
 14,0,forestTree,21,41
 14,0,forestTree,21,39
@@ -283,7 +283,6 @@ map_id,area_id,name,x,y
 14,0,forestTree,21,9
 14,0,forestTree,21,7
 14,0,forestTree,21,1
-14,0,forestTree,18,49
 14,0,forestTree,18,33
 14,0,forestTree,18,31
 14,0,forestTree,18,29
