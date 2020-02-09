@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 
-public class ViewBase {
+abstract class ViewBase {
     protected byte graphicsScaling;
     protected int width;
     protected int height;
@@ -219,7 +219,7 @@ public class ViewBase {
     }
 
     // render function that gets implemented by extended class
-    public void render(Graphics g, JPanel canvas) {}
+    abstract void render(Graphics g, JPanel canvas);
 
     /**
      * @param image image to be recoloured white
