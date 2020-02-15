@@ -24,3 +24,5 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 22,0,2,,hiker,26,9,22,0,2
 23,0,0,,aceBoy,15,0,23,0,2
 25,14,0,Youngster Sheldon,youngsterBoy,10,37,25,0,1
+26,14,0,Bug Catcher Alvin,bugCatcher,29,39,26,0,3
+27,11,0,,familyMan,2,5,27,0,2

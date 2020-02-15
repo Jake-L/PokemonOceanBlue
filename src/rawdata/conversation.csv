@@ -69,3 +69,8 @@ conversation_id,conversation_event_id,text,battle_id,heal_team,character_id,move
 24,0,Sorry$ you can't enter wild grass without a Pokemon.,-1,-1,-1,-1,-1,1,-1,-1
 24,1,,-1,-1,-1,2,-1,-1,-1,-1
 25,0,I like turtles.,6,-1,-1,-1,-1,-1,-1,-1
+26,0,HIIYYAAAAAH!!! YOU'RE MINE BUG!!!,-1,-1,-1,-1,-1,-1,-1,-1
+26,1,Hey wait$ you're not a bug Pokemon.,7,-1,-1,-1,-1,-1,-1,-1
+27,0,I heard the reason there's no rocket goons here in Viridian is that the gym leader here keeps em out.,-1,-1,-1,-1,-1,-1,-1,-1
+27,1,I don't know who this gym leader is but he has my thanks.,-1,-1,-1,-1,-1,-1,-1,-1
+27,2,I was worried when team rocket started gaining prescence in this area I would have to move my family.,-1,-1,-1,-1,-1,-1,-1,-1
