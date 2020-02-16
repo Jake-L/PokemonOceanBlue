@@ -8,7 +8,7 @@ import javax.swing.JPanel;
 /** 
  * Renders the overworld
  */
-public class TitleScreenView extends ViewBase {
+public class TitleScreenView extends BaseView {
 
     private Image[] blastoiseSprite = new Image[2];
     private Image[] title = new Image[6];

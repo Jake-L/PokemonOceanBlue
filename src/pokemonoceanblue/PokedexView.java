@@ -15,8 +15,8 @@ import java.awt.color.ColorSpace;
 /** 
  * Renders the Pokedex
  */
-public class PokedexView extends ViewBase {
-
+public class PokedexView extends BaseView 
+{
     private BufferedImage[] pokemonIconSprite = new BufferedImage[494];
     private Image[] indexHighlight = new Image[2];
     private Image pokemonSprite;
@@ -96,12 +96,13 @@ public class PokedexView extends ViewBase {
         int iconWidth = this.pokemonIconSprite[0].getWidth(null) * graphicsScaling;
 
         this.rowCount = height / (iconHeight);
-        this.model.pokemonPerRow = (width * 4 / 5) / (iconWidth);
+        this.model.optionWidth = (width * 4 / 5) / (iconWidth);
+        this.model.optionHeight = this.model.optionMax / this.model.optionWidth;
 
         // increase minIndex if screen size change causes the current index to be pushed off the bottom of the screen
-        if (this.minIndex < this.model.optionIndex - this.rowCount * this.model.pokemonPerRow)
+        if (this.minIndex < this.model.optionIndex - this.rowCount * this.model.optionWidth)
         {
-            this.minIndex += this.model.pokemonPerRow;
+            this.minIndex += this.model.optionWidth;
         }
 
         if (this.oldOptionIndex != this.model.optionIndex)
@@ -121,12 +122,12 @@ public class PokedexView extends ViewBase {
 
         for (int i = 0; i < this.rowCount; i++)
         {
-            for (int j = 0; j < this.model.pokemonPerRow; j++)
+            for (int j = 0; j < this.model.optionWidth; j++)
             {
-                if (this.minIndex + (i * this.model.pokemonPerRow) + j < this.pokemonIconSprite.length)
+                if (this.minIndex + (i * this.model.optionWidth) + j < this.pokemonIconSprite.length)
                 {
                     g.drawImage(
-                        this.pokemonIconSprite[this.minIndex + (i * this.model.pokemonPerRow) + j],
+                        this.pokemonIconSprite[this.minIndex + (i * this.model.optionWidth) + j],
                         width / 5 + j * iconWidth,
                         i * iconHeight,
                         iconWidth,
@@ -140,8 +141,8 @@ public class PokedexView extends ViewBase {
         // draw a box showing the current selection
         g.drawImage(
             this.indexHighlight[(int)(System.currentTimeMillis() / 500 % 2)],
-            width / 5 + (this.model.optionIndex - this.minIndex) % this.model.pokemonPerRow * iconWidth - (graphicsScaling * 2),
-            (this.model.optionIndex - this.minIndex) / this.model.pokemonPerRow * iconHeight - (graphicsScaling * 2),
+            width / 5 + (this.model.optionIndex - this.minIndex) % this.model.optionWidth * iconWidth - (graphicsScaling * 2),
+            (this.model.optionIndex - this.minIndex) / this.model.optionWidth * iconHeight - (graphicsScaling * 2),
             this.indexHighlight[0].getWidth(null) * graphicsScaling,
             this.indexHighlight[0].getHeight(null) * graphicsScaling,
             canvas
@@ -185,11 +186,11 @@ public class PokedexView extends ViewBase {
     {
         if (this.model.optionIndex < this.minIndex)
         { 
-            this.minIndex = Math.max(this.minIndex - this.model.pokemonPerRow, 1);
+            this.minIndex = Math.max(this.minIndex - this.model.optionWidth, 1);
         }
-        else if (this.model.optionIndex > this.minIndex + this.rowCount * this.model.pokemonPerRow - 1)
+        else if (this.model.optionIndex > this.minIndex + this.rowCount * this.model.optionWidth - 1)
         {
-            this.minIndex = Math.min(this.minIndex + this.model.pokemonPerRow, this.model.caughtPokemon.length - 1);
+            this.minIndex = Math.min(this.minIndex + this.model.optionWidth, this.model.caughtPokemon.length - 1);
         }
         this.oldOptionIndex = this.model.optionIndex;
         ImageIcon ii = new ImageIcon("src/pokemon/frame0/" + this.model.optionIndex + ".png");

@@ -9,7 +9,7 @@ import java.awt.Font;
 /** 
  * Renders the party screen
  */
-public class PartyView extends ViewBase {
+public class PartyView extends BaseView {
 
     private int teamSize;
     private Image[] pokemonSprite;

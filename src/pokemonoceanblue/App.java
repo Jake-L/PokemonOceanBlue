@@ -21,25 +21,26 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.AudioSystem;
 import java.awt.Font;
 
-public class App extends JFrame implements KeyListener 
+public class App extends JFrame implements KeyListener
 {
     OverworldController overworldController;
     CharacterModel playerModel;
     CharacterModel oldPlayerModel;
     ViewManager viewManager;
-    List<Integer> keysDown = new ArrayList<Integer>(); 
+    List<Integer> keysDown = new ArrayList<Integer>();
     OverworldModel overworldModel;
     BattleModel battleModel;
     BattleController battleController;
-    PartyController partyController;
+    BaseController partyController;
     PartyModel partyModel;
     InventoryController inventoryController;
     InventoryModel inventoryModel;
-    NewPokemonController newPokemonController;
-    SummaryController summaryController;
+    BaseController newPokemonController;
+    BaseController summaryController;
     PokedexModel pokedexModel;
-    PokedexController pokedexController;
+    BaseController pokedexController;
     EvolutionCheck evolveCheck;
+    //PokemonStorageController pokemonStorageController;
 
     List<NewPokemonModel> newPokemonQueue = new ArrayList<NewPokemonModel>();
 
@@ -50,8 +51,8 @@ public class App extends JFrame implements KeyListener
     public App(){
         createAndShowGUI();
     }
-    
-    public static void main(String[] args) throws Exception 
+
+    public static void main(String[] args) throws Exception
     {
         new App();
     }
@@ -64,20 +65,20 @@ public class App extends JFrame implements KeyListener
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         try
         {
-            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("src/pokemonfont.ttf")));            
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("src/pokemonfont.ttf")));
         }
         catch (Exception e)
         {
             System.out.println("Error loading font");
         }
-       
+
         //Create and set up the window.
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Insets scnMax = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
         this.setPreferredSize(new Dimension(screenSize.width, screenSize.height - scnMax.bottom));
-        startTime = System.currentTimeMillis();        
-        
+        startTime = System.currentTimeMillis();
+
         // display the view
         viewManager = new ViewManager();
         this.add(viewManager);
@@ -88,14 +89,14 @@ public class App extends JFrame implements KeyListener
         //Display the window.
         this.pack();
         this.setVisible(true);
-        
+
         // set the size of the ViewManager, must come after pack()
         viewManager.setViewSize(this.getWidth(), this.getHeight());
         // listen for screen resizes
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
                 Component c = (Component)e.getSource();
-    
+
                 // Get new size
                 Dimension newSize = c.getSize();
                 Insets scnMax = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
@@ -140,7 +141,7 @@ public class App extends JFrame implements KeyListener
             setMap(0, 7, 7);
         }
     }
-     
+
     /** Remove the released key from the list of pressed keys */
     public void keyReleased(KeyEvent e) {
         keysDown.remove(Integer.valueOf(e.getKeyCode()));
@@ -172,7 +173,7 @@ public class App extends JFrame implements KeyListener
         battleController = new BattleController(battleModel);
     }
 
-    /** 
+    /**
      * Loads a new map and passed it to ViewManager
      * @param mapId unique identifier for the new map
      * @param playerX x-coordinate to spawn player
@@ -204,30 +205,40 @@ public class App extends JFrame implements KeyListener
 
     public void openInventory()
     {
-        inventoryModel.initialize();
+        this.inventoryModel.initialize();
         viewManager.setView(new InventoryView(inventoryModel));
         inventoryController = new InventoryController(inventoryModel);
     }
 
     public void openParty(int currentPokemon)
     {
-        partyModel.initialize(currentPokemon);
+        this.partyModel.initialize(currentPokemon);
         viewManager.setView(new PartyView(partyModel));
-        partyController = new PartyController(partyModel);
+        partyController = new BaseController(partyModel);
     }
 
     public void openSummary(int currentPokemon)
     {
-        partyModel.initialize(currentPokemon);
+        this.partyModel.initialize(currentPokemon);
         viewManager.setView(new SummaryView(partyModel));
-        summaryController = new SummaryController(partyModel);
+        summaryController = new BaseController(partyModel);
     }
 
     public void openPokedex()
     {
+        this.pokedexModel.initialize();
         viewManager.setView(new PokedexView(pokedexModel));
-        pokedexController = new PokedexController(pokedexModel);
+        pokedexController = new BaseController(pokedexModel);
     }
+
+    // public void openPokemonStorage()
+    // {
+    //     partyModel.initialize();
+    //     partyModel.setCurrentPokemon(-1);
+    //     PokemonStorageView psv = new PokemonStorageView(partyModel);
+    //     pokemonStorageController = new PokemonStorageController(partyModel);
+    //     viewManager.setView(psv);
+    // }
 
     /**
      * Handles the catching of new Pokemon
@@ -275,7 +286,7 @@ public class App extends JFrame implements KeyListener
                 {
                     battleController.userInput(keysDown);
                     battleModel.update();
-                    
+
                     if (this.battleModel.isComplete())
                     {
                         // check which pokemon leveled up
@@ -293,7 +304,7 @@ public class App extends JFrame implements KeyListener
                         {
                             this.partyModel.initialize(-1);
                             viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
-                            newPokemonController = new NewPokemonController(newPokemonQueue.get(0));
+                            newPokemonController = new BaseController(newPokemonQueue.get(0));
                             newPokemonQueue.remove(0);
                         }
                         // return to overworld screen
@@ -328,7 +339,7 @@ public class App extends JFrame implements KeyListener
                     {
                         this.partyModel.initialize(-1);
                         viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
-                        newPokemonController = new NewPokemonController(newPokemonQueue.get(0));
+                        newPokemonController = new BaseController(newPokemonQueue.get(0));
                         newPokemonQueue.remove(0);
                     }
                     else if (this.battleModel == null)
@@ -336,7 +347,7 @@ public class App extends JFrame implements KeyListener
                         // only read user input when previous map is no longer visible
                         overworldController.userInput(keysDown);
                     }
-                    
+
                     // check if player is entering a portal
                     if (playerModel.getMovementCounter() == 14)
                     {
@@ -350,18 +361,16 @@ public class App extends JFrame implements KeyListener
                 }
                 else if (viewManager.getCurrentView().equals("PartyView"))
                 {
-                    partyModel.update();
-
                     if (partyController != null)
                     {
                         partyController.userInput(keysDown);
                         int returnValue = partyModel.getSelection();
-                        if (partyModel.isSummary)
+                        if (partyModel.isSummary && returnValue > -1)
                         {
                             this.partyController = null;
-                            this.openSummary(partyModel.currentPokemon);
+                            this.openSummary(-1);
                         }
-                        
+
                         else if (returnValue >= -1)
                         {
                             this.partyController = null;
@@ -371,7 +380,7 @@ public class App extends JFrame implements KeyListener
                                 this.battleModel.setPokemon(returnValue);
                                 // return to battle screen
                                 BattleView battleView = new BattleView(this.battleModel);
-                                viewManager.setView(battleView); 
+                                viewManager.setView(battleView);
                             }
                             else
                             {
@@ -379,21 +388,18 @@ public class App extends JFrame implements KeyListener
                                 OverworldView overworldView = new OverworldView(overworldModel);
                                 viewManager.setView(overworldView);
                             }
-
-                            this.partyModel.optionIndex = 0;
                         }
                     }
                 }
                 else if (viewManager.getCurrentView().equals("SummaryView"))
                 {
-                    partyModel.update();
                     if (summaryController != null)
                     {
                         summaryController.userInput(keysDown);
                         if (!partyModel.isSummary)
                         {
                             this.summaryController = null;
-                            this.openParty(partyModel.currentPokemon);
+                            this.openParty(-1);
                         }
                     }
                 }
@@ -414,7 +420,7 @@ public class App extends JFrame implements KeyListener
                                 this.battleModel.setItem(returnValue);
                                 // return to battle screen
                                 BattleView battleView = new BattleView(this.battleModel);
-                                viewManager.setView(battleView); 
+                                viewManager.setView(battleView);
                             }
                             else
                             {
@@ -437,7 +443,7 @@ public class App extends JFrame implements KeyListener
                             {
                                 this.partyModel.initialize(-1);
                                 viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
-                                newPokemonController = new NewPokemonController(newPokemonQueue.get(0));
+                                newPokemonController = new BaseController(newPokemonQueue.get(0));
                                 newPokemonQueue.remove(0);
                             }
                             else
@@ -454,7 +460,6 @@ public class App extends JFrame implements KeyListener
                     if (pokedexController != null)
                     {
                         pokedexController.userInput(keysDown);
-                        pokedexModel.update();
 
                         if (pokedexController.isComplete())
                         {
@@ -464,6 +469,20 @@ public class App extends JFrame implements KeyListener
                         }
                     }
                 }
+                // else if (viewManager.getCurrentView().equals("PokemonStorageView"))
+                // {
+                //     if (pokemonStorageController != null)
+                //     {
+                //         pokemonStorageController.userInput(keysDown);
+
+                //         if (pokemonStorageController.isComplete())
+                //         {
+                //             OverworldView overworldView = new OverworldView(overworldModel);
+                //             viewManager.setView(overworldView);
+                //             pokemonStorageController = null;
+                //         }
+                //     }
+                // }
 
                 // fade music during transition
                 MusicPlayer.fadeVolume();
@@ -479,19 +498,19 @@ public class App extends JFrame implements KeyListener
 
             // sleep until next frame
             if (sleepLength > 0) {
-                try 
+                try
                 {
                     Thread.sleep(sleepLength, 10);
-                } 
-                catch (InterruptedException e) 
+                }
+                catch (InterruptedException e)
                 {
                     System.out.println(String.format("Thread interrupted: %s", e.getMessage()));
                 }
             }
 
-            
+
         }
-    }    
+    }
 
     /**
      * Checks if any Pokemon can evolve, and adds the evolution to a queue
@@ -545,17 +564,17 @@ public class App extends JFrame implements KeyListener
         }
     }
 
-    /** 
+    /**
      * Plays background music
      */
-    public static class MusicPlayer 
+    public static class MusicPlayer
     {
         private static String currentSong;
         private static String newSong;
         private static Clip currentClip;
         private static int transitionCounter = 0;
 
-        /** 
+        /**
          * Queues the background music for the given song number
          * @param song the number of the song to be played
          */
@@ -573,14 +592,14 @@ public class App extends JFrame implements KeyListener
             {
                 newSong = song;
                 transitionCounter = 25;
-            } 
+            }
             else
             {
                 transitionCounter = 0;
             }
         }
 
-        /** 
+        /**
          * Begins playing the queued song
          */
         private static void playSong()
@@ -607,7 +626,7 @@ public class App extends JFrame implements KeyListener
             }
         }
 
-        /** 
+        /**
          * Adjust the volume level
          */
         private static void setVolume(double gain)
@@ -617,7 +636,7 @@ public class App extends JFrame implements KeyListener
             gainControl.setValue(dB);
         }
 
-        /** 
+        /**
          * Fade volume during transitions between songs
          */
         public static void fadeVolume()
@@ -634,7 +653,7 @@ public class App extends JFrame implements KeyListener
             {
                 playSong();
                 gain = 0.25;
-                setVolume(gain);   
+                setVolume(gain);
             }
         }
     }

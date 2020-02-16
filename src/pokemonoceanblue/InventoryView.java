@@ -9,7 +9,7 @@ import java.awt.Font;
 /** 
  * Renders the overworld
  */
-public class InventoryView extends ViewBase {
+public class InventoryView extends BaseView {
 
     private InventoryModel model;
     private Image[] itemSprite = new Image[150];

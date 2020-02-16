@@ -9,7 +9,7 @@ import java.awt.Font;
 /** 
  * Renders the summary screen
  */
-public class SummaryView extends ViewBase {
+public class SummaryView extends BaseView {
 
     private PartyModel model;
     private int teamSize;

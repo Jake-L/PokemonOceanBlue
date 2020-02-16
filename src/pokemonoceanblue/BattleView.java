@@ -15,7 +15,7 @@ import javax.imageio.ImageIO;
 /** 
  * Renders the Battle
  */
-public class BattleView extends ViewBase {
+public class BattleView extends BaseView {
 
     private BattleModel model;
     private Image[][][] pokemonSprite = new Image[2][][];
@@ -29,6 +29,7 @@ public class BattleView extends ViewBase {
     private Image trainerSprite;
     private Image[] statusEffectImages = new Image[6];
     private boolean[] hidePokemon = new boolean[2];
+    private Image[] partyBorder = new Image[9];
     
     /** 
      * Constructor for the overworld view
@@ -146,6 +147,13 @@ public class BattleView extends ViewBase {
             ii = new ImageIcon("src/trainerBattleSprite/" + model.trainerSpriteName + ".png");
             this.trainerSprite = ii.getImage();
         }
+
+        // load party border sprites
+        for (int i = 0; i < partyBorder.length; i++)
+        {
+            ii = new ImageIcon("src/menus/pcPartyBorder" + i + ".png");
+            partyBorder[i]  = ii.getImage();
+        }
     }
 
     /** 
@@ -165,6 +173,23 @@ public class BattleView extends ViewBase {
             0,
             width * 8 / 10,
             height * 3 / 4,
+            canvas);
+
+        // renders party boxes at sides of the screen
+        this.displayTextbox(this.partyBorder,
+            0, 
+            0,
+            width / 10, 
+            height * 3 / 4, 
+            g, 
+            canvas);
+
+        this.displayTextbox(this.partyBorder,
+            width * 9 / 10, 
+            0,
+            width / 10, 
+            height * 3 / 4, 
+            g, 
             canvas);
 
         if (this.model.currentPokemon[0] >= 0)

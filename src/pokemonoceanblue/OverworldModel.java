@@ -271,7 +271,6 @@ public class OverworldModel {
             if (this.conversation.getOptions() != null)
             {
                 this.textOptions = this.conversation.getOptions();
-                this.actionCounter = 15;
             }
         }
         // surf if facing water
@@ -325,6 +324,11 @@ public class OverworldModel {
             {
                 if (current.x == x && current.y == y && !current.autoTrigger)
                 {
+                    // // open PC
+                    // if (current.conversationId == 9999)
+                    // {
+                    //     app.openPokemonStorage();
+                    // }
                     this.conversation = new ConversationModel(current.conversationId, this.playerModel, current.cpuModel, false);
                     
                     // clear the trigger
@@ -337,6 +341,8 @@ public class OverworldModel {
                 }
             }
         }
+
+        this.actionCounter = 15;
     }
 
     /** 

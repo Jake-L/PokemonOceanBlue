@@ -3,21 +3,18 @@ package pokemonoceanblue;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PartyModel 
+public class PartyModel extends BaseModel
 {
     public PokemonModel[] team;
-    public int optionIndex = 0;
-    public final int INPUTDELAY = 6;
-    public int counter;
-    public int currentPokemon;
-    public boolean isBattle;
     public boolean isSummary = false;
-    public int returnValue;
+    public int currentPokemon;
+
     public List<PokemonModel> pokemonStorage = new ArrayList<PokemonModel>();
 
     public PartyModel(PokemonModel[] model)
     {
         this.team = model;
+        this.optionIndex = -1;
     }
 
     /**
@@ -26,44 +23,70 @@ public class PartyModel
      */
     public void initialize(int currentPokemon)
     {
-        this.currentPokemon = currentPokemon;
-        this.counter = this.INPUTDELAY;
+        this.actionCounter = ACTION_DELAY;
         this.returnValue = -2;
-        
-        if (this.currentPokemon == -1)
+
+        // track which Pokemon is active in battle
+        this.currentPokemon = currentPokemon;
+
+        // set the initial position as the current Pokemon in battle or the first Pokemon
+        if (this.optionIndex == -1)
         {
-            this.isBattle = false;
+            this.optionIndex = Math.max(currentPokemon, 0);
         }
 
+        this.optionMax = this.team.length - 1;
+
+        // when looking at summaries, move through one dimension
+        if (this.isSummary)
+        {
+            this.optionWidth = 1;
+            this.optionHeight = this.optionMax;
+        }
         else
         {
-            this.isBattle = true;
+            this.optionWidth = 2;
+            this.optionHeight = 3;
         }
     }
 
-    public void update()
-    {
-        if (this.counter > 0)
-        {
-            this.counter--;
-        }
-    }
-
+    @Override
     public void confirmSelection()
     {
-        if (this.isBattle)
+        // if not in battles, open summary screen
+        if (this.currentPokemon == -1)
+        {
+            this.isSummary = !this.isSummary;
+            if (this.isSummary)
+            {
+                this.returnValue = this.optionIndex;
+            }
+        }
+        // if in battle, return the chosen Pokemon
+        else if (this.currentPokemon != this.optionIndex)
         {
             this.returnValue = this.optionIndex;
+            this.optionIndex = -1;
         }
-        else
+        // don't substitute a Pokemon for itself
+        else 
         {
-            this.isSummary = true;
+            this.exitScreen();
         }
     }
 
-    public int getSelection()
+    @Override
+    public void exitScreen()
     {
-        return this.returnValue;
+        if (this.isSummary)
+        {
+            this.isSummary = false;
+        }
+        else
+        {
+            this.returnValue = -1;
+            this.optionIndex = -1;
+        }
     }
 
     /**

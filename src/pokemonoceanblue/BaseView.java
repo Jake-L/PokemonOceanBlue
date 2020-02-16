@@ -8,14 +8,14 @@ import javax.swing.JPanel;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 
-abstract class ViewBase {
+abstract class BaseView {
     protected byte graphicsScaling;
     protected int width;
     protected int height;
     protected Image[] textDisplayBox = new Image[9];
     protected Image arrowSprite;
 
-    public ViewBase()
+    public BaseView()
     {       
         ImageIcon ii;
 
@@ -57,6 +57,36 @@ abstract class ViewBase {
         // sprites are square, so only need to look at width or height
         int boxSize = boxSprite[0].getWidth(null);
 
+        for (int j = y + boxSize * graphicsScaling; j < boxHeight + y - boxSize * graphicsScaling; j += boxSize * graphicsScaling)
+        {
+            //centre
+            for (int i = x + boxSize * graphicsScaling; i < boxWidth + x - boxSize * graphicsScaling; i += boxSize * graphicsScaling)
+            {
+                g.drawImage(boxSprite[4],
+                    i,
+                    j,
+                    boxSize * graphicsScaling,
+                    boxSize * graphicsScaling,
+                    canvas);
+            }
+
+            //left
+            g.drawImage(boxSprite[3],
+                x,
+                j,
+                boxSize * graphicsScaling,
+                boxSize * graphicsScaling,
+                canvas);
+
+            //right
+            g.drawImage(boxSprite[5],
+                x + boxWidth - boxSize * graphicsScaling,
+                j,
+                boxSize * graphicsScaling,
+                boxSize * graphicsScaling,
+                canvas);
+        }
+
         //top left
         g.drawImage(boxSprite[0],
             x,
@@ -85,13 +115,6 @@ abstract class ViewBase {
             boxSize * graphicsScaling,
             boxSize * graphicsScaling,
             canvas);
-        //left
-        g.drawImage(boxSprite[3],
-            x,
-            y + boxSize * graphicsScaling,
-            boxSize * graphicsScaling,
-            boxHeight - boxSize * 2 * graphicsScaling,
-            canvas);
         //bottom right
         g.drawImage(boxSprite[8],
             x + boxWidth - boxSize * graphicsScaling,
@@ -99,26 +122,12 @@ abstract class ViewBase {
             boxSize * graphicsScaling,
             boxSize * graphicsScaling,
             canvas);
-        //right
-        g.drawImage(boxSprite[5],
-            x + boxWidth - boxSize * graphicsScaling,
-            y + boxSize * graphicsScaling,
-            boxSize * graphicsScaling,
-            boxHeight - boxSize * 2 * graphicsScaling,
-            canvas);
         //bottom
         g.drawImage(boxSprite[7],
             x + boxSize * graphicsScaling,
             y + boxHeight - boxSize * graphicsScaling,
             boxWidth - boxSize * 2 * graphicsScaling,
             boxSize * graphicsScaling,
-            canvas);
-        //centre
-        g.drawImage(boxSprite[4],
-            x + boxSize * graphicsScaling,
-            y + boxSize * graphicsScaling,
-            boxWidth - boxSize * 2 * graphicsScaling,
-            boxHeight - boxSize * 2 * graphicsScaling,
             canvas);
     } 
 

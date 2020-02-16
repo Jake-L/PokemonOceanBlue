@@ -14,7 +14,7 @@ import javax.swing.JPanel;
 /** 
  * Renders the overworld
  */
-public class OverworldView extends ViewBase {
+public class OverworldView extends BaseView {
 
     private OverworldModel model;
     private Image[] tileSprite = new Image[55];

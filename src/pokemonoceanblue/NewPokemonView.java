@@ -14,7 +14,7 @@ import java.awt.AlphaComposite;
 /** 
  * Renders the overworld
  */
-public class NewPokemonView extends ViewBase {
+public class NewPokemonView extends BaseView {
 
     private Image[] pokemonSprite;
     private BufferedImage[] pokemonBufferedSprite;
@@ -81,7 +81,7 @@ public class NewPokemonView extends ViewBase {
 
         int renderIndex = this.pokemonSprite.length - 1;
 
-        if (this.model.counter > 60)
+        if (this.model.actionCounter > 60)
         {
             renderIndex = 0;
         }
@@ -100,7 +100,7 @@ public class NewPokemonView extends ViewBase {
         // fade the pokemon to white during evolution animation
         if (this.pokemonBufferedSprite.length > 1)
         {
-            float opacity = 1.0f - (Math.abs(this.model.counter - 60) / 60.0f);
+            float opacity = 1.0f - (Math.abs(this.model.actionCounter - 60) / 60.0f);
             ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
             g.drawImage(
                 this.pokemonBufferedSprite[renderIndex],

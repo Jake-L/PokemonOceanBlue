@@ -3,10 +3,8 @@ package pokemonoceanblue;
 /** 
  * A class used for holding information used when a new Pokemon is caught, evolves, or hatches from an egg
  */
-public class NewPokemonModel {
-    public int counter = 60;
+public class NewPokemonModel extends BaseModel {
     public PokemonModel[] pokemon;
-    public boolean complete = false;
     private final PartyModel partyModel;
     public String text;
     private int partyIndex = -1;
@@ -18,9 +16,13 @@ public class NewPokemonModel {
      */
     public NewPokemonModel(PokemonModel pokemon, PartyModel partyModel)
     {
+        super();
         this.pokemon = new PokemonModel[1];
         this.pokemon[0] = pokemon;
         this.partyModel = partyModel;
+        this.actionCounter = 60;
+        // update right away to make sure there is text to render
+        this.update();
     }
 
     /**
@@ -32,13 +34,14 @@ public class NewPokemonModel {
      */
     public NewPokemonModel(PokemonModel pokemon, PartyModel partyModel, int evolvedPokemonId, int partyIndex)
     {
+        super();
         this.pokemon = new PokemonModel[2];
         this.pokemon[0] = pokemon;
         this.pokemon[1] = new PokemonModel(evolvedPokemonId, 1, false);
         this.partyModel = partyModel;
         this.partyIndex = partyIndex;
         this.text = this.pokemon[0].name + " evolved into " + this.pokemon[1].name;
-        counter = 120;
+        this.actionCounter = 120;
     }
 
     public void addPokemon()
@@ -68,11 +71,25 @@ public class NewPokemonModel {
         this.partyModel.team[this.partyIndex].evolve(this.pokemon[1].id);
     }
 
-    public void confirmSelection()
+    @Override
+    public void update()
     {
-        if (this.counter == 0)
+        // update the player's team to reflect the change
+        if (this.actionCounter == 60)
         {
-            this.complete = true;
+            if (this.pokemon.length > 1)
+            {
+                this.evolvePokemon();
+            }
+            else
+            {
+                this.addPokemon();
+            }
+        }
+
+        if (this.actionCounter > 0)
+        {
+            this.actionCounter--;
         }
     }
 }

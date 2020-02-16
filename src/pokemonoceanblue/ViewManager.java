@@ -7,8 +7,8 @@ import javax.swing.JPanel;
 
 public class ViewManager extends JPanel {
 
-    private ViewBase view;
-    private ViewBase newView;
+    private BaseView view;
+    private BaseView newView;
     private byte graphicsScaling;
     private int width;
     private int height;
@@ -46,7 +46,7 @@ public class ViewManager extends JPanel {
     /** 
      * @param view the current view to be rendered
      */
-    public void setView(ViewBase view) 
+    public void setView(BaseView view) 
     {
         if (this.newView != null)
         {
