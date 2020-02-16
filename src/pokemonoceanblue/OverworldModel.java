@@ -520,7 +520,7 @@ public class OverworldModel {
                          + "ON a.area_id = mo.area_id "
                          + "AND a.map_id = mo.map_id "
                          + "WHERE mo.map_id = " + this.mapId
-                         + " ORDER BY mo.y ASC";
+                         + " ORDER BY mo.y + IFNULL(a.min_y,0) ASC";
 
             ResultSet rs = db.runQuery(query);
 
