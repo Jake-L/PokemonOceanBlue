@@ -38,9 +38,9 @@ public class EvolutionCheck
                 evolve = rs.getInt("evolved_species_id");
                 minimumLevel = rs.getInt("minimum_level");
                 minimumHappiness = rs.getInt("minimum_happiness");
-                genderId = rs.getInt("gender_id");
-                mapId = rs.getInt("map_id");
-                timeOfDay = rs.getInt("time_of_day");
+                //genderId = rs.getInt("gender_id");
+                //mapId = rs.getInt("map_id");
+                //timeOfDay = rs.getInt("time_of_day");
 
                 if (pokemon.id != preSpeciesId)
                 {
@@ -64,6 +64,7 @@ public class EvolutionCheck
         catch (SQLException e) 
         {
             e.printStackTrace();
+            evolve = -1;
         }  
         
         return evolve;

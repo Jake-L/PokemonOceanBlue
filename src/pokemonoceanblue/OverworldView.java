@@ -128,9 +128,9 @@ public class OverworldView extends BaseView {
         calcOffset(model.playerModel);
 
         // display the ground tiles
-        for (int y = 0; y < model.tiles.length; y++)
+        for (int y = 0 + Math.max(yOffset / 16,0); y < Math.min(model.tiles.length, this.model.playerModel.getY() + height / (16 * graphicsScaling)); y++)
         {
-            for (int x = 0; x < model.tiles[y].length; x++)
+            for (int x = 0 + Math.max(xOffset / 16,0); x < Math.min(model.tiles[y].length, this.model.playerModel.getX() + width / (16 * graphicsScaling)); x++)
             {
                 if (model.tiles[y][x] == 0)
                 {
