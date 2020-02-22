@@ -46,6 +46,21 @@ public class PokemonModel
         this.level = (int) Math.floor(Math.cbrt(xp));
     }
 
+    /** 
+     * add or remove happiness
+     */
+    public void updateHappiness(int happinessChange)
+    {
+        if (happinessChange > 0)
+        {
+            this.happiness += Math.min(200 - this.happiness, happinessChange);
+        }
+        else
+        {
+            this.happiness += Math.max(0 - this.happiness, happinessChange);
+        }
+    }
+
     /**
      * @param evolvedPokemonId the new Id the Pokemon evolves into
      */

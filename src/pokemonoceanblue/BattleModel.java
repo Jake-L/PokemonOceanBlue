@@ -615,6 +615,7 @@ public class BattleModel
                 // only check if a Pokemon was defeated if damage was applied
                 if (this.team[1][this.currentPokemon[1]].currentHP == 0)
                 {
+                    this.team[0][this.currentPokemon[0]].updateHappiness(1);
                     int i = 0;
                     while (i < this.events.size())
                     {
@@ -651,8 +652,9 @@ public class BattleModel
                 }
 
                 //prevents player's pokemon from fighting when fainted
-                if (this.team[0][currentPokemon[0]].currentHP == 0)
+                if (this.team[0][this.currentPokemon[0]].currentHP == 0)
                 {
+                    this.team[0][this.currentPokemon[0]].updateHappiness(-5);
                     int i = 0;
                     while (i < this.events.size())
                     {
