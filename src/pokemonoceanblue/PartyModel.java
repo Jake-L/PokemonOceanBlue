@@ -3,17 +3,16 @@ package pokemonoceanblue;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class PartyModel extends BaseModel
 {
-    public PokemonModel[] team;
+    public List<PokemonModel> team = new ArrayList<PokemonModel>();
     public boolean isSummary = false;
     public int currentPokemon;
 
-    public List<PokemonModel> pokemonStorage = new ArrayList<PokemonModel>();
-
-    public PartyModel(PokemonModel[] model)
+    public PartyModel(List<PokemonModel> team)
     {
-        this.team = model;
+        this.team = team;
         this.optionIndex = -1;
     }
 
@@ -35,7 +34,7 @@ public class PartyModel extends BaseModel
             this.optionIndex = Math.max(currentPokemon, 0);
         }
 
-        this.optionMax = this.team.length - 1;
+        this.optionMax = this.team.size() - 1;
 
         // when looking at summaries, move through one dimension
         if (this.isSummary)
@@ -75,6 +74,16 @@ public class PartyModel extends BaseModel
         }
     }
 
+    public PokemonModel[] getTeamArray()
+    {
+        PokemonModel[] teamArray = new PokemonModel[this.team.size()];
+        for (int i = 0; i < this.team.size(); i++)
+        {
+            teamArray[i] = this.team.get(i);
+        }
+        return teamArray;
+    }
+
     @Override
     public void exitScreen()
     {
@@ -98,5 +107,21 @@ public class PartyModel extends BaseModel
         {
             pokemon.currentHP = pokemon.stats[0];
         }
+    }
+
+    public void addPokemon(int index, PokemonModel pokemon)
+    {
+        if (this.team.size() < 6)
+        {
+            if (index < this.team.size())
+            {
+                this.team.add(index, pokemon);
+            }
+            else
+            {
+                this.team.add(pokemon);
+            }
+        }
+        
     }
 }

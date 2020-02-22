@@ -23,7 +23,7 @@ public class OverworldModel {
     public String[] textOptions;
     public int optionIndex;
     private List<ConversationTrigger> conversationTrigger = new ArrayList<ConversationTrigger>();
-    private int area_id = 0;
+    private int areaId = 0;
 
     // prevent players from accidently repeating actions by holdings keys
     public int actionCounter = 15;
@@ -324,11 +324,11 @@ public class OverworldModel {
             {
                 if (current.x == x && current.y == y && !current.autoTrigger)
                 {
-                    // // open PC
-                    // if (current.conversationId == 9999)
-                    // {
-                    //     app.openPokemonStorage();
-                    // }
+                    // open PC
+                    if (current.conversationId == 9999)
+                    {
+                        app.openPokemonStorage();
+                    }
                     this.conversation = new ConversationModel(current.conversationId, this.playerModel, current.cpuModel, false);
                     
                     // clear the trigger

@@ -1,6 +1,7 @@
 package pokemonoceanblue;
 
 import java.sql.*;
+import java.util.Random;
 
 public class PokemonModel 
 {
@@ -59,6 +60,13 @@ public class PokemonModel
      */
     private void loadStats()
     {
+        // generate random IVs from 0 to 15
+        Random rand = new Random();
+        for (int i = 0; i < ivs.length; i++)
+        {
+            ivs[i] = rand.nextInt(16);
+        }
+
         try
         {
             DatabaseUtility db = new DatabaseUtility();

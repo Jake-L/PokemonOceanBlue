@@ -29,7 +29,7 @@ public class PartyView extends BaseView {
     public PartyView(PartyModel model)
     {
         this.model = model;
-        this.teamSize = this.model.team.length;
+        this.teamSize = this.model.team.size();
         this.pokemonSprite = new Image[this.teamSize];
         this.pokemonImages = new Image[this.teamSize];
         this.loadImage();
@@ -44,9 +44,9 @@ public class PartyView extends BaseView {
 
         for (int i = 0; i < this.teamSize; i++)
         {
-            ii = new ImageIcon("src/pokemonicons/" + this.model.team[i].id + ".png");
+            ii = new ImageIcon("src/pokemonicons/" + this.model.team.get(i).id + ".png");
             this.pokemonSprite[i] = ii.getImage();
-            ii = new ImageIcon("src/pokemon/frame0/" + this.model.team[i].id + ".png");
+            ii = new ImageIcon("src/pokemon/frame0/" + this.model.team.get(i).id + ".png");
             this.pokemonImages[i] = ii.getImage();
         }
 
@@ -91,7 +91,7 @@ public class PartyView extends BaseView {
     {
         g.setFont(new Font("Pokemon Fire Red", Font.PLAIN, 16 * graphicsScaling));
 
-        this.teamSize = this.model.team.length;
+        this.teamSize = this.model.team.size();
 
         //draw the background
         int blockSize = background.getWidth(null) * graphicsScaling;
@@ -117,9 +117,9 @@ public class PartyView extends BaseView {
                     this.pokemonImages[i].getWidth(null) * graphicsScaling,
                     this.pokemonImages[i].getHeight(null) * graphicsScaling,
                     canvas);
-                for (int j = 0; j < this.model.team[i].moves.length; j++)
+                for (int j = 0; j < this.model.team.get(i).moves.length; j++)
                 {
-                    g.drawString(this.model.team[i].moves[j].name,
+                    g.drawString(this.model.team.get(i).moves[j].name,
                         (int)(width * 0.72),
                         (int)(height * (2.0 / 5.0) + 14 * j * graphicsScaling));
                 }
@@ -130,7 +130,7 @@ public class PartyView extends BaseView {
                 renderIndex = 3;
             }
 
-            if (renderIndex == 3 || this.model.team[i].currentHP > 0)
+            if (renderIndex == 3 || this.model.team.get(i).currentHP > 0)
             {
                 g.drawImage(this.pokemonWindows[renderIndex],
                     (i % 2) * (width / 3 + 8 * graphicsScaling) + 8 * graphicsScaling,
@@ -162,12 +162,12 @@ public class PartyView extends BaseView {
                 canvas);
 
             //display text with Pokemon level
-            g.drawString("Lv. " + this.model.team[i].level,
+            g.drawString("Lv. " + this.model.team.get(i).level,
                 (i % 2) * (width / 3 + 8 * graphicsScaling) + 18 * graphicsScaling, 
                 (i / 2) * (height / 4 + 8 * graphicsScaling) + 60 * graphicsScaling);
             
             //display text with pokemon name
-            g.drawString(this.model.team[i].name, 
+            g.drawString(this.model.team.get(i).name, 
                 (i % 2) * (width / 3 + 8 * graphicsScaling) + 94 * graphicsScaling, 
                 (i / 2) * (height / 4 + 8 * graphicsScaling) + 34 * graphicsScaling);
 
@@ -181,11 +181,11 @@ public class PartyView extends BaseView {
             
             //get health bar colour
             byte healthBarFillIndex = 0;
-            if((double)this.model.team[i].currentHP / this.model.team[i].stats[Stat.HP] < 0.2)
+            if((double)this.model.team.get(i).currentHP / this.model.team.get(i).stats[Stat.HP] < 0.2)
             {
                 healthBarFillIndex = 2;
             }
-            else if((double)this.model.team[i].currentHP / this.model.team[i].stats[Stat.HP] < 0.5)
+            else if((double)this.model.team.get(i).currentHP / this.model.team.get(i).stats[Stat.HP] < 0.5)
             {
                 healthBarFillIndex = 1;
             }
@@ -194,12 +194,12 @@ public class PartyView extends BaseView {
             g.drawImage(healthBarFill[healthBarFillIndex],
                 (i % 2) * (width / 3 + 8 * graphicsScaling) + 110 * graphicsScaling, 
                 (i / 2) * (height / 4 + 8 * graphicsScaling) + 42 * graphicsScaling,
-                (int)Math.ceil(healthBarFill[0].getWidth(null) * (this.model.team[i].currentHP * 48.0 / this.model.team[i].stats[Stat.HP]) * graphicsScaling),
+                (int)Math.ceil(healthBarFill[0].getWidth(null) * (this.model.team.get(i).currentHP * 48.0 / this.model.team.get(i).stats[Stat.HP]) * graphicsScaling),
                 healthBarFill[0].getHeight(null) * graphicsScaling,
                 canvas);
             
             //display status condition
-            int statusEffect = this.model.team[i].statusEffect;
+            int statusEffect = this.model.team.get(i).statusEffect;
             if (statusEffect > 0 && statusEffect < 7)
             {
                 g.drawImage(this.statusEffectImages[statusEffect - 1],

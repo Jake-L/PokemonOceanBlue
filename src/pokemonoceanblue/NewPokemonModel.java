@@ -6,6 +6,7 @@ package pokemonoceanblue;
 public class NewPokemonModel extends BaseModel {
     public PokemonModel[] pokemon;
     private final PartyModel partyModel;
+    private PokemonStorageModel storageModel;
     public String text;
     private int partyIndex = -1;
     
@@ -14,12 +15,13 @@ public class NewPokemonModel extends BaseModel {
      * @param pokemon the Pokemon that was caught
      * @param partyModel the player's team
      */
-    public NewPokemonModel(PokemonModel pokemon, PartyModel partyModel)
+    public NewPokemonModel(PokemonModel pokemon, PartyModel partyModel, PokemonStorageModel storageModel)
     {
         super();
         this.pokemon = new PokemonModel[1];
         this.pokemon[0] = pokemon;
         this.partyModel = partyModel;
+        this.storageModel = storageModel;
         this.actionCounter = 60;
         // update right away to make sure there is text to render
         this.update();
@@ -46,29 +48,21 @@ public class NewPokemonModel extends BaseModel {
 
     public void addPokemon()
     {
-        if (this.partyModel.team.length == 6)
+        if (this.partyModel.team.size() == 6)
         {
-            this.partyModel.pokemonStorage.add(pokemon[0]);
+            this.storageModel.addPokemon(pokemon[0]);
             this.text = pokemon[0].name + " was transferred to the PC.";
         }
         else
         {
-            PokemonModel[] newTeam = new PokemonModel[this.partyModel.team.length + 1];
-
-            for (int i = 0; i < this.partyModel.team.length; i++)
-            {
-                newTeam[i] = this.partyModel.team[i];
-            }
-
-            newTeam[newTeam.length - 1] = this.pokemon[0];
-            this.partyModel.team = newTeam;
+            this.partyModel.team.add(pokemon[0]);
             this.text = pokemon[0].name + " joined your team!";
         }
     }
 
     public void evolvePokemon()
     {
-        this.partyModel.team[this.partyIndex].evolve(this.pokemon[1].id);
+        this.partyModel.team.get(this.partyIndex).evolve(this.pokemon[1].id);
     }
 
     @Override

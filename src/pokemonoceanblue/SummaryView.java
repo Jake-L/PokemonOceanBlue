@@ -12,7 +12,6 @@ import java.awt.Font;
 public class SummaryView extends BaseView {
 
     private PartyModel model;
-    private int teamSize;
     private Image[] pokemonSprites;
     private Image[] pokeballSprites;
     private Image[] typeSprites = new Image[18];
@@ -22,9 +21,8 @@ public class SummaryView extends BaseView {
     public SummaryView(PartyModel model)
     {
         this.model = model;
-        this.teamSize = this.model.team.length;
-        this.pokeballSprites = new Image[this.teamSize];
-        this.pokemonSprites = new Image[this.teamSize];
+        this.pokeballSprites = new Image[this.model.team.size()];
+        this.pokemonSprites = new Image[this.model.team.size()];
         this.loadImage();
     }
 
@@ -32,11 +30,11 @@ public class SummaryView extends BaseView {
     {
         ImageIcon ii;
 
-        for (int i = 0; i < this.teamSize; i++)
+        for (int i = 0; i < this.model.team.size(); i++)
         {
-            ii = new ImageIcon("src/pokemon/frame0/" + this.model.team[i].id + ".png");
+            ii = new ImageIcon("src/pokemon/frame0/" + this.model.team.get(i).id + ".png");
             this.pokemonSprites[i] = ii.getImage();
-            ii = new ImageIcon("src/inventory/" + this.model.team[i].pokeballId + ".png");
+            ii = new ImageIcon("src/inventory/" + this.model.team.get(i).pokeballId + ".png");
             this.pokeballSprites[i] = ii.getImage();
         }
 
@@ -63,7 +61,6 @@ public class SummaryView extends BaseView {
         g.setFont(new Font("Pokemon Fire Red", Font.PLAIN, 12 * graphicsScaling));
 
         int pokemonIndex = this.model.optionIndex;
-        this.teamSize = this.model.team.length;
         
         //draws pokemon sprite
         g.drawImage(this.pokemonSprites[pokemonIndex],
@@ -74,24 +71,24 @@ public class SummaryView extends BaseView {
             canvas);
         
         //displays pokemon name
-        g.drawString(this.model.team[pokemonIndex].name,
+        g.drawString(this.model.team.get(pokemonIndex).name,
             20 * graphicsScaling,
             height / 8);
 
         //displays pokemon level
-        g.drawString("Lv." + this.model.team[pokemonIndex].level,
+        g.drawString("Lv." + this.model.team.get(pokemonIndex).level,
             20 * graphicsScaling,
             height / 8 + 16 * graphicsScaling);
 
         //displays pokemon number
-        g.drawString("No." + this.model.team[pokemonIndex].id,
+        g.drawString("No." + this.model.team.get(pokemonIndex).id,
             24 * graphicsScaling,
             height * 9 / 16);
 
         //displays pokemon type(s)
-        for (int i = 0; i < this.model.team[pokemonIndex].types.length; i++)
+        for (int i = 0; i < this.model.team.get(pokemonIndex).types.length; i++)
         {
-            g.drawImage(this.typeSprites[this.model.team[pokemonIndex].types[i]],
+            g.drawImage(this.typeSprites[this.model.team.get(pokemonIndex).types[i]],
                 (int)(24 * graphicsScaling + i * this.typeSprites[0].getWidth(null) * graphicsScaling / 1.5),
                 height * 9 / 16 + 4 * graphicsScaling,
                 this.typeSprites[0].getWidth(null) * graphicsScaling / 2,
@@ -101,9 +98,9 @@ public class SummaryView extends BaseView {
 
         //displays pokemon stats
         String[] stats = {"HP","ATTACK","DEFENSE","SP. ATTACK","SP. DEFENSE","SPEED"};
-        for (int i = 0; i < this.model.team[pokemonIndex].stats.length; i++)
+        for (int i = 0; i < this.model.team.get(pokemonIndex).stats.length; i++)
         {
-            g.drawString(String.valueOf(this.model.team[pokemonIndex].stats[i]),
+            g.drawString(String.valueOf(this.model.team.get(pokemonIndex).stats[i]),
                 width / 3 + 32 * graphicsScaling,
                 height * (i + 2) / 16);
             
@@ -111,28 +108,28 @@ public class SummaryView extends BaseView {
                 width / 4,
                 height * (i + 2) / 16);
 
-            this.renderProgressBar(width * 7 / 16, height * (i + 2) / 16 - 8 * graphicsScaling, this.model.team[pokemonIndex].ivs[i], g, canvas);
+            this.renderProgressBar(width * 7 / 16, height * (i + 2) / 16 - 8 * graphicsScaling, this.model.team.get(pokemonIndex).ivs[i] / 64.0, g, canvas);
         }
 
         //display pokemon moves
-        for (int i = 0; i < this.model.team[pokemonIndex].moves.length; i++)
+        for (int i = 0; i < this.model.team.get(pokemonIndex).moves.length; i++)
         {
-            g.drawImage(this.typeSprites[this.model.team[pokemonIndex].moves[i].typeId],
+            g.drawImage(this.typeSprites[this.model.team.get(pokemonIndex).moves[i].typeId],
                 (int)(width * (2.0 / 3.0)),
                 i * height / 6 + height / 8 - 8 * graphicsScaling,
                 this.typeSprites[0].getWidth(null) * graphicsScaling / 2,
                 this.typeSprites[0].getHeight(null) * graphicsScaling / 2,
                 canvas);
             
-            g.drawString(this.model.team[pokemonIndex].moves[i].name,
+            g.drawString(this.model.team.get(pokemonIndex).moves[i].name,
                 (int)(width * (2.0 / 3.0) + 8 * graphicsScaling + this.typeSprites[i].getWidth(null)),
                 i * height / 6 + height / 8 - 2 * graphicsScaling);
 
-            g.drawString("Dmg: " + String.valueOf(this.model.team[pokemonIndex].moves[i].power),
+            g.drawString("Dmg: " + String.valueOf(this.model.team.get(pokemonIndex).moves[i].power),
                 (int)(width * (2.0 / 3.0)),
                 i * height / 6 + height / 8 + 16 * graphicsScaling);
 
-            g.drawString("Acc: " + String.valueOf(this.model.team[pokemonIndex].moves[i].accuracy),
+            g.drawString("Acc: " + String.valueOf(this.model.team.get(pokemonIndex).moves[i].accuracy),
                 (int)(width * (2.0 / 3.0) + graphicsScaling * 72),
                 i * height / 6 + height / 8 + 16 * graphicsScaling);
         }
@@ -145,7 +142,7 @@ public class SummaryView extends BaseView {
      * @param g graphics object
      * @param canvas JPanel to draw the images on
      */
-    private void renderProgressBar(int x, int y, int progress, Graphics g, JPanel canvas)
+    private void renderProgressBar(int x, int y, double progress, Graphics g, JPanel canvas)
     {
         g.drawImage(this.progressBar, x, y,
             this.progressBar.getWidth(null) * graphicsScaling,
@@ -155,7 +152,7 @@ public class SummaryView extends BaseView {
         g.drawImage(this.progressBarFill, 
             x + 3 * graphicsScaling, 
             y + 2 * graphicsScaling,
-            (int)(this.progressBarFill.getWidth(null) * progress / 100.0 * 64.0 * graphicsScaling),
+            (int)(this.progressBarFill.getWidth(null) * progress * 64.0 * graphicsScaling),
             this.progressBarFill.getHeight(null) * graphicsScaling,
             canvas);
     }

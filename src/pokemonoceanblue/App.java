@@ -40,7 +40,8 @@ public class App extends JFrame implements KeyListener
     PokedexModel pokedexModel;
     BaseController pokedexController;
     EvolutionCheck evolveCheck;
-    //PokemonStorageController pokemonStorageController;
+    PokemonStorageModel pokemonStorageModel;
+    PokemonStorageController pokemonStorageController;
 
     List<NewPokemonModel> newPokemonQueue = new ArrayList<NewPokemonModel>();
 
@@ -107,17 +108,31 @@ public class App extends JFrame implements KeyListener
         viewManager.setView(titleView);
         MusicPlayer.setSong("0");
 
-        PokemonModel[] pokemonTeam = new PokemonModel[6];
-        pokemonTeam[1] = new PokemonModel(315, 46, false);
-        pokemonTeam[0] = new PokemonModel(182, 7, true);
-        pokemonTeam[2] = new PokemonModel(9, 40, true);
-        pokemonTeam[3] = new PokemonModel(34, 5, false);
-        pokemonTeam[4] = new PokemonModel(150, 5, false);
-        pokemonTeam[5] = new PokemonModel(4, 5, false);
+        List<PokemonModel> pokemonTeam = new ArrayList<PokemonModel>();
+        pokemonTeam.add(new PokemonModel(315, 46, false));
+        pokemonTeam.add(new PokemonModel(182, 7, true));
+        pokemonTeam.add(new PokemonModel(9, 40, true));
+        pokemonTeam.add(new PokemonModel(34, 5, false));
+        pokemonTeam.add(new PokemonModel(150, 5, false));
+        pokemonTeam.add(new PokemonModel(4, 5, false));
 
         partyModel = new PartyModel(pokemonTeam);
         inventoryModel = new InventoryModel();
         pokedexModel = new PokedexModel();
+        pokemonStorageModel = new PokemonStorageModel();
+
+        pokemonStorageModel.addPokemon(new PokemonModel(123, 46, false));
+        pokemonStorageModel.addPokemon(new PokemonModel(151, 7, true));
+        pokemonStorageModel.addPokemon(new PokemonModel(91, 40, true));
+        pokemonStorageModel.addPokemon(new PokemonModel(343, 5, false));
+        pokemonStorageModel.addPokemon(new PokemonModel(159, 5, false));
+        pokemonStorageModel.addPokemon(new PokemonModel(414, 5, false));
+        pokemonStorageModel.addPokemon(new PokemonModel(239, 46, false));
+        pokemonStorageModel.addPokemon(new PokemonModel(135, 7, true));
+        pokemonStorageModel.addPokemon(new PokemonModel(325, 40, true));
+        pokemonStorageModel.addPokemon(new PokemonModel(128, 5, false));
+        pokemonStorageModel.addPokemon(new PokemonModel(158, 5, false));
+        pokemonStorageModel.addPokemon(new PokemonModel(123, 5, false));
         this.evolveCheck = new EvolutionCheck();
 
         this.update();
@@ -150,7 +165,7 @@ public class App extends JFrame implements KeyListener
     public void createTrainerBattle(int battleId)
     {
         MusicPlayer.setSong("14");
-        battleModel = new BattleModel(partyModel.team, battleId, this);
+        battleModel = new BattleModel(partyModel.getTeamArray(), battleId, this);
         BattleView battleView = new BattleView(this.battleModel);
         viewManager.setView(battleView);
         battleController = new BattleController(battleModel);
@@ -167,7 +182,7 @@ public class App extends JFrame implements KeyListener
         team[0] = new PokemonModel(pokemonId, level, shiny);
 
         // create the battle
-        battleModel = new BattleModel(team, partyModel.team, this, true);
+        battleModel = new BattleModel(team, partyModel.getTeamArray(), this, true);
         BattleView battleView = new BattleView(this.battleModel);
         viewManager.setView(battleView);
         battleController = new BattleController(battleModel);
@@ -231,14 +246,14 @@ public class App extends JFrame implements KeyListener
         pokedexController = new BaseController(pokedexModel);
     }
 
-    // public void openPokemonStorage()
-    // {
-    //     partyModel.initialize();
-    //     partyModel.setCurrentPokemon(-1);
-    //     PokemonStorageView psv = new PokemonStorageView(partyModel);
-    //     pokemonStorageController = new PokemonStorageController(partyModel);
-    //     viewManager.setView(psv);
-    // }
+    public void openPokemonStorage()
+    {
+        partyModel.initialize(-1);
+        pokemonStorageModel.initialize();
+        PokemonStorageView psv = new PokemonStorageView(pokemonStorageModel, partyModel);
+        pokemonStorageController = new PokemonStorageController(pokemonStorageModel, partyModel);
+        viewManager.setView(psv);
+    }
 
     /**
      * Handles the catching of new Pokemon
@@ -248,7 +263,7 @@ public class App extends JFrame implements KeyListener
     {
         // register the new pokemon in pokedex
         this.pokedexModel.setCaught(pokemon.id);
-        NewPokemonModel newPokemonModel = new NewPokemonModel(pokemon, partyModel);
+        NewPokemonModel newPokemonModel = new NewPokemonModel(pokemon, partyModel, pokemonStorageModel);
         this.newPokemonQueue.add(newPokemonModel);
     }
 
@@ -469,20 +484,21 @@ public class App extends JFrame implements KeyListener
                         }
                     }
                 }
-                // else if (viewManager.getCurrentView().equals("PokemonStorageView"))
-                // {
-                //     if (pokemonStorageController != null)
-                //     {
-                //         pokemonStorageController.userInput(keysDown);
+                else if (viewManager.getCurrentView().equals("PokemonStorageView"))
+                {
+                    if (pokemonStorageController != null)
+                    {
+                        pokemonStorageController.userInput(keysDown);
+                        pokemonStorageModel.update();
 
-                //         if (pokemonStorageController.isComplete())
-                //         {
-                //             OverworldView overworldView = new OverworldView(overworldModel);
-                //             viewManager.setView(overworldView);
-                //             pokemonStorageController = null;
-                //         }
-                //     }
-                // }
+                        if (pokemonStorageController.isComplete())
+                        {
+                            OverworldView overworldView = new OverworldView(overworldModel);
+                            viewManager.setView(overworldView);
+                            pokemonStorageController = null;
+                        }
+                    }
+                }
 
                 // fade music during transition
                 MusicPlayer.fadeVolume();
@@ -523,7 +539,7 @@ public class App extends JFrame implements KeyListener
         {
             if (evolveQueue[i])
             {
-                evolvedPokemonId = evolveCheck.checkEvolution(partyModel.team[i]);
+                evolvedPokemonId = evolveCheck.checkEvolution(partyModel.team.get(i));
 
                 if (evolvedPokemonId != -1)
                 {
@@ -531,7 +547,7 @@ public class App extends JFrame implements KeyListener
                     this.pokedexModel.setCaught(evolvedPokemonId);
 
                     // add the evolution to a queue
-                    NewPokemonModel newPokemonModel = new NewPokemonModel(partyModel.team[i], partyModel, evolvedPokemonId, i);
+                    NewPokemonModel newPokemonModel = new NewPokemonModel(partyModel.team.get(i), partyModel, evolvedPokemonId, i);
                     this.newPokemonQueue.add(newPokemonModel);
                 }
             }

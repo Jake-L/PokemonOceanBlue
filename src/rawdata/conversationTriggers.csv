@@ -7,3 +7,4 @@ map_id,area_id,x,y,conversation_id,character_id,clear_after_use,auto_trigger,com
 0,0,15,0,24,23,0,1,Pallet Town gatekeeper
 0,0,16,0,24,23,0,1,Pallet Town gatekeeper
 0,0,17,0,24,23,0,1,Pallet Town gatekeeper
+7,0,9,2,9999,-1,0,0,Pokemon Storage
