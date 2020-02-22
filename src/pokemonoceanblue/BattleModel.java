@@ -624,6 +624,7 @@ public class BattleModel
                 if (this.team[1][this.currentPokemon[1]].currentHP == 0)
                 {
                     this.team[0][this.currentPokemon[0]].updateHappiness(1);
+                    this.team[0][this.currentPokemon[0]].updateIVs(this.team[1][this.currentPokemon[1]].ivGain);
                     int i = 0;
                     while (i < this.events.size())
                     {

@@ -64,6 +64,14 @@ public class PokemonModel
         }
     }
 
+    /** 
+     * add IVs
+     */
+    public void updateIVs(int ivChange)
+    {
+        this.ivs[ivChange] ++;
+    }
+
     /**
      * @param evolvedPokemonId the new Id the Pokemon evolves into
      */
