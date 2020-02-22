@@ -17,10 +17,13 @@ public class PokemonModel
     int[] stats = new int[6];
 
     int[] ivs = new int[6];
+    int ivGain;
     MoveModel[] moves;
     public final boolean shiny;
     int pokeballId = 3;
     int happiness = 70;
+    int captureRate;
+
     
     /** 
      * Constructor
@@ -91,6 +94,8 @@ public class PokemonModel
             ResultSet rs = db.runQuery(query);
 
             this.name = rs.getString("name").toUpperCase();
+            this.ivGain = rs.getInt("iv_gain");
+            this.captureRate = rs.getInt("capture_rate");
 
             // check if the Pokemon has one type or two
             if (rs.getInt("type2") == 0)

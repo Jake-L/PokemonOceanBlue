@@ -83,7 +83,9 @@ public class DatabaseUtility
                 + "defense INT NOT NULL, "
                 + "special_attack INT NOT NULL, "
                 + "special_defense INT NOT NULL, "
-                + "speed INT NOT NULL)";
+                + "speed INT NOT NULL, "
+                + "iv_gain INT NOT NULL, "
+                + "capture_rate INT NOT NULL)";
         runUpdate(query);
 
         // fill pokemon table with data
@@ -93,10 +95,11 @@ public class DatabaseUtility
                     + "type1, type2, "
                     + "hp, attack, "
                     + "defense, special_attack, "
-                    + "special_defense, speed)"
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    + "special_defense, speed, "
+                    + "iv_gain, capture_rate)"
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        dataTypes = new String[] {"int", "String", "int", "int", "int", "int", "int", "int", "int", "int"};
+        dataTypes = new String[] {"int", "String", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================
