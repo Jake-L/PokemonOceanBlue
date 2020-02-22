@@ -13,6 +13,7 @@ public class ViewManager extends JPanel {
     private int width;
     private int height;
     private int transitionCounter = 0;
+    private int TRANSITION_MAX = 60;
     
     /** 
      * Constructor
@@ -60,7 +61,7 @@ public class ViewManager extends JPanel {
             || (this.view.toString().equals("OverworldView") && view.toString().equals("OverworldView")))))
         {
             this.newView = view;
-            this.transitionCounter = 120;
+            this.transitionCounter = this.TRANSITION_MAX;
             this.newView.setViewSize(this.graphicsScaling, this.width, this.height);
         }
         else
@@ -85,11 +86,11 @@ public class ViewManager extends JPanel {
         {
             Color colour;
 
-            if (this.transitionCounter > 60)
+            if (this.transitionCounter > this.TRANSITION_MAX / 2)
             {
-                colour = new Color(0, 0, 0, 255 - (this.transitionCounter - 60) * 4);
+                colour = new Color(0, 0, 0, 255 - (this.transitionCounter - this.TRANSITION_MAX / 2) * 255 / (this.TRANSITION_MAX / 2));
             }
-            else if (this.transitionCounter == 60)
+            else if (this.transitionCounter == this.TRANSITION_MAX / 2)
             {
                 colour = new Color(0, 0, 0, 255);
                 this.view = this.newView;
@@ -97,7 +98,7 @@ public class ViewManager extends JPanel {
             }
             else
             {
-                colour = new Color(0, 0, 0, this.transitionCounter * 4);
+                colour = new Color(0, 0, 0, this.transitionCounter * 255 / (this.TRANSITION_MAX / 2));
             }
 
             g.setColor(colour);
