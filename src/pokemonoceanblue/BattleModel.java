@@ -31,6 +31,7 @@ public class BattleModel
     private boolean[] isOneHit = new boolean[2];
     private boolean[] evolveQueue = new boolean[6];
     private boolean[] unableToMove = new boolean[2];
+    public boolean[] isSeen;
     private BattleEvent attackEvent[] = new BattleEvent[2];
 
     /** 
@@ -44,6 +45,7 @@ public class BattleModel
         this.team[1] = opponentTeam;
         this.app = app;
         this.isWild = isWild;
+
         this.initialize();
     }
 
@@ -65,6 +67,8 @@ public class BattleModel
         this.currentPokemon[1] = -1;
         int firstPokemon = 0;
         BattleEvent event;
+        this.isSeen = new boolean[this.team[1].length];
+        this.isSeen[0] = true;
 
         while (this.team[0][firstPokemon].currentHP == 0)
         {
@@ -529,6 +533,10 @@ public class BattleModel
         {
             int attacker = this.events.get(0).attacker;
             this.currentPokemon[attacker] = this.events.get(0).newPokemonIndex;
+            if (attacker == 1)
+            {
+                this.isSeen[this.events.get(0).newPokemonIndex] = true;
+            }
         }
 
         //calculate damage for an upcoming attack event and add second attack event if applicable

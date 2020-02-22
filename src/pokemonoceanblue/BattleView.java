@@ -264,12 +264,24 @@ public class BattleView extends BaseView {
         {
             for (int i = 0; i < this.pokemonIconSprites[j].length; i++)
             {
-                g.drawImage(this.pokemonIconSprites[j][i],
-                    (int)((width - (this.pokemonIconSprites[j][i].getWidth(null) * graphicsScaling)) * j - (8 * graphicsScaling) * Math.pow(-1 , j + 1)),
-                    (int) (i * height * (0.75 / 6.0)), 
-                    this.pokemonIconSprites[j][i].getWidth(null) * graphicsScaling,
-                    this.pokemonIconSprites[j][i].getHeight(null) * graphicsScaling,
-                    canvas);
+                if (j == 0 || this.model.isSeen[i])
+                {
+                    g.drawImage(this.pokemonIconSprites[j][i],
+                        (int)((width - (this.pokemonIconSprites[j][i].getWidth(null) * graphicsScaling)) * j - (8 * graphicsScaling) * Math.pow(-1 , j + 1)),
+                        (int) (i * height * (0.75 / 6.0)), 
+                        this.pokemonIconSprites[j][i].getWidth(null) * graphicsScaling,
+                        this.pokemonIconSprites[j][i].getHeight(null) * graphicsScaling,
+                        canvas);
+                }
+                else
+                {
+                    g.drawImage(this.pokeballSprite[3],
+                        (int)(width - (this.pokemonIconSprites[j][i].getWidth(null) * graphicsScaling)),
+                        (int) (i * height * (0.75 / 6.0)), 
+                        this.pokemonIconSprites[j][i].getWidth(null) * graphicsScaling / 2,
+                        this.pokemonIconSprites[j][i].getHeight(null) * graphicsScaling / 2,
+                        canvas);
+                }
             }
         }
         
