@@ -9,6 +9,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.HashMap;
+import java.util.Map;
 
 public class OverworldModel {
     public int mapId;
@@ -19,11 +21,12 @@ public class OverworldModel {
     private List<PortalModel> portals = new ArrayList<PortalModel>();
     public ConversationModel conversation;
     private App app;
-    private List<Integer> wildPokemon = new ArrayList<Integer>();
+    private Map<Integer, List<Integer>> wildPokemon = new HashMap<Integer, List<Integer>>();
     public String[] textOptions;
     public int optionIndex;
     private List<ConversationTrigger> conversationTrigger = new ArrayList<ConversationTrigger>();
-    private int areaId = 0;
+    private int areaId = -1;
+    private List<AreaModel> areas = new ArrayList<AreaModel>();
 
     // prevent players from accidently repeating actions by holdings keys
     public int actionCounter = 15;
@@ -43,6 +46,8 @@ public class OverworldModel {
         this.loadPortals();
         this.loadCharacters();
         this.loadConversationTriggers();
+        this.loadAreas();
+        this.checkArea(playerModel.getX(), playerModel.getY());
     }
 
     /** 
@@ -345,19 +350,41 @@ public class OverworldModel {
         this.actionCounter = 15;
     }
 
+    private void checkArea(int x, int y)
+    {
+        // check if the player entered a new area
+        for (AreaModel area : this.areas)
+        {
+            if (area.checkArea(x, y))
+            {
+                if (area.areaId != this.areaId)
+                {
+                    this.areaId = area.areaId;
+                    this.app.playSong(area.musicId);
+                    break;
+                }
+            }
+        }
+    }
+
     /** 
      * Check for any interactions based on player movement
      * This function creates wild pokemon encounters
      */
     public void checkMovement(int x, int y)
     {
-        if (this.tiles[y][x] == 4)
+        // check if the player entered a new area
+        this.checkArea(x, y);
+
+        // check for wild Pokemon encounters
+        if (this.tiles[y][x] == 0 || this.tiles[y][x] == 4)
         {
+            int index = this.areaId * 1000 + this.tiles[y][x];
             Random rand = new Random();
-            int n = rand.nextInt(this.wildPokemon.size() * 5);
-            if (n < this.wildPokemon.size())
+            int n = rand.nextInt(this.wildPokemon.get(index).size() * 5);
+            if (n < this.wildPokemon.get(index).size())
             {
-                this.app.createWildBattle(this.wildPokemon.get(n), 5);
+                this.app.createWildBattle(this.wildPokemon.get(index).get(n), 5);
             }
         }
         // player is no longer surfing when they step onto solid land
@@ -488,13 +515,18 @@ public class OverworldModel {
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            String query = "SELECT pokemon_id FROM pokemon_location WHERE map_id = " + this.mapId;
+            String query = "SELECT area_id, tile_id, pokemon_id FROM pokemon_location WHERE map_id = " + this.mapId;
 
             ResultSet rs = db.runQuery(query);
 
             while(rs.next()) 
             {
-                this.wildPokemon.add(rs.getInt("pokemon_id"));
+                int indexId = rs.getInt("area_id") * 1000 + rs.getInt("tile_id");
+                if (this.wildPokemon.get(indexId) == null)
+                {
+                    this.wildPokemon.put(indexId, new ArrayList<Integer>());
+                }
+                this.wildPokemon.get(indexId).add(rs.getInt("pokemon_id"));
             }            
         }
         catch (SQLException e) 
@@ -538,6 +570,33 @@ public class OverworldModel {
             e.printStackTrace();
         }  
     }
+
+    /** 
+     * load a list of areas within the current map
+     */
+    private void loadAreas()
+    {
+        try
+        {
+            DatabaseUtility db = new DatabaseUtility();
+
+            String query = "SELECT area_id "
+                         + "FROM area "
+                         + "WHERE map_id = " + this.mapId;
+
+            ResultSet rs = db.runQuery(query);
+
+            while(rs.next()) 
+            {
+                this.areas.add(new AreaModel(this.mapId, rs.getInt("area_id")));
+            }            
+        }
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+        }  
+    }
+
 
     /** 
      * load a list of portals that can appear on the current map
@@ -691,6 +750,10 @@ public class OverworldModel {
 
     public void battleComplete()
     {
+        // restart music
+        this.areaId = -1;
+        this.checkArea(playerModel.getX(), playerModel.getY());
+
         if (this.conversation != null)
         {
             this.conversation.setBattleComplete();

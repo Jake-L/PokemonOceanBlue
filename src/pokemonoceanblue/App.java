@@ -106,7 +106,7 @@ public class App extends JFrame implements KeyListener
         });
         TitleScreenView titleView = new TitleScreenView();
         viewManager.setView(titleView);
-        MusicPlayer.setSong("0");
+        this.playSong(0);
 
         List<PokemonModel> pokemonTeam = new ArrayList<PokemonModel>();
         pokemonTeam.add(new PokemonModel(315, 46, false));
@@ -164,7 +164,7 @@ public class App extends JFrame implements KeyListener
 
     public void createTrainerBattle(int battleId)
     {
-        MusicPlayer.setSong("14");
+        this.playSong(14);
         battleModel = new BattleModel(partyModel.getTeamArray(), battleId, this);
         BattleView battleView = new BattleView(this.battleModel);
         viewManager.setView(battleView);
@@ -173,7 +173,7 @@ public class App extends JFrame implements KeyListener
 
     public void createWildBattle(int pokemonId, int level)
     {
-        MusicPlayer.setSong("18");
+        this.playSong(18);
 
         //determine if the wild Pokemon is shiny
         Random rand = new Random();
@@ -215,7 +215,6 @@ public class App extends JFrame implements KeyListener
 
         OverworldView overworldView = new OverworldView(overworldModel);
         viewManager.setView(overworldView);
-        MusicPlayer.setSong("1");
     }
 
     public void openInventory()
@@ -327,7 +326,6 @@ public class App extends JFrame implements KeyListener
                         {
                             OverworldView overworldView = new OverworldView(overworldModel);
                             viewManager.setView(overworldView);
-                            MusicPlayer.setSong("1");
                         }
 
                         this.battleModel = null;
@@ -580,13 +578,18 @@ public class App extends JFrame implements KeyListener
         }
     }
 
+    public void playSong(int songId)
+    {
+        MusicPlayer.setSong(songId);
+    }
+
     /**
      * Plays background music
      */
     public static class MusicPlayer
     {
-        private static String currentSong;
-        private static String newSong;
+        private static int currentSong = -1;
+        private static int newSong;
         private static Clip currentClip;
         private static int transitionCounter = 0;
 
@@ -594,19 +597,19 @@ public class App extends JFrame implements KeyListener
          * Queues the background music for the given song number
          * @param song the number of the song to be played
          */
-        public static void setSong(String song)
+        public static void setSong(int songId)
         {
             // only switch songs if the new song is different from the one currently being played
-            if (currentSong == null)
+            if (currentSong == -1)
             {
-                newSong = song;
+                newSong = songId;
                 transitionCounter = 0;
                 playSong();
                 setVolume(0.25);
             }
-            else if (song != currentSong)
+            else if (songId != currentSong)
             {
-                newSong = song;
+                newSong = songId;
                 transitionCounter = 25;
             }
             else
