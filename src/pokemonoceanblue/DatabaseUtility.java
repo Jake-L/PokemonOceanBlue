@@ -125,16 +125,19 @@ public class DatabaseUtility
                 + "pre_species_id INT NOT NULL, "
                 + "evolved_species_id INT NOT NULL, "
                 + "minimum_level INT NULL, "
-                + "minimum_happiness INT NULL)";
+                + "minimum_happiness INT NULL, "
+                + "trigger_item_id INT NULL, "
+                + "gender_id INT NULL, "
+                + "map_id INT NULL)";
         runUpdate(query);
 
         // fill pokemon moves table with data
         path = "src/rawdata/evolutionMethods.csv";
         query = "INSERT INTO evolution_methods ("
-                    + "pre_species_id, evolved_species_id, minimum_level, minimum_happiness)"
-                    + "VALUES (?, ?, ?, ?)";
+                    + "pre_species_id, evolved_species_id, minimum_level, minimum_happiness, trigger_item_id, gender_id, map_id)"
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?)";
        
-        dataTypes = new String[] {"int", "int", "int", "int"};
+        dataTypes = new String[] {"int", "int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

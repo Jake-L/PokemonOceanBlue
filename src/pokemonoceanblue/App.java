@@ -109,7 +109,7 @@ public class App extends JFrame implements KeyListener
         this.playSong(0);
 
         List<PokemonModel> pokemonTeam = new ArrayList<PokemonModel>();
-        pokemonTeam.add(new PokemonModel(315, 46, false));
+        pokemonTeam.add(new PokemonModel(133, 5, false));
         pokemonTeam.add(new PokemonModel(182, 7, true));
         pokemonTeam.add(new PokemonModel(9, 40, true));
         pokemonTeam.add(new PokemonModel(34, 5, false));
@@ -537,7 +537,7 @@ public class App extends JFrame implements KeyListener
         {
             if (evolveQueue[i])
             {
-                evolvedPokemonId = evolveCheck.checkEvolution(partyModel.team.get(i));
+                evolvedPokemonId = evolveCheck.checkEvolution(partyModel.team.get(i), overworldModel.mapId);
 
                 if (evolvedPokemonId != -1)
                 {

@@ -13,7 +13,7 @@ public class EvolutionCheck
      * Check if the given Pokemon has met all the conditions for evolving
      * @return the id the pokemon can evolve into, or -1 otherwise
      */
-    public int checkEvolution(PokemonModel pokemon)
+    public int checkEvolution(PokemonModel pokemon, int currentMapId)
     {
         int evolve = -1;
         int preSpeciesId = pokemon.id;
@@ -23,6 +23,7 @@ public class EvolutionCheck
             DatabaseUtility db = new DatabaseUtility();
             int minimumLevel;
             int minimumHappiness;
+            int triggerItemId;
             int genderId;
             int mapId;
             int timeOfDay;
@@ -38,8 +39,9 @@ public class EvolutionCheck
                 evolve = rs.getInt("evolved_species_id");
                 minimumLevel = rs.getInt("minimum_level");
                 minimumHappiness = rs.getInt("minimum_happiness");
-                //genderId = rs.getInt("gender_id");
-                //mapId = rs.getInt("map_id");
+                triggerItemId = rs.getInt("trigger_item_id");
+                genderId = rs.getInt("gender_id");
+                mapId = rs.getInt("map_id");
                 //timeOfDay = rs.getInt("time_of_day");
 
                 if (pokemon.id != preSpeciesId)
@@ -51,6 +53,14 @@ public class EvolutionCheck
                     evolve = -1;
                 }
                 else if (pokemon.happiness < minimumHappiness)
+                {
+                    evolve = -1;
+                }
+                else if (triggerItemId > 0)
+                {
+                    evolve = -1;
+                }
+                else if (mapId != currentMapId)
                 {
                     evolve = -1;
                 }

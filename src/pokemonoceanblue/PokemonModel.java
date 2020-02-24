@@ -69,7 +69,7 @@ public class PokemonModel
      */
     public void updateIVs(int ivChange)
     {
-        this.ivs[ivChange] ++;
+        this.ivs[ivChange]++;
     }
 
     /**
