@@ -17,12 +17,13 @@ import javax.swing.JPanel;
 public class OverworldView extends BaseView {
 
     private OverworldModel model;
-    private Image[] tileSprite = new Image[55];
+    private Image[] tileSprite = new Image[70];
     private Map<String, Image> animatedTileSprite = new HashMap<String, Image>();
     private Map<String, Image> mapObjectSprite = new HashMap<String, Image>();
     private Map<String, Image> characterSprite = new HashMap<String, Image>();
     private int xOffset = -1;
     private int yOffset = -1;
+    private int[] ANIMATED_TILES = new int[]{0, 6, 7};
     
     /** 
      * Constructor for the overworld view
@@ -47,8 +48,11 @@ public class OverworldView extends BaseView {
         // load animated water tile sprites
         for (int i = 0; i < 8; i++)
         {
-            ImageIcon ii = new ImageIcon(String.format("src/tiles/0-%s.png", i));
-            animatedTileSprite.put(String.format("0-%s", i), ii.getImage());
+            for (int tileId : this.ANIMATED_TILES)
+            {
+                ImageIcon ii = new ImageIcon(String.format("src/tiles/%s-%s.png", tileId, i));
+                animatedTileSprite.put(String.format("%s-%s", tileId, i), ii.getImage());
+            }
         }
 
         // load all mapObject sprites 
@@ -132,10 +136,10 @@ public class OverworldView extends BaseView {
         {
             for (int x = 0 + Math.max(xOffset / 16,0); x < Math.min(model.tiles[y].length, this.model.playerModel.getX() + width / (16 * graphicsScaling)); x++)
             {
-                if (model.tiles[y][x] == 0)
+                if (this.isAnimatedSprite(this.model.tiles[y][x]))
                 {
                     //load animated water sprite
-                    sprite = animatedTileSprite.get(String.format("0-%s", System.currentTimeMillis() / 500 % 8));
+                    sprite = animatedTileSprite.get(String.format("%s-%s", Math.abs(this.model.tiles[y][x]), System.currentTimeMillis() / 160 % 8));
                 }
                 else
                 {
@@ -325,6 +329,18 @@ public class OverworldView extends BaseView {
         }
 
         return columnHeight;
+    }
+
+    private boolean isAnimatedSprite(int checkTileId)
+    {
+        for (int tileId : this.ANIMATED_TILES)
+        {
+            if (tileId == Math.abs(checkTileId))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

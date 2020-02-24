@@ -365,6 +365,12 @@ public class OverworldModel {
                 }
             }
         }
+
+        // set the default area id to 0
+        if (this.areaId == -1)
+        {
+            this.areaId = 0;
+        }
     }
 
     /** 
