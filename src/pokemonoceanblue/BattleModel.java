@@ -687,7 +687,12 @@ public class BattleModel
             }
             else if (this.events.get(0).itemId > -1)
             {
-                if (ranNum.nextInt(2) == 0)
+                int pokemonCaptureRate = this.team[1][this.currentPokemon[1]].captureRate;
+                // determine if the Pokemon should be captured
+                double captureChance = (pokemonCaptureRate / 2 - 1) 
+                    + (pokemonCaptureRate / 2 + 1) 
+                    * (1 - Math.sqrt(this.team[1][this.currentPokemon[1]].currentHP / (double)(this.team[1][this.currentPokemon[1]].stats[Stat.HP])));
+                if (ranNum.nextInt(101) <= captureChance)
                 {
                     int i = 0;
                     while (i < this.events.size())
@@ -708,7 +713,7 @@ public class BattleModel
                 else
                 {
                     BattleEvent event = new BattleEvent("The wild " + this.team[1][this.currentPokemon[1]].name + " escaped!", 0, null);
-                    this.events.add(0, event);
+                    this.events.add(1, event);
                 }
             }
             this.events.remove(0);
