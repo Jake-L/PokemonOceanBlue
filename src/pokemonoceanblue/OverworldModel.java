@@ -27,6 +27,8 @@ public class OverworldModel {
     private List<ConversationTrigger> conversationTrigger = new ArrayList<ConversationTrigger>();
     private int areaId = -1;
     private List<AreaModel> areas = new ArrayList<AreaModel>();
+    protected String mugshotBackground;
+    protected String mugshotCharacter;
 
     // prevent players from accidently repeating actions by holdings keys
     public int actionCounter = 15;
@@ -150,6 +152,8 @@ public class OverworldModel {
         // update the current conversation
         if (this.conversation != null)
         {
+            this.mugshotCharacter =  this.conversation.getMugshotCharacter();
+            this.mugshotBackground =  this.conversation.getMugshotBackground();
             this.conversation.update();
             int characterId = this.conversation.getMovementCharacterId();
 
@@ -188,13 +192,11 @@ public class OverworldModel {
             {
                 this.app.addPokemon(this.conversation.getGiftPokemonId(), this.conversation.getGiftPokemonLevel());
             }
-
-            // start a battle
-            else if (this.conversation.getBattleId() >= 0)
-            {
-                this.app.createTrainerBattle(this.conversation.getBattleId());
-                this.conversation.setBattleStarted();
-            }
+        }
+        else
+        {
+            this.mugshotCharacter = null;
+            this.mugshotBackground = null;
         }
     }
 
@@ -271,11 +273,20 @@ public class OverworldModel {
         // if already in a conversation, check if it's time to move on to next dialog
         if (this.conversation != null)
         {
-            this.conversation.nextEvent();
-
-            if (this.conversation.getOptions() != null)
+            // start a battle
+            if (this.conversation.getBattleId() >= 0)
             {
-                this.textOptions = this.conversation.getOptions();
+                this.app.createTrainerBattle(this.conversation.getBattleId());
+                this.conversation.setBattleStarted();
+            }
+            else
+            {
+                this.conversation.nextEvent();
+
+                if (this.conversation.getOptions() != null)
+                {
+                    this.textOptions = this.conversation.getOptions();
+                }
             }
         }
         // surf if facing water

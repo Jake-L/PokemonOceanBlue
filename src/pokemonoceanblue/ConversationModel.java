@@ -71,10 +71,7 @@ public class ConversationModel
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            String query = "SELECT conversation_event_id, text, battle_id, heal_team, "
-                        + " movement_direction, character_id, "
-                        + " option_id, next_conversation_event_id, "
-                        + " gift_pokemon_id, gift_pokemon_level"
+            String query = "SELECT *"
                         + " FROM conversation WHERE conversation_id = " + this.conversationId;
 
             ResultSet rs = db.runQuery(query);
@@ -126,7 +123,7 @@ public class ConversationModel
                     );
 
                     event.setGiftPokemon(rs.getInt("gift_pokemon_id"), rs.getInt("gift_pokemon_level"));
-                    
+                    event.setMugshot(rs.getString("mugshot_character"), rs.getString("mugshot_background"));
                 }
 
                 this.events.add(event);
@@ -228,7 +225,7 @@ public class ConversationModel
      */
     public int getBattleId()
     {
-        if (this.events.size() > 0 && this.counter == 0 && !this.battleStarted)
+        if (this.events.size() > 0 && !this.battleStarted)
         {
             return this.events.get(0).battleId;
         }
@@ -359,6 +356,24 @@ public class ConversationModel
         return -1;
     }
 
+    public String getMugshotBackground()
+    {
+        if (this.events.size() > 0)
+        {
+            return this.events.get(0).mugshotBackground;
+        }
+        return null;
+    }
+
+    public String getMugshotCharacter()
+    {
+        if (this.events.size() > 0)
+        {
+            return this.events.get(0).mugshotCharacter;
+        }
+        return null;
+    }
+
     class ConversationEvent
     {
         public int conversationEventId;
@@ -372,6 +387,8 @@ public class ConversationModel
         public int giftPokemonId = -1;
         public int giftPokemonLevel = -1;
         private int optionId = -1;
+        public String mugshotBackground;
+        public String mugshotCharacter;
 
         // variables for moving CPUs
         public int characterId;
@@ -423,6 +440,12 @@ public class ConversationModel
         {
             this.options = options;
             this.optionOutcome = optionOutcome;
+        }
+
+        public void setMugshot(String mugshotCharacter, String mugshotBackground)
+        {
+            this.mugshotBackground = mugshotBackground;
+            this.mugshotCharacter = mugshotCharacter;
         }
     }
 }

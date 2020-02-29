@@ -32,7 +32,7 @@ map_id,area_id,x,y,dest_map_id,dest_area_id,dest_x,dest_y,comment
 14,0,20,47,15,0,4,1,viridian city route building
 0,0,16,30,18,0,4,1,pallet -> pallet-route 21 building
 0,0,17,30,18,0,4,1,pallet -> pallet-route 21 building
-18,0,4,0,0,0,17,,pallet-route 21 building -> pallet
+18,0,4,0,0,0,17,30,pallet-route 21 building -> pallet
 18,0,4,13,16,0,10,4,pallet-route 21 building -> route 21
 16,0,9,3,18,0,4,12,route 21 -> pallet-route 21 building
 16,0,10,3,18,0,4,12,route 21 -> pallet-route 21 building

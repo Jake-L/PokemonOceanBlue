@@ -316,7 +316,7 @@ public class DatabaseUtility
         query = "CREATE TABLE conversation("
                 + "conversation_id INT NOT NULL, "
                 + "conversation_event_id INT NOT NULL, "
-                + "text VARCHAR(100) NOT NULL, "
+                + "text VARCHAR(100) NULL, "
                 + "battle_id INT DEFAULT -1, "
                 + "heal_team INT DEFAULT 0, "
                 + "character_id INT NOT NULL, "
@@ -324,7 +324,9 @@ public class DatabaseUtility
                 + "option_id INT DEFAULT -1, "
                 + "next_conversation_event_id INT DEFAULT -1, " 
                 + "gift_pokemon_id INT DEFAULT -1, "
-                + "gift_pokemon_level INT DEFAULT -1)";
+                + "gift_pokemon_level INT DEFAULT -1, "
+                + "mugshot_character VARCHAR(20) NULL, "
+                + "mugshot_background VARCHAR(20) NULL)";
         runUpdate(query);
 
         // fill conversation table with data
@@ -333,10 +335,11 @@ public class DatabaseUtility
                 + "conversation_id, conversation_event_id, text, "
                 + "battle_id, heal_team, character_id, movement_direction, "
                 + "option_id, next_conversation_event_id, "
-                + "gift_pokemon_id, gift_pokemon_level)"
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "gift_pokemon_id, gift_pokemon_level, "
+                + "mugshot_character, mugshot_background)"
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int", "int", "int", "int"};
+        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int", "int", "int", "int", "String", "String"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================
@@ -468,18 +471,15 @@ public class DatabaseUtility
 
                 for (int i = 0; i < dataTypes.length; i++)
                 {
-                    if (dataTypes[i] == "int")
+                    if (i >= data.length)
                     {
-                        if (i >= data.length)
-                        {
-                            // set null value, since there was no value
-                            statement.setObject(i+1, null);
-                        }
-                        else
-                        {
-                            // use setObject to allow for null values
-                            statement.setObject(i+1, data[i].equals("") ? null : Integer.parseInt(data[i]));
-                        }
+                        // set null value, since there was no value
+                        statement.setObject(i+1, null);
+                    }
+                    else if (dataTypes[i] == "int")
+                    {
+                        // use setObject to allow for null values
+                        statement.setObject(i+1, data[i].equals("") ? null : Integer.parseInt(data[i]));
                     }
                     else if (dataTypes[i] == "String")
                     {
@@ -489,7 +489,7 @@ public class DatabaseUtility
                     {
                         statement.setFloat(i+1, Float.parseFloat(data[i]));
                     }
-                }        
+                }  
 
                 statement.addBatch();
 

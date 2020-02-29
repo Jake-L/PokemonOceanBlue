@@ -303,6 +303,8 @@ public class App extends JFrame implements KeyListener
 
                     if (this.battleModel.isComplete())
                     {
+                        this.overworldModel.battleComplete();
+
                         // check which pokemon leveled up
                         boolean[] evolveQueue = this.battleModel.getEvolveQueue();
 
@@ -329,7 +331,6 @@ public class App extends JFrame implements KeyListener
                         }
 
                         this.battleModel = null;
-                        this.overworldModel.battleComplete();
                     }
                 }
                 // update the players position

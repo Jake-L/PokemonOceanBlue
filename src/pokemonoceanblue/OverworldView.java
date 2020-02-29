@@ -24,6 +24,10 @@ public class OverworldView extends BaseView {
     private int xOffset = -1;
     private int yOffset = -1;
     private int[] ANIMATED_TILES = new int[]{0, 6, 7};
+    private Image mugshotBackgroundSprite;
+    private Image mugshotCharacterSprite;
+    private Image mugshotLightningSprite;
+    private Image mugshotVsSprite;
     
     /** 
      * Constructor for the overworld view
@@ -113,6 +117,13 @@ public class OverworldView extends BaseView {
                 }
             }
         }
+
+        // load mugshot sprites
+        ImageIcon ii = new ImageIcon("src/mugshots/lightning.png");
+        this.mugshotLightningSprite = ii.getImage();
+
+        ii = new ImageIcon("src/mugshots/vs.png");
+        this.mugshotVsSprite = ii.getImage();
     }
 
     /** 
@@ -122,6 +133,21 @@ public class OverworldView extends BaseView {
      */
     @Override
     public void render(Graphics g, JPanel canvas) {
+        // check for mugshot display
+        if (this.mugshotCharacterSprite == null && this.model.mugshotCharacter != null)
+        {
+            ImageIcon ii = new ImageIcon(String.format("src/mugshots/%s.png", this.model.mugshotCharacter));
+            this.mugshotCharacterSprite = ii.getImage();
+
+            ii = new ImageIcon(String.format("src/mugshots/background%s.png", this.model.mugshotBackground));
+            this.mugshotBackgroundSprite = ii.getImage();
+        }
+        else if (this.mugshotCharacterSprite != null && this.model.mugshotCharacter == null)
+        {
+            this.mugshotCharacterSprite = null;
+            this.mugshotBackgroundSprite = null;
+        }
+
         // draw black background
         Color colour = new Color(0, 0, 0, 255);
         g.setColor(colour);
@@ -207,6 +233,49 @@ public class OverworldView extends BaseView {
         if (this.model.textOptions != null)
         {
             this.displayOptions(this.model.textOptions, this.model.optionIndex, g, canvas);
+        }
+
+        // display gym leader mugshot
+        if (this.mugshotCharacterSprite != null)
+        {
+            for (int i = -1; i < 2; i++)
+            {
+                g.drawImage(
+                    this.mugshotBackgroundSprite, 
+                    (int)(System.currentTimeMillis() % this.mugshotBackgroundSprite.getWidth(null) + i * this.mugshotBackgroundSprite.getWidth(null)) * graphicsScaling, 
+                    height / 2 - this.mugshotBackgroundSprite.getHeight(null) * graphicsScaling / 2, 
+                    this.mugshotBackgroundSprite.getWidth(null) * graphicsScaling, 
+                    this.mugshotBackgroundSprite.getHeight(null) * graphicsScaling,
+                    canvas
+                );
+
+                g.drawImage(
+                    this.mugshotLightningSprite, 
+                    (int)(System.currentTimeMillis() % (this.mugshotLightningSprite.getWidth(null)) + i * this.mugshotLightningSprite.getWidth(null)) * graphicsScaling, 
+                    height / 2 - this.mugshotLightningSprite.getHeight(null) * graphicsScaling / 2, 
+                    this.mugshotLightningSprite.getWidth(null) * graphicsScaling, 
+                    this.mugshotLightningSprite.getHeight(null) * graphicsScaling,
+                    canvas
+                );
+            }
+
+            g.drawImage(
+                this.mugshotCharacterSprite, 
+                width / 2, 
+                height / 2 - (this.mugshotCharacterSprite.getHeight(null) + 4 - this.mugshotBackgroundSprite.getHeight(null) / 2) * graphicsScaling, 
+                this.mugshotCharacterSprite.getWidth(null) * graphicsScaling, 
+                this.mugshotCharacterSprite.getHeight(null) * graphicsScaling,
+                canvas
+            );
+
+            g.drawImage(
+                this.mugshotVsSprite, 
+                width / 4 - (int)(System.currentTimeMillis() / 4 % 2) * graphicsScaling, 
+                height / 2 - (int)(System.currentTimeMillis() / 6 % 3 + this.mugshotVsSprite.getHeight(null) / 2) * graphicsScaling, 
+                this.mugshotVsSprite.getWidth(null) * graphicsScaling, 
+                this.mugshotVsSprite.getHeight(null) * graphicsScaling,
+                canvas
+            );            
         }
     }
 
