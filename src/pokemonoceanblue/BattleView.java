@@ -117,7 +117,7 @@ public class BattleView extends BaseView {
             this.pokemonIconSprites[i] = new Image[this.model.team[i].length];
             for (int j = 0; j < this.pokemonIconSprites[i].length; j++)
             {
-                ii = new ImageIcon("src/pokemonicons/" + this.model.team[i][j].id + ".png");
+                ii = new ImageIcon("src/pokemonicons/" + this.model.team[i][j].getSpriteId() + ".png");
                 this.pokemonIconSprites[i][j] = ii.getImage();
             }
         }

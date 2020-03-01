@@ -18,12 +18,12 @@ public class PokemonModel
 
     int[] ivs = new int[6];
     int ivGain;
-    MoveModel[] moves;
+    MoveModel[] moves = new MoveModel[0];
     public final boolean shiny;
     int pokeballId = 3;
     int happiness = 70;
     int captureRate;
-
+    int stepCounter;
     
     /** 
      * Constructor
@@ -34,19 +34,50 @@ public class PokemonModel
     {
         this.id = id;
         this.level = level;
-        this.xp = (int) Math.pow(level, 3);
         this.shiny = shiny;
 
+        if (level > 0)
+        {
+            this.stepCounter = 500;
+            this.xp = (int) Math.pow(level, 3);
+            this.loadMoves();
+        }
+        else
+        {
+            this.stepCounter = 1500;
+        }
+
         this.loadStats();
-        this.loadMoves();
+        
     }
 
     /** 
      * Recalculates a Pokemon's level based off it's current experience
+     * Recalculates stats when a Pokemon levels up
      */
-    public void calcLevel()
+    private void calcLevel()
     {
+        int oldLevel = this.level;
         this.level = (int) Math.floor(Math.cbrt(xp));
+
+        if (oldLevel < this.level)
+        {
+            this.loadStats();
+        }
+    }
+
+    /**
+     * Adds XP to the Pokemon and then recalculates level
+     * @param xp the xp to be added
+     */
+    public void addXP(int xp)
+    {
+        this.xp += xp;
+        this.calcLevel();
+        if (this.xp <= 1)
+        {
+            this.loadMoves();
+        }
     }
 
     /** 
@@ -79,6 +110,36 @@ public class PokemonModel
     {
         this.id = evolvedPokemonId;
         this.loadStats();
+    }
+
+    /**
+     * @return the id of a Pokemon or "egg" if the Pokemon is an egg
+     */
+    public String getSpriteId()
+    {
+        if (this.level > 0)
+        {
+            return String.valueOf(this.id);
+        }
+        else
+        {
+            return "egg";
+        }
+    }
+
+    /**
+     * @return the name of a Pokemon or "EGG" if the Pokemon is an egg
+     */
+    public String getName()
+    {
+        if (this.level > 0)
+        {
+            return this.name;
+        }
+        else
+        {
+            return "EGG";
+        }
     }
 
     /** 
@@ -164,5 +225,17 @@ public class PokemonModel
         {
             e.printStackTrace();
         }  
+    }
+
+    public void decrementStepCounter()
+    {
+        this.stepCounter--;
+
+        if (this.level > 0 && this.stepCounter <= 0)
+        {
+            // increase happiness by 1 every 500 steps
+            this.updateHappiness(1);
+            this.stepCounter = 500;
+        }
     }
 }

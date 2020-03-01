@@ -70,7 +70,8 @@ public class BattleModel
         this.isSeen = new boolean[this.team[1].length];
         this.isSeen[0] = true;
 
-        while (this.team[0][firstPokemon].currentHP == 0)
+        // send out the first Pokemon with HP > 0 and that's not an egg
+        while (this.team[0][firstPokemon].currentHP == 0 || this.team[0][firstPokemon].level == 0)
         {
             firstPokemon++;
         }
@@ -598,8 +599,7 @@ public class BattleModel
                     event = new BattleEvent("", xpGain + this.team[0][this.currentPokemon[0]].xp - xpMax, 0);
                     this.events.add(2, event);
 
-                    this.team[0][this.currentPokemon[0]].xp = xpMax;
-                    this.team[0][this.currentPokemon[0]].calcLevel();
+                    this.team[0][this.currentPokemon[0]].addXP(xpMax - this.team[0][this.currentPokemon[0]].xp);
 
                     // flag that the pokemon leveled up and may evolve
                     this.evolveQueue[this.currentPokemon[0]] = true;
@@ -607,7 +607,7 @@ public class BattleModel
                 else
                 {
                     // add the remianing XP that isn't enough to level up
-                    this.team[0][this.currentPokemon[0]].xp += this.events.get(0).xp;
+                    this.team[0][this.currentPokemon[0]].addXP(this.events.get(0).xp);
                 }
             }
             else if (this.events.get(0).statusEffect > -1)

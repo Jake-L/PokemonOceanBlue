@@ -44,9 +44,9 @@ public class PartyView extends BaseView {
 
         for (int i = 0; i < this.teamSize; i++)
         {
-            ii = new ImageIcon("src/pokemonicons/" + this.model.team.get(i).id + ".png");
+            ii = new ImageIcon("src/pokemonicons/" + this.model.team.get(i).getSpriteId() + ".png");
             this.pokemonSprite[i] = ii.getImage();
-            ii = new ImageIcon("src/pokemon/frame0/" + this.model.team.get(i).id + ".png");
+            ii = new ImageIcon("src/pokemon/frame0/" + this.model.team.get(i).getSpriteId() + ".png");
             this.pokemonImages[i] = ii.getImage();
         }
 
@@ -167,7 +167,7 @@ public class PartyView extends BaseView {
                 (i / 2) * (height / 4 + 8 * graphicsScaling) + 60 * graphicsScaling);
             
             //display text with pokemon name
-            g.drawString(this.model.team.get(i).name, 
+            g.drawString(this.model.team.get(i).getName(),
                 (i % 2) * (width / 3 + 8 * graphicsScaling) + 94 * graphicsScaling, 
                 (i / 2) * (height / 4 + 8 * graphicsScaling) + 34 * graphicsScaling);
 
@@ -191,12 +191,15 @@ public class PartyView extends BaseView {
             }
             
             //fill health bars
-            g.drawImage(healthBarFill[healthBarFillIndex],
-                (i % 2) * (width / 3 + 8 * graphicsScaling) + 110 * graphicsScaling, 
-                (i / 2) * (height / 4 + 8 * graphicsScaling) + 42 * graphicsScaling,
-                (int)Math.ceil(healthBarFill[0].getWidth(null) * (this.model.team.get(i).currentHP * 48.0 / this.model.team.get(i).stats[Stat.HP]) * graphicsScaling),
-                healthBarFill[0].getHeight(null) * graphicsScaling,
-                canvas);
+            if (this.model.team.get(i).level > 0)
+            {
+                g.drawImage(healthBarFill[healthBarFillIndex],
+                    (i % 2) * (width / 3 + 8 * graphicsScaling) + 110 * graphicsScaling, 
+                    (i / 2) * (height / 4 + 8 * graphicsScaling) + 42 * graphicsScaling,
+                    (int)Math.ceil(healthBarFill[0].getWidth(null) * (this.model.team.get(i).currentHP * 48.0 / this.model.team.get(i).stats[Stat.HP]) * graphicsScaling),
+                    healthBarFill[0].getHeight(null) * graphicsScaling,
+                    canvas);
+            }
             
             //display status condition
             int statusEffect = this.model.team.get(i).statusEffect;

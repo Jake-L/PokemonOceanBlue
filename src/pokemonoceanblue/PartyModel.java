@@ -62,7 +62,7 @@ public class PartyModel extends BaseModel
             }
         }
         // if in battle, return the chosen Pokemon
-        else if (this.currentPokemon != this.optionIndex)
+        else if (this.currentPokemon != this.optionIndex && this.team.get(this.optionIndex).level > 0)
         {
             this.returnValue = this.optionIndex;
             this.optionIndex = -1;

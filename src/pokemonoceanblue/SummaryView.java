@@ -32,7 +32,7 @@ public class SummaryView extends BaseView {
 
         for (int i = 0; i < this.model.team.size(); i++)
         {
-            ii = new ImageIcon("src/pokemon/frame0/" + this.model.team.get(i).id + ".png");
+            ii = new ImageIcon("src/pokemon/frame0/" + this.model.team.get(i).getSpriteId() + ".png");
             this.pokemonSprites[i] = ii.getImage();
             ii = new ImageIcon("src/inventory/" + this.model.team.get(i).pokeballId + ".png");
             this.pokeballSprites[i] = ii.getImage();
@@ -71,67 +71,71 @@ public class SummaryView extends BaseView {
             canvas);
         
         //displays pokemon name
-        g.drawString(this.model.team.get(pokemonIndex).name,
+        g.drawString(this.model.team.get(pokemonIndex).getName(),
             20 * graphicsScaling,
             height / 8);
 
-        //displays pokemon level
-        g.drawString("Lv." + this.model.team.get(pokemonIndex).level,
-            20 * graphicsScaling,
-            height / 8 + 16 * graphicsScaling);
-
-        //displays pokemon number
-        g.drawString("No." + this.model.team.get(pokemonIndex).id,
-            24 * graphicsScaling,
-            height * 9 / 16);
-
-        //displays pokemon type(s)
-        for (int i = 0; i < this.model.team.get(pokemonIndex).types.length; i++)
+        // only show stats for Pokemon, not Eggs
+        if (this.model.team.get(pokemonIndex).level > 0)
         {
-            g.drawImage(this.typeSprites[this.model.team.get(pokemonIndex).types[i]],
-                (int)(24 * graphicsScaling + i * this.typeSprites[0].getWidth(null) * graphicsScaling / 1.5),
-                height * 9 / 16 + 4 * graphicsScaling,
-                this.typeSprites[0].getWidth(null) * graphicsScaling / 2,
-                this.typeSprites[0].getHeight(null) * graphicsScaling / 2,
-                canvas);
-        }
+            //displays pokemon level
+            g.drawString("Lv." + this.model.team.get(pokemonIndex).level,
+                20 * graphicsScaling,
+                height / 8 + 16 * graphicsScaling);
 
-        //displays pokemon stats
-        String[] stats = {"HP","ATTACK","DEFENSE","SP. ATTACK","SP. DEFENSE","SPEED"};
-        for (int i = 0; i < this.model.team.get(pokemonIndex).stats.length; i++)
-        {
-            g.drawString(String.valueOf(this.model.team.get(pokemonIndex).stats[i]),
-                width / 3 + 32 * graphicsScaling,
-                height * (i + 2) / 16);
-            
-            g.drawString(stats[i],
-                width / 4,
-                height * (i + 2) / 16);
+            //displays pokemon number
+            g.drawString("No." + this.model.team.get(pokemonIndex).id,
+                24 * graphicsScaling,
+                height * 9 / 16);
 
-            this.renderProgressBar(width * 7 / 16, height * (i + 2) / 16 - 8 * graphicsScaling, this.model.team.get(pokemonIndex).ivs[i] / 64.0, g, canvas);
-        }
+            //displays pokemon type(s)
+            for (int i = 0; i < this.model.team.get(pokemonIndex).types.length; i++)
+            {
+                g.drawImage(this.typeSprites[this.model.team.get(pokemonIndex).types[i]],
+                    (int)(24 * graphicsScaling + i * this.typeSprites[0].getWidth(null) * graphicsScaling / 1.5),
+                    height * 9 / 16 + 4 * graphicsScaling,
+                    this.typeSprites[0].getWidth(null) * graphicsScaling / 2,
+                    this.typeSprites[0].getHeight(null) * graphicsScaling / 2,
+                    canvas);
+            }
 
-        //display pokemon moves
-        for (int i = 0; i < this.model.team.get(pokemonIndex).moves.length; i++)
-        {
-            g.drawImage(this.typeSprites[this.model.team.get(pokemonIndex).moves[i].typeId],
-                (int)(width * (2.0 / 3.0)),
-                i * height / 6 + height / 8 - 8 * graphicsScaling,
-                this.typeSprites[0].getWidth(null) * graphicsScaling / 2,
-                this.typeSprites[0].getHeight(null) * graphicsScaling / 2,
-                canvas);
-            
-            g.drawString(this.model.team.get(pokemonIndex).moves[i].name,
-                (int)(width * (2.0 / 3.0) + 8 * graphicsScaling + this.typeSprites[i].getWidth(null)),
-                i * height / 6 + height / 8 - 2 * graphicsScaling);
+            //displays pokemon stats
+            String[] stats = {"HP","ATTACK","DEFENSE","SP. ATTACK","SP. DEFENSE","SPEED"};
+            for (int i = 0; i < this.model.team.get(pokemonIndex).stats.length; i++)
+            {
+                g.drawString(String.valueOf(this.model.team.get(pokemonIndex).stats[i]),
+                    width / 3 + 32 * graphicsScaling,
+                    height * (i + 2) / 16);
+                
+                g.drawString(stats[i],
+                    width / 4,
+                    height * (i + 2) / 16);
 
-            g.drawString("Dmg: " + String.valueOf(this.model.team.get(pokemonIndex).moves[i].power),
-                (int)(width * (2.0 / 3.0)),
-                i * height / 6 + height / 8 + 16 * graphicsScaling);
+                this.renderProgressBar(width * 7 / 16, height * (i + 2) / 16 - 8 * graphicsScaling, this.model.team.get(pokemonIndex).ivs[i] / 64.0, g, canvas);
+            }
 
-            g.drawString("Acc: " + String.valueOf(this.model.team.get(pokemonIndex).moves[i].accuracy),
-                (int)(width * (2.0 / 3.0) + graphicsScaling * 72),
-                i * height / 6 + height / 8 + 16 * graphicsScaling);
+            //display pokemon moves
+            for (int i = 0; i < this.model.team.get(pokemonIndex).moves.length; i++)
+            {
+                g.drawImage(this.typeSprites[this.model.team.get(pokemonIndex).moves[i].typeId],
+                    (int)(width * (2.0 / 3.0)),
+                    i * height / 6 + height / 8 - 8 * graphicsScaling,
+                    this.typeSprites[0].getWidth(null) * graphicsScaling / 2,
+                    this.typeSprites[0].getHeight(null) * graphicsScaling / 2,
+                    canvas);
+                
+                g.drawString(this.model.team.get(pokemonIndex).moves[i].name,
+                    (int)(width * (2.0 / 3.0) + 8 * graphicsScaling + this.typeSprites[i].getWidth(null)),
+                    i * height / 6 + height / 8 - 2 * graphicsScaling);
+
+                g.drawString("Dmg: " + String.valueOf(this.model.team.get(pokemonIndex).moves[i].power),
+                    (int)(width * (2.0 / 3.0)),
+                    i * height / 6 + height / 8 + 16 * graphicsScaling);
+
+                g.drawString("Acc: " + String.valueOf(this.model.team.get(pokemonIndex).moves[i].accuracy),
+                    (int)(width * (2.0 / 3.0) + graphicsScaling * 72),
+                    i * height / 6 + height / 8 + 16 * graphicsScaling);
+            }
         }
     }
 

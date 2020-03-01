@@ -5,7 +5,7 @@ package pokemonoceanblue;
  */
 public class NewPokemonModel extends BaseModel {
     public PokemonModel[] pokemon;
-    private final PartyModel partyModel;
+    private PartyModel partyModel;
     private PokemonStorageModel storageModel;
     public String text;
     private int partyIndex = -1;
@@ -46,6 +46,19 @@ public class NewPokemonModel extends BaseModel {
         this.actionCounter = 120;
     }
 
+    /**
+     * Constructor for when an egg hatches
+     * @param pokemon the Pokemon that is hatching
+     */
+    public NewPokemonModel(PokemonModel pokemon)
+    {
+        super();
+        this.pokemon = new PokemonModel[1];
+        this.pokemon[0] = pokemon;
+        this.text = this.pokemon[0].name + " hatched from the egg!";
+        this.actionCounter = 120;
+    }
+
     public void addPokemon()
     {
         if (this.partyModel.team.size() == 6)
@@ -74,6 +87,10 @@ public class NewPokemonModel extends BaseModel {
             if (this.pokemon.length > 1)
             {
                 this.evolvePokemon();
+            }
+            else if (this.pokemon[0].level == 0)
+            {
+                this.pokemon[0].addXP(1);
             }
             else
             {

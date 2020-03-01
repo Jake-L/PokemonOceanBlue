@@ -30,8 +30,17 @@ public class NewPokemonView extends BaseView {
     public NewPokemonView(NewPokemonModel model)
     {
         this.model = model;
-        this.pokemonSprite = new Image[this.model.pokemon.length];
-        this.pokemonBufferedSprite = new BufferedImage[this.model.pokemon.length];
+        if (this.model.pokemon[0].level == 0)
+        {
+            this.pokemonSprite = new Image[2];
+            this.pokemonBufferedSprite = new BufferedImage[2];
+        }
+        else
+        {
+            this.pokemonSprite = new Image[this.model.pokemon.length];
+            this.pokemonBufferedSprite = new BufferedImage[this.model.pokemon.length];
+        }
+        
         loadImage();
     }
 
@@ -45,17 +54,36 @@ public class NewPokemonView extends BaseView {
 
         for (int i = 0; i < this.pokemonSprite.length; i++)
         {
-            ii = new ImageIcon("src/pokemon/frame0/" + this.model.pokemon[i].id + ".png");
+            String id;
+            // load egg sprite
+            if (this.model.pokemon[0].level == 0)
+            {
+                if (i == 0)
+                {
+                    id = "egg";
+                }
+                else
+                {
+                    id = String.valueOf(this.model.pokemon[0].id);
+                }
+            }
+            // load regular Pokemon sprites
+            else
+            {
+                id = this.model.pokemon[i].getSpriteId();
+            }
+
+            ii = new ImageIcon("src/pokemon/frame0/" + id + ".png");
             this.pokemonSprite[i] = ii.getImage();
             try
             {
                 // load a copy of the Pokemon's sprite recoloured white
-                this.pokemonBufferedSprite[i] = ImageIO.read(new File("src/pokemon/frame0/" + this.model.pokemon[i].id + ".png"));   
+                this.pokemonBufferedSprite[i] = ImageIO.read(new File("src/pokemon/frame0/" + id + ".png"));   
                 this.pokemonBufferedSprite[i] = this.colorImage(this.pokemonBufferedSprite[i], 255, 255, 255);
             }
             catch (IOException e)
             {
-                System.out.println("Error loading src/pokemon/frame0/" + this.model.pokemon[i].id + ".png");
+                System.out.println("Error loading src/pokemon/frame0/" + id + ".png");
             }
         }
     }

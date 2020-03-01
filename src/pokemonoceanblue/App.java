@@ -126,7 +126,7 @@ public class App extends JFrame implements KeyListener
         pokemonStorageModel.addPokemon(new PokemonModel(91, 40, true));
         pokemonStorageModel.addPokemon(new PokemonModel(343, 5, false));
         pokemonStorageModel.addPokemon(new PokemonModel(159, 5, false));
-        pokemonStorageModel.addPokemon(new PokemonModel(414, 5, false));
+        pokemonStorageModel.addPokemon(new PokemonModel(414, 0, false));
         pokemonStorageModel.addPokemon(new PokemonModel(239, 46, false));
         pokemonStorageModel.addPokemon(new PokemonModel(135, 7, true));
         pokemonStorageModel.addPokemon(new PokemonModel(325, 40, true));
@@ -254,6 +254,28 @@ public class App extends JFrame implements KeyListener
         viewManager.setView(psv);
     }
 
+    public void decrementStepCounter()
+    {
+        for (PokemonModel pokemon : partyModel.team)
+        {
+            pokemon.decrementStepCounter();
+            // add an animation for hatching eggs to the queue
+            if (pokemon.level == 0 && pokemon.stepCounter <= 0)
+            {
+                newPokemonQueue.add(new NewPokemonModel(pokemon));
+            }
+        }
+
+        // if any eggs hatched, show the animation
+        if (newPokemonQueue.size() > 0 && overworldModel.conversation == null)
+        {
+            this.partyModel.initialize(-1);
+            viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
+            newPokemonController = new BaseController(newPokemonQueue.get(0));
+            newPokemonQueue.remove(0);
+        }
+    }
+
     /**
      * Handles the catching of new Pokemon
      * @param pokemon the Pokemon that was caught
@@ -349,6 +371,16 @@ public class App extends JFrame implements KeyListener
                             oldPlayerModel = null;
                         }
                     }
+                    // check if player is entering a portal
+                    else if (playerModel.getMovementCounter() == 14)
+                    {
+                        PortalModel portal = overworldModel.checkPortalModel(playerModel.getX(), playerModel.getY());
+                        if (portal != null)
+                        {
+                            // move to the new map
+                            setMap(portal.destMapId, portal.destX, portal.destY);
+                        }
+                    }
                     else if (newPokemonQueue.size() > 0 && overworldModel.conversation == null)
                     {
                         this.partyModel.initialize(-1);
@@ -360,17 +392,6 @@ public class App extends JFrame implements KeyListener
                     {
                         // only read user input when previous map is no longer visible
                         overworldController.userInput(keysDown);
-                    }
-
-                    // check if player is entering a portal
-                    if (playerModel.getMovementCounter() == 14)
-                    {
-                        PortalModel portal = overworldModel.checkPortalModel(playerModel.getX(), playerModel.getY());
-                        if (portal != null)
-                        {
-                            // move to the new map
-                            setMap(portal.destMapId, portal.destX, portal.destY);
-                        }
                     }
                 }
                 else if (viewManager.getCurrentView().equals("PartyView"))

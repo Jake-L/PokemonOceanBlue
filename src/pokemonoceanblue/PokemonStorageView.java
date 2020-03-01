@@ -43,7 +43,7 @@ public class PokemonStorageView extends BaseView {
      */
     private void loadImage() 
     {
-        ImageIcon ii = new ImageIcon("src/pokemon/frame0/" + this.partyModel.team.get(0).id + ".png");
+        ImageIcon ii = new ImageIcon("src/pokemon/frame0/" + this.partyModel.team.get(0).getSpriteId() + ".png");
         this.pokemonSprite  = ii.getImage();
 
         // load team icons
@@ -51,7 +51,7 @@ public class PokemonStorageView extends BaseView {
         {
             if (this.pokemonIconSprite.get(pokemon.id) == null)
             {
-                ii = new ImageIcon("src/pokemonicons/" + pokemon.id + ".png");
+                ii = new ImageIcon("src/pokemonicons/" + pokemon.getSpriteId() + ".png");
                 this.pokemonIconSprite.put(pokemon.id, ii.getImage());
             }
         }
@@ -61,7 +61,7 @@ public class PokemonStorageView extends BaseView {
         {
             if (this.pokemonIconSprite.get(pokemon.id) == null)
             {
-                ii = new ImageIcon("src/pokemonicons/" + pokemon.id + ".png");
+                ii = new ImageIcon("src/pokemonicons/" + pokemon.getSpriteId() + ".png");
                 this.pokemonIconSprite.put(pokemon.id, ii.getImage());
             }
         }
@@ -272,12 +272,12 @@ public class PokemonStorageView extends BaseView {
 
         if (this.storageModel.categoryIndex == 0 && this.storageModel.optionIndex < this.storageModel.pokemonStorage.size())
         {
-            ImageIcon ii = new ImageIcon("src/pokemon/frame0/" + this.partyModel.team.get(this.partyModel.optionIndex).id + ".png");
+            ImageIcon ii = new ImageIcon("src/pokemon/frame0/" + this.partyModel.team.get(this.partyModel.optionIndex).getSpriteId() + ".png");
             this.pokemonSprite  = ii.getImage();
         }
         else if (this.storageModel.optionIndex < this.storageModel.pokemonStorage.size())
         {
-            ImageIcon ii = new ImageIcon("src/pokemon/frame0/" + this.storageModel.pokemonStorage.get(this.storageModel.optionIndex).id + ".png");
+            ImageIcon ii = new ImageIcon("src/pokemon/frame0/" + this.storageModel.pokemonStorage.get(this.storageModel.optionIndex).getSpriteId() + ".png");
             this.pokemonSprite  = ii.getImage();
         }
         else

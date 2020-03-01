@@ -390,6 +390,9 @@ public class OverworldModel {
      */
     public void checkMovement(int x, int y)
     {
+        // update movement trackers
+        this.app.decrementStepCounter();
+
         // check if the player entered a new area
         this.checkArea(x, y);
 
