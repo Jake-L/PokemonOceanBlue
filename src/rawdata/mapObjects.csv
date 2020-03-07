@@ -1,5 +1,6 @@
 map_id,area_id,name,x,y
 16,0,routeBuilding,7,4
+14,0,routeBuilding,6,4
 14,0,routeBuilding,18,53
 7,0,pc,9,2
 0,2,routeBuilding,19,4
@@ -373,10 +374,7 @@ map_id,area_id,name,x,y
 14,0,forestTree,9,1
 14,0,forestTree,6,1
 14,0,forestTree,3,13
-14,0,forestTree,3,11
-14,0,forestTree,3,9
-14,0,forestTree,3,7
-14,0,forestTree,3,5
+14,0,forestTree,3,3
 14,0,forestTree,3,1
 14,0,forestTree,0,13
 14,0,forestTree,0,11
