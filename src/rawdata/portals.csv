@@ -36,3 +36,9 @@ map_id,area_id,x,y,dest_map_id,dest_area_id,dest_x,dest_y,comment
 18,0,4,13,16,0,10,4,pallet-route 21 building -> route 21
 16,0,9,3,18,0,4,12,route 21 -> pallet-route 21 building
 16,0,10,3,18,0,4,12,route 21 -> pallet-route 21 building
+14,0,8,3,19,0,4,12,vforest -> vforest-pewter route building
+14,0,9,3,19,0,4,12,vforest -> vforest-pewter route building
+19,0,4,13,14,0,8,4,vforest-pewter route building -> vforest
+19,0,4,0,17,0,19,44,vforest-pewter route building -> pewter
+17,0,19,45,19,0,4,1,pewter -> vforest-pewter route building
+17,0,20,45,19,0,4,1,pewter -> vforest-pewter route building
