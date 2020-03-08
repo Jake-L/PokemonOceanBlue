@@ -19,7 +19,7 @@ public class CharacterModel {
     public OverworldModel overworldModel;
     public final int spawn_x;
     public final int spawn_y;
-    public final int conversationId;
+    public int conversationId;
     public final int characterId;
     public final int wanderRange;
 

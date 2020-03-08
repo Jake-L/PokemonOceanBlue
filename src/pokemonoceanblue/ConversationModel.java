@@ -7,28 +7,28 @@ import java.util.List;
 public class ConversationModel 
 {
     private final int TEXT_LENGTH = 15;
-    private final int conversationId;
+    public final int conversationId;
     private int counter = 0;
     private List<ConversationEvent> events = new ArrayList<ConversationEvent>();
     private CharacterModel player;
     private CharacterModel cpu;
-    private boolean initialMovement;
+    private boolean approachPlayer;
     private boolean battleStarted = false;
     
     /** 
      * Constructor
      * @param conversationId the unique identifier of this converstaion
      */
-    public ConversationModel(int conversationId, CharacterModel player, CharacterModel cpu, boolean initialMovement)
+    public ConversationModel(int conversationId, CharacterModel player, CharacterModel cpu, boolean approachPlayer)
     {
         this.conversationId = conversationId;
         this.player = player;
         this.cpu = cpu;
         this.counter = TEXT_LENGTH;
-        this.initialMovement = initialMovement;
+        this.approachPlayer = approachPlayer;
 
         // move trainer to approach the player at the start of the conversation
-        if (this.initialMovement)
+        if (this.approachPlayer)
         {
             int xDistance = player.getX() - cpu.getX();
             if (xDistance < -1)
@@ -65,8 +65,6 @@ public class ConversationModel
      */
     private void loadEvents()
     {
-        
-
         try
         {
             DatabaseUtility db = new DatabaseUtility();
@@ -78,54 +76,7 @@ public class ConversationModel
 
             while(rs.next()) 
             {
-                ConversationEvent event;
-
-                // events where a person moves
-                if (rs.getInt("movement_direction") > -1)
-                {
-                    int dx = 0;
-                    int dy = 0;
-                    switch (rs.getInt("movement_direction"))
-                    {
-                        case 0:
-                            dy = -1;
-                            break;
-                        case 1:
-                            dx = 1;
-                            break;
-                        case 2:
-                            dy = 1;
-                            break;
-                        case 3:
-                            dx = -1;
-                            break;
-                    }
-
-                    event = new ConversationEvent(
-                        rs.getInt("conversation_event_id"),
-                        rs.getInt("character_id"),
-                        dx,
-                        dy,
-                        1,
-                        rs.getInt("next_conversation_event_id")
-                    );
-                }
-                else
-                {
-                    // add the conversation event to the list of events
-                    event = new ConversationEvent(
-                        rs.getInt("conversation_event_id"),
-                        rs.getString("text"),
-                        rs.getInt("battle_id"),
-                        rs.getInt("heal_team") == 1,
-                        rs.getInt("option_id"),
-                        rs.getInt("next_conversation_event_id")
-                    );
-
-                    event.setGiftPokemon(rs.getInt("gift_pokemon_id"), rs.getInt("gift_pokemon_level"));
-                    event.setMugshot(rs.getString("mugshot_character"), rs.getString("mugshot_background"));
-                }
-
+                ConversationEvent event = new ConversationEvent(rs);
                 this.events.add(event);
             }
 
@@ -156,6 +107,34 @@ public class ConversationModel
         {
             e.printStackTrace();
         }  
+    }
+
+    /** 
+     * Update a character's conversation
+     */
+    private void setConversation(int characterId, int conversationId)
+    {
+        DatabaseUtility db = new DatabaseUtility();
+
+        if (conversationId == -1)
+        {
+            return;
+        }
+        if (conversationId == -2)
+        {
+            String query = "DELETE FROM character "
+                        + " WHERE character_id = " + characterId;
+
+            db.runUpdate(query);
+        }
+        else //(conversationId > 0)
+        {
+            String query = "UPDATE character "
+                    + " SET conversation_id = " + conversationId
+                    + " WHERE character_id = " + characterId;
+
+            db.runUpdate(query);
+        }
     }
 
     /** 
@@ -215,6 +194,11 @@ public class ConversationModel
                 while (this.events.size() > 0 && conversationEventId > this.events.get(0).conversationEventId)
                 {
                     this.events.remove(0);
+                }
+
+                if (this.events.size() > 0 && this.events.get(0).newConversationId == -2)
+                {
+                    this.counter = 16;
                 }
             }
         }
@@ -374,26 +358,111 @@ public class ConversationModel
         return null;
     }
 
+    /**
+     * Remvoe characters and triggers, and update character's conversation
+     * @param characters a list of all the characters on the current map
+     * @param triggers a list o fconversation triggers on the current map
+     * @return true if a character is being removed during this event
+     */
+    public boolean removeCharacter(List<CharacterModel> characters, List<ConversationTriggerModel> triggers)
+    {
+        // if the next event is to update a character's conversation id, update it and remove the event
+        while (this.events.size() > 1 && this.counter == 1 && this.events.get(1).newConversationId > 0)
+        {
+            // update the character's conversation in the database
+            this.setConversation(this.events.get(1).characterId, this.events.get(1).newConversationId);
+            this.removeTriggers(triggers, this.conversationId);
+
+            for (int i = 0; i < characters.size(); i++)
+            {
+                if (characters.get(i).characterId == this.events.get(1).characterId)
+                {
+                    // update the character's conversation in the overworld
+                    characters.get(i).conversationId = this.events.get(1).newConversationId;
+                    this.events.remove(1);
+                    break;
+                }
+            }
+        }
+        if (this.events.size() > 0 && this.events.get(0).newConversationId == -2)
+        {
+            if (this.counter == 8)
+            {
+                // update the character's conversation in the database
+                this.removeTriggers(triggers, this.conversationId);
+                this.setConversation(this.events.get(0).characterId, this.events.get(0).newConversationId);
+            }
+            for (int i = 0; i < characters.size(); i++)
+            {
+                if (characters.get(i).characterId == this.events.get(0).characterId)
+                {
+                    if (this.counter == 8)
+                    {
+                        // remove the character from the map
+                        characters.remove(i);   
+                    }
+                                         
+                    // tell the overworld model to do a fade to black transition
+                    // only do this after confirming the character is on the current map
+                    return true;                    
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Remove any triggers with clearConversationId equal to the given conversation Id
+     * @param triggers a list o fconversation triggers on the current map
+     * @param conversationId the conversation to filter out
+     */
+    private void removeTriggers(List<ConversationTriggerModel> triggers, int conversationId)
+    {
+        // remove triggers from the database 
+        DatabaseUtility db = new DatabaseUtility();
+        
+        String query = "DELETE FROM conversation_trigger "
+                    + "WHERE clear_conversation_id = " + conversationId;
+    
+        db.runUpdate(query);
+
+        for (int i = 0; i < triggers.size(); i++)
+        {
+            if (triggers.get(i).clearConversationId == conversationId)
+            {
+                // remove the trigger
+                triggers.remove(i);
+            }
+        }
+    }
+
+    public int getCounter()
+    {
+        return this.counter;
+    }
+
     class ConversationEvent
     {
         public int conversationEventId;
-        public String text;
+        public final String text;
         public String[] options = new String[0];
         public int[] optionOutcome = new int[0];
-        public int battleId = -1;
-        public boolean autoAdvance = false;
-        public boolean healTeam = false;
-        public int nextConversationEventId = -1;
-        public int giftPokemonId = -1;
-        public int giftPokemonLevel = -1;
-        private int optionId = -1;
-        public String mugshotBackground;
-        public String mugshotCharacter;
+        public int battleId;
+        public final boolean autoAdvance;
+        public final boolean healTeam;
+        public int nextConversationEventId;
+        public final int newConversationId;
+        public int giftPokemonId;
+        public int giftPokemonLevel;
+        private int optionId;
+        public final String mugshotBackground;
+        public final String mugshotCharacter;
 
         // variables for moving CPUs
         public int characterId;
-        public int dx;
-        public int dy;
+        public int dx = 0;
+        public int dy = 0;
         public int distance;
 
         /** 
@@ -402,14 +471,57 @@ public class ConversationModel
          * @param text the text that will be displayed
          * @param battleId unique identifer for the battle that will be started or -1 otherwise
          */
-        public ConversationEvent(int conversationEventId, String text, int battleId, boolean healTeam, int optionId, int nextConversationEventId)
+        public ConversationEvent(ResultSet rs) throws SQLException
         {
-            this.conversationEventId = conversationEventId;
-            this.text = text;
-            this.battleId = battleId;
-            this.healTeam = healTeam;
-            this.optionId = optionId;
-            this.nextConversationEventId = nextConversationEventId;
+            if (rs.getString("text").equals(""))
+            {
+                this.text = null;
+            }
+            else
+            {
+                this.text = rs.getString("text");
+            }
+            this.conversationEventId = rs.getInt("conversation_event_id");
+            this.battleId = rs.getInt("battle_id");
+            this.healTeam = rs.getInt("heal_team") == 1;
+            this.optionId = rs.getInt("option_id");
+            this.nextConversationEventId = rs.getInt("next_conversation_event_id");
+            this.characterId = rs.getInt("character_id");
+            this.newConversationId = rs.getInt("new_conversation_id");
+
+            switch (rs.getInt("movement_direction"))
+            {
+                case 0:
+                    dy = -1;
+                    break;
+                case 1:
+                    dx = 1;
+                    break;
+                case 2:
+                    dy = 1;
+                    break;
+                case 3:
+                    dx = -1;
+                    break;
+            }
+            if (this.dx + this.dy != 0)
+            {
+                this.distance = 1;
+            }
+            
+            if (this.distance > 0 || this.newConversationId != -1)
+            {
+                this.autoAdvance = true;
+            }
+            else
+            {
+                this.autoAdvance = false;
+            }
+
+            this.giftPokemonId = rs.getInt("gift_pokemon_id");
+            this.giftPokemonLevel = rs.getInt("gift_pokemon_level");
+            this.mugshotBackground = rs.getString("mugshot_background");
+            this.mugshotCharacter = rs.getString("mugshot_character");
         }
 
         /**
@@ -428,24 +540,20 @@ public class ConversationModel
             this.distance = distance;
             this.autoAdvance = true;
             this.nextConversationEventId = nextConversationEventId;
-        }
-
-        public void setGiftPokemon(int pokemonId, int level)
-        {
-            this.giftPokemonId = pokemonId;
-            this.giftPokemonLevel = level;
+            this.healTeam = false;
+            this.mugshotBackground = null;
+            this.mugshotCharacter = null;
+            this.text = null;
+            this.newConversationId = -1;
+            this.giftPokemonId = -1;
+            this.giftPokemonLevel = -1;
+            this.battleId = -1;
         }
 
         public void setOptions(String[] options, int[] optionOutcome)
         {
             this.options = options;
             this.optionOutcome = optionOutcome;
-        }
-
-        public void setMugshot(String mugshotCharacter, String mugshotBackground)
-        {
-            this.mugshotBackground = mugshotBackground;
-            this.mugshotCharacter = mugshotCharacter;
         }
     }
 }

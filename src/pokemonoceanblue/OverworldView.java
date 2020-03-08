@@ -277,6 +277,13 @@ public class OverworldView extends BaseView {
                 canvas
             );            
         }
+
+        // fade to black when removing a character
+        if (this.model.removeCharacter)
+        {
+            g.setColor(new Color(0, 0, 0, (int)(255 * (1 - Math.abs((this.model.conversation.getCounter() - 8) / 8.0)))));
+            g.fillRect(0, 0, width, height);
+        }
     }
 
     /** 

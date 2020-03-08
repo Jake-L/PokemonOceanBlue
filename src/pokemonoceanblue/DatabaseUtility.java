@@ -7,26 +7,31 @@ import java.sql.*;
 
 public class DatabaseUtility 
 {    
-    Connection conn = null;
+    public static Connection conn = null;
     // db parameters
     String url = "jdbc:sqlite:src/database/pokemon.db";
+
 
     /** 
      * Constructor
      */
     public DatabaseUtility()
     {
-        try
+        if (conn == null)
         {
-            // create a connection to the database
-            conn = DriverManager.getConnection(url);
-            
-            System.out.println("Connection to SQLite has been established.");
-        } 
-        catch (SQLException e) 
-        {
-            System.out.println(e.getMessage());
-        } 
+            try
+            {
+                // create a connection to the database
+                conn = DriverManager.getConnection(url);
+                
+                System.out.println("Connection to SQLite has been established.");
+            } 
+            catch (SQLException e) 
+            {
+                System.out.println(e.getMessage());
+            } 
+        }
+        
     }
 
     /** 
@@ -325,6 +330,7 @@ public class DatabaseUtility
                 + "next_conversation_event_id INT DEFAULT -1, " 
                 + "gift_pokemon_id INT DEFAULT -1, "
                 + "gift_pokemon_level INT DEFAULT -1, "
+                + "new_conversation_id INT DEFAULT -1, "
                 + "mugshot_character VARCHAR(20) NULL, "
                 + "mugshot_background VARCHAR(20) NULL)";
         runUpdate(query);
@@ -336,10 +342,11 @@ public class DatabaseUtility
                 + "battle_id, heal_team, character_id, movement_direction, "
                 + "option_id, next_conversation_event_id, "
                 + "gift_pokemon_id, gift_pokemon_level, "
+                + "new_conversation_id, "
                 + "mugshot_character, mugshot_background)"
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int", "int", "int", "int", "String", "String"};
+        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int", "int", "int", "int", "int", "String", "String"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================
@@ -368,18 +375,20 @@ public class DatabaseUtility
                 + "y INT NOT NULL, "
                 + "conversation_id INT NOT NULL, "
                 + "character_id INT NOT NULL, "
-                + "clear_after_use INT NOT NULL, "
-                + "auto_trigger INT NOT NULL)";
+                + "clear_conversation_id INT NOT NULL, "
+                + "auto_trigger INT NOT NULL, "
+                + "approach_player INT NOT NULL)";
         runUpdate(query);
 
         // fill conversation table with data
         path = "src/rawdata/conversationTriggers.csv";
         query = "INSERT INTO conversation_trigger ("
                 + "map_id, area_id, x, y, conversation_id, "
-                + "character_id, clear_after_use, auto_trigger)"
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                + "character_id, clear_conversation_id, "
+                + "auto_trigger, approach_player)"
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        dataTypes = new String[] {"int", "int", "int", "int", "int", "int", "int", "int"};
+        dataTypes = new String[] {"int", "int", "int", "int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

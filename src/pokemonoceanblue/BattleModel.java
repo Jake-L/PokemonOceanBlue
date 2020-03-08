@@ -772,13 +772,18 @@ public class BattleModel
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            String query = "SELECT b.pokemon_id, b.level, ch.name, ch.sprite_name "
+            // if there are multiple characters with the same conversation id
+            // the trainer shown in battle is the one with the lowest character id
+            String query = "SELECT b.pokemon_id, b.level, c.name, c.sprite_name "
                          + "FROM battle b "
-                         + "INNER JOIN conversation cv "
-                         + "ON b.battle_id = cv.battle_id "
+                         + "INNER JOIN (select ch.name, ch.sprite_name, cv.conversation_id, cv.battle_id, "
+                         + "ROW_NUMBER() OVER(ORDER BY ch.character_id ASC) AS char_num "
+                         + "FROM conversation cv "
                          + "INNER JOIN character ch "
                          + "ON ch.conversation_id = cv.conversation_id "
-                         + "WHERE b.battle_id = " + battleId;
+                         + "AND cv.battle_id = " + battleId + ") c "
+                         + "ON b.battle_id = c.battle_id "
+                         + "WHERE char_num = 1";
 
             ResultSet rs = db.runQuery(query);
 

@@ -24,11 +24,12 @@ public class OverworldModel {
     private Map<Integer, List<Integer>> wildPokemon = new HashMap<Integer, List<Integer>>();
     public String[] textOptions;
     public int optionIndex;
-    private List<ConversationTrigger> conversationTrigger = new ArrayList<ConversationTrigger>();
+    private List<ConversationTriggerModel> conversationTrigger = new ArrayList<ConversationTriggerModel>();
     private int areaId = -1;
     private List<AreaModel> areas = new ArrayList<AreaModel>();
     protected String mugshotBackground;
     protected String mugshotCharacter;
+    public boolean removeCharacter = false;
 
     // prevent players from accidently repeating actions by holdings keys
     public int actionCounter = 15;
@@ -154,6 +155,7 @@ public class OverworldModel {
         {
             this.mugshotCharacter =  this.conversation.getMugshotCharacter();
             this.mugshotBackground =  this.conversation.getMugshotBackground();
+            this.removeCharacter = this.conversation.removeCharacter(this.cpuModel, this.conversationTrigger);
             this.conversation.update();
             int characterId = this.conversation.getMovementCharacterId();
 
@@ -197,6 +199,7 @@ public class OverworldModel {
         {
             this.mugshotCharacter = null;
             this.mugshotBackground = null;
+            this.removeCharacter = false;
         }
     }
 
@@ -288,12 +291,14 @@ public class OverworldModel {
                     this.textOptions = this.conversation.getOptions();
                 }
             }
+            this.actionCounter = 15;
         }
         // surf if facing water
         else if (!this.playerModel.surf && tiles[y][x] == 0 && this.playerModel.getMovementCounter() <= 0)
         {
             this.playerModel.surf = true;
             this.playerModel.setMovement(x - this.playerModel.getX(), y - this.playerModel.getY(), 1);
+            this.actionCounter = 15;
         }
         // otherwise check for a cpu to interact with
         else if (this.actionCounter == 0)
@@ -329,6 +334,7 @@ public class OverworldModel {
 
                         // start the conversation
                         this.conversation = new ConversationModel(cpu.conversationId, this.playerModel, cpu, false);
+                        this.actionCounter = 15;
                         break;
                     }
                 }
@@ -336,7 +342,7 @@ public class OverworldModel {
         
 
             // check for an object to interact with
-            for (ConversationTrigger current : this.conversationTrigger)
+            for (ConversationTriggerModel current : this.conversationTrigger)
             {
                 if (current.x == x && current.y == y && !current.autoTrigger)
                 {
@@ -345,20 +351,16 @@ public class OverworldModel {
                     {
                         app.openPokemonStorage();
                     }
-                    this.conversation = new ConversationModel(current.conversationId, this.playerModel, current.cpuModel, false);
-                    
-                    // clear the trigger
-                    if (current.clearAfterUse)
+                    else
                     {
-                        this.clearTriggers(current.conversationId);
+                        this.conversation = new ConversationModel(current.conversationId, this.playerModel, current.cpuModel, false);
                     }
-
+                    
+                    this.actionCounter = 15;
                     break;
                 }
             }
         }
-
-        this.actionCounter = 15;
     }
 
     private void checkArea(int x, int y)
@@ -413,43 +415,16 @@ public class OverworldModel {
             this.playerModel.surf = false;
         }
 
-        ConversationTrigger current;
+        ConversationTriggerModel current;
         for (int i = 0; i < this.conversationTrigger.size(); i++)
         {
             current = this.conversationTrigger.get(i);
             if (current.x == x && current.y == y && current.autoTrigger)
             {
-                this.conversation = new ConversationModel(current.conversationId, this.playerModel, current.cpuModel, true);
-                
-                // clear the trigger
-                if (current.clearAfterUse)
-                {
-                    this.clearTriggers(current.conversationId);
-                }
-
+                this.conversation = new ConversationModel(current.conversationId, this.playerModel, current.cpuModel, current.approachPlayer);
                 break;
             }
         }
-    }
-
-    /**
-     * After a conversationTrigger has been used, remove all the triggers for that conversation
-     * @param conversationId the identifier for the triggers to be removed
-     */
-    private void clearTriggers(int conversationId)
-    {
-        int i = 0;
-        while (i < this.conversationTrigger.size())
-        {
-            if (this.conversationTrigger.get(i).conversationId == conversationId)
-            {
-                this.conversationTrigger.remove(i);
-            }
-            else
-            {
-                i++;
-            }
-        } 
     }
 
     /**
@@ -717,8 +692,8 @@ public class OverworldModel {
             String query = "SELECT c.conversation_id, "
                          + "c.x + IFNULL(a.min_x,0) as x, "
                          + "c.y + IFNULL(a.min_y,0) as y, "
-                         + "c.character_id, "
-                         + "c.clear_after_use, c.auto_trigger "
+                         + "c.character_id, c.approach_player, "
+                         + "c.clear_conversation_id, c.auto_trigger "
                          + "FROM conversation_trigger c "
                          + "LEFT JOIN area a "
                          + "ON a.area_id = c.area_id "
@@ -729,13 +704,14 @@ public class OverworldModel {
 
             while(rs.next()) 
             {
-                ConversationTrigger currentModel = new ConversationTrigger(
+                ConversationTriggerModel currentModel = new ConversationTriggerModel(
                     rs.getInt("conversation_id"), 
                     getCharacterModel(rs.getInt("character_id")),
                     rs.getInt("x"), 
                     rs.getInt("y"),
-                    rs.getInt("clear_after_use") == 1,
-                    rs.getInt("auto_trigger") == 1
+                    rs.getInt("clear_conversation_id"),
+                    rs.getInt("auto_trigger") == 1,
+                    rs.getInt("approach_player") == 1
                 );
                 
                 this.conversationTrigger.add(currentModel);
@@ -777,38 +753,6 @@ public class OverworldModel {
         if (this.conversation != null)
         {
             this.conversation.setBattleComplete();
-        }
-    }
-
-
-    /**
-     * Holds a specific location on the map that starts a conversation when the player steps on it
-     */
-    class ConversationTrigger
-    {
-        public final int conversationId;
-        public final CharacterModel cpuModel; 
-        public final int x; 
-        public final int y;
-        public final boolean clearAfterUse;
-        public final boolean autoTrigger;
-
-        /**
-         * Constructor
-         * @param conversationId unique identifier for the conversation
-         * @param cpuModel the cpu involved in the conversation
-         * @param x the x-coordinate of the trigger
-         * @param y the y-coordinate of the trigger
-         * @param clearAfterUse whether the trigger remains after it's first use
-         */
-        public ConversationTrigger(int conversationId, CharacterModel cpuModel, int x, int y, boolean clearAfterUse, boolean autoTrigger)
-        {
-            this.conversationId = conversationId;
-            this.cpuModel = cpuModel;
-            this.x = x;
-            this.y = y;
-            this.clearAfterUse = clearAfterUse;
-            this.autoTrigger = autoTrigger;
         }
     }
 }
