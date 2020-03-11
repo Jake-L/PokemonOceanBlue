@@ -32,3 +32,4 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 31,14,0,Team Rocket Grunt,rocketGruntBoy,15,13,30,0,1
 32,14,0,Team Rocket Grunt,rocketGruntBoy,15,12,30,0,1
 33,14,0,,cassie,16,13,30,0,3
+34,20,0,Gym Leader Brock,brock,6,3,37,0,2

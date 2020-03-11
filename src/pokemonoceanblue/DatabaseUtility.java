@@ -193,17 +193,18 @@ public class DatabaseUtility
                 + "area_id INT NOT NULL, "
                 + "name VARCHAR(20) NOT NULL, "
                 + "x INT NOT NULL, "
-                + "y INT NOT NULL)";
+                + "y INT NOT NULL, "
+                + "y_adjust INT NULL DEFAULT 0)";
         runUpdate(query);
 
         // fills map objects table with data
         path = "src/rawdata/mapObjects.csv";
         query = "INSERT INTO map_object ("
                     + "map_id, area_id, name, " 
-                    + "x, y) "
-                    + "VALUES (?, ?, ?, ?, ?)";
+                    + "x, y, y_adjust) "
+                    + "VALUES (?, ?, ?, ?, ?, ?)";
         
-        dataTypes = new String[] {"int", "int", "String","int", "int"};
+        dataTypes = new String[] {"int", "int", "String", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

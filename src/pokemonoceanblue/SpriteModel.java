@@ -7,6 +7,7 @@ public class SpriteModel {
     public String spriteName;
     public int x;
     public int y;
+    public int yAdjust;
     
     /** 
      * Constructor
@@ -14,9 +15,10 @@ public class SpriteModel {
      * @param x x position of the sprite
      * @param y y position of the sprite
      */
-    public SpriteModel(String spriteName, int x, int y){
+    public SpriteModel(String spriteName, int x, int y, int yAdjust){
         this.spriteName = spriteName;
         this.x = x;
         this.y = y;
+        this.yAdjust = yAdjust;
     }
 }

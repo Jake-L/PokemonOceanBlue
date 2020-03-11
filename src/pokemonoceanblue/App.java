@@ -151,7 +151,7 @@ public class App extends JFrame implements KeyListener
         }
 
         // pressing any key will advance from the title screen
-        if (viewManager.getCurrentView() == "TitleScreenView" && System.currentTimeMillis() - startTime > 1000 && playerModel == null )
+        if (viewManager.getCurrentView() == "TitleScreenView" && System.currentTimeMillis() - startTime > 1000 && playerModel == null)
         {
             setMap(0, 7, 7);
         }

@@ -201,7 +201,7 @@ public class OverworldView extends BaseView {
         {
             SpriteModel currentObject = model.mapObjects.get(objectIndex);
             CharacterModel currentCharacter = renderList.get(characterIndex);
-            if (currentObject.y <= currentCharacter.getY())
+            if (currentObject.y + currentObject.yAdjust <= currentCharacter.getY())
             {
                 this.renderObject(g, canvas, model.mapObjects.get(objectIndex));                
                 objectIndex++;

@@ -1,4 +1,15 @@
 map_id,area_id,name,x,y
+20,0,badge1,6,0,
+20,0,gymWall,0,1,-2
+20,0,gymPattern1,4,10,-8
+20,0,rock,2,7,
+20,0,rock,11,9,
+20,0,rock,0,11,
+20,0,rock,1,4,
+20,0,rock,10,5,
+20,0,gymStatue,3,11,
+20,0,gymStatue,9,11,
+20,0,doormat,5,13,-1
 16,0,routeBuilding,7,4
 14,0,routeBuilding,6,4
 14,0,routeBuilding,18,53

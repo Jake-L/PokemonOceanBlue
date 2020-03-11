@@ -541,13 +541,14 @@ public class OverworldModel {
 
             String query = "SELECT mo.name, "
                          + "mo.x + IFNULL(a.min_x,0) as x, "
-                         + "mo.y + IFNULL(a.min_y,0) as y "
+                         + "mo.y + IFNULL(a.min_y,0) as y, "
+                         + "mo.y_adjust "
                          + "FROM map_object mo "
                          + "LEFT JOIN area a "
                          + "ON a.area_id = mo.area_id "
                          + "AND a.map_id = mo.map_id "
                          + "WHERE mo.map_id = " + this.mapId
-                         + " ORDER BY mo.y + IFNULL(a.min_y,0) ASC";
+                         + " ORDER BY mo.y + IFNULL(a.min_y,0) + IFNULL(mo.y_adjust,0) ASC";
 
             ResultSet rs = db.runQuery(query);
 
@@ -556,7 +557,8 @@ public class OverworldModel {
                 this.mapObjects.add(new SpriteModel(
                     rs.getString("name"), 
                     rs.getInt("x"), 
-                    rs.getInt("y")
+                    rs.getInt("y"),
+                    rs.getInt("y_adjust")
                 ));
             }            
         }

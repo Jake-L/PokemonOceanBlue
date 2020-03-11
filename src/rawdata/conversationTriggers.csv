@@ -13,3 +13,4 @@ map_id,area_id,x,y,conversation_id,character_id,clear_conversation_id,auto_trigg
 14,0,17,13,31,-1,30,1,0,Team Rocket Viridian Forest
 14,0,17,12,34,-1,30,1,0,Team Rocket Viridian Forest
 14,0,16,12,30,33,30,1,0,Team Rocket Viridian Forest
+20,0,6,10,37,34,-1,1,0,Gym Leader Brock
