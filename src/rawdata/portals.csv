@@ -44,3 +44,5 @@ map_id,area_id,x,y,dest_map_id,dest_area_id,dest_x,dest_y,comment
 17,0,20,45,19,0,4,1,pewter -> vforest-pewter route building
 20,0,6,13,17,0,12,24,pewter gym -> pewter
 17,0,12,23,20,0,6,12,pewter -> pewter gym
+17,0,24,27,21,0,5,9,pewter -> pokemon center
+21,0,5,10,17,0,24,28,pokemon center -> pewter
