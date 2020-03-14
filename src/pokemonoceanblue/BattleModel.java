@@ -289,6 +289,35 @@ public class BattleModel
             }
         }
     }
+
+    /** 
+     * creates event for the self healing or recoil on attacking pokemon
+     * @param attacker the attacking team
+     * @param move the move that inflicts the heal or recoil
+     */
+    private void recoil(int attacker, MoveModel move)
+    {
+        BattleEvent event;
+        if (move.recoil > 0)
+        {
+            event = new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + " is hit with recoil.",
+                (int)(Math.ceil(this.events.get(0).damage * (move.recoil / 100.0))),
+                attacker,
+                attacker,
+                null,
+                null);
+        }
+        else
+        {
+            event = new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + " healed itself.",
+                (int)(Math.floor(this.events.get(0).damage * (move.recoil / 100.0))),
+                attacker,
+                attacker,
+                null,
+                null);
+        }
+        this.events.add(event);
+    }
     
     /** 
      * @param moveIndex the current move of the attacker
@@ -546,6 +575,10 @@ public class BattleModel
             int attacker = this.events.get(0).attacker;
             this.events.get(0).damage = damageCalc(this.events.get(0).move, attacker, (attacker + 1) % 2, this.currentPokemon);
             this.effectivenessMessage(this.modifier[attacker], attacker, this.currentPokemon);
+            if (this.events.get(0).move != null && this.events.get(0).damage * this.events.get(0).move.recoil != 0)
+            {
+                this.recoil(attacker, this.events.get(0).move);
+            }
             if (this.events.get(0).damage > -1 && this.events.get(0).move.ailmentId > 0)
             {
                 this.statusEffect(attacker, (attacker + 1) % 2, this.events.get(0).move);
@@ -582,6 +615,7 @@ public class BattleModel
             this.counter--;
         }
 
+        // logic that happen at the end of an event
         else if (this.events.size() > 0)
         {
             if (this.events.get(0).xp > 0)
@@ -684,6 +718,14 @@ public class BattleModel
                         null);
                     this.events.add(event);
                 }
+            }
+            else if (this.events.get(0).damage < 0 && this.events.get(0).target != -1 && this.events.get(0).attacker == this.events.get(0).target)
+            {
+                // self-healing
+                this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP = 
+                    Math.min((this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].stats[0]), 
+                    (this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP + 
+                    Math.abs(this.events.get(0).damage)));
             }
             else if (this.events.get(0).itemId > -1)
             {
@@ -815,7 +857,7 @@ public class BattleModel
     {
         public final String text;
         public int damage = -1;
-        public int target;
+        public int target = -1;
         public int newPokemonIndex = -2;
         public int itemId = -1;
         public int attacker;
@@ -835,7 +877,7 @@ public class BattleModel
             this.sound = sound;
         }
 
-                /** 
+        /** 
          * Constructor
          * @param text the text that will be displayed
          * @param damage the damage that will be taken by target
