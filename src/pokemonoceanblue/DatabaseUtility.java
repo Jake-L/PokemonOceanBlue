@@ -267,7 +267,8 @@ public class DatabaseUtility
                 + "target_id INT NOT NULL, "
                 + "flinch_chance INT NULL, "
                 + "effect_chance INT NULL, "
-                + "ailment_id INT NULL)";
+                + "ailment_id INT NULL, "
+                + "recoil INT NULL)";
         runUpdate(query);
 
         // fill moves table with data
@@ -277,10 +278,10 @@ public class DatabaseUtility
                     + "power, accuracy, priority, "
                     + "damage_class_id, target_id, "
                     + "flinch_chance, effect_chance, "
-                    + "ailment_id) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    + "ailment_id, recoil) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        dataTypes = new String[] {"int", "String", "int", "int", "int", "int", "int", "int", "int", "int", "int"};
+        dataTypes = new String[] {"int", "String", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

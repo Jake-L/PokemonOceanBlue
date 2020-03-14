@@ -15,6 +15,7 @@ public class MoveModel
     public int flinchChance;
     public int effectChance;
     public int ailmentId;
+    public int recoil;
     public MoveStatEffect[] moveStatEffects;
     
     /** 
@@ -53,6 +54,7 @@ public class MoveModel
             this.flinchChance = rs.getInt("flinch_chance");
             this.effectChance = rs.getInt("effect_chance");
             this.ailmentId = rs.getInt("ailment_id");
+            this.recoil = rs.getInt("recoil");
 
             // get number of stat effects
             query = "SELECT COUNT(*) FROM move_stat_effect WHERE move_id = " + this.moveId;
