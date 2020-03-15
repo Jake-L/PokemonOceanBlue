@@ -10,12 +10,10 @@ public class BattleModel
 {
     public PokemonModel[][] team = new PokemonModel[2][];
     public int[] currentPokemon = new int[2];
-    public byte daytimeType = 0;
-    public byte areaType = 0;
     public String[] battleOptions;
     public int optionIndex = 0;
     public final byte INPUTDELAY = 6;
-    public byte counter = INPUTDELAY;
+    public byte counter = this.INPUTDELAY;
     public List<BattleEvent> events = new ArrayList<BattleEvent>();
     public Random ranNum = new Random();
     private App app;
@@ -45,7 +43,6 @@ public class BattleModel
         this.team[1] = opponentTeam;
         this.app = app;
         this.isWild = isWild;
-
         this.initialize();
     }
 
@@ -288,10 +285,40 @@ public class BattleModel
 
     /** 
      * checks if an attack can be used and if not removes the event and adds a message
+     * @param attacker is the attacking team
      */
-    private void canAttack()
+    private void canAttack(int attacker)
     {
-        
+        PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
+        if ((attackingPokemon.statusEffect == 1 && this.ranNum.nextInt(101) < 34) ||
+            (attackingPokemon.statusEffect == 2 && this.ranNum.nextInt(101) < 34) ||
+            (attackingPokemon.statusEffect == 3 && this.ranNum.nextInt(101) < 51))
+        {
+            this.unableToMove[attacker] = true;
+            this.events.remove(0);
+        }
+        else
+        {
+            this.events.get(0).damage = damageCalc(this.events.get(0).move, attacker, (attacker + 1) % 2);
+        }
+    }
+
+    /** 
+     * checks if either pokemon should suffer an end of turn effect (poison, leech seed, burn, etc.)
+     */
+    private void endOfTurnEffects()
+    {
+        String[] statusEffectMessages = {" is hurt by burn."," is hurt by poison."};
+        for (int i = 0; i < 2; i++)
+        {
+            if (this.team[i][this.currentPokemon[i]].statusEffect > 3 && this.team[i][this.currentPokemon[i]].statusEffect < 6)
+            {
+                BattleEvent event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + statusEffectMessages[this.team[i][this.currentPokemon[i]].statusEffect - 4],
+                    this.team[i][this.currentPokemon[i]].stats[0] / 8,
+                    i, i, null, null);
+                this.events.add(event);
+            }
+        }
     }
 
     /** 
@@ -357,15 +384,6 @@ public class BattleModel
         else
         {
             this.attackMissed[attacker] = false;
-            return 0;
-        }
-
-        if ((attackingPokemon.statusEffect == 1 && this.ranNum.nextInt(101) < 34) ||
-            (attackingPokemon.statusEffect == 2 && this.ranNum.nextInt(101) < 34) ||
-            (attackingPokemon.statusEffect == 3 && this.ranNum.nextInt(101) < 51))
-        {
-            this.events.remove(0);
-            this.unableToMove[attacker] = true;
             return 0;
         }
 
@@ -577,7 +595,7 @@ public class BattleModel
         else if (this.counter == 60 && this.events.size() > 0 && this.events.get(0).damage > -1 && this.events.get(0).move != null)
         {
             int attacker = this.events.get(0).attacker;
-            this.events.get(0).damage = damageCalc(this.events.get(0).move, attacker, (attacker + 1) % 2);
+            this.canAttack(attacker);
             this.effectivenessMessage(this.modifier[attacker], attacker);
             if (this.events.get(0).move != null && this.events.get(0).damage * this.events.get(0).move.recoil != 0)
             {
@@ -593,17 +611,7 @@ public class BattleModel
             }
             else
             {
-                String[] statusEffectMessages = {" is hurt by burn."," is hurt by poison."};
-                for (int i = 0; i < 2; i++)
-                {
-                    if (this.team[i][this.currentPokemon[i]].statusEffect > 3 && this.team[i][this.currentPokemon[i]].statusEffect < 6)
-                    {
-                        BattleEvent event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + statusEffectMessages[this.team[i][this.currentPokemon[i]].statusEffect - 4],
-                            this.team[i][this.currentPokemon[i]].stats[0] / 8,
-                            i, i, null, null);
-                        this.events.add(event);
-                    }
-                }
+                this.endOfTurnEffects();
             }
             this.attackEvent[0] = null;
             this.attackEvent[1] = null;
