@@ -136,7 +136,7 @@ public class BattleModel
                             getAttackSound(0));
                         this.counter = 60;
                         
-                        this.attackEvent[1] = enemyAttackEvent(this.currentPokemon);
+                        this.attackEvent[1] = enemyAttackEvent();
                         
                         if (this.team[0][this.currentPokemon[0]].moves[this.optionIndex].priority > this.team[1][this.currentPokemon[1]].moves[this.enemyMove].priority)
                         {
@@ -193,7 +193,7 @@ public class BattleModel
             BattleEvent event = new BattleEvent("Trainer used a " + itemId + ".", itemId, false, 0, null);
             this.events.add(event);
             this.counter = 60;            
-            this.events.add(this.enemyAttackEvent(this.currentPokemon));
+            this.events.add(this.enemyAttackEvent());
         }
     }
 
@@ -219,12 +219,8 @@ public class BattleModel
             this.events.add(event);
             this.counter = 60;
 
-            int[] tempCurrentPokemon = new int[2];
-            tempCurrentPokemon[0] = pokemon;
-            tempCurrentPokemon[1] = currentPokemon[1];
-
             // let the enemy attack after player switches
-            this.events.add(this.enemyAttackEvent(tempCurrentPokemon));
+            this.events.add(this.enemyAttackEvent());
         }
         else
         {
@@ -237,7 +233,7 @@ public class BattleModel
     /**
      * @return enemyAttackEvent is the battle event that stores the enemy attack
      */
-    private BattleEvent enemyAttackEvent(int[] calcCurrentPokemon)
+    private BattleEvent enemyAttackEvent()
     {
         this.enemyMove = ranNum.nextInt(this.team[1][this.currentPokemon[1]].moves.length);
         BattleEvent enemyAttackEvent = new BattleEvent("Enemy " + this.team[1][this.currentPokemon[1]].name + " used " + this.team[1][this.currentPokemon[1]].moves[enemyMove].name + ".",
@@ -291,6 +287,14 @@ public class BattleModel
     }
 
     /** 
+     * checks if an attack can be used and if not removes the event and adds a message
+     */
+    private void canAttack()
+    {
+        
+    }
+
+    /** 
      * creates event for the self healing or recoil on attacking pokemon
      * @param attacker the attacking team
      * @param move the move that inflicts the heal or recoil
@@ -325,7 +329,7 @@ public class BattleModel
      * @param defender the defending team
      * @return damage
      */
-    private int damageCalc(MoveModel move, int attacker, int defender, int[] calcCurrentPokemon)
+    private int damageCalc(MoveModel move, int attacker, int defender)
     {
         int attack_stat;
         int defense_stat;
@@ -335,8 +339,8 @@ public class BattleModel
         this.isCrit[attacker] = false;
         this.isOneHit[attacker] = false;
         this.unableToMove[attacker] = false;
-        PokemonModel attackingPokemon = this.team[attacker][calcCurrentPokemon[attacker]];
-        PokemonModel defendingPokemon = this.team[defender][calcCurrentPokemon[defender]];
+        PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
+        PokemonModel defendingPokemon = this.team[defender][this.currentPokemon[defender]];
 
         if (move.damageClassId == 2)
         {
@@ -408,14 +412,14 @@ public class BattleModel
     /** 
      * @param effectiveness damage modifier
      * @param attacker the team using the attack
-     * @param calcCurrentPokemon the pokemon that will be involved in the turn
      */
-    private void effectivenessMessage(float effectiveness, int attacker, int[] calcCurrentPokemon)
+    private void effectivenessMessage(float effectiveness, int attacker)
     {
         if (this.unableToMove[attacker])
         {
             String[] statusEffectMessages = {" is paralyzed and unable to move."," is fast asleep."," is frozen solid."};
-            BattleEvent event = new BattleEvent(this.team[attacker][calcCurrentPokemon[attacker]].name + statusEffectMessages[this.team[attacker][calcCurrentPokemon[attacker]].statusEffect - 1], 
+            BattleEvent event = new BattleEvent(
+                this.team[attacker][this.currentPokemon[attacker]].name + statusEffectMessages[this.team[attacker][this.currentPokemon[attacker]].statusEffect - 1], 
                 attacker, null);
             this.events.add(event);
         }
@@ -431,7 +435,7 @@ public class BattleModel
         }
         if (this.attackMissed[attacker])
         {
-            BattleEvent event = new BattleEvent(this.team[attacker][calcCurrentPokemon[attacker]].name + "'s attack missed!", attacker, null);
+            BattleEvent event = new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + "'s attack missed!", attacker, null);
             this.events.add(event);
         }
         else if (effectiveness > 1)
@@ -441,7 +445,7 @@ public class BattleModel
         }
         else if (effectiveness == 0)
         {
-            BattleEvent event = new BattleEvent("It doesn't affect " + this.team[(attacker + 1) % 2][calcCurrentPokemon[(attacker + 1) % 2]].name + "...", attacker, null);
+            BattleEvent event = new BattleEvent("It doesn't affect " + this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]].name + "...", attacker, null);
             this.events.add(event);
         }
         else if (effectiveness < 1)
@@ -573,8 +577,8 @@ public class BattleModel
         else if (this.counter == 60 && this.events.size() > 0 && this.events.get(0).damage > -1 && this.events.get(0).move != null)
         {
             int attacker = this.events.get(0).attacker;
-            this.events.get(0).damage = damageCalc(this.events.get(0).move, attacker, (attacker + 1) % 2, this.currentPokemon);
-            this.effectivenessMessage(this.modifier[attacker], attacker, this.currentPokemon);
+            this.events.get(0).damage = damageCalc(this.events.get(0).move, attacker, (attacker + 1) % 2);
+            this.effectivenessMessage(this.modifier[attacker], attacker);
             if (this.events.get(0).move != null && this.events.get(0).damage * this.events.get(0).move.recoil != 0)
             {
                 this.recoil(attacker, this.events.get(0).move);
