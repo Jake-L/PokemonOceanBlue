@@ -375,6 +375,13 @@ public class BattleModel
         PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
         PokemonModel defendingPokemon = this.team[defender][this.currentPokemon[defender]];
 
+        //if enemy is fainted, only self-effect moves can be used
+        if (defendingPokemon.currentHP == 0 && move.targetId != 7)
+        {
+            this.attackMissed[attacker] = true;
+            return 0;
+        }
+
         if (move.damageClassId == 2)
         {
             attack_stat = Stat.ATTACK;
@@ -568,12 +575,16 @@ public class BattleModel
     {
         if (this.team[1][this.currentPokemon[1]].currentHP == 0)
         {
-            this.team[0][this.currentPokemon[0]].updateHappiness(1);
-            this.team[0][this.currentPokemon[0]].updateIVs(this.team[1][this.currentPokemon[1]].ivGain);
             //remove all events performed by or affecting the fainted pokemon
+            boolean faintEventExists = false;
             int i = 0;
             while (i < this.events.size())
             {
+                if (this.events.get(i).newPokemonIndex == -1 && this.events.get(i).attacker == 1)
+                {
+                    faintEventExists = true;
+                    break;
+                }
                 if (this.events.get(i).removalCondition == 1)
                 {
                     this.events.remove(i);
@@ -583,39 +594,49 @@ public class BattleModel
                     i++;
                 }
             }
-            BattleEvent event = new BattleEvent(
-                this.team[1][this.currentPokemon[1]].name + " fainted.", 
-                -1, 
-                true, 
-                1,
-                -1,
-                null);
-            this.events.add(event);
-
-            event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " gained " + xpCalc(this.team[1][this.currentPokemon[1]].level) + " experience.",
-                xpCalc(this.team[1][this.currentPokemon[1]].level), 0, 0);
-            this.events.add(event);
-
-            //send out enemy's next pokemon if any remain
-            if (!teamFainted(1))
+            if (!faintEventExists)
             {
-                event = new BattleEvent(this.trainerName + " sent out " + this.team[1][this.currentPokemon[1] + 1].name, 
-                    this.currentPokemon[1] + 1, 
+                this.team[0][this.currentPokemon[0]].updateHappiness(1);
+                this.team[0][this.currentPokemon[0]].updateIVs(this.team[1][this.currentPokemon[1]].ivGain);
+                BattleEvent event = new BattleEvent(
+                    this.team[1][this.currentPokemon[1]].name + " fainted.", 
+                    -1, 
                     true, 
                     1,
                     -1,
-                    String.valueOf(this.team[1][this.currentPokemon[1] + 1].id));
+                    null);
                 this.events.add(event);
+
+                event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " gained " + xpCalc(this.team[1][this.currentPokemon[1]].level) + " experience.",
+                    xpCalc(this.team[1][this.currentPokemon[1]].level), 0, 0);
+                this.events.add(event);
+
+                //send out enemy's next pokemon if any remain
+                if (!teamFainted(1))
+                {
+                    event = new BattleEvent(this.trainerName + " sent out " + this.team[1][this.currentPokemon[1] + 1].name, 
+                        this.currentPokemon[1] + 1, 
+                        true, 
+                        1,
+                        -1,
+                        String.valueOf(this.team[1][this.currentPokemon[1] + 1].id));
+                    this.events.add(event);
+                }
             }
         }
 
         if (this.team[0][this.currentPokemon[0]].currentHP == 0)
         {
-            this.team[0][this.currentPokemon[0]].updateHappiness(-5);
             //remove all events performed by or affecting the fainted pokemon
+            boolean faintEventExists = false;
             int i = 0;
             while (i < this.events.size())
             {
+                if (this.events.get(i).newPokemonIndex == -1 && this.events.get(i).attacker == 0)
+                {
+                    faintEventExists = true;
+                    break;
+                }
                 if (this.events.get(i).removalCondition == 0)
                 {
                     this.events.remove(i);
@@ -625,14 +646,18 @@ public class BattleModel
                     i++;
                 }
             }
-            BattleEvent event = new BattleEvent(
-                this.team[0][this.currentPokemon[0]].name + " fainted.", 
-                -1, 
-                true, 
-                0,
-                -1,
-                null);
-            this.events.add(event);
+            if (!faintEventExists)
+            {
+                this.team[0][this.currentPokemon[0]].updateHappiness(-5);
+                BattleEvent event = new BattleEvent(
+                    this.team[0][this.currentPokemon[0]].name + " fainted.", 
+                    -1, 
+                    true, 
+                    0,
+                    -1,
+                    null);
+                this.events.add(event);
+            }
         }
     }
 
