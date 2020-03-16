@@ -1,6 +1,8 @@
 package pokemonoceanblue;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class PokemonModel 
@@ -9,7 +11,7 @@ public class PokemonModel
     String name;
     int xp;
     int level;
-    byte statusEffect;
+    public byte statusEffect;
 
     int[] types;
 
@@ -18,7 +20,7 @@ public class PokemonModel
 
     int[] ivs = new int[6];
     int ivGain;
-    MoveModel[] moves = new MoveModel[0];
+    public MoveModel[] moves = new MoveModel[0];
     public final boolean shiny;
     int pokeballId = 3;
     int happiness = 70;
@@ -207,19 +209,23 @@ public class PokemonModel
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            String query = "SELECT move_id FROM pokemon_moves WHERE pokemon_id = " + this.id + " ORDER BY level DESC LIMIT 4";
+            String query = "SELECT move_id FROM pokemon_moves "
+                        + " WHERE pokemon_id = " + this.id 
+                        + " AND level >= 1 "
+                        + " AND level <= " + this.level
+                        + " ORDER BY level DESC LIMIT 4";
 
             ResultSet rs = db.runQuery(query);
 
-            int index = 0;
-
-            this.moves = new MoveModel[4];
+            List<MoveModel> loadMoves = new ArrayList<MoveModel>();
 
             while(rs.next()) 
             {
-                this.moves[index] = new MoveModel(rs.getInt("move_id"));
-                index++;
-            }            
+                loadMoves.add(new MoveModel(rs.getInt("move_id")));
+            }          
+
+            this.moves = new MoveModel[loadMoves.size()];
+            loadMoves.toArray(this.moves);
         }
         catch (SQLException e) 
         {

@@ -11,6 +11,7 @@ public class BaseModel {
     public final int ACTION_DELAY = 7;
     public int acceleration = -1;
     public int accelerationCounter;
+    protected String soundEffect;
 
     /**
      * Class for all models to inherit from
@@ -126,5 +127,16 @@ public class BaseModel {
     public int getSelection()
     {
         return this.returnValue;
+    }
+
+    /**
+     * Returns the sound effect to be played and then clears it 
+     * @return the sound effect to be played
+     */
+    public String getSoundEffect()
+    {
+        String sound = this.soundEffect;
+        this.soundEffect = null;
+        return sound;
     }
 }

@@ -31,6 +31,7 @@ public class BattleModel
     private boolean[] unableToMove = new boolean[2];
     public boolean[] isSeen;
     private BattleEvent attackEvent[] = new BattleEvent[2];
+    private String soundEffect;
 
     /** 
      * Constructor
@@ -617,9 +618,10 @@ public class BattleModel
             this.attackEvent[1] = null;
         }
 
-        else if (this.counter == 50 && this.events.size() > 0 && this.events.get(0).sound != null)
+        else if (this.events.size() > 0 && this.events.get(0).sound != null)
         {
-            this.app.playSound(this.events.get(0).sound);
+            this.soundEffect = this.events.get(0).sound;
+            this.events.get(0).sound = null;
         }
 
         if (this.counter > 0)
@@ -863,6 +865,21 @@ public class BattleModel
     public boolean[] getEvolveQueue()
     {
         return this.evolveQueue;
+    }
+
+    /**
+     * Returns the sound effect to be played and then clears it 
+     * @return the sound effect to be played
+     */
+    public String getSoundEffect()
+    {
+        String sound = this.soundEffect;
+        if (sound != null)
+        {
+            System.out.println(sound);
+        }
+        this.soundEffect = null;
+        return sound;
     }
 
     class BattleEvent

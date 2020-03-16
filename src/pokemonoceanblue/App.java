@@ -323,6 +323,12 @@ public class App extends JFrame implements KeyListener
                     battleController.userInput(keysDown);
                     battleModel.update();
 
+                    String sound = this.battleModel.getSoundEffect();
+                    if (sound != null)
+                    {
+                        this.playSound(sound);
+                    }
+
                     if (this.battleModel.isComplete())
                     {
                         this.overworldModel.battleComplete();
