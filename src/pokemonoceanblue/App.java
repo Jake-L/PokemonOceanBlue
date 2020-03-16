@@ -166,7 +166,7 @@ public class App extends JFrame implements KeyListener
     {
         this.playSong(14);
         battleModel = new BattleModel(partyModel.getTeamArray(), battleId, this);
-        BattleView battleView = new BattleView(this.battleModel);
+        BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
         viewManager.setView(battleView);
         battleController = new BattleController(battleModel);
     }
@@ -183,7 +183,7 @@ public class App extends JFrame implements KeyListener
 
         // create the battle
         battleModel = new BattleModel(team, partyModel.getTeamArray(), this, true);
-        BattleView battleView = new BattleView(this.battleModel);
+        BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
         viewManager.setView(battleView);
         battleController = new BattleController(battleModel);
     }
@@ -414,7 +414,7 @@ public class App extends JFrame implements KeyListener
                             {
                                 this.battleModel.setPokemon(returnValue);
                                 // return to battle screen
-                                BattleView battleView = new BattleView(this.battleModel);
+                                BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
                                 viewManager.setView(battleView);
                             }
                             else
@@ -454,7 +454,7 @@ public class App extends JFrame implements KeyListener
                             {
                                 this.battleModel.setItem(returnValue);
                                 // return to battle screen
-                                BattleView battleView = new BattleView(this.battleModel);
+                                BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
                                 viewManager.setView(battleView);
                             }
                             else

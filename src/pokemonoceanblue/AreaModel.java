@@ -12,6 +12,7 @@ public class AreaModel
     private int minY;
     private int maxY;
     public int musicId;
+    public byte battleBackgroundId;
     
     /** 
      * Constructor
@@ -45,6 +46,7 @@ public class AreaModel
             this.minY = rs.getInt("min_y");
             this.maxY = rs.getInt("max_y");
             this.musicId = rs.getInt("music_id");     
+            this.battleBackgroundId = (byte) rs.getInt("battle_background_id");
         }
         catch (SQLException e) 
         {

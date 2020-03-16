@@ -155,7 +155,8 @@ public class DatabaseUtility
                 + "max_x INT NOT NULL, "
                 + "min_y INT NOT NULL, "
                 + "max_y INT NOT NULL, "
-                + "music_id INT NOT NULL)";
+                + "music_id INT NOT NULL, "
+                + "battle_background_id INT NOT NULL)";
         runUpdate(query);
 
         // fills area table with data
@@ -164,10 +165,10 @@ public class DatabaseUtility
                     + "map_id, area_id, name, " 
                     + "min_x, max_x, "
                     + "min_y, max_y, "
-                    + "music_id) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                    + "music_id, battle_background_id) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         
-        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int"};
+        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

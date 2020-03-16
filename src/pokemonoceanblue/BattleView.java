@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Calendar;
 import java.awt.AlphaComposite;
 import javax.imageio.ImageIO;
 
@@ -23,6 +24,7 @@ public class BattleView extends BaseView {
     private Image[] healthBarFill = new Image[3];
     private Image[] statusWindow = new Image[2];
     private Image background;
+    private Image[] backgroundBase = new Image[2];
     private Image xp;
     private Image[] pokeballSprite = new Image[4];
     private Image[][] pokemonIconSprites = new Image[2][];
@@ -35,16 +37,16 @@ public class BattleView extends BaseView {
      * Constructor for the overworld view
      * @param model model for the battle to be displayed
      */
-    public BattleView(BattleModel model)
+    public BattleView(BattleModel model, byte battleBackgroundId)
     {
         this.model = model;
-        loadImage();
+        loadImage(battleBackgroundId);
     }
 
     /** 
      * loads all the Pokemon's sprites
      */
-    private void loadImage() 
+    private void loadImage(byte battleBackgroundId) 
     {
         ImageIcon ii;
         String shinyPrefix;
@@ -136,10 +138,6 @@ public class BattleView extends BaseView {
         this.statusWindow[1] = ii.getImage();
         ii = new ImageIcon("src/battle/exp.png");
         this.xp = ii.getImage();
-        
-        //loads background image
-        ii = new ImageIcon("src/battle/Background" + model.areaType + model.daytimeType + ".png");
-        this.background = ii.getImage();
 
         //load trainer sprite
         if (this.model.trainerSpriteName != null)
@@ -154,6 +152,27 @@ public class BattleView extends BaseView {
             ii = new ImageIcon("src/menus/pcPartyBorder" + i + ".png");
             partyBorder[i]  = ii.getImage();
         }
+
+        // decide if it is day time or night time
+        byte timeOfDayCode;
+        int hour =  Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if (hour <= 7 || hour > 19)
+        {
+            timeOfDayCode = 1;
+        }
+        else 
+        {
+            timeOfDayCode = 0;
+        }
+        for (int i = 0; i < this.backgroundBase.length; i++)
+        {
+            ii = new ImageIcon("src/battle/base" + battleBackgroundId + "" + i + "" + timeOfDayCode + ".png");
+            this.backgroundBase[i]  = ii.getImage();
+        }
+        
+        //loads background image
+        ii = new ImageIcon("src/battle/Background" + battleBackgroundId + "" + timeOfDayCode + ".png");
+        this.background = ii.getImage();
     }
 
     /** 
@@ -174,6 +193,23 @@ public class BattleView extends BaseView {
             width * 8 / 10,
             height * 3 / 4,
             canvas);
+
+        // draw base under the player's Pokemon
+        g.drawImage(this.backgroundBase[0],
+            width / 4 - this.backgroundBase[0].getWidth(null) * graphicsScaling / 2,
+            height * 3 / 4 - this.backgroundBase[0].getHeight(null) * graphicsScaling,
+            this.backgroundBase[0].getWidth(null) * graphicsScaling,
+            this.backgroundBase[0].getHeight(null) * graphicsScaling,
+            canvas);
+
+        // draw base under the opponent's Pokemon
+        g.drawImage(this.backgroundBase[1],
+            width * 6 / 10 - this.backgroundBase[1].getWidth(null) * graphicsScaling / 2,
+            height / 2 - this.backgroundBase[1].getHeight(null) * graphicsScaling,
+            this.backgroundBase[1].getWidth(null) * graphicsScaling,
+            this.backgroundBase[1].getHeight(null) * graphicsScaling,
+            canvas);
+    
 
         // renders party boxes at sides of the screen
         this.displayTextbox(this.partyBorder,

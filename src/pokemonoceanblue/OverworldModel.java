@@ -30,6 +30,7 @@ public class OverworldModel {
     protected String mugshotBackground;
     protected String mugshotCharacter;
     public boolean removeCharacter = false;
+    public byte battleBackgroundId = 6;
 
     // prevent players from accidently repeating actions by holdings keys
     public int actionCounter = 15;
@@ -373,6 +374,7 @@ public class OverworldModel {
                 if (area.areaId != this.areaId)
                 {
                     this.areaId = area.areaId;
+                    this.battleBackgroundId = area.battleBackgroundId;
                     this.app.playSong(area.musicId);
                     break;
                 }
@@ -383,6 +385,7 @@ public class OverworldModel {
         if (this.areaId == -1)
         {
             this.areaId = 0;
+            this.battleBackgroundId = 6;
         }
     }
 
@@ -756,5 +759,18 @@ public class OverworldModel {
         {
             this.conversation.setBattleComplete();
         }
+    }
+
+    /**
+     * @return the id for the type of background to be displayed in battles
+     */
+    public byte getBattleBackgroundId()
+    {
+        if (this.playerModel.surf)
+        {
+            return 2;
+        }
+
+        return this.battleBackgroundId;
     }
 }
