@@ -1,6 +1,7 @@
 package test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 import org.junit.Test;
 
@@ -39,6 +40,76 @@ public class BattleTests {
         assertEquals(1, enemyTeam[0].statusEffect); 
     }
     
+    /**
+     * Test that one hit KO eventually kills
+     * Done by using fissure on an opponent with no possible damage (lvl 1 magikarp)
+     */
+    @Test
+    public void testOneHitKO() {
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(340, 57, false);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(129, 1, false);
+        // make sure whiscash knows fissure
+        assertEquals("FISSURE", team[0].moves[0].name);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, true);
+        // skip opening animations
+        updateBattleModel(battleModel, 500);
+        // run until fissure lands
+        while (enemyTeam[0].currentHP != 0)
+        {
+            //make sure fissure hasnt landed yet
+            boolean attackMissed = true;
+            while (attackMissed && battleModel.events.size() != 0)
+            {
+                if (battleModel.getText() == "It's a one hit KO!")
+                {
+                    attackMissed = false;
+                    assertEquals(0, enemyTeam[0].currentHP);
+                }
+                else
+                {
+                    assertNotEquals(0, enemyTeam[0].currentHP);
+                }
+            }
+            // choose "FIGHT"
+            battleModel.confirmSelection();
+            // choose "FISSURE"
+            updateBattleModel(battleModel, 20);
+            battleModel.confirmSelection();
+            // wait for all the battle text to process
+            updateBattleModel(battleModel, 500);
+        }
+    }
+
+    /**
+     * Test that recoil damage is applied
+     * Done by using double edge (100 accuracy + recoil) against an opponent with no possible damage (lvl 1 magikarp)
+     */
+    @Test
+    public void testRecoil() {
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(19, 31, false);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(129, 1, false);
+        // make sure rattata knows double edge
+        assertEquals("DOUBLE-EDGE", team[0].moves[0].name);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, true);
+        // skip opening animations
+        updateBattleModel(battleModel, 500);
+        // run through a sequence of battle
+        assertEquals(0, battleModel.events.size());
+        // choose "FIGHT"
+        battleModel.confirmSelection();
+        // choose "double edge"
+        updateBattleModel(battleModel, 20);
+        battleModel.confirmSelection();
+        // wait for all the battle text to process
+        updateBattleModel(battleModel, 500);
+        assertNotEquals(team[0].stats[0], team[0].currentHP);
+        assertNotEquals(0, team[0].currentHP);
+    }
+
     /**
      * Tests that enemies switch their Pokemon after one faints
      * Done by having a level 100 use a 100% accuracy move on a level 1

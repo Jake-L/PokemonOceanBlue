@@ -336,7 +336,8 @@ public class BattleModel
         if (move.recoil > 0)
         {
             event = new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + " is hit with recoil.",
-                (int)(Math.ceil(this.events.get(0).damage * (move.recoil / 100.0))),
+                (int)(Math.ceil(Math.min(this.events.get(0).damage, 
+                this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]].currentHP) * (move.recoil / 100.0))),
                 attacker,
                 attacker,
                 null,
