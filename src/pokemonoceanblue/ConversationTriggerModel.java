@@ -3,7 +3,7 @@ package pokemonoceanblue;
 /**
  * Holds a specific location on the map that starts a conversation when the player steps on it
  */
-class ConversationTriggerModel
+public class ConversationTriggerModel
 {
     public final int conversationId;
     public final CharacterModel cpuModel; 

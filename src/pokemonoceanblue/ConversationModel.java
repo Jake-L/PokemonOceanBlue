@@ -361,7 +361,7 @@ public class ConversationModel
     /**
      * Remvoe characters and triggers, and update character's conversation
      * @param characters a list of all the characters on the current map
-     * @param triggers a list o fconversation triggers on the current map
+     * @param triggers a list of conversation triggers on the current map
      * @return true if a character is being removed during this event
      */
     public boolean removeCharacter(List<CharacterModel> characters, List<ConversationTriggerModel> triggers)
