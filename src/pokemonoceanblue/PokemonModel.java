@@ -15,8 +15,8 @@ public class PokemonModel
 
     int[] types;
 
-    int currentHP;
-    int[] stats = new int[6];
+    public int currentHP;
+    public int[] stats = new int[6];
 
     int[] ivs = new int[6];
     int ivGain;
