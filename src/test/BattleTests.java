@@ -142,6 +142,27 @@ public class BattleTests {
         assertEquals(1, battleModel.currentPokemon[1]);
     }
 
+    @Test
+    public void testInitialPokemon() {
+        PokemonModel[] team = new PokemonModel[3];
+        // first Pokemon has no HP
+        team[0] = new PokemonModel(1, 1, false);
+        team[0].currentHP = 0;
+        // second Pokemon is an egg
+        team[1] = new PokemonModel(1, 0, false);
+        team[2] = new PokemonModel(1, 1, false);
+
+        // create the battle
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(1, 1, false);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, true);
+        // skip opening animations
+        updateBattleModel(battleModel, 500);
+
+        // should start with third Pokemon
+        assertEquals(2, battleModel.currentPokemon[0]);
+    }
+
     /**
      * Updates battleModel in a loop to skip through animations
      * and input delays

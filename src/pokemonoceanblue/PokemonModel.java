@@ -10,10 +10,10 @@ public class PokemonModel
     int id;
     String name;
     int xp;
-    int level;
+    public int level;
     public byte statusEffect;
 
-    int[] types;
+    public int[] types;
 
     public int currentHP;
     public int[] stats = new int[6];
@@ -23,7 +23,7 @@ public class PokemonModel
     public MoveModel[] moves = new MoveModel[0];
     public final boolean shiny;
     int pokeballId = 3;
-    int happiness = 70;
+    public int happiness = 70;
     int captureRate;
     int stepCounter;
     
