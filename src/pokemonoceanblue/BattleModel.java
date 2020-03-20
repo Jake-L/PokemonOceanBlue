@@ -32,7 +32,8 @@ public class BattleModel
     public boolean[] isSeen;
     private BattleEvent attackEvent[] = new BattleEvent[2];
     private String soundEffect;
-
+    private int[][] statChanges = new int[2][8];
+    //TODO: remove follow-me move
     /** 
      * Constructor
      * @param opponentTeam the opposing trainers pokemon team
@@ -355,6 +356,67 @@ public class BattleModel
                 null);
         }
         this.events.add(event);
+    }
+
+        /** 
+     * creates event for the stat changes applied by a move used
+     * @param attacker the attacking team
+     * @param move the move that inflicts the heal or recoil
+     */
+    private void statChanges(int attacker, MoveModel move)
+    {
+        if (ranNum.nextInt(101) <= move.effectChance)
+        {
+            String[] statChangeMessages = {" fell sharply.", " fell.", "", " rose.", " rose sharply."};
+            String[] changedStat = {"", " attack", " special attack", " defense", " special defense", " speed", " accuracy", " evasiveness"};
+            //loop through all stat changes in case there are multiple
+            for (int i = 0; i < move.moveStatEffects.length; i++)
+            {
+                BattleEvent event;
+                //when target id is 7 or 10 the move applies stat changes to the user
+                if (move.targetId == 7 || (move.targetId == 10 && move.power > 0))
+                {
+                    event = new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + "'s " +
+                        changedStat[move.moveStatEffects[i].statId] + statChangeMessages[move.moveStatEffects[i].statChange + 2],
+                        attacker,
+                        attacker,
+                        null);
+                    //apply stat change with limits of |6|
+                    if (move.moveStatEffects[i].statChange < 0)
+                    {
+                        this.statChanges[attacker][move.moveStatEffects[i].statId] = Math.max(-6, 
+                            move.moveStatEffects[i].statChange + this.statChanges[attacker][move.moveStatEffects[i].statId]);
+                    }
+                    else
+                    {
+                        this.statChanges[attacker][move.moveStatEffects[i].statId] = Math.min(6,
+                            move.moveStatEffects[i].statChange + this.statChanges[attacker][move.moveStatEffects[i].statId]);
+                    }
+                }
+                //when target id is not 7 or 10 the move applies stat changes to the opponent
+                else
+                {
+                    int defender = (attacker + 1) % 2;
+                    event = new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + "'s " +
+                        changedStat[move.moveStatEffects[i].statId] + statChangeMessages[move.moveStatEffects[i].statChange + 2],
+                        defender,
+                        defender,
+                        null);
+                    //apply stat change with limits of |6|
+                    if (move.moveStatEffects[i].statChange < 0)
+                    {
+                        this.statChanges[defender][move.moveStatEffects[i].statId] = Math.max(-6, 
+                            move.moveStatEffects[i].statChange + this.statChanges[defender][move.moveStatEffects[i].statId]);
+                    }
+                    else
+                    {
+                        this.statChanges[defender][move.moveStatEffects[i].statId] = Math.min(6,
+                            move.moveStatEffects[i].statChange + this.statChanges[defender][move.moveStatEffects[i].statId]);
+                    }
+                }
+                this.events.add(event);
+            }
+        }
     }
     
     /** 
@@ -699,6 +761,8 @@ public class BattleModel
         {
             int attacker = this.events.get(0).attacker;
             this.currentPokemon[attacker] = this.events.get(0).newPokemonIndex;
+            //reset stat changes on switched pokemon
+            this.statChanges[attacker] = new int[8];
             if (attacker == 1)
             {
                 this.isSeen[this.events.get(0).newPokemonIndex] = true;
@@ -714,6 +778,10 @@ public class BattleModel
             if (this.events.get(0).move != null && this.events.get(0).damage * this.events.get(0).move.recoil != 0)
             {
                 this.recoil(attacker, this.events.get(0).move);
+            }
+            if (this.events.get(0).damage > -1 && this.events.get(0).move.moveStatEffects.length > 0)
+            {
+                this.statChanges(attacker, this.events.get(0).move);
             }
             if (this.events.get(0).damage > -1 && this.events.get(0).move.ailmentId > 0)
             {
