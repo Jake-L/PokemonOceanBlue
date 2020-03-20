@@ -40,13 +40,15 @@ public class InventoryView extends BaseView {
 
         for (int i = 0; i < itemSprite.length; i++)
         {
-            try {
+            try 
+            {
                 ii = new ImageIcon("src/inventory/" + i + ".png");
                 itemSprite[i]  = ii.getImage();
-            } catch (Exception e) {
-                //TODO: handle exception
+            } 
+            catch (Exception e) 
+            {
+                System.out.println("Error loading src/inventory/" + i + ".png");
             }
-            
         }
 
         for (int i = 0; i < bagSprite.length; i++)

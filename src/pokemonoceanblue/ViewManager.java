@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 public class ViewManager extends JPanel {
 
+    private static final long serialVersionUID = -5660188134766830479L;
     private BaseView view;
     private BaseView newView;
     private byte graphicsScaling;

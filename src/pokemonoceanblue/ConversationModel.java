@@ -10,8 +10,6 @@ public class ConversationModel
     public final int conversationId;
     private int counter = 0;
     private List<ConversationEvent> events = new ArrayList<ConversationEvent>();
-    private CharacterModel player;
-    private CharacterModel cpu;
     private boolean approachPlayer;
     private boolean battleStarted = false;
     
@@ -22,8 +20,6 @@ public class ConversationModel
     public ConversationModel(int conversationId, CharacterModel player, CharacterModel cpu, boolean approachPlayer)
     {
         this.conversationId = conversationId;
-        this.player = player;
-        this.cpu = cpu;
         this.counter = TEXT_LENGTH;
         this.approachPlayer = approachPlayer;
 

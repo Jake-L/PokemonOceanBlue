@@ -1,6 +1,7 @@
 package pokemonoceanblue;
 
 import java.sql.*;
+import java.util.Calendar;
 
 public class EvolutionCheck 
 {
@@ -26,7 +27,8 @@ public class EvolutionCheck
             int triggerItemId;
             int genderId;
             int mapId;
-            int timeOfDay;
+            String timeOfDay;
+            int hour =  Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
 
             // load move data
             String query = "SELECT * FROM evolution_methods "
@@ -42,7 +44,7 @@ public class EvolutionCheck
                 triggerItemId = rs.getInt("trigger_item_id");
                 genderId = rs.getInt("gender_id");
                 mapId = rs.getInt("map_id");
-                //timeOfDay = rs.getInt("time_of_day");
+                timeOfDay = rs.getString("time_of_day");
 
                 if (pokemon.id != preSpeciesId)
                 {
@@ -64,7 +66,15 @@ public class EvolutionCheck
                 {
                     evolve = -1;
                 }
-
+                else if ((timeOfDay == "day" && (hour <= 7 || hour > 19))
+                    || (timeOfDay == "night" && (hour > 7 || hour < 19)))
+                {
+                    return -1;
+                }
+                else if (genderId > 0 && pokemon.genderId != genderId)
+                {
+                    return -1;
+                }
                 if (evolve != -1)
                 {
                     return evolve;

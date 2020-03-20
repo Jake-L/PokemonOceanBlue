@@ -23,6 +23,7 @@ import java.awt.Font;
 
 public class App extends JFrame implements KeyListener
 {
+    private static final long serialVersionUID = -1949827959244745733L;
     OverworldController overworldController;
     CharacterModel playerModel;
     CharacterModel oldPlayerModel;

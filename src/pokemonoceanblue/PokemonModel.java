@@ -26,6 +26,7 @@ public class PokemonModel
     public int happiness = 70;
     int captureRate;
     int stepCounter;
+    public int genderId = 0;
     
     /** 
      * Constructor
