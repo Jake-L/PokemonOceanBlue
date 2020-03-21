@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -192,6 +193,7 @@ public class BattleTests {
             updateBattleModel(battleModel, 500);
         }
         assertNotEquals((team[0].getStat(2, battleModel.statChanges[0][2])), team[0].stats[2]); 
+        assertTrue(team[0].getStat(2, battleModel.statChanges[0][2]) > team[0].stats[2]);
     }
 
     /**
