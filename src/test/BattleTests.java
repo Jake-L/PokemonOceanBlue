@@ -163,6 +163,37 @@ public class BattleTests {
         assertEquals(2, battleModel.currentPokemon[0]);
     }
 
+     /**
+     * Test that stat effects change stats
+     * Done by using a metapod that only knows harden against magikarp
+     */
+    @Test
+    public void testStatChanges() {
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(11, 7, false);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(129, 1, false);
+        // make sure metapod knows harden
+        assertEquals("HARDEN", team[0].moves[0].name);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, true);
+        // skip opening animations
+        updateBattleModel(battleModel, 500);
+        // run a few loops to check that metapods defense changes
+        for (int i = 0; i < 5; i++)
+        {
+            assertEquals(0, battleModel.events.size());
+            // choose "FIGHT"
+            battleModel.confirmSelection();
+            // choose "HARDEN"
+            updateBattleModel(battleModel, 20);
+            battleModel.confirmSelection();
+            // wait for all the battle text to process
+            updateBattleModel(battleModel, 100);
+            updateBattleModel(battleModel, 500);
+        }
+        assertNotEquals((team[0].getStat(2, battleModel.statChanges[0][2])), team[0].stats[2]); 
+    }
+
     /**
      * Updates battleModel in a loop to skip through animations
      * and input delays

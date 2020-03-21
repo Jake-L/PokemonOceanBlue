@@ -145,6 +145,27 @@ public class PokemonModel
         }
     }
 
+    /**
+     * @param statIndex the stat to have stat changes applied
+     * @param modifier the stat changes applied to the pokemon
+     * @return the stat with stat changes applied for battles
+     */
+    public int getStat(int statIndex, int modifier)
+    {
+        if (modifier < 0)
+        {
+            return (int)(this.stats[statIndex] * (2.0 / (Math.abs(modifier) + 2)));
+        }
+        else if (modifier > 0)
+        {
+            return (int)(this.stats[statIndex] * ((Math.abs(modifier) + 2) / 2.0));
+        }
+        else
+        {
+            return this.stats[statIndex];
+        }
+    }
+
     /** 
      * Read the Pokemon's stats, types, etc from a database
      */
