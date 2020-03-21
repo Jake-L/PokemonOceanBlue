@@ -115,6 +115,17 @@ public class OverworldView extends BaseView {
                     ImageIcon ii = new ImageIcon(String.format("src/characters/%s.png", formattedName));
                     characterSprite.put(formattedName, ii.getImage());
                 }
+
+                if (spriteName.contains("swimmer"))
+                {
+                    // surfing sprites
+                    for (int i = 0; i < 4; i++)
+                    {
+                        formattedName = String.format("%sSurf%s%s", spriteName, direction.toString(), i);
+                        ImageIcon ii = new ImageIcon(String.format("src/characters/%s.png", formattedName));
+                        characterSprite.put(formattedName, ii.getImage());
+                    }
+                }
             }
         }
 

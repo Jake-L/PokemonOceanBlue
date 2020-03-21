@@ -45,8 +45,13 @@ public class CharacterModel {
         this.characterId = characterId;
         this.wanderRange = wanderRange;
 
+        if (spriteName.contains("swimmer"))
+        {
+            this.surf = true;
+        }
+
         // get the sprite's height
-        ImageIcon ii = new ImageIcon(String.format("src/characters/%sDown0.png", spriteName));
+        ImageIcon ii = new ImageIcon(String.format("src/characters/%s.png", this.getCurrentSprite()));
         this.height = ii.getImage().getHeight(null);
     }
 

@@ -110,3 +110,6 @@ conversation_id,conversation_event_id,text,battle_id,heal_team,character_id,move
 37,4,,10,-1,-1,-1,-1,5,-1,-1,-1,brock,yellow
 37,5,It isn't enough to be a great Pokemon breeder$ I also need to become a better Pokemon trainer.,-1,-1,-1,-1,-1,6,-1,-1,-1,,
 37,6,Thank you for reminding me of that. In return$ please take this Boulder badge. ,-1,-1,-1,-1,-1,-1,-1,-1,-1,,
+38,0,Hey you! My swim trunks fell off and I can't find them anywhere.,-1,-1,-1,1,-1,-1,-1,-1,-1,,
+38,1,Have you seen them? I want to go home but can't leave the water like this. ,-1,-1,-1,2,-1,-1,-1,-1,-1,,
+38,2,You wouldn't happen to have an extra pair do you?,-1,-1,-1,-1,-1,-1,-1,-1,-1,,
