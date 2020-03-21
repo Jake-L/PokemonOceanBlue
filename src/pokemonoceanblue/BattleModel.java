@@ -369,75 +369,37 @@ public class BattleModel
         {
             String[] statChangeMessages = {" fell sharply.", " fell.", "", " rose.", " rose sharply."};
             String[] changedStat = {"", " attack", " special attack", " defense", " special defense", " speed", " accuracy", " evasiveness"};
+            int target = (attacker + 1) % 2;
             //loop through all stat changes in case there are multiple
             for (int i = 0; i < move.moveStatEffects.length; i++)
             {
                 BattleEvent event;
-                //when target id is 7 or 10 the move applies stat changes to the user
+                int statId = move.moveStatEffects[i].statId;
+                int statChange = move.moveStatEffects[i].statChange;
+                //when target id is 7 or 10 the move applies stat changes to the user, otherwise applied to foe
                 if (move.targetId == 7 || (move.targetId == 10 && move.power > 0))
                 {
-                    //check if stat cannot be changed any further
-                    if ((this.statChanges[attacker][move.moveStatEffects[i].statId] == 6 && move.moveStatEffects[i].statChange > 0) || 
-                        (this.statChanges[attacker][move.moveStatEffects[i].statId] == -6 && move.moveStatEffects[i].statChange < 0))
-                    {
-                        event = new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + "'s " + 
-                            changedStat[move.moveStatEffects[i].statId] + " cannot be " + 
-                            (this.statChanges[attacker][move.moveStatEffects[i].statId] < 0 ? "increased" : "decreased") + " any further.",
-                            attacker,
-                            attacker,
-                            null);
-                    }
-                    event = new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + "'s " +
-                        changedStat[move.moveStatEffects[i].statId] + statChangeMessages[move.moveStatEffects[i].statChange + 2],
-                        attacker,
-                        attacker,
-                        null);
-                    //apply stat change with limits of |6|
-                    if (move.moveStatEffects[i].statChange < 0)
-                    {
-                        this.statChanges[attacker][move.moveStatEffects[i].statId] = Math.max(-6, 
-                            move.moveStatEffects[i].statChange + this.statChanges[attacker][move.moveStatEffects[i].statId]);
-                    }
-                    else
-                    {
-                        this.statChanges[attacker][move.moveStatEffects[i].statId] = Math.min(6,
-                            move.moveStatEffects[i].statChange + this.statChanges[attacker][move.moveStatEffects[i].statId]);
-                    }
+                    target = attacker;
                 }
-                //when target id is not 7 or 10 the move applies stat changes to the opponent
+                //check if stat cannot be changed any further
+                if ((this.statChanges[target][statId] == 6 && statChange > 0) || (this.statChanges[target][statId] == -6 && statChange < 0))
+                {
+                    event = new BattleEvent(this.team[target][this.currentPokemon[target]].name + "'s " + 
+                        changedStat[statId] + " cannot be " + 
+                        (this.statChanges[target][statId] < 0 ? "increased" : "decreased") + " any further.",
+                        target,
+                        target,
+                        null);
+                }
                 else
                 {
-                    int defender = (attacker + 1) % 2;
-                    //check if stat cannot be changed any further
-                    if ((this.statChanges[defender][move.moveStatEffects[i].statId] == 6 && move.moveStatEffects[i].statChange > 0) || 
-                        (this.statChanges[defender][move.moveStatEffects[i].statId] == -6 && move.moveStatEffects[i].statChange < 0))
-                    {
-                        event = new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + "'s " + 
-                            changedStat[move.moveStatEffects[i].statId] + " cannot be " + 
-                            (this.statChanges[defender][move.moveStatEffects[i].statId] < 0 ? "increased" : "decreased") + " any further.",
-                            defender,
-                            defender,
-                            null);
-                    }
-                    else
-                    {
-                        event = new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + "'s " +
-                            changedStat[move.moveStatEffects[i].statId] + statChangeMessages[move.moveStatEffects[i].statChange + 2],
-                            defender,
-                            defender,
-                            null);
-                        //apply stat change with limits of |6|
-                        if (move.moveStatEffects[i].statChange < 0)
-                        {
-                            this.statChanges[defender][move.moveStatEffects[i].statId] = Math.max(-6, 
-                                move.moveStatEffects[i].statChange + this.statChanges[defender][move.moveStatEffects[i].statId]);
-                        }
-                        else
-                        {
-                            this.statChanges[defender][move.moveStatEffects[i].statId] = Math.min(6,
-                                move.moveStatEffects[i].statChange + this.statChanges[defender][move.moveStatEffects[i].statId]);
-                        }
-                    }
+                    event = new BattleEvent(this.team[target][this.currentPokemon[target]].name + "'s " +
+                        changedStat[statId] + statChangeMessages[statChange + 2],
+                        target,
+                        target,
+                        null);
+                    //apply stat change with limits of |6|
+                    this.statChanges[target][statId] = (statChange / Math.abs(statChange)) * Math.min(6, Math.abs(statChange + this.statChanges[target][statId]));
                 }
                 this.events.add(event);
             }
