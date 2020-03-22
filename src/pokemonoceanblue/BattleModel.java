@@ -405,6 +405,17 @@ public class BattleModel
             }
         }
     }
+
+    private int getAccuracy(int attacker, int moveAccuracy)
+    {
+        int defender = (attacker + 1) % 2;
+        if (this.statChanges[attacker][6] == 0 && this.statChanges[defender][7] == 0)
+        {
+            return moveAccuracy;
+        }
+        return (int)(moveAccuracy * (2.0 / (Math.abs(this.statChanges[attacker][6]) + 2)) / 
+            (statChanges[defender][7] > 0 ? (Math.abs(statChanges[defender][7]) + 2) / 2.0 : 2.0 / (Math.abs(statChanges[defender][7]) + 2)));
+    }
     
     /** 
      * @param moveIndex the current move of the attacker
@@ -444,7 +455,7 @@ public class BattleModel
             defense_stat = Stat.SPECIAL_DEFENSE;
         }
 
-        else if (move.accuracy == -1 || this.ranNum.nextInt(101) <= move.accuracy)
+        else if (move.accuracy == -1 || this.ranNum.nextInt(101) <= this.getAccuracy(attacker, move.accuracy))
         {
             this.attackMissed[attacker] = false;
             return 0;
@@ -456,7 +467,7 @@ public class BattleModel
             return 0;
         }
 
-        if (move.accuracy == -1 || this.ranNum.nextInt(101) <= move.accuracy)
+        if (move.accuracy == -1 || this.ranNum.nextInt(101) <= this.getAccuracy(attacker, move.accuracy))
         {
             this.attackMissed[attacker] = false;
             for (int i = 0; i < defendingPokemon.types.length; i++)

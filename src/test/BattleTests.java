@@ -3,10 +3,12 @@ package test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
 import pokemonoceanblue.BattleModel;
+import pokemonoceanblue.MoveModel;
 import pokemonoceanblue.PokemonModel;
 
 public class BattleTests {
@@ -194,6 +196,50 @@ public class BattleTests {
         }
         assertNotEquals((team[0].getStat(2, battleModel.statChanges[0][2])), team[0].stats[2]); 
         assertTrue(team[0].getStat(2, battleModel.statChanges[0][2]) > team[0].stats[2]);
+    }
+
+    /**
+     * Test accuracy
+     * Done by using a butterfree that knows double team against magikarp that only knows water gun
+     */
+    @Test
+    public void testAccuracy() {
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(12, 100, false);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(129, 1, false);
+        // make sure buterfree knows double team and magikarp knows constrict (10 damage with no STAB)
+        team[0].moves[0] = new MoveModel(104);
+        assertEquals("DOUBLE TEAM", team[0].moves[0].name);
+        enemyTeam[0].moves[0] = new MoveModel(132);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, true);
+        // skip opening animations
+        updateBattleModel(battleModel, 500);
+        // run a few loops to check that metapods defense changes
+        boolean attackMissed = false;
+        while (!attackMissed)
+        {
+            int previousHP = team[0].currentHP;
+            assertEquals(0, battleModel.events.size());
+            // choose "FIGHT"
+            battleModel.confirmSelection();
+            // choose "DOUBLE TEAM"
+            updateBattleModel(battleModel, 20);
+            battleModel.confirmSelection();
+            // wait for all the battle text to process
+            updateBattleModel(battleModel, 100);
+            updateBattleModel(battleModel, 500);
+            if (previousHP == team[0].currentHP)
+            {
+                attackMissed = true;
+            }
+            //if butterfree dies before magikarp misses, 
+            //accuracy does not work correctly (it will take a large amount of hits with what should be low accuracy)
+            if (team[0].currentHP == 0)
+            {
+                fail();
+            }
+        } 
     }
 
     /**
