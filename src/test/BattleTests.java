@@ -114,6 +114,34 @@ public class BattleTests {
     }
 
     /**
+     * Test that a move with 0% effectiveness does no damage
+     * Done by using tackle agianst a ghost type
+     */
+    @Test
+    public void testZeroEffectiveness() {
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(1, 1, false);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(92, 1, false);
+        // make sure bulbasaur knows tackle and gastly only knows swords dance 
+        assertEquals("TACKLE", team[0].moves[0].name);
+        enemyTeam[0].moves[0] = new MoveModel(14);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, true);
+        // skip opening animations
+        updateBattleModel(battleModel, 500);
+        // run through a sequence of battle
+        assertEquals(0, battleModel.events.size());
+        // choose "FIGHT"
+        battleModel.confirmSelection();
+        // choose "tackle"
+        updateBattleModel(battleModel, 20);
+        battleModel.confirmSelection();
+        // wait for all the battle text to process
+        updateBattleModel(battleModel, 500);
+        assertEquals(enemyTeam[0].stats[0], enemyTeam[0].currentHP);
+    }
+
+    /**
      * Tests that enemies switch their Pokemon after one faints
      * Done by having a level 100 use a 100% accuracy move on a level 1
      */
@@ -196,6 +224,60 @@ public class BattleTests {
         }
         assertNotEquals((team[0].getStat(2, battleModel.statChanges[0][2])), team[0].stats[2]); 
         assertTrue(team[0].getStat(2, battleModel.statChanges[0][2]) > team[0].stats[2]);
+    }
+
+    /**
+     * Test that an asleep pokemon will eventually wake up
+     * Done by using spore (100 accuracy sleep inducer) on enemy followed by using tackle as a lvl 1 bulbasaur
+     * against a lvl 100 bulbasaur
+     */
+    @Test
+    public void testWakeUp() {
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(1, 1, false);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(1, 100, false);
+        // set both sides moves
+        enemyTeam[0].moves[0] = new MoveModel(14);
+        enemyTeam[0].moves[1] = new MoveModel(14);
+        enemyTeam[0].moves[2] = new MoveModel(14);
+        enemyTeam[0].moves[3] = new MoveModel(14);
+        team[0].moves = new MoveModel[2];
+        team[0].moves[0] = new MoveModel(147);
+        team[0].moves[1] = new MoveModel(33);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, true);
+        // skip opening animations
+        updateBattleModel(battleModel, 500);
+        //put lvl 100 asleep
+        assertEquals(0, battleModel.events.size());
+        // choose "FIGHT"
+        battleModel.confirmSelection();
+        // choose "spore"
+        updateBattleModel(battleModel, 20);
+        battleModel.confirmSelection();
+        // wait for all the battle text to process
+        updateBattleModel(battleModel, 100);
+        updateBattleModel(battleModel, 500);
+        assertEquals(2, enemyTeam[0].statusEffect);
+        // run until lvl 100 dies or wakes up
+        while (enemyTeam[0].currentHP > 0)
+        {
+            assertEquals(0, battleModel.events.size());
+            // choose "FIGHT"
+            battleModel.confirmSelection();
+            // choose "tackle"
+            updateBattleModel(battleModel, 20);
+            battleModel.optionIndex = 1;
+            battleModel.confirmSelection();
+            // wait for all the battle text to process
+            updateBattleModel(battleModel, 100);
+            updateBattleModel(battleModel, 500);
+            //check if lvl 100 woke up
+            if(enemyTeam[0].statusEffect == 0)
+            {
+                break;
+            }
+        }
     }
 
     /**

@@ -314,7 +314,7 @@ public class BattleModel
                     attacker,
                     null);
                 this.events.add(0, event);
-                this.events.get(1).damage = damageCalc(this.events.get(0).move, attacker, (attacker + 1) % 2);
+                this.events.get(1).damage = damageCalc(this.events.get(1).move, attacker, (attacker + 1) % 2);
             }
             else
             {
