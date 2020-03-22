@@ -15,6 +15,7 @@ import java.util.Map;
 public class OverworldModel {
     public int mapId;
     public byte[][] tiles;
+    public byte[][] tilesOverlay;
     public List<SpriteModel> mapObjects = new ArrayList<SpriteModel>(); 
     public List<CharacterModel> cpuModel = new ArrayList<CharacterModel>();
     public CharacterModel playerModel;
@@ -60,23 +61,34 @@ public class OverworldModel {
     public void readMapFile()
     {
         int mapTemplateId = this.mapId;
+        boolean overlay = false;
 
         try
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            String query = "SELECT map_template_id FROM map_template WHERE map_id = " + this.mapId;
+            String query = "SELECT map_template_id, overlay FROM map_template WHERE map_id = " + this.mapId;
 
             ResultSet rs = db.runQuery(query);
 
             mapTemplateId = rs.getInt("map_template_id");
+            overlay = rs.getInt("overlay") == 1;
+            tiles = readMapFileAux("map" + mapTemplateId);
+            if (overlay)
+            {
+                tilesOverlay = readMapFileAux("map" + mapTemplateId + "overlay");
+            }
         }
         catch (SQLException e) 
         {
             e.printStackTrace();
         }  
+    }
 
-        Path pathToFile = Paths.get(String.format("src/maps/map%s.csv", mapTemplateId));
+    private byte[][] readMapFileAux(String path)
+    {
+        Path pathToFile = Paths.get(String.format("src/maps/%s.csv", path));
+        byte[][] output;
 
         // create an instance of BufferedReader
         try (BufferedReader br = Files.newBufferedReader(pathToFile,
@@ -84,21 +96,27 @@ public class OverworldModel {
 
             // read the first line which gives the number of rows and columns
             String line = br.readLine();
-            tiles = new byte[Integer.parseInt(line.split(",")[0])][];
+            output = new byte[Integer.parseInt(line.split(",")[0])][];
             int lineCounter = 0;
             
             // loop through all the lines of tile data
             line = br.readLine();
-            while (lineCounter < tiles.length) {
-
-                // split the line into an array of values
-                String[] data = line.split(",");
-                tiles[lineCounter] = new byte[data.length];
-
-                // convert the string into a byte and insert into the array
-                for (var i = 0; i < data.length; i++)
+            while (lineCounter < output.length) {
+                if (line != null && line.length() >= 2)
                 {
-                    tiles[lineCounter][i] = Byte.parseByte(data[i]);
+                    // split the line into an array of values
+                    String[] data = line.split(",");
+                    output[lineCounter] = new byte[data.length];
+
+                    // convert the string into a byte and insert into the array
+                    for (var i = 0; i < data.length; i++)
+                    {
+                        output[lineCounter][i] = Byte.parseByte(data[i]);
+                    }
+                }
+                else
+                {
+                    output[lineCounter] = new byte[0];
                 }
 
                 // read next line before looping
@@ -108,7 +126,10 @@ public class OverworldModel {
         } 
         catch (IOException e) {
             e.printStackTrace();
+            output = new byte[0][0];
         }
+        
+        return output;
     }
 
     public void update()

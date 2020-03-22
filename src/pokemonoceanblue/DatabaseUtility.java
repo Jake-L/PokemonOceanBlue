@@ -176,16 +176,17 @@ public class DatabaseUtility
         // re-use the same tile layout for multiple maps
         query = "CREATE TABLE map_template("
                 + "map_id INT NOT NULL, "
-                + "map_template_id INT NOT NULL)";
+                + "map_template_id INT NOT NULL, "
+                + "overlay INT NULL)";
         runUpdate(query);
 
         // fills map_template table with data
         path = "src/rawdata/mapTemplate.csv";
         query = "INSERT INTO map_template ("
-                    + "map_id, map_template_id) "
-                    + "VALUES (?, ?)";
+                    + "map_id, map_template_id, overlay) "
+                    + "VALUES (?, ?, ?)";
         
-        dataTypes = new String[] {"int", "int"};
+        dataTypes = new String[] {"int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

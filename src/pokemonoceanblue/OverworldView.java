@@ -23,7 +23,7 @@ public class OverworldView extends BaseView {
     private Map<String, Image> characterSprite = new HashMap<String, Image>();
     private int xOffset = -1;
     private int yOffset = -1;
-    private int[] ANIMATED_TILES = new int[]{0, 6, 7};
+    private int[] ANIMATED_TILES = new int[]{0, 6, 7, 8};
     private Image mugshotBackgroundSprite;
     private Image mugshotCharacterSprite;
     private Image mugshotLightningSprite;
@@ -188,6 +188,27 @@ public class OverworldView extends BaseView {
                             16 * graphicsScaling, 
                             16 * graphicsScaling,
                             canvas);
+            }
+        }
+
+        // display overlap tiles
+        if (this.model.tilesOverlay != null)
+        {
+            for (int y = 0 + Math.max(yOffset / 16,0); y < Math.min(model.tilesOverlay.length, this.model.playerModel.getY() + height / (16 * graphicsScaling)); y++)
+            {
+                for (int x = 0 + Math.max(xOffset / 16,0); x < Math.min(model.tilesOverlay[y].length, this.model.playerModel.getX() + width / (16 * graphicsScaling)); x++)
+                {
+                    if (this.model.tilesOverlay[y][x] > 0)
+                    {
+                        sprite = tileSprite[model.tilesOverlay[y][x]];
+                        g.drawImage(sprite, 
+                                    (x * 16 - xOffset) * graphicsScaling, 
+                                    (y * 16 - yOffset) * graphicsScaling, 
+                                    16 * graphicsScaling, 
+                                    16 * graphicsScaling,
+                                    canvas);
+                    }
+                }
             }
         }
 
