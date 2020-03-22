@@ -295,17 +295,42 @@ public class BattleModel
     private void canAttack(int attacker)
     {
         PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
-        if ((attackingPokemon.statusEffect == 1 && this.ranNum.nextInt(101) < 34) ||
-            (attackingPokemon.statusEffect == 2 && this.ranNum.nextInt(101) < 34) ||
-            (attackingPokemon.statusEffect == 3 && this.ranNum.nextInt(101) < 51))
+        BattleEvent event;
+        //check if attacker can attack while being paralyzed, asleep, or frozen
+        if (attackingPokemon.statusEffect > 0 && attackingPokemon.statusEffect < 4)
         {
-            this.unableToMove[attacker] = true;
-            this.events.remove(0);
+            if (attackingPokemon.statusEffect == 1 && this.ranNum.nextInt(101) < 34)
+            {
+                this.unableToMove[attacker] = false;
+                this.events.get(0).damage = damageCalc(this.events.get(0).move, attacker, (attacker + 1) % 2);
+            }
+            else if ((attackingPokemon.statusEffect == 2 && this.ranNum.nextInt(101) < 41) ||
+            (attackingPokemon.statusEffect == 3 && this.ranNum.nextInt(101) < 31))
+            {
+                this.unableToMove[attacker] = false;
+                event = new BattleEvent(attackingPokemon.name + (attackingPokemon.statusEffect == 2 ? " woke up!" : " thawed out."),
+                    0,
+                    attacker,
+                    attacker,
+                    null);
+                this.events.add(0, event);
+                this.events.get(1).damage = damageCalc(this.events.get(0).move, attacker, (attacker + 1) % 2);
+            }
+            else
+            {
+                this.isCrit[attacker] = false;
+                this.isOneHit[attacker] = false;
+                this.modifier[attacker] = 1.0f;
+                this.unableToMove[attacker] = true;
+                this.events.remove(0);
+            }
         }
         else
         {
+            this.unableToMove[attacker] = false;
             this.events.get(0).damage = damageCalc(this.events.get(0).move, attacker, (attacker + 1) % 2);
         }
+
     }
 
     /** 
@@ -432,7 +457,6 @@ public class BattleModel
         float crit = 1.0f;
         this.isCrit[attacker] = false;
         this.isOneHit[attacker] = false;
-        this.unableToMove[attacker] = false;
         PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
         PokemonModel defendingPokemon = this.team[defender][this.currentPokemon[defender]];
 
@@ -514,7 +538,8 @@ public class BattleModel
      */
     private void effectivenessMessage(float effectiveness, int attacker)
     {
-        if (this.unableToMove[attacker])
+        PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
+        if (this.unableToMove[attacker] && attackingPokemon.statusEffect > 0 && attackingPokemon.statusEffect < 4)
         {
             String[] statusEffectMessages = {" is paralyzed and unable to move."," is fast asleep."," is frozen solid."};
             BattleEvent event = new BattleEvent(
@@ -773,17 +798,20 @@ public class BattleModel
             int attacker = this.events.get(0).attacker;
             this.canAttack(attacker);
             this.effectivenessMessage(this.modifier[attacker], attacker);
-            if (this.events.get(0).move != null && this.events.get(0).damage * this.events.get(0).move.recoil != 0)
+            if (!this.unableToMove[attacker])
             {
-                this.recoil(attacker, this.events.get(0).move);
-            }
-            if (this.events.get(0).damage > -1 && this.events.get(0).move.moveStatEffects.length > 0)
-            {
-                this.statChanges(attacker, this.events.get(0).move);
-            }
-            if (this.events.get(0).damage > -1 && this.events.get(0).move.ailmentId > 0)
-            {
-                this.statusEffect(attacker, (attacker + 1) % 2, this.events.get(0).move);
+                if (this.events.get(0).move != null && this.events.get(0).damage * this.events.get(0).move.recoil != 0)
+                {
+                    this.recoil(attacker, this.events.get(0).move);
+                }
+                if (this.events.get(0).damage > -1 && this.events.get(0).move.moveStatEffects.length > 0)
+                {
+                    this.statChanges(attacker, this.events.get(0).move);
+                }
+                if (this.events.get(0).damage > -1 && this.events.get(0).move.ailmentId > 0)
+                {
+                    this.statusEffect(attacker, (attacker + 1) % 2, this.events.get(0).move);
+                }
             }
             if (this.attackEvent[(attacker + 1) % 2] != null)
             {
