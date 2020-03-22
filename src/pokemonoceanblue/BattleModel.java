@@ -33,7 +33,8 @@ public class BattleModel
     private BattleEvent attackEvent[] = new BattleEvent[2];
     private String soundEffect;
     public int[][] statChanges = new int[2][8];
-    //TODO: remove follow-me move
+    public boolean[] willFlinch = new boolean[2];
+
     /** 
      * Constructor
      * @param opponentTeam the opposing trainers pokemon team
@@ -322,8 +323,18 @@ public class BattleModel
                 this.isOneHit[attacker] = false;
                 this.modifier[attacker] = 1.0f;
                 this.unableToMove[attacker] = true;
+                this.willFlinch[(attacker + 1) % 2] = false;
                 this.events.remove(0);
             }
+        }
+        else if (this.willFlinch[attacker])
+        {
+            this.isCrit[attacker] = false;
+            this.isOneHit[attacker] = false;
+            this.modifier[attacker] = 1.0f;
+            this.unableToMove[attacker] = true;
+            this.willFlinch[(attacker + 1) % 2] = false;
+            this.events.remove(0);
         }
         else
         {
@@ -457,6 +468,7 @@ public class BattleModel
         float crit = 1.0f;
         this.isCrit[attacker] = false;
         this.isOneHit[attacker] = false;
+        this.willFlinch[(attacker + 1) % 2] = false;
         PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
         PokemonModel defendingPokemon = this.team[defender][this.currentPokemon[defender]];
 
@@ -544,6 +556,13 @@ public class BattleModel
             String[] statusEffectMessages = {" is paralyzed and unable to move."," is fast asleep."," is frozen solid."};
             BattleEvent event = new BattleEvent(
                 this.team[attacker][this.currentPokemon[attacker]].name + statusEffectMessages[this.team[attacker][this.currentPokemon[attacker]].statusEffect - 1], 
+                attacker, attacker, null);
+            this.events.add(event);
+        }
+        else if (this.unableToMove[attacker] && this.willFlinch[attacker])
+        {
+            BattleEvent event = new BattleEvent(
+                this.team[attacker][this.currentPokemon[attacker]].name + " flinched.", 
                 attacker, attacker, null);
             this.events.add(event);
         }
@@ -800,17 +819,22 @@ public class BattleModel
             this.effectivenessMessage(this.modifier[attacker], attacker);
             if (!this.unableToMove[attacker])
             {
-                if (this.events.get(0).move != null && this.events.get(0).damage * this.events.get(0).move.recoil != 0)
+                if (this.events.get(0).damage > -1 && this.attackEvent[(attacker + 1) % 2] != null 
+                    && ranNum.nextInt(101) <= this.events.get(0).move.flinchChance)
+                {
+                    this.willFlinch[(attacker + 1) % 2] = true;
+                }
+                else if (this.events.get(0).move != null && this.events.get(0).damage * this.events.get(0).move.recoil != 0)
                 {
                     this.recoil(attacker, this.events.get(0).move);
+                }
+                else if (this.events.get(0).damage > -1 && this.events.get(0).move.ailmentId > 0)
+                {
+                    this.statusEffect(attacker, (attacker + 1) % 2, this.events.get(0).move);
                 }
                 if (this.events.get(0).damage > -1 && this.events.get(0).move.moveStatEffects.length > 0)
                 {
                     this.statChanges(attacker, this.events.get(0).move);
-                }
-                if (this.events.get(0).damage > -1 && this.events.get(0).move.ailmentId > 0)
-                {
-                    this.statusEffect(attacker, (attacker + 1) % 2, this.events.get(0).move);
                 }
             }
             if (this.attackEvent[(attacker + 1) % 2] != null)
