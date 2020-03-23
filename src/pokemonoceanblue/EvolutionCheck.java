@@ -17,7 +17,7 @@ public class EvolutionCheck
     public int checkEvolution(PokemonModel pokemon, int currentMapId)
     {
         int evolve = -1;
-        int preSpeciesId = pokemon.id;
+        int preSpeciesId = pokemon.pokemon_id;
 
         try
         {
@@ -46,7 +46,7 @@ public class EvolutionCheck
                 mapId = rs.getInt("map_id");
                 timeOfDay = rs.getString("time_of_day");
 
-                if (pokemon.id != preSpeciesId)
+                if (pokemon.pokemon_id != preSpeciesId)
                 {
                     evolve = -1;
                 }

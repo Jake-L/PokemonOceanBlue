@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class PokemonStorageView extends BaseView {
 
-    private Map<Integer, Image> pokemonIconSprite = new HashMap<Integer, Image>();
+    private Map<String, Image> pokemonIconSprite = new HashMap<String, Image>();
     private Image[] cursorSprite = new Image[3];
     private Image[] storageBorder = new Image[9];
     private Image[] partyBorder = new Image[9];
@@ -49,20 +49,20 @@ public class PokemonStorageView extends BaseView {
         // load team icons
         for (PokemonModel pokemon : this.partyModel.team)
         {
-            if (this.pokemonIconSprite.get(pokemon.id) == null)
+            if (this.pokemonIconSprite.get(pokemon.getSpriteId()) == null)
             {
                 ii = new ImageIcon("src/pokemonicons/" + pokemon.getSpriteId() + ".png");
-                this.pokemonIconSprite.put(pokemon.id, ii.getImage());
+                this.pokemonIconSprite.put(pokemon.getSpriteId(), ii.getImage());
             }
         }
 
         // load storage Pokemon icons
         for (PokemonModel pokemon : this.storageModel.pokemonStorage)
         {
-            if (this.pokemonIconSprite.get(pokemon.id) == null)
+            if (this.pokemonIconSprite.get(pokemon.getSpriteId()) == null)
             {
                 ii = new ImageIcon("src/pokemonicons/" + pokemon.getSpriteId() + ".png");
-                this.pokemonIconSprite.put(pokemon.id, ii.getImage());
+                this.pokemonIconSprite.put(pokemon.getSpriteId(), ii.getImage());
             }
         }
 
@@ -99,8 +99,8 @@ public class PokemonStorageView extends BaseView {
         Font font = new Font("Pokemon Fire Red", Font.PLAIN, 12 * graphicsScaling);      
         g.setFont(font);
 
-        int iconHeight = this.pokemonIconSprite.get(this.partyModel.team.get(0).id).getHeight(null) * graphicsScaling;
-        int iconWidth = this.pokemonIconSprite.get(this.partyModel.team.get(0).id).getWidth(null) * graphicsScaling;
+        int iconHeight = this.pokemonIconSprite.get(this.partyModel.team.get(0).getSpriteId()).getHeight(null) * graphicsScaling;
+        int iconWidth = this.pokemonIconSprite.get(this.partyModel.team.get(0).getSpriteId()).getWidth(null) * graphicsScaling;
 
         this.rowCount = height / (iconHeight);
         this.storageModel.optionWidth = (width * 3 / 5) / (iconWidth);
@@ -177,7 +177,7 @@ public class PokemonStorageView extends BaseView {
             );
 
             g.drawImage(
-                this.pokemonIconSprite.get(this.partyModel.team.get(i).id),
+                this.pokemonIconSprite.get(this.partyModel.team.get(i).getSpriteId()),
                 width / 12 - iconWidth / 2,
                 height / 20 + 9 * graphicsScaling + i * heightPerPokemon,
                 iconWidth,
@@ -193,7 +193,7 @@ public class PokemonStorageView extends BaseView {
             {
                 if (this.minIndex + (i * this.storageModel.optionWidth) + j < this.storageModel.pokemonStorage.size())
                 {
-                    int pokemonId = this.storageModel.pokemonStorage.get(this.minIndex + (i * this.storageModel.optionWidth) + j).id;
+                    String pokemonId = this.storageModel.pokemonStorage.get(this.minIndex + (i * this.storageModel.optionWidth) + j).getSpriteId();
                     g.drawImage(
                         this.pokemonIconSprite.get(pokemonId),
                         width / 5 + j * iconWidth,
@@ -221,7 +221,7 @@ public class PokemonStorageView extends BaseView {
             if (this.storageModel.currentPokemon != null)
             {
                 g.drawImage(
-                    this.pokemonIconSprite.get(this.storageModel.currentPokemon.id),
+                    this.pokemonIconSprite.get(this.storageModel.currentPokemon.getSpriteId()),
                     width / 12 - iconWidth / 2,
                     height / 20 + 9 * graphicsScaling + this.partyModel.optionIndex * heightPerPokemon,
                     iconWidth,
@@ -245,7 +245,7 @@ public class PokemonStorageView extends BaseView {
             if (this.storageModel.currentPokemon != null)
             {
                 g.drawImage(
-                    this.pokemonIconSprite.get(this.storageModel.currentPokemon.id),
+                    this.pokemonIconSprite.get(this.storageModel.currentPokemon.getSpriteId()),
                     width / 5 + (this.storageModel.optionIndex % this.storageModel.optionWidth) * iconWidth,
                     height / 20 + (this.storageModel.optionIndex / this.storageModel.optionWidth) * heightPerPokemon - (heightPerPokemon / 4),
                     iconWidth,

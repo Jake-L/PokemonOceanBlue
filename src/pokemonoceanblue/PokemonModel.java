@@ -7,7 +7,8 @@ import java.util.Random;
 
 public class PokemonModel 
 {
-    int id;
+    public int pokemon_id;
+    public int base_pokemon_id;
     String name;
     int xp;
     public int level;
@@ -35,7 +36,7 @@ public class PokemonModel
      */
     public PokemonModel(int id, int level, boolean shiny)
     {
-        this.id = id;
+        this.pokemon_id = id;
         this.level = level;
         this.shiny = shiny;
 
@@ -111,7 +112,7 @@ public class PokemonModel
      */
     public void evolve(int evolvedPokemonId)
     {
-        this.id = evolvedPokemonId;
+        this.pokemon_id = evolvedPokemonId;
         this.loadStats();
     }
 
@@ -122,7 +123,7 @@ public class PokemonModel
     {
         if (this.level > 0)
         {
-            return String.valueOf(this.id);
+            return String.valueOf(this.pokemon_id);
         }
         else
         {
@@ -182,10 +183,11 @@ public class PokemonModel
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            String query = "SELECT * FROM pokemon WHERE id = " + this.id;
+            String query = "SELECT * FROM pokemon WHERE pokemon_id = " + this.pokemon_id;
 
             ResultSet rs = db.runQuery(query);
 
+            this.base_pokemon_id = rs.getInt("base_pokemon_id");
             this.name = rs.getString("name").toUpperCase();
             this.ivGain = rs.getInt("iv_gain");
             this.captureRate = rs.getInt("capture_rate");
@@ -232,7 +234,7 @@ public class PokemonModel
             DatabaseUtility db = new DatabaseUtility();
 
             String query = "SELECT move_id FROM pokemon_moves "
-                        + " WHERE pokemon_id = " + this.id 
+                        + " WHERE pokemon_id = " + this.pokemon_id 
                         + " AND level >= 1 "
                         + " AND level <= " + this.level
                         + " ORDER BY level DESC LIMIT 4";

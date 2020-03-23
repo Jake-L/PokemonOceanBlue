@@ -79,7 +79,7 @@ public class DatabaseUtility
         //==================================================================================
         // each Pokemon's name, stats, types
         query = "CREATE TABLE pokemon("
-                + "id INT NOT NULL, "
+                + "pokemon_id INT NOT NULL, "
                 + "name TEXT NOT NULL, "
                 + "type1 INT NOT NULL, "
                 + "type2 INT NULL DEFAULT 0, "
@@ -90,21 +90,24 @@ public class DatabaseUtility
                 + "special_defense INT NOT NULL, "
                 + "speed INT NOT NULL, "
                 + "iv_gain INT NOT NULL, "
-                + "capture_rate INT NOT NULL)";
+                + "capture_rate INT NOT NULL, "
+                + "base_pokemon_id INT NOT NULL)";
         runUpdate(query);
 
         // fill pokemon table with data
         path = "src/rawdata/pokemon.csv";
         query = "INSERT INTO pokemon ("
-                    + "id, name, "
+                    + "pokemon_id, name, "
                     + "type1, type2, "
                     + "hp, attack, "
                     + "defense, special_attack, "
                     + "special_defense, speed, "
-                    + "iv_gain, capture_rate)"
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    + "iv_gain, capture_rate, "
+                    + "base_pokemon_id)"
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        dataTypes = new String[] {"int", "String", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int"};
+        dataTypes = new String[] {"int", "String", "int", "int", "int", "int", 
+            "int", "int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

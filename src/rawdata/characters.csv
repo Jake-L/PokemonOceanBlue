@@ -36,3 +36,4 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 17,21,0,,joy,5,2,17,0,2
 30,21,0,,chancy,6,2,-1,0,2
 35,16,0,,swimmerBoy,7,17,38,3,2
+36,16,0,Ace Trainer Vincent,aceBoy,12,32,39,1,1

@@ -110,7 +110,7 @@ public class App extends JFrame implements KeyListener
         this.playSong(0);
 
         List<PokemonModel> pokemonTeam = new ArrayList<PokemonModel>();
-        pokemonTeam.add(new PokemonModel(133, 5, false));
+        pokemonTeam.add(new PokemonModel(10115, 30, false));
         pokemonTeam.add(new PokemonModel(182, 7, true));
         pokemonTeam.add(new PokemonModel(9, 40, true));
         pokemonTeam.add(new PokemonModel(34, 5, false));
@@ -154,7 +154,7 @@ public class App extends JFrame implements KeyListener
         // pressing any key will advance from the title screen
         if (viewManager.getCurrentView() == "TitleScreenView" && System.currentTimeMillis() - startTime > 1000 && playerModel == null)
         {
-            setMap(0, 7, 7);
+            setMap(16, 7, 7);
         }
     }
 
@@ -284,7 +284,7 @@ public class App extends JFrame implements KeyListener
     public void addPokemon(PokemonModel pokemon)
     {
         // register the new pokemon in pokedex
-        this.pokedexModel.setCaught(pokemon.id);
+        this.pokedexModel.setCaught(pokemon.base_pokemon_id);
         NewPokemonModel newPokemonModel = new NewPokemonModel(pokemon, partyModel, pokemonStorageModel);
         this.newPokemonQueue.add(newPokemonModel);
     }

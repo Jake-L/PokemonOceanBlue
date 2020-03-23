@@ -113,3 +113,5 @@ conversation_id,conversation_event_id,text,battle_id,heal_team,character_id,move
 38,0,Hey you! My swim trunks fell off and I can't find them anywhere.,-1,-1,-1,-1,-1,1,-1,-1,-1,,
 38,1,Have you seen them? I want to go home but can't leave the water like this. ,-1,-1,-1,-1,-1,2,-1,-1,-1,,
 38,2,You wouldn't happen to have an extra pair do you?,-1,-1,-1,-1,-1,-1,-1,-1,-1,,
+39,0,Fire Pokemon are weak against water types.,-1,-1,-1,-1,-1,1,-1,-1,-1,,
+39,1,So I train my fire types here$ to help them overcome their weakness.,11,-1,-1,-1,-1,-1,-1,-1,-1,,

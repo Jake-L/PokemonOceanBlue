@@ -75,7 +75,7 @@ public class NewPokemonModel extends BaseModel {
 
     public void evolvePokemon()
     {
-        this.partyModel.team.get(this.partyIndex).evolve(this.pokemon[1].id);
+        this.partyModel.team.get(this.partyIndex).evolve(this.pokemon[1].pokemon_id);
     }
 
     @Override

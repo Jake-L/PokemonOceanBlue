@@ -84,7 +84,7 @@ public class SummaryView extends BaseView {
                 height / 8 + 16 * graphicsScaling);
 
             //displays pokemon number
-            g.drawString("No." + this.model.team.get(pokemonIndex).id,
+            g.drawString("No." + this.model.team.get(pokemonIndex).base_pokemon_id,
                 24 * graphicsScaling,
                 height * 9 / 16);
 

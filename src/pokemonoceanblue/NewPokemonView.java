@@ -64,7 +64,7 @@ public class NewPokemonView extends BaseView {
                 }
                 else
                 {
-                    id = String.valueOf(this.model.pokemon[0].id);
+                    id = String.valueOf(this.model.pokemon[0].pokemon_id);
                 }
             }
             // load regular Pokemon sprites

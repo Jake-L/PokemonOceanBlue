@@ -61,19 +61,19 @@ public class BattleView extends BaseView {
             for (int j = 0; j < 2; j++)
             {
                 shinyPrefix = model.team[0][i].shiny ? "shiny" : "";
-                ii = new ImageIcon("src/pokemonback/" + shinyPrefix + "frame" + j + "/" + this.model.team[0][i].id + ".png");
+                ii = new ImageIcon("src/pokemonback/" + shinyPrefix + "frame" + j + "/" + this.model.team[0][i].getSpriteId() + ".png");
                 pokemonSprite[0][i][j]  = ii.getImage();
             }
 
             try
             {
                 // load a copy of the Pokemon's sprite recoloured white
-                this.pokemonBufferedSprite[0][i] = ImageIO.read(new File("src/pokemonback/frame0/" + this.model.team[0][i].id + ".png"));   
+                this.pokemonBufferedSprite[0][i] = ImageIO.read(new File("src/pokemonback/frame0/" + this.model.team[0][i].getSpriteId() + ".png"));   
                 this.pokemonBufferedSprite[0][i] = this.colorImage(this.pokemonBufferedSprite[0][i], 255, 255, 255);
             }
             catch (IOException e)
             {
-                System.out.println("Error loading src/pokemon/frame0/" + this.model.team[0][i].id + ".png");
+                System.out.println("Error loading src/pokemon/frame0/" + this.model.team[0][i].getSpriteId() + ".png");
             }
         }
 
@@ -83,19 +83,19 @@ public class BattleView extends BaseView {
             for (int j = 0; j < 2; j++)
             {
                 shinyPrefix = model.team[1][i].shiny ? "shiny" : "";
-                ii = new ImageIcon("src/pokemon/" + shinyPrefix + "frame" + j + "/" + model.team[1][i].id + ".png");
+                ii = new ImageIcon("src/pokemon/" + shinyPrefix + "frame" + j + "/" + model.team[1][i].getSpriteId() + ".png");
                 this.pokemonSprite[1][i][j]  = ii.getImage();
             }
 
             try
             {
                 // load a copy of the Pokemon's sprite recoloured white
-                this.pokemonBufferedSprite[1][i] = ImageIO.read(new File("src/pokemon/frame0/" + this.model.team[1][i].id + ".png"));   
+                this.pokemonBufferedSprite[1][i] = ImageIO.read(new File("src/pokemon/frame0/" + this.model.team[1][i].getSpriteId() + ".png"));   
                 this.pokemonBufferedSprite[1][i] = this.colorImage(this.pokemonBufferedSprite[1][i], 255, 255, 255);
             }
             catch (IOException e)
             {
-                System.out.println("Error loading src/pokemon/frame0/" + this.model.team[1][i].id + ".png");
+                System.out.println("Error loading src/pokemon/frame0/" + this.model.team[1][i].getSpriteId() + ".png");
             }
         }
 

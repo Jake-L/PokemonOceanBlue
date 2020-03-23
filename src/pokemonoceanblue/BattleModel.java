@@ -34,7 +34,6 @@ public class BattleModel
     private String soundEffect;
     public int[][] statChanges = new int[2][8];
     public boolean[] willFlinch = new boolean[2];
-
     /** 
      * Constructor
      * @param opponentTeam the opposing trainers pokemon team
@@ -78,15 +77,15 @@ public class BattleModel
 
         if (this.isWild)
         {
-            event = new BattleEvent("A wild " + this.team[1][0].name + " appeared!", 0, true, 1, -1, String.valueOf(this.team[1][0].id));
+            event = new BattleEvent("A wild " + this.team[1][0].name + " appeared!", 0, true, 1, -1, String.valueOf(this.team[1][0].pokemon_id));
             this.events.add(event);
         }
         else
         {
-            event = new BattleEvent(this.trainerName + " sent out " + this.team[1][0].name + ".", 0, true, 1, -1, String.valueOf(this.team[1][0].id));
+            event = new BattleEvent(this.trainerName + " sent out " + this.team[1][0].name + ".", 0, true, 1, -1, String.valueOf(this.team[1][0].pokemon_id));
             this.events.add(event);
         }
-        event = new BattleEvent("Trainer sent out " + this.team[0][firstPokemon].name + ".", firstPokemon, true, 0, -1, String.valueOf(this.team[0][firstPokemon].id));
+        event = new BattleEvent("Trainer sent out " + this.team[0][firstPokemon].name + ".", firstPokemon, true, 0, -1, String.valueOf(this.team[0][firstPokemon].pokemon_id));
         this.events.add(event);
         this.counter = 100;
         this.loadData();
@@ -217,7 +216,7 @@ public class BattleModel
                 -1,
                 null);
             this.events.add(event);
-            event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", pokemon, true, 0, -1, String.valueOf(this.team[0][pokemon].id));
+            event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", pokemon, true, 0, -1, String.valueOf(this.team[0][pokemon].pokemon_id));
             this.events.add(event);
             this.counter = 60;
 
@@ -226,7 +225,7 @@ public class BattleModel
         }
         else
         {
-            BattleEvent event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", pokemon, true, 0, -1, String.valueOf(this.team[0][pokemon].id));
+            BattleEvent event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", pokemon, true, 0, -1, String.valueOf(this.team[0][pokemon].pokemon_id));
             this.events.add(event);
             this.counter = 100;
         }
@@ -724,7 +723,7 @@ public class BattleModel
                         true, 
                         1,
                         -1,
-                        String.valueOf(this.team[1][this.currentPokemon[1] + 1].id));
+                        String.valueOf(this.team[1][this.currentPokemon[1] + 1].pokemon_id));
                     this.events.add(event);
                 }
             }
