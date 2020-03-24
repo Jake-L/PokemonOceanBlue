@@ -12,6 +12,8 @@ public class BaseModel {
     public int acceleration = -1;
     public int accelerationCounter;
     protected String soundEffect;
+    public String[] textOptions;
+    public int textOptionIndex;
 
     /**
      * Class for all models to inherit from
@@ -31,6 +33,8 @@ public class BaseModel {
         this.returnValue = -2;
         this.optionIndex = 0;
         this.accelerationCounter = 0;
+        this.textOptions = null;
+        this.textOptionIndex = 0;
     }
 
     /**
@@ -40,8 +44,13 @@ public class BaseModel {
      */
     public void moveIndex(final int dx, final int dy)
     {
+        // move cursor within pop-up box if there is one
+        if (this.textOptions != null)
+        {
+            this.moveOptionIndex(dy);
+        }
         // only move left and right if width > 1
-        if (this.optionWidth > 1 && dx != 0)
+        else if (this.optionWidth > 1 && dx != 0)
         {
             if (dx > 0 && this.optionIndex < this.optionMax)
             {
@@ -74,6 +83,22 @@ public class BaseModel {
             {
                 this.optionIndex--;
             }
+        }
+    }
+
+    /**
+     * Move cursor within a pop-up window of text options
+     * @param dy direction to move cursor
+     */
+    public void moveOptionIndex(final int dy)
+    {
+        if (dy > 0 && this.textOptionIndex + 1 < this.textOptions.length)
+        {
+            this.textOptionIndex++;
+        }
+        else if (dy < 0 && this.textOptionIndex > 0)
+        {
+            this.textOptionIndex--;
         }
     }
 
@@ -114,7 +139,6 @@ public class BaseModel {
                 this.acceleration++;
                 this.accelerationCounter = 10;
             }
-            
         }
     }
 

@@ -2,6 +2,8 @@ package pokemonoceanblue;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.util.HashMap;
+import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import java.awt.Font;
@@ -11,16 +13,15 @@ import java.awt.Font;
  */
 public class PartyView extends BaseView {
 
-    private int teamSize;
-    private Image[] pokemonSprite;
     private Image[] healthBarFill = new Image[3];
     private PartyModel model;
-    private Image[] pokemonWindows = new Image[4];
+    private Image[] pokemonWindows = new Image[5];
     private Image hpBar;
     private Image[] faintedPokemonWindows = new Image[3];
-    private Image[] pokemonImages;
     private Image background;
     private Image[] statusEffectImages = new Image[6];
+    private Map<String, Image> pokemonIconSprite = new HashMap<String, Image>();
+    private Map<String, Image> pokemonSprite = new HashMap<String, Image>();
     
     /** 
      * Constructor for the party view
@@ -29,9 +30,6 @@ public class PartyView extends BaseView {
     public PartyView(PartyModel model)
     {
         this.model = model;
-        this.teamSize = this.model.team.size();
-        this.pokemonSprite = new Image[this.teamSize];
-        this.pokemonImages = new Image[this.teamSize];
         this.loadImage();
     }
 
@@ -42,12 +40,17 @@ public class PartyView extends BaseView {
     {
         ImageIcon ii;
 
-        for (int i = 0; i < this.teamSize; i++)
+        // load team icons
+        for (PokemonModel pokemon : this.model.team)
         {
-            ii = new ImageIcon("src/pokemonicons/" + this.model.team.get(i).getSpriteId() + ".png");
-            this.pokemonSprite[i] = ii.getImage();
-            ii = new ImageIcon("src/pokemon/frame0/" + this.model.team.get(i).getSpriteId() + ".png");
-            this.pokemonImages[i] = ii.getImage();
+            if (this.pokemonIconSprite.get(pokemon.getSpriteId()) == null)
+            {
+                ii = new ImageIcon("src/pokemonicons/" + pokemon.getSpriteId() + ".png");
+                this.pokemonIconSprite.put(pokemon.getSpriteId(), ii.getImage());
+
+                ii = new ImageIcon("src/pokemon/frame0/" + pokemon.getSpriteId() + ".png");
+                this.pokemonSprite.put(pokemon.getSpriteId(), ii.getImage());
+            }
         }
 
         for (int i = 0; i < this.healthBarFill.length; i++)
@@ -91,8 +94,6 @@ public class PartyView extends BaseView {
     {
         g.setFont(new Font("Pokemon Fire Red", Font.PLAIN, 16 * graphicsScaling));
 
-        this.teamSize = this.model.team.size();
-
         //draw the background
         int blockSize = background.getWidth(null) * graphicsScaling;
         for (int i = 0; i < Math.ceil((double)width / blockSize); i++)
@@ -108,14 +109,14 @@ public class PartyView extends BaseView {
         {
             int renderIndex = 0;
 
-            if (i < this.teamSize && i == this.model.optionIndex)
+            if (i < this.model.team.size() && i == this.model.optionIndex)
             {
                 renderIndex = 2;
-                g.drawImage(this.pokemonImages[i],
+                g.drawImage(this.pokemonSprite.get(this.model.team.get(i).getSpriteId()),
                     (int)(width * (3.0 / 4.0)),
                     8 * graphicsScaling,
-                    this.pokemonImages[i].getWidth(null) * graphicsScaling,
-                    this.pokemonImages[i].getHeight(null) * graphicsScaling,
+                    this.pokemonSprite.get(this.model.team.get(i).getSpriteId()).getWidth(null) * graphicsScaling,
+                    this.pokemonSprite.get(this.model.team.get(i).getSpriteId()).getHeight(null) * graphicsScaling,
                     canvas);
                 for (int j = 0; j < this.model.team.get(i).moves.length; j++)
                 {
@@ -125,9 +126,15 @@ public class PartyView extends BaseView {
                 }
             }
 
-            else if (i >= this.teamSize)
+            else if (i >= this.model.team.size())
             {
                 renderIndex = 3;
+            }
+
+            // give the box a red outline if you are trying to switch the Pokemon
+            if (i < this.model.team.size() && i == this.model.switchPokemonIndex)
+            {
+                renderIndex = 4;
             }
 
             if (renderIndex == 3 || this.model.team.get(i).currentHP > 0)
@@ -151,14 +158,14 @@ public class PartyView extends BaseView {
             }
         }
 
-        for (int i = 0; i < this.teamSize; i++)
+        for (int i = 0; i < this.model.team.size(); i++)
         {
             // display the Pokemon's icons
-            g.drawImage(this.pokemonSprite[i], 
+            g.drawImage(this.pokemonIconSprite.get(this.model.team.get(i).getSpriteId()), 
                 (i % 2) * (width / 3 + 8 * graphicsScaling) + 12 * graphicsScaling, 
                 (i / 2) * (height / 4 + 8 * graphicsScaling) + 14 * graphicsScaling, 
-                pokemonSprite[i].getWidth(null) * graphicsScaling, 
-                pokemonSprite[i].getHeight(null) * graphicsScaling, 
+                this.pokemonIconSprite.get(this.model.team.get(i).getSpriteId()).getWidth(null) * graphicsScaling, 
+                this.pokemonIconSprite.get(this.model.team.get(i).getSpriteId()).getHeight(null) * graphicsScaling, 
                 canvas);
 
             //display text with Pokemon level
@@ -212,6 +219,12 @@ public class PartyView extends BaseView {
                     this.statusEffectImages[0].getHeight(null) * graphicsScaling,
                     canvas);
             }
+        }
+
+        // display a pop-up box of text options
+        if (this.model.textOptions != null)
+        {
+            this.displayOptions(this.model.textOptions, this.model.textOptionIndex, g, canvas);
         }
     }
 
