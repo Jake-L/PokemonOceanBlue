@@ -18,6 +18,7 @@ public class InventoryModel {
     /** 
      * Constructor
      */
+    @SuppressWarnings("unchecked")
     public InventoryModel()
     {
         this.items = new ArrayList[3];

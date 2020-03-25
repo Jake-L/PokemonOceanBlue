@@ -8,7 +8,9 @@ public class PartyModel extends BaseModel
 {
     public List<PokemonModel> team = new ArrayList<PokemonModel>();
     public boolean isSummary = false;
-    public int currentPokemon;
+    public int battleActivePokemon;
+    public int switchPokemonIndex = -1;
+    public boolean updateOrder = false;
 
     public PartyModel(List<PokemonModel> team)
     {
@@ -18,20 +20,20 @@ public class PartyModel extends BaseModel
 
     /**
      * Set variables when creating a new view
-     * @param currentPokemon the Pokemon currently selected, or -1 if not in a battle
+     * @param battleActivePokemon the Pokemon currently selected, or -1 if not in a battle
      */
-    public void initialize(int currentPokemon)
+    public void initialize(int battleActivePokemon)
     {
         this.actionCounter = ACTION_DELAY;
         this.returnValue = -2;
 
         // track which Pokemon is active in battle
-        this.currentPokemon = currentPokemon;
+        this.battleActivePokemon = battleActivePokemon;
 
         // set the initial position as the current Pokemon in battle or the first Pokemon
         if (this.optionIndex == -1)
         {
-            this.optionIndex = Math.max(currentPokemon, 0);
+            this.optionIndex = Math.max(battleActivePokemon, 0);
         }
 
         this.optionMax = this.team.size() - 1;
@@ -47,22 +49,62 @@ public class PartyModel extends BaseModel
             this.optionWidth = 2;
             this.optionHeight = 3;
         }
+
+        this.textOptions = null;
+        this.textOptionIndex = 0;
+        this.switchPokemonIndex = -1;
     }
 
     @Override
     public void confirmSelection()
     {
         // if not in battles, open summary screen
-        if (this.currentPokemon == -1)
+        if (this.battleActivePokemon == -1)
         {
-            this.isSummary = !this.isSummary;
+            // exit summary screen
             if (this.isSummary)
             {
+                this.isSummary = !this.isSummary;
+            }
+            // swap the current Pokemon with the previously selected Pokemon
+            else if (this.switchPokemonIndex > -1)
+            {
+                int firstIndex = this.switchPokemonIndex < this.optionIndex ? this.switchPokemonIndex : this.optionIndex;
+                int secondIndex = this.switchPokemonIndex > this.optionIndex ? this.switchPokemonIndex : this.optionIndex;
+                this.team.add(secondIndex, this.team.get(firstIndex));
+                this.team.add(firstIndex, this.team.get(secondIndex + 1));
+                this.team.remove(firstIndex + 1);
+                this.team.remove(secondIndex + 1);
+                this.switchPokemonIndex = -1;
+                this.updateOrder = true;
+            }
+            // show pop-up box of options
+            else if (this.textOptions == null)
+            {
+                this.textOptions = new String[] {"SUMMARY", "SWITCH", "CANCEL"};
+            }
+            // open summary screen
+            else if (this.textOptionIndex == 0)
+            {
+                this.isSummary = !this.isSummary;
                 this.returnValue = this.optionIndex;
             }
+            // select a Pokemon to be swapped
+            else if (this.textOptionIndex == 1)
+            {
+                this.switchPokemonIndex = this.optionIndex;
+                this.textOptions = null;
+            }
+            // close the pop-up window
+            else if (this.textOptionIndex == 2)
+            {
+                this.textOptions = null;
+            }
+
+            this.textOptionIndex = 0;
         }
         // if in battle, return the chosen Pokemon
-        else if (this.currentPokemon != this.optionIndex && this.team.get(this.optionIndex).level > 0)
+        else if (this.battleActivePokemon != this.optionIndex && this.team.get(this.optionIndex).level > 0)
         {
             this.returnValue = this.optionIndex;
             this.optionIndex = -1;

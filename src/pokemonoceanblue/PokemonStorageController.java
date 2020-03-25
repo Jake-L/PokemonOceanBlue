@@ -85,7 +85,6 @@ public class PokemonStorageController extends BaseController
                     this.partyModel.moveIndex(0, 1);
                 }
 
-                this.model.actionCounter = this.model.ACTION_DELAY;
                 this.model.update();
             }
             // if the player is hovering the Pokemon storage
@@ -108,6 +107,8 @@ public class PokemonStorageController extends BaseController
                     this.model.update();
                 }
             }
+
+            this.model.actionCounter = this.model.ACTION_DELAY;
         }
         else
         {

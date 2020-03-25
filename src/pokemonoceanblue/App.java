@@ -82,7 +82,8 @@ public class App extends JFrame implements KeyListener
         startTime = System.currentTimeMillis();
 
         // display the view
-        viewManager = new ViewManager();
+        TitleScreenView titleView = new TitleScreenView();
+        viewManager = new ViewManager(titleView, screenSize.width, screenSize.height - scnMax.bottom);
         this.add(viewManager);
 
         // listen for key press and release
@@ -105,8 +106,7 @@ public class App extends JFrame implements KeyListener
                 viewManager.setViewSize(newSize.width - 16, newSize.height - scnMax.bottom - scnMax.top);
             }
         });
-        TitleScreenView titleView = new TitleScreenView();
-        viewManager.setView(titleView);
+        
         this.playSong(0);
 
         List<PokemonModel> pokemonTeam = new ArrayList<PokemonModel>();
@@ -235,7 +235,7 @@ public class App extends JFrame implements KeyListener
     public void openSummary(int currentPokemon)
     {
         this.partyModel.initialize(currentPokemon);
-        viewManager.setView(new SummaryView(partyModel));
+        viewManager.setView(new SummaryView(partyModel, partyModel.team));
         summaryController = new BaseController(partyModel);
     }
 
