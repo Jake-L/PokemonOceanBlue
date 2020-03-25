@@ -19,8 +19,9 @@ public class ViewManager extends JPanel {
     /** 
      * Constructor
      */
-    public ViewManager(){
-        
+    public ViewManager(BaseView initialView, int width, int height){
+        this.setViewSize(width, height);
+        this.setView(initialView);
     }
     
     /** 
