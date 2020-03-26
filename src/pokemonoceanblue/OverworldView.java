@@ -23,7 +23,7 @@ public class OverworldView extends BaseView {
     private Map<String, Image> characterSprite = new HashMap<String, Image>();
     private int xOffset = -1;
     private int yOffset = -1;
-    private int[] ANIMATED_TILES = new int[]{0, 6, 7, 8};
+    private int[] ANIMATED_TILES = new int[]{0, 6, 7, 8, 67, 70};
     private Image mugshotBackgroundSprite;
     private Image mugshotCharacterSprite;
     private Image mugshotLightningSprite;

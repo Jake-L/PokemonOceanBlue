@@ -19,8 +19,8 @@ public class PokemonModel
     public int currentHP;
     public int[] stats = new int[6];
 
-    int[] ivs = new int[6];
-    int ivGain;
+    public int[] ivs = new int[6];
+    public int ivGain;
     public MoveModel[] moves = new MoveModel[0];
     public final boolean shiny;
     int pokeballId = 3;

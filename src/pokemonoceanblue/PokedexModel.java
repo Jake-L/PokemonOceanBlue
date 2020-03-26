@@ -50,6 +50,6 @@ public class PokedexModel extends BaseModel
      */
     public double getShinyRate(int pokemonId)
     {
-        return (Math.log10(this.caughtPokemon[pokemonId] + 0.1) + 1) / 10000;
+        return (Math.log10(this.caughtPokemon[pokemonId] + 1) + 1) / 2000;
     }
 }

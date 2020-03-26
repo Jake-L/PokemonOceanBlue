@@ -174,7 +174,7 @@ public class PokedexView extends BaseView
         );
 
         g.drawString(
-            "Shiny Rate: " + String.format("%.3f", this.model.getShinyRate(this.model.optionIndex) * 100) + "%",
+            "Shiny Rate: " + String.format("%.2f", this.model.getShinyRate(this.model.optionIndex) * 100) + "%",
             2 * graphicsScaling,
             height * 19 / 20
         );
