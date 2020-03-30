@@ -169,6 +169,54 @@ public class BattleTests {
     }
 
     /**
+     * Test that pokemon uses a random move when confused
+     * Done by having enemy use confuse ray and checking if a random move is used
+     */
+    @Test
+    public void testConfusion() {
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(1, 1, false);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(1, 1, false);
+        // set both sides moves
+        enemyTeam[0].moves = new MoveModel[1];
+        enemyTeam[0].moves[0] = new MoveModel(109);
+        team[0].moves = new MoveModel[4];
+        team[0].moves[0] = new MoveModel(14);
+        team[0].moves[1] = new MoveModel(33);
+        team[0].moves[2] = new MoveModel(33);
+        team[0].moves[3] = new MoveModel(33);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, true);
+        // skip opening animations
+        updateBattleModel(battleModel, 500);
+        // run a few loops to check that a random attack is used
+        int counter = 0;
+        while(true)
+        {
+            assertEquals(0, battleModel.events.size());
+            // choose "FIGHT"
+            battleModel.confirmSelection();
+            // choose "SWORDS DANCE"
+            updateBattleModel(battleModel, 20);
+            battleModel.confirmSelection();
+            // wait for all the battle text to process
+            updateBattleModel(battleModel, 100);
+            updateBattleModel(battleModel, 500);
+            //if enemy took damage, swords dance was not used. therefore confusion working as intended
+            if (enemyTeam[0].currentHP != enemyTeam[0].stats[0])
+            {
+                break;
+            }
+            //it should take significantly less than 15 turns for confusion to have an effect
+            if (counter == 30)
+            {
+                fail();
+            }
+            counter ++;
+        } 
+    }
+
+    /**
      * Tests that enemies switch their Pokemon after one faints
      * Done by having a level 100 use a 100% accuracy move on a level 1
      */

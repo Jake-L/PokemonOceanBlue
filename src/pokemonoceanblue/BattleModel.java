@@ -34,6 +34,7 @@ public class BattleModel
     private String soundEffect;
     public int[][] statChanges = new int[2][8];
     public boolean[] willFlinch = new boolean[2];
+    private boolean[] moveProcessed = new boolean[2];
     /** 
      * Constructor
      * @param opponentTeam the opposing trainers pokemon team
@@ -278,8 +279,8 @@ public class BattleModel
     {
         if (this.ranNum.nextInt(101) <= move.effectChance && this.team[defender][this.currentPokemon[defender]].statusEffect == 0)
         {
-            String[] statusEffectMessages = {" was paralyzed."," fell asleep."," was frozen solid."," was burned."," was badly poisoned"};
-            if (move.ailmentId < 6)
+            String[] statusEffectMessages = {" was paralyzed."," fell asleep."," was frozen solid."," was burned."," was badly poisoned."," became confused."};
+            if (move.ailmentId < 7)
             {
                 BattleEvent event = new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + statusEffectMessages[move.ailmentId - 1], 
                     move.ailmentId, defender, defender, null);
@@ -296,8 +297,17 @@ public class BattleModel
     {
         PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
         BattleEvent event;
+        //check if attacker is confused, if so use random move
+        if (attackingPokemon.statusEffect == 6)
+        {
+            this.unableToMove[attacker] = false;
+            event = new BattleEvent(attackingPokemon.name + " is confused.", attacker, attacker, null);
+            this.events.add(0, event);
+            this.events.get(1).move = attackingPokemon.moves[this.ranNum.nextInt(attackingPokemon.moves.length)];
+            this.events.get(1).damage = damageCalc(this.events.get(1).move, attacker, (attacker + 1) % 2);
+        }
         //check if attacker can attack while being paralyzed, asleep, or frozen
-        if (attackingPokemon.statusEffect > 0 && attackingPokemon.statusEffect < 4)
+        else if (attackingPokemon.statusEffect > 0 && attackingPokemon.statusEffect < 4)
         {
             if (attackingPokemon.statusEffect == 1 && this.ranNum.nextInt(101) < 34)
             {
@@ -305,7 +315,7 @@ public class BattleModel
                 this.events.get(0).damage = damageCalc(this.events.get(0).move, attacker, (attacker + 1) % 2);
             }
             else if ((attackingPokemon.statusEffect == 2 && this.ranNum.nextInt(101) < 41) ||
-            (attackingPokemon.statusEffect == 3 && this.ranNum.nextInt(101) < 31))
+                (attackingPokemon.statusEffect == 3 && this.ranNum.nextInt(101) < 31))
             {
                 this.unableToMove[attacker] = false;
                 event = new BattleEvent(attackingPokemon.name + (attackingPokemon.statusEffect == 2 ? " woke up!" : " thawed out."),
@@ -340,7 +350,6 @@ public class BattleModel
             this.unableToMove[attacker] = false;
             this.events.get(0).damage = damageCalc(this.events.get(0).move, attacker, (attacker + 1) % 2);
         }
-
     }
 
     /** 
@@ -811,7 +820,7 @@ public class BattleModel
         }
 
         //calculate damage for an upcoming attack event and add second attack event if applicable
-        else if (this.counter == 60 && this.events.size() > 0 && this.events.get(0).damage > -1 && this.events.get(0).move != null)
+        else if (this.counter == 60 && this.events.size() > 0 && this.events.get(0).damage > -1 && this.events.get(0).move != null && !this.moveProcessed[this.events.get(0).attacker])
         {
             int attacker = this.events.get(0).attacker;
             this.canAttack(attacker);
@@ -846,6 +855,7 @@ public class BattleModel
             }
             this.attackEvent[0] = null;
             this.attackEvent[1] = null;
+            this.moveProcessed[attacker] = true;
         }
 
         else if (this.events.size() > 0 && this.events.get(0).sound != null)
@@ -967,6 +977,7 @@ public class BattleModel
             else
             {
                 this.loadBattleMenu();
+                this.moveProcessed = new boolean[2];
             }
         }
     }
