@@ -297,17 +297,8 @@ public class BattleModel
     {
         PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
         BattleEvent event;
-        //check if attacker is confused, if so use random move
-        if (attackingPokemon.statusEffect == 6)
-        {
-            this.unableToMove[attacker] = false;
-            event = new BattleEvent(attackingPokemon.name + " is confused.", attacker, attacker, null);
-            this.events.add(0, event);
-            this.events.get(1).move = attackingPokemon.moves[this.ranNum.nextInt(attackingPokemon.moves.length)];
-            this.events.get(1).damage = damageCalc(this.events.get(1).move, attacker, (attacker + 1) % 2);
-        }
         //check if attacker can attack while being paralyzed, asleep, or frozen
-        else if (attackingPokemon.statusEffect > 0 && attackingPokemon.statusEffect < 4)
+        if (attackingPokemon.statusEffect > 0 && attackingPokemon.statusEffect < 4)
         {
             if (attackingPokemon.statusEffect == 1 && this.ranNum.nextInt(101) < 34)
             {
@@ -344,6 +335,26 @@ public class BattleModel
             this.unableToMove[attacker] = true;
             this.willFlinch[(attacker + 1) % 2] = false;
             this.events.remove(0);
+            event = new BattleEvent(attackingPokemon.name + " flinched!", attacker, attacker, null);
+        }
+        //check if attacker is confused, if so use random move
+        else if (attackingPokemon.statusEffect == 6)
+        {
+            this.unableToMove[attacker] = false;
+            //25% chance of snapping out of confusion
+            if (this.ranNum.nextInt(101) < 26)
+            {
+                event = new BattleEvent(attackingPokemon.name + " snapped out of confusion!", attacker, attacker, null);
+                this.events.add(0, event);
+                this.events.get(1).move = attackingPokemon.moves[this.ranNum.nextInt(attackingPokemon.moves.length)];
+                this.events.get(1).damage = damageCalc(this.events.get(1).move, attacker, (attacker + 1) % 2);
+            }
+            else
+            {
+                event = new BattleEvent(attackingPokemon.name + " is confused.", attacker, attacker, null);
+                this.events.add(0, event);
+                this.events.get(1).damage = damageCalc(this.events.get(1).move, attacker, (attacker + 1) % 2);
+            }
         }
         else
         {
@@ -825,22 +836,21 @@ public class BattleModel
             int attacker = this.events.get(0).attacker;
             this.canAttack(attacker);
             this.effectivenessMessage(this.modifier[attacker], attacker);
-            if (!this.unableToMove[attacker])
+            if (!this.unableToMove[attacker] && this.events.get(0).move != null && !this.attackMissed[attacker])
             {
-                if (this.events.get(0).damage > -1 && this.attackEvent[(attacker + 1) % 2] != null 
-                    && ranNum.nextInt(101) <= this.events.get(0).move.flinchChance)
+                if (this.attackEvent[(attacker + 1) % 2] != null && ranNum.nextInt(101) <= this.events.get(0).move.flinchChance)
                 {
                     this.willFlinch[(attacker + 1) % 2] = true;
                 }
-                else if (this.events.get(0).move != null && this.events.get(0).damage * this.events.get(0).move.recoil != 0)
+                else if (this.events.get(0).damage * this.events.get(0).move.recoil != 0)
                 {
                     this.recoil(attacker, this.events.get(0).move);
                 }
-                else if (this.events.get(0).damage > -1 && this.events.get(0).move.ailmentId > 0)
+                else if (this.events.get(0).move.ailmentId > 0)
                 {
                     this.statusEffect(attacker, (attacker + 1) % 2, this.events.get(0).move);
                 }
-                if (this.events.get(0).damage > -1 && this.events.get(0).move.moveStatEffects.length > 0)
+                if (this.events.get(0).move.moveStatEffects.length > 0)
                 {
                     this.statChanges(attacker, this.events.get(0).move);
                 }
@@ -1149,4 +1159,20 @@ public class BattleModel
             }
         }
     }
+
+    // class MultiTurnEffect
+    // {
+    //     int effectId;
+    //     int attacker;
+    //     int target;
+    //     int duration;
+    //     int damage;
+    //     int healing;
+    //     byte timeEffectOccurs;
+
+    //     public MultiTurnEffect(int effectId)
+    //     {
+
+    //     }
+    // }
 }    
