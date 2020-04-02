@@ -183,7 +183,7 @@ public class App extends JFrame implements KeyListener
         team[0] = new PokemonModel(pokemonId, level, shiny);
 
         // create the battle
-        battleModel = new BattleModel(team, partyModel.getTeamArray(), this, true);
+        battleModel = new BattleModel(team, partyModel.getTeamArray(), this);
         BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
         viewManager.setView(battleView);
         battleController = new BattleController(battleModel);
