@@ -1,5 +1,6 @@
 package pokemonoceanblue;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -14,6 +15,7 @@ abstract class BaseView {
     protected int height;
     protected Image[] textDisplayBox = new Image[9];
     protected Image arrowSprite;
+    protected static Image[] rainSprite = new Image[6];
 
     public BaseView()
     {       
@@ -27,6 +29,12 @@ abstract class BaseView {
 
         ii = new ImageIcon("src/inventory/arrow.png");
         arrowSprite = ii.getImage();
+
+        for (int i = 0; i < rainSprite.length; i++)
+        {
+            ii = new ImageIcon("src/battle/rain" + i + ".png");
+            rainSprite[i]  = ii.getImage();
+        }
     }
 
     /** 
@@ -250,5 +258,26 @@ abstract class BaseView {
         }
 
         return image;
+    }
+
+    protected void renderRain(Graphics g, JPanel canvas, int counter)
+    {
+        for (int i = 0; i < counter; i++)
+        {
+            int factor = (int)(((System.currentTimeMillis() + (85 * i)) / 85) % 6);
+            int adjust_factor = (int)(((System.currentTimeMillis() + 85 * i) / (85*6)) % 2);
+            g.drawImage(
+                rainSprite[factor],
+                50 + 250 * (i % 8) + 150 * adjust_factor,
+                200 * (i % 5) + 20 * (i / 7) - 150 * adjust_factor,
+                rainSprite[0].getWidth(null) * graphicsScaling,
+                rainSprite[0].getHeight(null) * graphicsScaling,
+                canvas
+            );
+        }
+
+        g.setColor(new Color(0, 0.25f, 0.5f, 0.25f));
+        g.fillRect(0, 0, width, height);
+        
     }
 }

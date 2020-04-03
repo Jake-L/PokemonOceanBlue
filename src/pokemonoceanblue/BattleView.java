@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.awt.AlphaComposite;
 import javax.imageio.ImageIO;
+import java.awt.Color;
 
 /** 
  * Renders the Battle
@@ -209,32 +210,58 @@ public class BattleView extends BaseView {
             this.backgroundBase[1].getWidth(null) * graphicsScaling,
             this.backgroundBase[1].getHeight(null) * graphicsScaling,
             canvas);
-    
 
-        // renders party boxes at sides of the screen
-        this.displayTextbox(this.partyBorder,
-            0, 
-            0,
-            width / 10, 
-            height * 3 / 4, 
-            g, 
-            canvas);
-
-        this.displayTextbox(this.partyBorder,
-            width * 9 / 10, 
-            0,
-            width / 10, 
-            height * 3 / 4, 
-            g, 
-            canvas);
-
-        if (this.model.currentPokemon[0] >= 0)
+        // display player's pokemon
+        if (this.model.currentPokemon[0] >= 0
+            && (!this.hidePokemon[0]
+            || (this.model.events.size() > 0 
+            && this.model.events.get(0).newPokemonIndex > -1)))
         {
-            if (!this.hidePokemon[0]
+            this.renderPokemon(0, g, canvas);
+        }
+
+        if (this.model.events.size() > 0 && this.model.events.get(0).itemId > -1)
+        {
+            int pokeballSpriteIndex = this.model.events.get(0).itemId;
+            //renders a pokeball in place of enemy pokemon
+            g.drawImage(this.pokeballSprite[pokeballSpriteIndex],
+                width / 2,
+                height / 2 - (this.pokeballSprite[pokeballSpriteIndex].getHeight(null) * graphicsScaling),
+                this.pokeballSprite[pokeballSpriteIndex].getWidth(null) * graphicsScaling,
+                this.pokeballSprite[pokeballSpriteIndex].getHeight(null) * graphicsScaling,
+                canvas);
+        }
+
+        // render enemy Pokemon
+        else if (this.model.currentPokemon[1] >= 0)
+        {
+            if ((!this.model.isCaught && !this.hidePokemon[1])
                 || (this.model.events.size() > 0 && this.model.events.get(0).newPokemonIndex > -1))
             {
-                this.renderPokemon(0, g, canvas);
+                this.renderPokemon(1, g, canvas);
             }
+        }
+
+        // render enemy trainer
+        if (this.trainerSprite != null)
+        {
+            g.drawImage(this.trainerSprite,
+                width * 17 / 20 - this.trainerSprite.getWidth(null) * graphicsScaling,
+                height * 5 / 12 - this.trainerSprite.getHeight(null) * graphicsScaling,
+                this.trainerSprite.getWidth(null) * graphicsScaling,
+                this.trainerSprite.getHeight(null) * graphicsScaling,
+                canvas);
+        }
+
+        //this.renderRain(g, canvas, 24);
+
+        // set text colour back to black
+        Color colour = new Color(0, 0, 0, 255);
+        g.setColor(colour);
+
+        // render trainer's pokemon status information
+        if (this.model.currentPokemon[0] >= 0)
+        {
             this.renderPokemonStatusWindow(0, g, canvas);
 
             //renders player xp bar fill
@@ -262,38 +289,28 @@ public class BattleView extends BaseView {
                 height / 2 + 38 * graphicsScaling);
         }
 
-        if (this.model.events.size() > 0 && this.model.events.get(0).itemId > -1)
+        // render enemy Pokemon's status window
+        if (this.model.currentPokemon[1] >= 0)
         {
-            int pokeballSpriteIndex = this.model.events.get(0).itemId;
-            //renders a pokeball in place of enemy pokemon
-            g.drawImage(this.pokeballSprite[pokeballSpriteIndex],
-                width / 2,
-                height / 2 - (this.pokeballSprite[pokeballSpriteIndex].getHeight(null) * graphicsScaling),
-                this.pokeballSprite[pokeballSpriteIndex].getWidth(null) * graphicsScaling,
-                this.pokeballSprite[pokeballSpriteIndex].getHeight(null) * graphicsScaling,
-                canvas);
-        }
-
-        else if (this.model.currentPokemon[1] >= 0)
-        {
-            if ((!this.model.isCaught && !this.hidePokemon[1])
-                || (this.model.events.size() > 0 && this.model.events.get(0).newPokemonIndex > -1))
-            {
-                this.renderPokemon(1, g, canvas);
-            }
             this.renderPokemonStatusWindow(1, g, canvas);
         }
 
-        // render enemy trainer
-        if (this.trainerSprite != null)
-        {
-            g.drawImage(this.trainerSprite,
-                width * 17 / 20 - this.trainerSprite.getWidth(null) * graphicsScaling,
-                height * 5 / 12 - this.trainerSprite.getHeight(null) * graphicsScaling,
-                this.trainerSprite.getWidth(null) * graphicsScaling,
-                this.trainerSprite.getHeight(null) * graphicsScaling,
-                canvas);
-        }
+        // renders party boxes at sides of the screen
+        this.displayTextbox(this.partyBorder,
+            0, 
+            0,
+            width / 10, 
+            height * 3 / 4, 
+            g, 
+            canvas);
+
+        this.displayTextbox(this.partyBorder,
+            width * 9 / 10, 
+            0,
+            width / 10, 
+            height * 3 / 4, 
+            g, 
+            canvas);
 
         //renders player  and enemy team at sides of the screen
         for (int j = 0; j < this.pokemonIconSprites.length; j++)
