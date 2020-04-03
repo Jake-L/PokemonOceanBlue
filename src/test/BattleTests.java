@@ -24,7 +24,7 @@ public class BattleTests {
         enemyTeam[0] = new PokemonModel(1, 1, false);
         // make sure Pikachu knows thunder wave
         assertEquals("THUNDER WAVE", team[0].moves[3].name);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, true);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // run a few loops to make sure thunder wave lands
@@ -55,7 +55,7 @@ public class BattleTests {
         enemyTeam[0] = new PokemonModel(129, 1, false);
         // make sure whiscash knows fissure
         assertEquals("FISSURE", team[0].moves[0].name);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, true);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // run until fissure lands
@@ -97,7 +97,7 @@ public class BattleTests {
         enemyTeam[0] = new PokemonModel(129, 1, false);
         // make sure rattata knows double edge
         assertEquals("DOUBLE-EDGE", team[0].moves[0].name);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, true);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // run through a sequence of battle
@@ -126,7 +126,7 @@ public class BattleTests {
         // make sure bulbasaur knows tackle and gastly only knows swords dance 
         assertEquals("TACKLE", team[0].moves[0].name);
         enemyTeam[0].moves[0] = new MoveModel(14);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, true);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // run through a sequence of battle
@@ -153,7 +153,7 @@ public class BattleTests {
         enemyTeam[0] = new PokemonModel(1, 1, false);
         // give crobat fakeout
         team[0].moves[0] = new MoveModel(252);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, true);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // run through a sequence of battle
@@ -169,6 +169,54 @@ public class BattleTests {
     }
 
     /**
+     * Test that pokemon uses a random move when confused
+     * Done by having enemy use confuse ray and checking if a random move is used
+     */
+    @Test
+    public void testConfusion() {
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(1, 1, false);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(1, 1, false);
+        // set both sides moves
+        enemyTeam[0].moves = new MoveModel[1];
+        enemyTeam[0].moves[0] = new MoveModel(109);
+        team[0].moves = new MoveModel[4];
+        team[0].moves[0] = new MoveModel(14);
+        team[0].moves[1] = new MoveModel(33);
+        team[0].moves[2] = new MoveModel(33);
+        team[0].moves[3] = new MoveModel(33);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
+        // skip opening animations
+        updateBattleModel(battleModel, 500);
+        // run a few loops to check that a random attack is used
+        int counter = 0;
+        while(true)
+        {
+            assertEquals(0, battleModel.events.size());
+            // choose "FIGHT"
+            battleModel.confirmSelection();
+            // choose "SWORDS DANCE"
+            updateBattleModel(battleModel, 20);
+            battleModel.confirmSelection();
+            // wait for all the battle text to process
+            updateBattleModel(battleModel, 100);
+            updateBattleModel(battleModel, 500);
+            //if enemy took damage, swords dance was not used. therefore confusion working as intended
+            if (enemyTeam[0].currentHP != enemyTeam[0].stats[0])
+            {
+                break;
+            }
+            //it should take significantly less than 15 turns for confusion to have an effect
+            if (counter == 30)
+            {
+                fail();
+            }
+            counter ++;
+        } 
+    }
+
+    /**
      * Tests that enemies switch their Pokemon after one faints
      * Done by having a level 100 use a 100% accuracy move on a level 1
      */
@@ -181,7 +229,7 @@ public class BattleTests {
         enemyTeam[1] = new PokemonModel(2, 1, false);
         // make sure Pikachu knows discharge
         assertEquals("DISCHARGE", team[0].moves[2].name);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, true);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // make sure first Pokemon is sent out
@@ -213,7 +261,7 @@ public class BattleTests {
         // create the battle
         PokemonModel[] enemyTeam = new PokemonModel[1];
         enemyTeam[0] = new PokemonModel(1, 1, false);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, true);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
         // skip opening animations
         updateBattleModel(battleModel, 500);
 
@@ -233,7 +281,7 @@ public class BattleTests {
         enemyTeam[0] = new PokemonModel(129, 1, false);
         // make sure metapod knows harden
         assertEquals("HARDEN", team[0].moves[0].name);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, true);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // run a few loops to check that metapods defense changes
@@ -272,7 +320,7 @@ public class BattleTests {
         team[0].moves = new MoveModel[2];
         team[0].moves[0] = new MoveModel(147);
         team[0].moves[1] = new MoveModel(33);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, true);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         //put lvl 100 asleep
@@ -321,7 +369,7 @@ public class BattleTests {
         team[0].moves[0] = new MoveModel(104);
         assertEquals("DOUBLE TEAM", team[0].moves[0].name);
         enemyTeam[0].moves[0] = new MoveModel(132);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, true);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // run a few loops to check that metapods defense changes
