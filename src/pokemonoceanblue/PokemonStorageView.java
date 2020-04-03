@@ -254,6 +254,12 @@ public class PokemonStorageView extends BaseView {
                 );
             }
         }
+
+        // display a pop-up box of text options
+        if (this.storageModel.textOptions != null)
+        {
+            this.displayOptions(this.storageModel.textOptions, this.storageModel.textOptionIndex, g, canvas);
+        }
     }
 
     private void calcIndices()

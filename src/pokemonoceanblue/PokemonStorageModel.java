@@ -28,9 +28,24 @@ public class PokemonStorageModel extends BaseModel
         if (this.categoryIndex == 1)
         {
             // pick up the currently hovered Pokemon
-            if (this.currentPokemon == null)
+            if (this.currentPokemon == null && this.textOptions == null)
+            {
+                this.textOptions = new String[]{"MOVE", "SUMMARY", "CANCEL"};
+            }
+            else if (this.textOptions != null && this.textOptionIndex == 0)
             {
                 this.currentPokemon = this.pokemonStorage.remove(this.optionIndex);
+                this.textOptions = null;
+            }
+            // view the Pokemon's summary
+            else if (this.textOptionIndex == 1)
+            {
+                this.textOptions = null;
+            }
+            // exit the text options
+            else if (this.textOptionIndex == 2)
+            {
+                this.textOptions = null;
             }
             else if (this.optionIndex < this.pokemonStorage.size())
             {
@@ -48,6 +63,7 @@ public class PokemonStorageModel extends BaseModel
 
             // redetermine the maximum index
             this.optionMax = this.pokemonStorage.size();
+            this.textOptionIndex = 0;
         }
     }
     

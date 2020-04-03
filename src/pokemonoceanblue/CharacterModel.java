@@ -189,7 +189,7 @@ public class CharacterModel {
             // update the player's grid position immediately
             this.x += this.dx;
             this.y += this.dy;
-            System.out.printf("new position %s, %s\n", this.x, this.y);
+            //System.out.printf("new position %s, %s\n", this.x, this.y);
         }
     }
 

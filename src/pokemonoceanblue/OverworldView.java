@@ -17,7 +17,7 @@ import javax.swing.JPanel;
 public class OverworldView extends BaseView {
 
     private OverworldModel model;
-    private Image[] tileSprite = new Image[70];
+    private Image[] tileSprite = new Image[127];
     private Map<String, Image> animatedTileSprite = new HashMap<String, Image>();
     private Map<String, Image> mapObjectSprite = new HashMap<String, Image>();
     private Map<String, Image> characterSprite = new HashMap<String, Image>();
@@ -316,6 +316,8 @@ public class OverworldView extends BaseView {
             g.setColor(new Color(0, 0, 0, (int)(255 * (1 - Math.abs((this.model.conversation.getCounter() - 8) / 8.0)))));
             g.fillRect(0, 0, width, height);
         }
+
+        //this.renderRain(g, canvas, 24);
     }
 
     /** 
