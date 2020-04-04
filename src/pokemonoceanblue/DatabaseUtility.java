@@ -285,10 +285,10 @@ public class DatabaseUtility
                     + "power, accuracy, priority, "
                     + "damage_class_id, target_id, "
                     + "flinch_chance, effect_chance, "
-                    + "ailment_id, recoil) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    + "ailment_id, recoil, effect_id) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        dataTypes = new String[] {"int", "String", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int"};
+        dataTypes = new String[] {"int", "String", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

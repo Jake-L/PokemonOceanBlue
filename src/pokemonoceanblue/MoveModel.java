@@ -1,6 +1,7 @@
 package pokemonoceanblue;
 
 import java.sql.*;
+import java.util.Random;
 
 public class MoveModel 
 {
@@ -17,6 +18,7 @@ public class MoveModel
     public int ailmentId;
     public int recoil;
     public MoveStatEffect[] moveStatEffects;
+    public MoveEffect moveEffect;
     
     /** 
      * Constructor
@@ -55,6 +57,7 @@ public class MoveModel
             this.effectChance = rs.getInt("effect_chance");
             this.ailmentId = rs.getInt("ailment_id");
             this.recoil = rs.getInt("recoil");
+            int effectId = rs.getInt("effect_id");
 
             // get number of stat effects
             query = "SELECT COUNT(*) FROM move_stat_effect WHERE move_id = " + this.moveId;
@@ -70,7 +73,21 @@ public class MoveModel
             {
                 moveStatEffects[index] = new MoveStatEffect(rs.getInt(1), rs.getInt(2));
                 index++;
-            }      
+            }     
+            
+            // get move effect
+            if (effectId >= 0)
+            {
+                Random rand = new Random();
+                query = "SELECT * FROM move_effect WHERE effect_id = " + effectId;
+                rs = db.runQuery(query);
+                this.moveEffect = new MoveEffect(
+                    effectId, 
+                    rs.getInt("target_type"), 
+                    rs.getInt("counter_min") + rand.nextInt(rs.getInt("counter_max") - rs.getInt("counter_min") + 1), 
+                    rs.getString("text")
+                );
+            }
         }
         catch (SQLException e) 
         {
@@ -95,6 +112,22 @@ public class MoveModel
         {
             this.statId = statId;
             this.statChange = statChange;
+        }
+    }
+
+    class MoveEffect
+    {
+        public final int effectId;
+        public int targetId;
+        public int counter;
+        public String text; 
+
+        public MoveEffect(int effectId, int targetId, int counter, String text)
+        {
+            this.effectId = effectId;
+            this.targetId = targetId;
+            this.counter = counter;
+            this.text = text;
         }
     }
 }
