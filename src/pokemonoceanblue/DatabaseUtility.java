@@ -63,7 +63,7 @@ public class DatabaseUtility
             "conversation", "moves", "type_effectiveness", "items", "battle",
             "portal", "map_object", "area", "character", "move_stat_effect",
             "evolution_methods", "conversation_trigger", "map_template",
-            "conversation_options"
+            "conversation_options", "move_effect"
         };
 
         for (String t : table_list)
@@ -79,7 +79,7 @@ public class DatabaseUtility
         //==================================================================================
         // each Pokemon's name, stats, types
         query = "CREATE TABLE pokemon("
-                + "pokemon_id INT NOT NULL, "
+                + "pokemon_id INT PRIMARY KEY, "
                 + "name TEXT NOT NULL, "
                 + "type1 INT NOT NULL, "
                 + "type2 INT NULL DEFAULT 0, "
@@ -178,7 +178,7 @@ public class DatabaseUtility
         //==================================================================================
         // re-use the same tile layout for multiple maps
         query = "CREATE TABLE map_template("
-                + "map_id INT NOT NULL, "
+                + "map_id INT PRIMARY KEY, "
                 + "map_template_id INT NOT NULL, "
                 + "overlay INT NULL)";
         runUpdate(query);
@@ -263,7 +263,7 @@ public class DatabaseUtility
         //==================================================================================
         // move's name, damage, accuracy, type
         query = "CREATE TABLE moves("
-                + "move_id INT NOT NULL, "
+                + "move_id INT PRIMARY KEY, "
                 + "name VARCHAR(30) NOT NULL, "
                 + "type_id INT NOT NULL, "
                 + "power INT NULL, "
@@ -274,7 +274,8 @@ public class DatabaseUtility
                 + "flinch_chance INT NULL, "
                 + "effect_chance INT NULL, "
                 + "ailment_id INT NULL, "
-                + "recoil INT NULL)";
+                + "recoil INT NULL, "
+                + "effect_id INT NULL)";
         runUpdate(query);
 
         // fill moves table with data
@@ -305,6 +306,25 @@ public class DatabaseUtility
                     + "VALUES (?, ?, ?)";
 
         dataTypes = new String[] {"int", "int", "int"};
+        loadTable(path, query, dataTypes);
+
+        //==================================================================================
+        // stats that are increased or decreased by using a move
+        query = "CREATE TABLE move_effect ("
+                + "effect_id INT PRIMARY KEY, "
+                + "target_type INT NOT NULL, "
+                + "counter_min INT NOT NULL, "
+                + "counter_max INT NOT NULL, "
+                + "text VARCHAR(100) NULL)";
+        runUpdate(query);
+
+        // fill move_stat_effect table with data
+        path = "src/rawdata/moveEffect.csv";
+        query = "INSERT INTO move_effect ("
+                    + "effect_id, target_type, counter_min, counter_max, text) "
+                    + "VALUES (?, ?, ?, ?, ?)";
+
+        dataTypes = new String[] {"int", "int", "int", "int", "String"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================
