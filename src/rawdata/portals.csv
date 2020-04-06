@@ -46,3 +46,11 @@ map_id,area_id,x,y,dest_map_id,dest_area_id,dest_x,dest_y,comment
 17,0,12,23,20,0,6,12,pewter -> pewter gym
 17,0,24,27,21,0,5,9,pewter -> pokemon center
 21,0,5,10,17,0,24,28,pokemon center -> pewter
+17,0,25,18,22,0,3,8,pewter -> north east house
+22,0,3,9,17,0,25,19,north east house -> pewter
+17,0,14,39,23,0,3,8,"pewter -> south west, second house from left"
+23,0,3,9,17,0,14,40,south west second house -> pewter
+17,0,8,39,24,0,3,8,"pewter -> south west, first house from left"
+24,0,3,9,17,0,8,40,south west second house -> pewter
+17,0,25,39,25,0,3,7,pewter -> day care
+25,0,3,8,17,0,25,40,day care -> pewter
