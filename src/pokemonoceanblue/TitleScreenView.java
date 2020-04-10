@@ -26,15 +26,15 @@ public class TitleScreenView extends BaseView {
      * loads all the necessary sprites
      */
     private void loadImage() {
-        ImageIcon ii = new ImageIcon("src/pokemon/frame0/9.png");
+        ImageIcon ii = new ImageIcon(this.getClass().getResource("/pokemon/frame0/9.png"));
         blastoiseSprite[0] = ii.getImage();
 
-        ii = new ImageIcon("src/pokemon/frame1/9.png");
+        ii = new ImageIcon(this.getClass().getResource("/pokemon/frame1/9.png"));
         blastoiseSprite[1] = ii.getImage();
 
         for (int i = 0; i < title.length; i++)
         {
-            ii = new ImageIcon("src/titleScreen/Pokemon" + i + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/titleScreen/Pokemon" + i + ".png"));
             title[i] = ii.getImage();
         }
     }

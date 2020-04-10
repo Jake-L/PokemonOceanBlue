@@ -45,42 +45,42 @@ public class PartyView extends BaseView {
         {
             if (this.pokemonIconSprite.get(pokemon.getSpriteId()) == null)
             {
-                ii = new ImageIcon("src/pokemonicons/" + pokemon.getSpriteId() + ".png");
+                ii = new ImageIcon(this.getClass().getResource("/pokemonicons/" + pokemon.getSpriteId() + ".png"));
                 this.pokemonIconSprite.put(pokemon.getSpriteId(), ii.getImage());
 
-                ii = new ImageIcon("src/pokemon/frame0/" + pokemon.getSpriteId() + ".png");
+                ii = new ImageIcon(this.getClass().getResource("/pokemon/frame0/" + pokemon.getSpriteId() + ".png"));
                 this.pokemonSprite.put(pokemon.getSpriteId(), ii.getImage());
             }
         }
 
         for (int i = 0; i < this.healthBarFill.length; i++)
         {  
-            ii = new ImageIcon("src/battle/hp" + i + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/battle/hp" + i + ".png"));
             this.healthBarFill[i] = ii.getImage();
         }
 
         for (int i = 0; i < this.pokemonWindows.length; i++)  
         {
-            ii = new ImageIcon("src/menus/party" + i + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/menus/party" + i + ".png"));
             this.pokemonWindows[i] = ii.getImage();
         }
 
         for (int i = 0; i < this.faintedPokemonWindows.length; i++)  
         {
-            ii = new ImageIcon("src/menus/partyfainted" + i + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/menus/partyfainted" + i + ".png"));
             this.faintedPokemonWindows[i] = ii.getImage();
         }
 
         //loads status effect images
         for (int i = 0; i < this.statusEffectImages.length; i++)
         {
-            ii = new ImageIcon("src/menus/ailment" + (i + 1) + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/menus/ailment" + (i + 1) + ".png"));
             this.statusEffectImages[i] = ii.getImage();
         }
 
-        ii = new ImageIcon("src/menus/hpBar.png");
+        ii = new ImageIcon(this.getClass().getResource("/menus/hpBar.png"));
         this.hpBar = ii.getImage();
-        ii = new ImageIcon("src/inventory/background.png");
+        ii = new ImageIcon(this.getClass().getResource("/inventory/background.png"));
         this.background = ii.getImage();
     }
 

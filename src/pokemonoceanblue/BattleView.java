@@ -7,7 +7,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.awt.AlphaComposite;
@@ -62,14 +61,14 @@ public class BattleView extends BaseView {
             for (int j = 0; j < 2; j++)
             {
                 shinyPrefix = model.team[0][i].shiny ? "shiny" : "";
-                ii = new ImageIcon("src/pokemonback/" + shinyPrefix + "frame" + j + "/" + this.model.team[0][i].getSpriteId() + ".png");
+                ii = new ImageIcon(this.getClass().getResource("/pokemonback/" + shinyPrefix + "frame" + j + "/" + this.model.team[0][i].getSpriteId() + ".png"));
                 pokemonSprite[0][i][j]  = ii.getImage();
             }
 
             try
             {
                 // load a copy of the Pokemon's sprite recoloured white
-                this.pokemonBufferedSprite[0][i] = ImageIO.read(new File("src/pokemonback/frame0/" + this.model.team[0][i].getSpriteId() + ".png"));   
+                this.pokemonBufferedSprite[0][i] = ImageIO.read(this.getClass().getResource("/pokemonback/frame0/" + this.model.team[0][i].getSpriteId() + ".png"));   
                 this.pokemonBufferedSprite[0][i] = this.colorImage(this.pokemonBufferedSprite[0][i], 255, 255, 255);
             }
             catch (IOException e)
@@ -84,14 +83,14 @@ public class BattleView extends BaseView {
             for (int j = 0; j < 2; j++)
             {
                 shinyPrefix = model.team[1][i].shiny ? "shiny" : "";
-                ii = new ImageIcon("src/pokemon/" + shinyPrefix + "frame" + j + "/" + model.team[1][i].getSpriteId() + ".png");
+                ii = new ImageIcon(this.getClass().getResource("/pokemon/" + shinyPrefix + "frame" + j + "/" + model.team[1][i].getSpriteId() + ".png"));
                 this.pokemonSprite[1][i][j]  = ii.getImage();
             }
 
             try
             {
                 // load a copy of the Pokemon's sprite recoloured white
-                this.pokemonBufferedSprite[1][i] = ImageIO.read(new File("src/pokemon/frame0/" + this.model.team[1][i].getSpriteId() + ".png"));   
+                this.pokemonBufferedSprite[1][i] = ImageIO.read(this.getClass().getResource("/pokemon/frame0/" + this.model.team[1][i].getSpriteId() + ".png"));   
                 this.pokemonBufferedSprite[1][i] = this.colorImage(this.pokemonBufferedSprite[1][i], 255, 255, 255);
             }
             catch (IOException e)
@@ -103,14 +102,14 @@ public class BattleView extends BaseView {
         //loads health bar fill images
         for (int i = 0; i < 3; i++)
         {  
-            ii = new ImageIcon("src/battle/hp" + i + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/battle/hp" + i + ".png"));
             this.healthBarFill[i] = ii.getImage();
         }
 
         //loads pokeball sprites
         for (int i = 0; i < this.pokeballSprite.length; i ++)
         {
-            ii = new ImageIcon("src/inventory/" + i + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/inventory/" + i + ".png"));
             this.pokeballSprite[i] = ii.getImage();
         }
 
@@ -120,7 +119,7 @@ public class BattleView extends BaseView {
             this.pokemonIconSprites[i] = new Image[this.model.team[i].length];
             for (int j = 0; j < this.pokemonIconSprites[i].length; j++)
             {
-                ii = new ImageIcon("src/pokemonicons/" + this.model.team[i][j].getSpriteId() + ".png");
+                ii = new ImageIcon(this.getClass().getResource("/pokemonicons/" + this.model.team[i][j].getSpriteId() + ".png"));
                 this.pokemonIconSprites[i][j] = ii.getImage();
             }
         }
@@ -128,29 +127,29 @@ public class BattleView extends BaseView {
         //loads status effect images
         for (int i = 0; i < this.statusEffectImages.length; i++)
         {
-            ii = new ImageIcon("src/menus/ailment" + (i + 1) + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/menus/ailment" + (i + 1) + ".png"));
             this.statusEffectImages[i] = ii.getImage();
         }
 
         //loads status window images and xp
-        ii = new ImageIcon("src/battle/TrainerStatusWindow.png");
+        ii = new ImageIcon(this.getClass().getResource("/battle/TrainerStatusWindow.png"));
         this.statusWindow[0] = ii.getImage();
-        ii = new ImageIcon("src/battle/OpponentStatusWindow.png");
+        ii = new ImageIcon(this.getClass().getResource("/battle/OpponentStatusWindow.png"));
         this.statusWindow[1] = ii.getImage();
-        ii = new ImageIcon("src/battle/exp.png");
+        ii = new ImageIcon(this.getClass().getResource("/battle/exp.png"));
         this.xp = ii.getImage();
 
         //load trainer sprite
         if (this.model.trainerSpriteName != null)
         {
-            ii = new ImageIcon("src/trainerBattleSprite/" + model.trainerSpriteName + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/trainerBattleSprite/" + model.trainerSpriteName + ".png"));
             this.trainerSprite = ii.getImage();
         }
 
         // load party border sprites
         for (int i = 0; i < partyBorder.length; i++)
         {
-            ii = new ImageIcon("src/menus/pcPartyBorder" + i + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/menus/pcPartyBorder" + i + ".png"));
             partyBorder[i]  = ii.getImage();
         }
 
@@ -167,12 +166,13 @@ public class BattleView extends BaseView {
         }
         for (int i = 0; i < this.backgroundBase.length; i++)
         {
-            ii = new ImageIcon("src/battle/base" + battleBackgroundId + "" + i + "" + timeOfDayCode + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/battle/base" + battleBackgroundId + "" + i + "" + timeOfDayCode + ".png"));
             this.backgroundBase[i]  = ii.getImage();
         }
         
         //loads background image
-        ii = new ImageIcon("src/battle/Background" + battleBackgroundId + "" + timeOfDayCode + ".png");
+        System.out.println("/battle/Background" + battleBackgroundId + "" + timeOfDayCode + ".png");
+        ii = new ImageIcon(this.getClass().getResource("/battle/Background" + battleBackgroundId + "" + timeOfDayCode + ".png"));
         this.background = ii.getImage();
     }
 

@@ -2,8 +2,7 @@ package pokemonoceanblue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
+import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -87,12 +86,10 @@ public class OverworldModel {
 
     private byte[][] readMapFileAux(String path)
     {
-        Path pathToFile = Paths.get(String.format("src/maps/%s.csv", path));
         byte[][] output;
 
         // create an instance of BufferedReader
-        try (BufferedReader br = Files.newBufferedReader(pathToFile,
-                StandardCharsets.US_ASCII)) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(this.getClass().getResourceAsStream(String.format("/maps/%s.csv", path)), "UTF-8"))) {
 
             // read the first line which gives the number of rows and columns
             String line = br.readLine();

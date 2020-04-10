@@ -9,7 +9,6 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -17,7 +16,6 @@ import java.util.Random;
 import javax.swing.JFrame;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
-import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.AudioSystem;
 import java.awt.Font;
 
@@ -43,6 +41,7 @@ public class App extends JFrame implements KeyListener
     EvolutionCheck evolveCheck;
     PokemonStorageModel pokemonStorageModel;
     PokemonStorageController pokemonStorageController;
+    MusicPlayer musicPlayer;
 
     List<NewPokemonModel> newPokemonQueue = new ArrayList<NewPokemonModel>();
 
@@ -51,6 +50,7 @@ public class App extends JFrame implements KeyListener
     private long startTime;
 
     public App(){
+        this.musicPlayer = new MusicPlayer();
         createAndShowGUI();
     }
 
@@ -67,7 +67,7 @@ public class App extends JFrame implements KeyListener
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         try
         {
-            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, new File("src/pokemonfont.ttf")));
+            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("/pokemonfont.ttf")));
         }
         catch (Exception e)
         {
@@ -528,7 +528,7 @@ public class App extends JFrame implements KeyListener
                 }
 
                 // fade music during transition
-                MusicPlayer.fadeVolume();
+                musicPlayer.fadeVolume();
 
                 lastRun = System.currentTimeMillis();
 
@@ -596,7 +596,7 @@ public class App extends JFrame implements KeyListener
     {
         try
         {
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(String.format("src/sounds/%s.wav", path)).getAbsoluteFile());
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(this.getClass().getResourceAsStream(String.format("/sounds/%s.wav", path)));
             Clip currentClip = AudioSystem.getClip();
             currentClip.open(audioStream);
             currentClip.start();
@@ -609,100 +609,6 @@ public class App extends JFrame implements KeyListener
 
     public void playSong(int songId)
     {
-        MusicPlayer.setSong(songId);
-    }
-
-    /**
-     * Plays background music
-     */
-    public static class MusicPlayer
-    {
-        private static int currentSong = -1;
-        private static int newSong;
-        private static Clip currentClip;
-        private static int transitionCounter = 0;
-
-        /**
-         * Queues the background music for the given song number
-         * @param song the number of the song to be played
-         */
-        public static void setSong(int songId)
-        {
-            // only switch songs if the new song is different from the one currently being played
-            if (currentSong == -1)
-            {
-                newSong = songId;
-                transitionCounter = 0;
-                playSong();
-                setVolume(0.25);
-            }
-            else if (songId != currentSong)
-            {
-                newSong = songId;
-                transitionCounter = 25;
-            }
-            else
-            {
-                transitionCounter = 0;
-            }
-        }
-
-        /**
-         * Begins playing the queued song
-         */
-        private static void playSong()
-        {
-            currentSong = newSong;
-
-            // stop any song currently being played
-            if (currentClip != null)
-            {
-                currentClip.stop();
-            }
-            try
-            {
-                // open and play the new song
-                AudioInputStream audioStream = AudioSystem.getAudioInputStream(new File(String.format("src/music/%s.wav", currentSong)).getAbsoluteFile());
-                currentClip = AudioSystem.getClip();
-                currentClip.open(audioStream);
-                fadeVolume();
-                currentClip.loop(Clip.LOOP_CONTINUOUSLY);
-            }
-            catch (Exception e)
-            {
-                System.out.println("Error playing music");
-            }
-        }
-
-        /**
-         * Adjust the volume level
-         */
-        private static void setVolume(double gain)
-        {
-            FloatControl gainControl = (FloatControl) currentClip.getControl(FloatControl.Type.MASTER_GAIN);
-            float dB = (float) (Math.log(gain) / Math.log(10.0) * 20.0);
-            gainControl.setValue(dB);
-        }
-
-        /**
-         * Fade volume during transitions between songs
-         */
-        public static void fadeVolume()
-        {
-            double gain;
-
-            if (transitionCounter > 0)
-            {
-                gain = 0.25 * (transitionCounter + 15) / 40;
-                setVolume(gain);
-                transitionCounter--;
-            }
-            else if (currentSong != newSong)
-            {
-                playSong();
-                gain = 0.25;
-                setVolume(gain);
-            }
-        }
+        musicPlayer.setSong(songId);
     }
 }

@@ -36,21 +36,21 @@ public class SummaryView extends BaseView {
 
         for (int i = 0; i < this.pokemonList.size(); i++)
         {
-            ii = new ImageIcon("src/pokemon/frame0/" + this.pokemonList.get(i).getSpriteId() + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/pokemon/frame0/" + this.pokemonList.get(i).getSpriteId() + ".png"));
             this.pokemonSprites[i] = ii.getImage();
-            ii = new ImageIcon("src/inventory/" + this.pokemonList.get(i).pokeballId + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/inventory/" + this.pokemonList.get(i).pokeballId + ".png"));
             this.pokeballSprites[i] = ii.getImage();
         }
 
         for (int i = 0; i < this.typeSprites.length; i++)
         {
-            ii = new ImageIcon("src/menus/type" + i + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/menus/type" + i + ".png"));
             this.typeSprites[i] = ii.getImage();
         }
 
-        ii = new ImageIcon("src/menus/progressBar.png");
+        ii = new ImageIcon(this.getClass().getResource("/menus/progressBar.png"));
         this.progressBar = ii.getImage();
-        ii = new ImageIcon("src/menus/progressBarFill.png");
+        ii = new ImageIcon(this.getClass().getResource("/menus/progressBarFill.png"));
         this.progressBarFill = ii.getImage();
     }
 

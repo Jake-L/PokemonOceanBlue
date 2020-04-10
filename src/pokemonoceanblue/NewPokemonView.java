@@ -7,7 +7,6 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.awt.AlphaComposite;
 
@@ -49,7 +48,7 @@ public class NewPokemonView extends BaseView {
      */
     private void loadImage() 
     {
-        ImageIcon ii = new ImageIcon("src/menus/pokemonBackground.png");
+        ImageIcon ii = new ImageIcon(this.getClass().getResource("/menus/pokemonBackground.png"));
         this.background = ii.getImage();
 
         for (int i = 0; i < this.pokemonSprite.length; i++)
@@ -73,12 +72,12 @@ public class NewPokemonView extends BaseView {
                 id = this.model.pokemon[i].getSpriteId();
             }
 
-            ii = new ImageIcon("src/pokemon/frame0/" + id + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/pokemon/frame0/" + id + ".png"));
             this.pokemonSprite[i] = ii.getImage();
             try
             {
                 // load a copy of the Pokemon's sprite recoloured white
-                this.pokemonBufferedSprite[i] = ImageIO.read(new File("src/pokemon/frame0/" + id + ".png"));   
+                this.pokemonBufferedSprite[i] = ImageIO.read(this.getClass().getResource("/pokemon/frame0/" + id + ".png"));   
                 this.pokemonBufferedSprite[i] = this.colorImage(this.pokemonBufferedSprite[i], 255, 255, 255);
             }
             catch (IOException e)

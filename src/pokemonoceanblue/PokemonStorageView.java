@@ -43,7 +43,7 @@ public class PokemonStorageView extends BaseView {
      */
     private void loadImage() 
     {
-        ImageIcon ii = new ImageIcon("src/pokemon/frame0/" + this.partyModel.team.get(0).getSpriteId() + ".png");
+        ImageIcon ii = new ImageIcon(this.getClass().getResource("/pokemon/frame0/" + this.partyModel.team.get(0).getSpriteId() + ".png"));
         this.pokemonSprite  = ii.getImage();
 
         // load team icons
@@ -51,7 +51,7 @@ public class PokemonStorageView extends BaseView {
         {
             if (this.pokemonIconSprite.get(pokemon.getSpriteId()) == null)
             {
-                ii = new ImageIcon("src/pokemonicons/" + pokemon.getSpriteId() + ".png");
+                ii = new ImageIcon(this.getClass().getResource("/pokemonicons/" + pokemon.getSpriteId() + ".png"));
                 this.pokemonIconSprite.put(pokemon.getSpriteId(), ii.getImage());
             }
         }
@@ -61,29 +61,29 @@ public class PokemonStorageView extends BaseView {
         {
             if (this.pokemonIconSprite.get(pokemon.getSpriteId()) == null)
             {
-                ii = new ImageIcon("src/pokemonicons/" + pokemon.getSpriteId() + ".png");
+                ii = new ImageIcon(this.getClass().getResource("/pokemonicons/" + pokemon.getSpriteId() + ".png"));
                 this.pokemonIconSprite.put(pokemon.getSpriteId(), ii.getImage());
             }
         }
 
         for (int i = 0; i < storageBorder.length; i++)
         {
-            ii = new ImageIcon("src/menus/pcborder" + i + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/menus/pcborder" + i + ".png"));
             storageBorder[i]  = ii.getImage();
 
-            ii = new ImageIcon("src/menus/pcPartyBorder" + i + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/menus/pcPartyBorder" + i + ".png"));
             partyBorder[i]  = ii.getImage();
         }
 
-        ii = new ImageIcon("src/menus/storageBackground.png");
+        ii = new ImageIcon(this.getClass().getResource("/menus/storageBackground.png"));
         this.background = ii.getImage();
 
-        ii = new ImageIcon("src/menus/pokemonIconBorder.png");
+        ii = new ImageIcon(this.getClass().getResource("/menus/pokemonIconBorder.png"));
         this.pokemonIconBorder = ii.getImage();
 
         for (int i = 0; i < this.cursorSprite.length; i++)
         {
-            ii = new ImageIcon("src/menus/pcCursor" + i + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/menus/pcCursor" + i + ".png"));
             this.cursorSprite[i] = ii.getImage();
         }
     }
@@ -278,12 +278,12 @@ public class PokemonStorageView extends BaseView {
 
         if (this.storageModel.categoryIndex == 0 && this.storageModel.optionIndex < this.storageModel.pokemonStorage.size())
         {
-            ImageIcon ii = new ImageIcon("src/pokemon/frame0/" + this.partyModel.team.get(this.partyModel.optionIndex).getSpriteId() + ".png");
+            ImageIcon ii = new ImageIcon(this.getClass().getResource("/pokemon/frame0/" + this.partyModel.team.get(this.partyModel.optionIndex).getSpriteId() + ".png"));
             this.pokemonSprite  = ii.getImage();
         }
         else if (this.storageModel.optionIndex < this.storageModel.pokemonStorage.size())
         {
-            ImageIcon ii = new ImageIcon("src/pokemon/frame0/" + this.storageModel.pokemonStorage.get(this.storageModel.optionIndex).getSpriteId() + ".png");
+            ImageIcon ii = new ImageIcon(this.getClass().getResource("/pokemon/frame0/" + this.storageModel.pokemonStorage.get(this.storageModel.optionIndex).getSpriteId() + ".png"));
             this.pokemonSprite  = ii.getImage();
         }
         else

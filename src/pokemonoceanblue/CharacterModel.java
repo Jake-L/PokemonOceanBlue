@@ -51,7 +51,7 @@ public class CharacterModel {
         }
 
         // get the sprite's height
-        ImageIcon ii = new ImageIcon(String.format("src/characters/%s.png", this.getCurrentSprite()));
+        ImageIcon ii = new ImageIcon(this.getClass().getResource(String.format("/characters/%s.png", this.getCurrentSprite())));
         this.height = ii.getImage().getHeight(null);
     }
 

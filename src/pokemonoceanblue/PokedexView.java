@@ -7,7 +7,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.awt.image.ColorConvertOp;
 import java.awt.color.ColorSpace;
@@ -41,14 +40,14 @@ public class PokedexView extends BaseView
      */
     private void loadImage() 
     {
-        ImageIcon ii = new ImageIcon("src/pokemon/frame0/" + this.model.optionIndex + ".png");
+        ImageIcon ii = new ImageIcon(this.getClass().getResource("/pokemon/frame0/" + this.model.optionIndex + ".png"));
         this.pokemonSprite  = ii.getImage();
 
         for (int i = 0; i < pokemonIconSprite.length; i++)
         {
             try 
             {
-                this.pokemonIconSprite[i] = ImageIO.read(new File("src/pokemonicons/" + i + ".png"));              
+                this.pokemonIconSprite[i] = ImageIO.read(this.getClass().getResource("/pokemonicons/" + i + ".png"));              
             }
             catch (IOException e)
             {
@@ -59,11 +58,11 @@ public class PokedexView extends BaseView
 
         for (int i = 0; i < indexHighlight.length; i++)
         {
-            ii = new ImageIcon("src/menus/selection" + i + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/menus/selection" + i + ".png"));
             this.indexHighlight[i]  = ii.getImage();
         }
 
-        ii = new ImageIcon("src/menus/redBackground.png");
+        ii = new ImageIcon(this.getClass().getResource("/menus/redBackground.png"));
         this.background = ii.getImage();
 
         // converting all the images to greyscale takes about 2 seconds, so run it in a separate thread
@@ -193,7 +192,7 @@ public class PokedexView extends BaseView
             this.minIndex = Math.min(this.minIndex + this.model.optionWidth, this.model.caughtPokemon.length - 1);
         }
         this.oldOptionIndex = this.model.optionIndex;
-        ImageIcon ii = new ImageIcon("src/pokemon/frame0/" + this.model.optionIndex + ".png");
+        ImageIcon ii = new ImageIcon(this.getClass().getResource("/pokemon/frame0/" + this.model.optionIndex + ".png"));
         this.pokemonSprite  = ii.getImage();
     }
 

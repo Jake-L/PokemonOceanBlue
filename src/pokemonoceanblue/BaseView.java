@@ -23,16 +23,16 @@ abstract class BaseView {
 
         for (int i = 0; i < 9; i++)
         {
-            ii = new ImageIcon("src/battle/TextBox" + i + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/battle/TextBox" + i + ".png"));
             textDisplayBox[i]  = ii.getImage();
         }
 
-        ii = new ImageIcon("src/inventory/arrow.png");
+        ii = new ImageIcon(this.getClass().getResource("/inventory/arrow.png"));
         arrowSprite = ii.getImage();
 
         for (int i = 0; i < rainSprite.length; i++)
         {
-            ii = new ImageIcon("src/battle/rain" + i + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/battle/rain" + i + ".png"));
             rainSprite[i]  = ii.getImage();
         }
     }

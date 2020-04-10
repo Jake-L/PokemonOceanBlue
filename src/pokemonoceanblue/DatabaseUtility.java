@@ -1,15 +1,15 @@
 package pokemonoceanblue;
 
 import java.io.BufferedReader;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.sql.*;
 
 public class DatabaseUtility 
 {    
     public static Connection conn = null;
     // db parameters
-    String url = "jdbc:sqlite:src/database/pokemon.db";
+    String url;
 
 
     /** 
@@ -21,6 +21,8 @@ public class DatabaseUtility
         {
             try
             {
+                this.url =  "jdbc:sqlite:" + this.getClass().getResource("/database/pokemon.db").toURI().getPath();
+
                 // create a connection to the database
                 conn = DriverManager.getConnection(url);
                 
@@ -30,6 +32,10 @@ public class DatabaseUtility
             {
                 System.out.println(e.getMessage());
             } 
+            catch (URISyntaxException e)
+            {
+                System.out.println(e.getMessage());
+            }
         }
         
     }
@@ -95,7 +101,7 @@ public class DatabaseUtility
         runUpdate(query);
 
         // fill pokemon table with data
-        path = "src/rawdata/pokemon.csv";
+        path = "/rawdata/pokemon.csv";
         query = "INSERT INTO pokemon ("
                     + "pokemon_id, name, "
                     + "type1, type2, "
@@ -119,7 +125,7 @@ public class DatabaseUtility
         runUpdate(query);
 
         // fill pokemon moves table with data
-        path = "src/rawdata/pokemonMoves.csv";
+        path = "/rawdata/pokemonMoves.csv";
         query = "INSERT INTO pokemon_moves ("
                     + "pokemon_id, move_id, level)"
                     + "VALUES (?, ?, ?)";
@@ -141,7 +147,7 @@ public class DatabaseUtility
         runUpdate(query);
 
         // fill pokemon moves table with data
-        path = "src/rawdata/evolutionMethods.csv";
+        path = "/rawdata/evolutionMethod.csv";
         query = "INSERT INTO evolution_methods ("
                     + "pre_species_id, evolved_species_id, minimum_level, minimum_happiness, trigger_item_id, gender_id, map_id, time_of_day)"
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -164,7 +170,7 @@ public class DatabaseUtility
         runUpdate(query);
 
         // fills area table with data
-        path = "src/rawdata/areas.csv";
+        path = "/rawdata/areas.csv";
         query = "INSERT INTO area ("
                     + "map_id, area_id, name, " 
                     + "min_x, max_x, "
@@ -184,7 +190,7 @@ public class DatabaseUtility
         runUpdate(query);
 
         // fills map_template table with data
-        path = "src/rawdata/mapTemplate.csv";
+        path = "/rawdata/mapTemplate.csv";
         query = "INSERT INTO map_template ("
                     + "map_id, map_template_id, overlay) "
                     + "VALUES (?, ?, ?)";
@@ -204,7 +210,7 @@ public class DatabaseUtility
         runUpdate(query);
 
         // fills map objects table with data
-        path = "src/rawdata/mapObjects.csv";
+        path = "/rawdata/mapObjects.csv";
         query = "INSERT INTO map_object ("
                     + "map_id, area_id, name, " 
                     + "x, y, y_adjust) "
@@ -227,7 +233,7 @@ public class DatabaseUtility
         runUpdate(query);
 
         // fills portal table with data
-        path = "src/rawdata/portals.csv";
+        path = "/rawdata/portals.csv";
         query = "INSERT INTO portal ("
                     + "map_id, area_id, " 
                     + "x, y, "
@@ -249,7 +255,7 @@ public class DatabaseUtility
         runUpdate(query);
 
         // fills pokemon location table with data
-        path = "src/rawdata/pokemonLocation.csv";
+        path = "/rawdata/pokemonLocation.csv";
         query = "INSERT INTO pokemon_location ("
                     + "map_id, " 
                     + "area_id, "
@@ -279,7 +285,7 @@ public class DatabaseUtility
         runUpdate(query);
 
         // fill moves table with data
-        path = "src/rawdata/moves.csv";
+        path = "/rawdata/moves.csv";
         query = "INSERT INTO moves ("
                     + "move_id, name, type_id, " 
                     + "power, accuracy, priority, "
@@ -300,7 +306,7 @@ public class DatabaseUtility
         runUpdate(query);
 
         // fill move_stat_effect table with data
-        path = "src/rawdata/moveStatEffect.csv";
+        path = "/rawdata/moveStatEffect.csv";
         query = "INSERT INTO move_stat_effect ("
                     + "move_id, stat_id, stat_change) "
                     + "VALUES (?, ?, ?)";
@@ -319,7 +325,7 @@ public class DatabaseUtility
         runUpdate(query);
 
         // fill move_stat_effect table with data
-        path = "src/rawdata/moveEffect.csv";
+        path = "/rawdata/moveEffect.csv";
         query = "INSERT INTO move_effect ("
                     + "effect_id, target_type, counter_min, counter_max, text) "
                     + "VALUES (?, ?, ?, ?, ?)";
@@ -336,7 +342,7 @@ public class DatabaseUtility
         runUpdate(query);
 
         // fill type effectiveness table with data
-        path = "src/rawdata/typeEffectiveness.csv";
+        path = "/rawdata/typeEffectiveness.csv";
         query = "INSERT INTO type_effectiveness ("
                     + "src_type_id, target_type_id, damage_factor)"
                     + "VALUES (?, ?, ?)";
@@ -364,7 +370,7 @@ public class DatabaseUtility
         runUpdate(query);
 
         // fill conversation table with data
-        path = "src/rawdata/conversation.csv";
+        path = "/rawdata/conversation.csv";
         query = "INSERT INTO conversation ("
                 + "conversation_id, conversation_event_id, text, "
                 + "battle_id, heal_team, character_id, movement_direction, "
@@ -386,7 +392,7 @@ public class DatabaseUtility
         runUpdate(query);
 
         // fill conversation table with data
-        path = "src/rawdata/conversationOption.csv";
+        path = "/rawdata/conversationOption.csv";
         query = "INSERT INTO conversation_options ("
                 + "option_id, text, next_conversation_event_id)"
                 + "VALUES (?, ?, ?)";
@@ -409,7 +415,7 @@ public class DatabaseUtility
         runUpdate(query);
 
         // fill conversation table with data
-        path = "src/rawdata/conversationTriggers.csv";
+        path = "/rawdata/conversationTriggers.csv";
         query = "INSERT INTO conversation_trigger ("
                 + "map_id, area_id, x, y, conversation_id, "
                 + "character_id, clear_conversation_id, "
@@ -430,7 +436,7 @@ public class DatabaseUtility
         runUpdate(query);
 
         // fill items table with data
-        path = "src/rawdata/items.csv";
+        path = "/rawdata/items.csv";
         query = "INSERT INTO items ("
                     + "item_id, name, category_id, cost, [description])"
                     + "VALUES (?, ?, ?, ?, ?)";
@@ -447,7 +453,7 @@ public class DatabaseUtility
         runUpdate(query);
 
         // fill battle table with data
-        path = "src/rawdata/battle.csv";
+        path = "/rawdata/battle.csv";
         query = "INSERT INTO battle ("
                     + "battle_id, pokemon_id, level) "
                     + "VALUES (?, ?, ?)";
@@ -471,7 +477,7 @@ public class DatabaseUtility
         runUpdate(query);
 
         // fill battle table with data
-        path = "src/rawdata/characters.csv";
+        path = "/rawdata/characters.csv";
         query = "INSERT INTO character ("
                     + "character_id, map_id, area_id, "
                     + "name, sprite_name, x, y, "
@@ -491,7 +497,7 @@ public class DatabaseUtility
     {
         try
         {
-            InputStreamReader istreamReader = new InputStreamReader(new FileInputStream(path),"UTF-8");
+            InputStreamReader istreamReader = new InputStreamReader(this.getClass().getResourceAsStream(path),"UTF-8");
             BufferedReader br = new BufferedReader(istreamReader);
 
             // skip the first line which just has column names

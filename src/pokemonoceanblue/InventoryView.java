@@ -42,7 +42,7 @@ public class InventoryView extends BaseView {
         {
             try 
             {
-                ii = new ImageIcon("src/inventory/" + i + ".png");
+                ii = new ImageIcon(this.getClass().getResource("/inventory/" + i + ".png"));
                 itemSprite[i]  = ii.getImage();
             } 
             catch (Exception e) 
@@ -53,17 +53,17 @@ public class InventoryView extends BaseView {
 
         for (int i = 0; i < bagSprite.length; i++)
         {
-            ii = new ImageIcon("src/inventory/bag" + i + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/inventory/bag" + i + ".png"));
             bagSprite[i]  = ii.getImage();
         }
 
         for (int i = 0; i < inventoryBorder.length; i++)
         {
-            ii = new ImageIcon("src/inventory/border" + i + ".png");
+            ii = new ImageIcon(this.getClass().getResource("/inventory/border" + i + ".png"));
             inventoryBorder[i]  = ii.getImage();
         }
 
-        ii = new ImageIcon("src/inventory/background.png");
+        ii = new ImageIcon(this.getClass().getResource("/inventory/background.png"));
         background = ii.getImage();
     }
 
