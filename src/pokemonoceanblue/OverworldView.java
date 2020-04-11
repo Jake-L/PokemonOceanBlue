@@ -44,7 +44,7 @@ public class OverworldView extends BaseView {
      */
     private void loadImage() {
         // load tile sprites
-        for (int i = 1; i < tileSprite.length; i++)
+        for (int i = 0; i < tileSprite.length; i++)
         {
             int animatedIndex = Arrays.binarySearch(ANIMATED_TILES, i);
             if (animatedIndex < 0)
@@ -113,14 +113,6 @@ public class OverworldView extends BaseView {
             // get their sprites for each direction
             for (Direction direction : Direction.values())
             {
-                // each direction has 4 sprites
-                for (int i = 0; i < 4; i++)
-                {
-                    formattedName = String.format("%s%s%s", spriteName, direction.toString(), i);
-                    ImageIcon ii = new ImageIcon(this.getClass().getResource(String.format("/characters/%s.png", formattedName)));
-                    characterSprite.put(formattedName, ii.getImage());
-                }
-
                 if (spriteName.contains("swimmer"))
                 {
                     // surfing sprites
@@ -130,6 +122,24 @@ public class OverworldView extends BaseView {
                         ImageIcon ii = new ImageIcon(this.getClass().getResource(String.format("/characters/%s.png", formattedName)));
                         characterSprite.put(formattedName, ii.getImage());
                     }
+                }
+                else
+                {
+                    try
+                    {
+                        // each direction has 4 sprites
+                        for (int i = 0; i < 4; i++)
+                        {
+                            formattedName = String.format("%s%s%s", spriteName, direction.toString(), i);
+                            ImageIcon ii = new ImageIcon(this.getClass().getResource(String.format("/characters/%s.png", formattedName)));
+                            characterSprite.put(formattedName, ii.getImage());
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // this is expected because many sprites, like gym leaders
+                        // do not have walking animations
+                    }                    
                 }
             }
         }
