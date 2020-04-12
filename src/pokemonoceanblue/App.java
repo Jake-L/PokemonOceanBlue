@@ -9,6 +9,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -135,7 +137,22 @@ public class App extends JFrame implements KeyListener
         // pressing any key will advance from the title screen
         if (viewManager.getCurrentView() == "TitleScreenView" && System.currentTimeMillis() - startTime > 1000 && playerModel == null)
         {
-            this.setMap(1, 3, 3);
+            // load the player's position from the database
+            try
+            {
+                DatabaseUtility db = new DatabaseUtility();
+
+                String query = "SELECT * FROM player_location";
+
+                ResultSet rs = db.runQuery(query);
+
+                this.setMap(rs.getInt("map_id"), rs.getInt("x"), rs.getInt("y"));
+            }
+            catch (SQLException ex) 
+            {
+                ex.printStackTrace();
+                this.setMap(1, 3, 3);
+            }  
         }
     }
 
@@ -227,6 +244,7 @@ public class App extends JFrame implements KeyListener
         pokedexController = new BaseController(pokedexModel);
         DatabaseUtility db = new DatabaseUtility();
         db.savePokemon(this.partyModel.team, this.pokemonStorageModel.pokemonStorage);
+        db.savePlayerLocation(this.overworldModel.mapId, this.playerModel.getX(), this.playerModel.getY());
     }
 
     public void openPokemonStorage()

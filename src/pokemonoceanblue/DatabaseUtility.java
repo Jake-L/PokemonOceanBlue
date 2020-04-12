@@ -70,7 +70,7 @@ public class DatabaseUtility
             "conversation", "moves", "type_effectiveness", "items", "battle",
             "portal", "map_object", "area", "character", "move_stat_effect",
             "evolution_methods", "conversation_trigger", "map_template",
-            "conversation_options", "move_effect", "player_pokemon"
+            "conversation_options", "move_effect", "player_pokemon", "player_location",
         };
 
         for (String t : table_list)
@@ -512,6 +512,19 @@ public class DatabaseUtility
                 + "pokemon_index INT NOT NULL)";
         runUpdate(query);
 
+        //==================================================================================
+        // save the player's location
+        query = "CREATE TABLE player_location ("
+                + "map_id INT NOT NULL,"
+                + "x INT NOT NULL, "
+                + "y INT NOT NULL)";
+        runUpdate(query);
+
+        // set the default location (inside player's house)
+        query = "INSERT INTO player_location ("
+                + "map_id, x, y) "
+                + "VALUES (1, 3, 3)";
+        runUpdate(query);
 
         conn.commit();
         conn.setAutoCommit(true);
@@ -643,6 +656,38 @@ public class DatabaseUtility
             }
 
             statement.executeBatch();
+        } 
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Save the player's map location
+     * @param mapId the current map
+     * @param x player's x position
+     * @param y player's y position
+     */
+    public void savePlayerLocation(int mapId, int x, int y)
+    {
+        // clear out past save data
+        this.runUpdate("DELETE FROM player_location");
+
+        try
+        {
+            String query = "INSERT INTO player_location ("
+                + "map_id, x, y) "
+                + "VALUES (?, ?, ?)";
+
+            PreparedStatement statement;
+
+            statement = conn.prepareStatement(query);
+
+            statement.setInt(1, mapId);
+            statement.setInt(2, x);
+            statement.setInt(3, y);
+            statement.executeUpdate();
         } 
         catch (Exception e)
         {
