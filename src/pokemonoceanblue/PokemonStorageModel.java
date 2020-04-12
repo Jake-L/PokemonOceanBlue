@@ -1,5 +1,7 @@
 package pokemonoceanblue;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +12,36 @@ public class PokemonStorageModel extends BaseModel
 
     public List<PokemonModel> pokemonStorage = new ArrayList<PokemonModel>();
 
-    public PokemonStorageModel(){}
+    public PokemonStorageModel()
+    {
+        this.loadPlayerStorage();
+    }
+
+    /**
+     * Read the Pokemon in storage from the database
+     */
+    private void loadPlayerStorage()
+    {
+        try
+        {
+            DatabaseUtility db = new DatabaseUtility();
+
+            String query = "SELECT * FROM player_pokemon "
+                        + " WHERE pokemon_index >= 6 " 
+                        + " ORDER BY pokemon_index ASC";
+
+            ResultSet rs = db.runQuery(query);
+
+            while(rs.next()) 
+            {
+                this.pokemonStorage.add(new PokemonModel(rs));
+            }          
+        }
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+        }  
+    }
 
     @Override
     public void exitScreen()

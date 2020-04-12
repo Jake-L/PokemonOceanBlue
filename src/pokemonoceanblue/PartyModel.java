@@ -1,5 +1,7 @@
 package pokemonoceanblue;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,9 +14,9 @@ public class PartyModel extends BaseModel
     public int switchPokemonIndex = -1;
     public boolean updateOrder = false;
 
-    public PartyModel(List<PokemonModel> team)
+    public PartyModel()
     {
-        this.team = team;
+        this.loadPlayerTeam();
         this.optionIndex = -1;
     }
 
@@ -53,6 +55,32 @@ public class PartyModel extends BaseModel
         this.textOptions = null;
         this.textOptionIndex = 0;
         this.switchPokemonIndex = -1;
+    }
+
+    /**
+     * Read the player's team from the database
+     */
+    private void loadPlayerTeam()
+    {
+        try
+        {
+            DatabaseUtility db = new DatabaseUtility();
+
+            String query = "SELECT * FROM player_pokemon "
+                        + " WHERE pokemon_index < 6 " 
+                        + " ORDER BY pokemon_index ASC";
+
+            ResultSet rs = db.runQuery(query);
+
+            while(rs.next()) 
+            {
+                this.team.add(new PokemonModel(rs));
+            }          
+        }
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+        }  
     }
 
     @Override

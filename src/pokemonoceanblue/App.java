@@ -9,6 +9,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -60,8 +62,9 @@ public class App extends JFrame implements KeyListener
     }
 
     private void createAndShowGUI() {
-        DatabaseUtility db = new DatabaseUtility();
-        db.prepareDatabase();
+        // this code should be uncommented when testing database changes
+        // DatabaseUtility db = new DatabaseUtility();
+        // db.prepareDatabase();
 
         // load custom font
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -109,31 +112,11 @@ public class App extends JFrame implements KeyListener
         
         this.playSong(0);
 
-        List<PokemonModel> pokemonTeam = new ArrayList<PokemonModel>();
-        pokemonTeam.add(new PokemonModel(10115, 30, false));
-        pokemonTeam.add(new PokemonModel(182, 7, true));
-        pokemonTeam.add(new PokemonModel(9, 40, true));
-        pokemonTeam.add(new PokemonModel(34, 5, false));
-        pokemonTeam.add(new PokemonModel(150, 5, false));
-        pokemonTeam.add(new PokemonModel(4, 5, false));
+        this.partyModel = new PartyModel();
+        this.inventoryModel = new InventoryModel();
+        this.pokedexModel = new PokedexModel();
+        this.pokemonStorageModel = new PokemonStorageModel();
 
-        partyModel = new PartyModel(pokemonTeam);
-        inventoryModel = new InventoryModel();
-        pokedexModel = new PokedexModel();
-        pokemonStorageModel = new PokemonStorageModel();
-
-        pokemonStorageModel.addPokemon(new PokemonModel(123, 46, false));
-        pokemonStorageModel.addPokemon(new PokemonModel(151, 7, true));
-        pokemonStorageModel.addPokemon(new PokemonModel(91, 40, true));
-        pokemonStorageModel.addPokemon(new PokemonModel(343, 5, false));
-        pokemonStorageModel.addPokemon(new PokemonModel(159, 5, false));
-        pokemonStorageModel.addPokemon(new PokemonModel(414, 0, false));
-        pokemonStorageModel.addPokemon(new PokemonModel(239, 46, false));
-        pokemonStorageModel.addPokemon(new PokemonModel(135, 7, true));
-        pokemonStorageModel.addPokemon(new PokemonModel(325, 40, true));
-        pokemonStorageModel.addPokemon(new PokemonModel(128, 5, false));
-        pokemonStorageModel.addPokemon(new PokemonModel(158, 5, false));
-        pokemonStorageModel.addPokemon(new PokemonModel(123, 5, false));
         this.evolveCheck = new EvolutionCheck();
 
         this.update();
@@ -146,15 +129,30 @@ public class App extends JFrame implements KeyListener
 
      /** Add the pressed key to list of pressed keys */
     public void keyPressed(KeyEvent e) {
-        if (!keysDown.contains(e.getKeyCode()))
+        if (!this.keysDown.contains(e.getKeyCode()))
         {
-            keysDown.add(e.getKeyCode());
+            this.keysDown.add(e.getKeyCode());
         }
 
         // pressing any key will advance from the title screen
         if (viewManager.getCurrentView() == "TitleScreenView" && System.currentTimeMillis() - startTime > 1000 && playerModel == null)
         {
-            setMap(16, 7, 30);
+            // load the player's position from the database
+            try
+            {
+                DatabaseUtility db = new DatabaseUtility();
+
+                String query = "SELECT * FROM player_location";
+
+                ResultSet rs = db.runQuery(query);
+
+                this.setMap(rs.getInt("map_id"), rs.getInt("x"), rs.getInt("y"));
+            }
+            catch (SQLException ex) 
+            {
+                ex.printStackTrace();
+                this.setMap(1, 3, 3);
+            }  
         }
     }
 
@@ -244,6 +242,9 @@ public class App extends JFrame implements KeyListener
         this.pokedexModel.initialize();
         viewManager.setView(new PokedexView(pokedexModel));
         pokedexController = new BaseController(pokedexModel);
+        DatabaseUtility db = new DatabaseUtility();
+        db.savePokemon(this.partyModel.team, this.pokemonStorageModel.pokemonStorage);
+        db.savePlayerLocation(this.overworldModel.mapId, this.playerModel.getX(), this.playerModel.getY());
     }
 
     public void openPokemonStorage()
@@ -558,7 +559,7 @@ public class App extends JFrame implements KeyListener
     /**
      * Checks if any Pokemon can evolve, and adds the evolution to a queue
      */
-    public void checkEvolution(boolean[] evolveQueue)
+    private void checkEvolution(boolean[] evolveQueue)
     {
         int evolvedPokemonId = -1;
 

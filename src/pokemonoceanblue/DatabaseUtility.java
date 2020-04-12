@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.sql.*;
+import java.util.List;
 
 public class DatabaseUtility 
 {    
@@ -69,7 +70,7 @@ public class DatabaseUtility
             "conversation", "moves", "type_effectiveness", "items", "battle",
             "portal", "map_object", "area", "character", "move_stat_effect",
             "evolution_methods", "conversation_trigger", "map_template",
-            "conversation_options", "move_effect"
+            "conversation_options", "move_effect", "player_pokemon", "player_location",
         };
 
         for (String t : table_list)
@@ -487,7 +488,46 @@ public class DatabaseUtility
         dataTypes = new String[] {"int", "int", "int", "String", "String", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
+        //==================================================================================
+        // save the player's Pokemon
+        query = "CREATE TABLE player_pokemon ("
+                + "pokemon_id INT NOT NULL,"
+                + "xp INT NOT NULL,"
+                + "shiny INT NOT NULL,"
+                + "gender_id INT NOT NULL,"
+                + "current_hp INT NOT NULL,"
+                + "iv_0 INT NOT NULL,"
+                + "iv_1 INT NOT NULL,"
+                + "iv_2 INT NOT NULL,"
+                + "iv_3 INT NOT NULL,"
+                + "iv_4 INT NOT NULL,"
+                + "iv_5 INT NOT NULL,"
+                + "status_effect INT NOT NULL,"
+                + "happiness INT NOT NULL,"
+                + "step_counter INT NOT NULL,"
+                + "move_1 INT NULL, "
+                + "move_2 INT NULL, "
+                + "move_3 INT NULL, "
+                + "move_4 INT NULL, "
+                + "pokemon_index INT NOT NULL)";
+        runUpdate(query);
+
+        //==================================================================================
+        // save the player's location
+        query = "CREATE TABLE player_location ("
+                + "map_id INT NOT NULL,"
+                + "x INT NOT NULL, "
+                + "y INT NOT NULL)";
+        runUpdate(query);
+
+        // set the default location (inside player's house)
+        query = "INSERT INTO player_location ("
+                + "map_id, x, y) "
+                + "VALUES (1, 3, 3)";
+        runUpdate(query);
+
         conn.commit();
+        conn.setAutoCommit(true);
     }
 
     /** 
@@ -577,8 +617,86 @@ public class DatabaseUtility
         return rs;   
     }
 
+    /**
+     * Save the player's Pokemon
+     * @param team a list of the player's Pokemon
+     * @param pokemonStorage a list of the player's Pokemon storage
+     */
+    public void savePokemon(List<PokemonModel> team, List<PokemonModel> pokemonStorage)
+    {
+        // clear out past save data
+        this.runUpdate("DELETE FROM player_pokemon");
+
+        try
+        {
+            String query = "INSERT INTO player_pokemon ("
+                + "pokemon_id, xp, shiny, gender_id, current_hp, "
+                + "iv_0, iv_1, iv_2, iv_3, iv_4, iv_5, "
+                + "status_effect, happiness, step_counter, "
+                + "move_1, move_2, move_3, move_4, "
+                + "pokemon_index) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            PreparedStatement statement;
+
+            statement = conn.prepareStatement(query);
+
+            // store the player's team
+            for (int i = 0; i < team.size(); i++)
+            {
+                team.get(i).toSQL(statement, i);
+                statement.addBatch();
+            }
+            
+            // store the Pokemon in the Pokemon storage
+            for (int i = 0; i < pokemonStorage.size(); i++)
+            {
+                pokemonStorage.get(i).toSQL(statement, 6 + i);
+                statement.addBatch();
+            }
+
+            statement.executeBatch();
+        } 
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Save the player's map location
+     * @param mapId the current map
+     * @param x player's x position
+     * @param y player's y position
+     */
+    public void savePlayerLocation(int mapId, int x, int y)
+    {
+        // clear out past save data
+        this.runUpdate("DELETE FROM player_location");
+
+        try
+        {
+            String query = "INSERT INTO player_location ("
+                + "map_id, x, y) "
+                + "VALUES (?, ?, ?)";
+
+            PreparedStatement statement;
+
+            statement = conn.prepareStatement(query);
+
+            statement.setInt(1, mapId);
+            statement.setInt(2, x);
+            statement.setInt(3, y);
+            statement.executeUpdate();
+        } 
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     /** 
-     * Runs SELECT queries and returns the result
+     * Closes the database connection
      */
     public void close()
     {
