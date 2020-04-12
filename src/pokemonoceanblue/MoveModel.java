@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class MoveModel 
 {
-    private int moveId;
+    public int moveId;
     public String name;
     public int typeId;
     public int power;

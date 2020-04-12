@@ -12,7 +12,7 @@ public class PokemonModel
     String name;
     int xp;
     public int level;
-    public byte statusEffect;
+    public byte statusEffect = 0;
 
     public int[] types;
 
@@ -52,7 +52,45 @@ public class PokemonModel
         }
 
         this.loadStats();
-        
+    }
+
+    /**
+     * Read the Pokemon's information from a SQL ResultSet
+     * @param rs ResultSet contianing the Pokemon's data
+     * @throws SQLException
+     */
+    public PokemonModel(ResultSet rs) throws SQLException
+    {
+        this.pokemon_id = rs.getInt("pokemon_id");
+        this.shiny = rs.getInt("shiny") == 1;
+        this.addXP(rs.getInt("xp"));
+
+        for (int i = 0; i < this.ivs.length; i++)
+        {
+            this.ivs[i] = rs.getInt("iv_" + i);
+        }
+
+        // loads the Pokemon's moves
+        List<MoveModel> loadMoves = new ArrayList<MoveModel>();
+        String[] move_ids = {"move_1", "move_2", "move_3", "move_4"};
+
+        for (String move_id : move_ids)
+        {
+                if (rs.getInt(move_id) > -1)
+            {
+                loadMoves.add(new MoveModel(rs.getInt(move_id)));
+            }
+        }
+
+        this.moves = new MoveModel[loadMoves.size()];
+        loadMoves.toArray(this.moves);
+
+        // load other attributes
+        this.happiness = rs.getInt("happiness");
+        this.statusEffect = (byte)rs.getInt("status_effect");
+        this.stepCounter = rs.getInt("step_counter");
+        this.genderId = rs.getInt("gender_id");
+        this.currentHP = rs.getInt("current_hp");
     }
 
     /** 
@@ -78,7 +116,9 @@ public class PokemonModel
     {
         this.xp += xp;
         this.calcLevel();
-        if (this.xp <= 1)
+
+        // load moves if hatching from a egg
+        if (this.xp - xp <= 1)
         {
             this.loadMoves();
         }
@@ -215,8 +255,6 @@ public class PokemonModel
             {
                 this.stats[i] = (int)Math.floor((2.0 * rs.getInt(stats[i]) + this.ivs[i]) * this.level / 100) + 5;
             }
-
-            this.statusEffect = 0;
         }
         catch (SQLException e) 
         {
@@ -267,5 +305,31 @@ public class PokemonModel
             this.updateHappiness(1);
             this.stepCounter = 500;
         }
+    }
+
+    public void toSQL(PreparedStatement statement, int index) throws SQLException
+    {
+        // statement index starts at one
+        statement.setInt(1, this.pokemon_id);
+        statement.setInt(2, this.xp);
+        statement.setInt(3, this.shiny ? 1 : 0);
+        statement.setInt(4, this.genderId);
+        statement.setInt(5, this.currentHP);
+        
+        for (int i = 0; i < this.ivs.length; i++)
+        {
+            statement.setInt(6 + i, this.ivs[i]);
+        }
+
+        statement.setInt(12, this.statusEffect);
+        statement.setInt(13, this.happiness);
+        statement.setInt(14, this.stepCounter);
+
+        for (int i = 0; i < 4; i++)
+        {
+            statement.setObject(15 + i, this.moves.length > i ? this.moves[i].moveId : -1);
+        }
+
+        statement.setInt(19, index);
     }
 }
