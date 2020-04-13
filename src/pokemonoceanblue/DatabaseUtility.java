@@ -26,6 +26,8 @@ public class DatabaseUtility
 
                 // create a connection to the database
                 conn = DriverManager.getConnection(url);
+
+                conn.createStatement().execute("PRAGMA foreign_keys = ON");
                 
                 System.out.println("Connection to SQLite has been established.");
             } 
@@ -66,11 +68,15 @@ public class DatabaseUtility
 
         // remove all the existing tables first
         String[] table_list = {
-            "evolution_methods", "pokemon", "pokemon_moves", "pokemon_location", 
-            "conversation", "moves", "type_effectiveness", "items", "battle",
+            "player_pokemon", "player_location", "conversation_options",
+            "evolution_methods",  "pokemon_moves", "pokemon_location", 
+            "conversation",  "type_effectiveness", "items", "battle",
             "portal", "map_object", "area", "character", "move_stat_effect",
-            "evolution_methods", "conversation_trigger", "map_template",
-            "conversation_options", "move_effect", "player_pokemon", "player_location",
+            "evolution_methods", "conversation_trigger", 
+            "moves",
+            "map_template",
+            "move_effect", 
+            "pokemon",
         };
 
         for (String t : table_list)
@@ -118,11 +124,63 @@ public class DatabaseUtility
         loadTable(path, query, dataTypes);
 
         //==================================================================================
+        // stats that are increased or decreased by using a move
+        query = "CREATE TABLE move_effect ("
+                + "effect_id INT PRIMARY KEY, "
+                + "target_type INT NOT NULL, "
+                + "counter_min INT NOT NULL, "
+                + "counter_max INT NOT NULL, "
+                + "text VARCHAR(100) NULL)";
+        runUpdate(query);
+
+        // fill move_stat_effect table with data
+        path = "/rawdata/moveEffect.csv";
+        query = "INSERT INTO move_effect ("
+                    + "effect_id, target_type, counter_min, counter_max, text) "
+                    + "VALUES (?, ?, ?, ?, ?)";
+
+        dataTypes = new String[] {"int", "int", "int", "int", "String"};
+        loadTable(path, query, dataTypes);
+
+        //==================================================================================
+        // move's name, damage, accuracy, type
+        query = "CREATE TABLE moves("
+                + "move_id INT PRIMARY KEY, "
+                + "name VARCHAR(30) NOT NULL, "
+                + "type_id INT NOT NULL, "
+                + "power INT NULL, "
+                + "accuracy INT NULL, "
+                + "priority INT NOT NULL, "
+                + "damage_class_id INT NOT NULL, "
+                + "target_id INT NOT NULL, "
+                + "flinch_chance INT NULL, "
+                + "effect_chance INT NULL, "
+                + "ailment_id INT NULL, "
+                + "recoil INT NULL, "
+                + "effect_id INT NOT NULL)";
+        runUpdate(query);
+
+        // fill moves table with data
+        path = "/rawdata/moves.csv";
+        query = "INSERT INTO moves ("
+                    + "move_id, name, type_id, " 
+                    + "power, accuracy, priority, "
+                    + "damage_class_id, target_id, "
+                    + "flinch_chance, effect_chance, "
+                    + "ailment_id, recoil, effect_id) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        dataTypes = new String[] {"int", "String", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int"};
+        loadTable(path, query, dataTypes);
+
+        //==================================================================================
         // each move a Pokemon can learn and at which level
         query = "CREATE TABLE pokemon_moves("
                 + "pokemon_id INT NOT NULL, "
                 + "move_id INT NOT NULL, "
-                + "level INT NOT NULL)";
+                + "level INT NOT NULL, "
+                + "FOREIGN KEY(pokemon_id) REFERENCES pokemon(pokemon_id), "
+                + "FOREIGN KEY(move_id) REFERENCES moves(move_id))";
         runUpdate(query);
 
         // fill pokemon moves table with data
@@ -157,32 +215,6 @@ public class DatabaseUtility
         loadTable(path, query, dataTypes);
 
         //==================================================================================
-        // divides a map into areas, such as different routes or cities
-        query = "CREATE TABLE area("
-                + "map_id INT NOT NULL, "
-                + "area_id INT NOT NULL, "
-                + "name VARCHAR(20) NOT NULL, "
-                + "min_x INT NOT NULL, "
-                + "max_x INT NOT NULL, "
-                + "min_y INT NOT NULL, "
-                + "max_y INT NOT NULL, "
-                + "music_id INT NOT NULL, "
-                + "battle_background_id INT NOT NULL)";
-        runUpdate(query);
-
-        // fills area table with data
-        path = "/rawdata/areas.csv";
-        query = "INSERT INTO area ("
-                    + "map_id, area_id, name, " 
-                    + "min_x, max_x, "
-                    + "min_y, max_y, "
-                    + "music_id, battle_background_id) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
-        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int", "int"};
-        loadTable(path, query, dataTypes);
-
-        //==================================================================================
         // re-use the same tile layout for multiple maps
         query = "CREATE TABLE map_template("
                 + "map_id INT PRIMARY KEY, "
@@ -200,6 +232,33 @@ public class DatabaseUtility
         loadTable(path, query, dataTypes);
 
         //==================================================================================
+        // divides a map into areas, such as different routes or cities
+        query = "CREATE TABLE area("
+                + "map_id INT NOT NULL, "
+                + "area_id INT NOT NULL, "
+                + "name VARCHAR(20) NOT NULL, "
+                + "min_x INT NOT NULL, "
+                + "max_x INT NOT NULL, "
+                + "min_y INT NOT NULL, "
+                + "max_y INT NOT NULL, "
+                + "music_id INT NOT NULL, "
+                + "battle_background_id INT NOT NULL, "
+                + "FOREIGN KEY(map_id) REFERENCES map_template(map_id))";
+        runUpdate(query);
+
+        // fills area table with data
+        path = "/rawdata/areas.csv";
+        query = "INSERT INTO area ("
+                    + "map_id, area_id, name, " 
+                    + "min_x, max_x, "
+                    + "min_y, max_y, "
+                    + "music_id, battle_background_id) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        
+        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int", "int"};
+        loadTable(path, query, dataTypes);
+
+        //==================================================================================
         // the various objects that appear on the map, like trees and houses
         query = "CREATE TABLE map_object ("
                 + "map_id INT NOT NULL, "
@@ -207,7 +266,8 @@ public class DatabaseUtility
                 + "name VARCHAR(20) NOT NULL, "
                 + "x INT NOT NULL, "
                 + "y INT NOT NULL, "
-                + "y_adjust INT NULL DEFAULT 0)";
+                + "y_adjust INT NULL DEFAULT 0, "
+                + "FOREIGN KEY(map_id) REFERENCES map_template(map_id))";
         runUpdate(query);
 
         // fills map objects table with data
@@ -230,7 +290,9 @@ public class DatabaseUtility
                 + "dest_map_id INT NOT NULL, "
                 + "dest_area_id INT NOT NULL, "
                 + "dest_x INT NOT NULL, "
-                + "dest_y INT NOT NULL)";
+                + "dest_y INT NOT NULL, "
+                + "FOREIGN KEY(map_id) REFERENCES map_template(map_id), "
+                + "FOREIGN KEY(dest_map_id) REFERENCES map_template(map_id))";
         runUpdate(query);
 
         // fills portal table with data
@@ -252,7 +314,9 @@ public class DatabaseUtility
                 + "map_id INT NOT NULL, "
                 + "area_id INT NOT NULL, "
                 + "pokemon_id INT NOT NULL, "
-                + "tile_id INT NOT NULL)";
+                + "tile_id INT NOT NULL, "
+                + "FOREIGN KEY(map_id) REFERENCES map_template(map_id), "
+                + "FOREIGN KEY(pokemon_id) REFERENCES pokemon(pokemon_id))";
         runUpdate(query);
 
         // fills pokemon location table with data
@@ -268,42 +332,12 @@ public class DatabaseUtility
         loadTable(path, query, dataTypes);
 
         //==================================================================================
-        // move's name, damage, accuracy, type
-        query = "CREATE TABLE moves("
-                + "move_id INT PRIMARY KEY, "
-                + "name VARCHAR(30) NOT NULL, "
-                + "type_id INT NOT NULL, "
-                + "power INT NULL, "
-                + "accuracy INT NULL, "
-                + "priority INT NOT NULL, "
-                + "damage_class_id INT NOT NULL, "
-                + "target_id INT NOT NULL, "
-                + "flinch_chance INT NULL, "
-                + "effect_chance INT NULL, "
-                + "ailment_id INT NULL, "
-                + "recoil INT NULL, "
-                + "effect_id INT NULL)";
-        runUpdate(query);
-
-        // fill moves table with data
-        path = "/rawdata/moves.csv";
-        query = "INSERT INTO moves ("
-                    + "move_id, name, type_id, " 
-                    + "power, accuracy, priority, "
-                    + "damage_class_id, target_id, "
-                    + "flinch_chance, effect_chance, "
-                    + "ailment_id, recoil, effect_id) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        dataTypes = new String[] {"int", "String", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int"};
-        loadTable(path, query, dataTypes);
-
-        //==================================================================================
         // stats that are increased or decreased by using a move
         query = "CREATE TABLE move_stat_effect("
                 + "move_id INT NOT NULL, "
                 + "stat_id INT NOT NULL, "
-                + "stat_change INT NOT NULL)";
+                + "stat_change INT NOT NULL, "
+                + "FOREIGN KEY(move_id) REFERENCES moves(move_id))";
         runUpdate(query);
 
         // fill move_stat_effect table with data
@@ -313,25 +347,6 @@ public class DatabaseUtility
                     + "VALUES (?, ?, ?)";
 
         dataTypes = new String[] {"int", "int", "int"};
-        loadTable(path, query, dataTypes);
-
-        //==================================================================================
-        // stats that are increased or decreased by using a move
-        query = "CREATE TABLE move_effect ("
-                + "effect_id INT PRIMARY KEY, "
-                + "target_type INT NOT NULL, "
-                + "counter_min INT NOT NULL, "
-                + "counter_max INT NOT NULL, "
-                + "text VARCHAR(100) NULL)";
-        runUpdate(query);
-
-        // fill move_stat_effect table with data
-        path = "/rawdata/moveEffect.csv";
-        query = "INSERT INTO move_effect ("
-                    + "effect_id, target_type, counter_min, counter_max, text) "
-                    + "VALUES (?, ?, ?, ?, ?)";
-
-        dataTypes = new String[] {"int", "int", "int", "int", "String"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================
@@ -412,7 +427,8 @@ public class DatabaseUtility
                 + "character_id INT NOT NULL, "
                 + "clear_conversation_id INT NOT NULL, "
                 + "auto_trigger INT NOT NULL, "
-                + "approach_player INT NOT NULL)";
+                + "approach_player INT NOT NULL, "
+                + "FOREIGN KEY(map_id) REFERENCES map_template(map_id))";
         runUpdate(query);
 
         // fill conversation table with data
@@ -429,7 +445,7 @@ public class DatabaseUtility
         //==================================================================================
         // store all the items
         query = "CREATE TABLE items("
-                + "item_id INT NOT NULL,"
+                + "item_id INT PRIMARY KEY,"
                 + "name VARCHAR(50) NOT NULL,"
                 + "category_id INT NOT NULL,"
                 + "cost INT NOT NULL,"
@@ -450,7 +466,8 @@ public class DatabaseUtility
         query = "CREATE TABLE battle("
                 + "battle_id INT NOT NULL,"
                 + "pokemon_id INT NOT NULL,"
-                + "level INT NOT NULL)";
+                + "level INT NOT NULL,"
+                + "FOREIGN KEY(pokemon_id) REFERENCES pokemon(pokemon_id))";
         runUpdate(query);
 
         // fill battle table with data
@@ -474,7 +491,8 @@ public class DatabaseUtility
                 + "y INT NOT NULL,"
                 + "conversation_id INT NOT NULL,"
                 + "wander_range INT NOT NULL,"
-                + "direction INT NULL)";
+                + "direction INT NULL, "
+                + "FOREIGN KEY(map_id) REFERENCES map_template(map_id))";
         runUpdate(query);
 
         // fill battle table with data
@@ -509,7 +527,8 @@ public class DatabaseUtility
                 + "move_2 INT NULL, "
                 + "move_3 INT NULL, "
                 + "move_4 INT NULL, "
-                + "pokemon_index INT NOT NULL)";
+                + "pokemon_index INT NOT NULL, "
+                + "FOREIGN KEY(pokemon_id) REFERENCES pokemon(pokemon_id))";
         runUpdate(query);
 
         //==================================================================================
@@ -517,7 +536,8 @@ public class DatabaseUtility
         query = "CREATE TABLE player_location ("
                 + "map_id INT NOT NULL,"
                 + "x INT NOT NULL, "
-                + "y INT NOT NULL)";
+                + "y INT NOT NULL, "
+                + "FOREIGN KEY(map_id) REFERENCES map_template(map_id))";
         runUpdate(query);
 
         // set the default location (inside player's house)
