@@ -5,14 +5,18 @@
             "name": "CodeLens (Launch) - App",
             "request": "launch",
             "mainClass": "pokemonoceanblue.App",
-            "projectName": "PokemonOceanBlue"
+            "projectName": "PokemonOceanBlue",
+            "vmArgs": "--enable-preview",
+            "args": "--enable-preview"
         },
         {
             "type": "java",
             "name": "CodeLens (Launch) - App",
             "request": "launch",
             "mainClass": "pokemonoceanblue.App",
-            "projectName": "Pokemonoceanblue"
+            "projectName": "Pokemonoceanblue",
+            "vmArgs": "--enable-preview",
+            "args": "--enable-preview"
         }
     ]
 }

@@ -560,16 +560,18 @@ public class OverworldModel {
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            String query = "SELECT mo.name, "
-                         + "mo.x + IFNULL(a.min_x,0) as x, "
-                         + "mo.y + IFNULL(a.min_y,0) as y, "
-                         + "mo.y_adjust "
-                         + "FROM map_object mo "
-                         + "LEFT JOIN area a "
-                         + "ON a.area_id = mo.area_id "
-                         + "AND a.map_id = mo.map_id "
-                         + "WHERE mo.map_id = " + this.mapId
-                         + " ORDER BY mo.y + IFNULL(a.min_y,0) + IFNULL(mo.y_adjust,0) ASC";
+            String query = String.format("""
+                SELECT mo.name,
+                mo.x + IFNULL(a.min_x,0) as x,
+                mo.y + IFNULL(a.min_y,0) as y,
+                mo.y_adjust
+                FROM map_object mo
+                LEFT JOIN area a
+                ON a.area_id = mo.area_id 
+                AND a.map_id = mo.map_id 
+                WHERE mo.map_id = %s
+                ORDER BY mo.y + IFNULL(a.min_y,0) + IFNULL(mo.y_adjust,0) ASC
+                """, this.mapId);
 
             ResultSet rs = db.runQuery(query);
 
@@ -625,19 +627,21 @@ public class OverworldModel {
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            String query = "SELECT p.x + IFNULL(a.min_x,0) as x, "
-                         + "p.y + IFNULL(a.min_y,0) as y, "
-                         + "p.dest_map_id, "
-                         + "p.dest_x + IFNULL(dest.min_x,0) as dest_x, "
-                         + "p.dest_y + IFNULL(dest.min_y,0) as dest_y "
-                         + "FROM portal p "
-                         + "LEFT JOIN area a "
-                         + "ON a.area_id = p.area_id "
-                         + "AND a.map_id = p.map_id "
-                         + "LEFT JOIN area dest "
-                         + "ON dest.area_id = p.dest_area_id "
-                         + "AND dest.map_id = p.dest_map_id "
-                         + "WHERE p.map_id = " + this.mapId;
+            String query = """
+                SELECT p.x + IFNULL(a.min_x,0) as x,
+                p.y + IFNULL(a.min_y,0) as y,
+                p.dest_map_id,
+                p.dest_x + IFNULL(dest.min_x,0) as dest_x,
+                p.dest_y + IFNULL(dest.min_y,0) as dest_y
+                FROM portal p
+                LEFT JOIN area a
+                ON a.area_id = p.area_id
+                AND a.map_id = p.map_id
+                LEFT JOIN area dest
+                ON dest.area_id = p.dest_area_id
+                AND dest.map_id = p.dest_map_id
+                WHERE p.map_id = 
+                """ + this.mapId;
 
             ResultSet rs = db.runQuery(query);
 
@@ -667,17 +671,19 @@ public class OverworldModel {
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            String query = "SELECT c.character_id, "
-                         + "c.name, c.sprite_name, "
-                         + "c.x + IFNULL(a.min_x,0) as x, "
-                         + "c.y + IFNULL(a.min_y,0) as y, "
-                         + "c.conversation_id, "
-                         + "c.wander_range, c.direction "
-                         + "FROM character c "
-                         + "LEFT JOIN area a "
-                         + "ON a.area_id = c.area_id "
-                         + "AND a.map_id = c.map_id "
-                         + "WHERE c.map_id = " + this.mapId;
+            String query = """
+                SELECT c.character_id,
+                c.name, c.sprite_name,
+                c.x + IFNULL(a.min_x,0) as x,
+                c.y + IFNULL(a.min_y,0) as y,
+                c.conversation_id,
+                c.wander_range, c.direction
+                FROM character c
+                LEFT JOIN area a
+                ON a.area_id = c.area_id
+                AND a.map_id = c.map_id
+                WHERE c.map_id = 
+                """ + this.mapId;
 
             ResultSet rs = db.runQuery(query);
 
@@ -712,16 +718,18 @@ public class OverworldModel {
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            String query = "SELECT c.conversation_id, "
-                         + "c.x + IFNULL(a.min_x,0) as x, "
-                         + "c.y + IFNULL(a.min_y,0) as y, "
-                         + "c.character_id, c.approach_player, "
-                         + "c.clear_conversation_id, c.auto_trigger "
-                         + "FROM conversation_trigger c "
-                         + "LEFT JOIN area a "
-                         + "ON a.area_id = c.area_id "
-                         + "AND a.map_id = c.map_id "
-                         + "WHERE c.map_id = " + this.mapId;
+            String query = """
+                SELECT c.conversation_id,
+                c.x + IFNULL(a.min_x,0) as x,
+                c.y + IFNULL(a.min_y,0) as y,
+                c.character_id, c.approach_player,
+                c.clear_conversation_id, c.auto_trigger
+                FROM conversation_trigger c
+                LEFT JOIN area a
+                ON a.area_id = c.area_id
+                AND a.map_id = c.map_id
+                WHERE c.map_id = 
+                """ + this.mapId;
 
             ResultSet rs = db.runQuery(query);
 
