@@ -61,7 +61,11 @@ public class PokemonStorageModel extends BaseModel
             // pick up the currently hovered Pokemon
             if (this.currentPokemon == null && this.textOptions == null)
             {
-                this.textOptions = new String[]{"MOVE", "SUMMARY", "CANCEL"};
+                // don't show the text options if hovering the empty space at the end of the list
+                if (this.optionIndex < this.pokemonStorage.size())
+                {
+                    this.textOptions = new String[]{"MOVE", "SUMMARY", "CANCEL"};
+                }
             }
             else if (this.textOptions != null && this.textOptionIndex == 0)
             {

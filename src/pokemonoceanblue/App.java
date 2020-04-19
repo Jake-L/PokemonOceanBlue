@@ -34,7 +34,7 @@ public class App extends JFrame implements KeyListener
     BattleController battleController;
     BaseController partyController;
     PartyModel partyModel;
-    InventoryController inventoryController;
+    BaseController inventoryController;
     InventoryModel inventoryModel;
     BaseController newPokemonController;
     BaseController summaryController;
@@ -63,8 +63,8 @@ public class App extends JFrame implements KeyListener
 
     private void createAndShowGUI() {
         // this code should be uncommented when testing database changes
-        // DatabaseUtility db = new DatabaseUtility();
-        // db.prepareDatabase();
+        DatabaseUtility db = new DatabaseUtility();
+        db.prepareDatabase();
 
         // load custom font
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -127,7 +127,7 @@ public class App extends JFrame implements KeyListener
 
     }
 
-     /** Add the pressed key to list of pressed keys */
+    /** Add the pressed key to list of pressed keys */
     public void keyPressed(KeyEvent e) {
         if (!this.keysDown.contains(e.getKeyCode()))
         {
@@ -152,7 +152,7 @@ public class App extends JFrame implements KeyListener
             {
                 ex.printStackTrace();
                 this.setMap(1, 3, 3);
-            }  
+            } 
         }
     }
 
@@ -220,7 +220,7 @@ public class App extends JFrame implements KeyListener
     {
         this.inventoryModel.initialize();
         viewManager.setView(new InventoryView(inventoryModel));
-        inventoryController = new InventoryController(inventoryModel);
+        inventoryController = new BaseController(inventoryModel);
     }
 
     public void openParty(int currentPokemon)

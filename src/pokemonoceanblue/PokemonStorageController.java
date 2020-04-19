@@ -46,7 +46,11 @@ public class PokemonStorageController extends BaseController
                     // pick up the currently hovered Pokemon
                     if (this.pokemonStorageModel.currentPokemon == null)
                     {
-                        this.pokemonStorageModel.currentPokemon = this.partyModel.team.remove(this.partyModel.optionIndex);
+                        // make sure you don't remove the only Pokemon in the player's team
+                        if (this.partyModel.team.size() > 1)
+                        {   
+                            this.pokemonStorageModel.currentPokemon = this.partyModel.team.remove(this.partyModel.optionIndex);
+                        }
                     }
                     else if (this.partyModel.optionIndex < this.partyModel.team.size())
                     {

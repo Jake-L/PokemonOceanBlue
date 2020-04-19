@@ -16,9 +16,14 @@ abstract class BaseView {
     protected Image[] textDisplayBox = new Image[9];
     protected Image arrowSprite;
     protected static Image[] rainSprite = new Image[6];
+    protected BaseModel model;
+    protected int minRenderIndex;
+    protected int maxRenderRows;
+    protected int oldOptionIndex = -1;
+    protected static Image[] itemSprite;
 
     public BaseView()
-    {       
+    {
         ImageIcon ii;
 
         for (int i = 0; i < 9; i++)
@@ -35,6 +40,30 @@ abstract class BaseView {
             ii = new ImageIcon(this.getClass().getResource("/battle/rain" + i + ".png"));
             rainSprite[i]  = ii.getImage();
         }
+
+        if (itemSprite == null)
+        {
+            itemSprite = new Image[150];
+
+            for (int i = 0; i < 4; i++)
+            {
+                ii = new ImageIcon(this.getClass().getResource("/inventory/" + i + ".png"));
+                itemSprite[i]  = ii.getImage();
+            } 
+
+            for (int i = 113; i < 134; i++)
+            {
+                ii = new ImageIcon(this.getClass().getResource("/inventory/" + i + ".png"));
+                itemSprite[i]  = ii.getImage();
+            } 
+        }
+    }
+
+    public BaseView(BaseModel model)
+    {    
+        this(); 
+        this.model = model;
+        this.minRenderIndex = this.model.optionMin;
     }
 
     /** 
@@ -48,6 +77,9 @@ abstract class BaseView {
         this.graphicsScaling = graphicsScaling;
         this.width = width;
         this.height = height;
+
+        // force recalculation of indices to adjust for new screen size
+        this.oldOptionIndex = -1;
     }
 
     /**
@@ -280,4 +312,23 @@ abstract class BaseView {
         g.fillRect(0, 0, width, height);
         
     }
+
+    /**
+     * For views where you scroll through objects, like the Pokedex or Inventory,
+     * this function calculates which range of objects should be displayed
+     */
+    protected void calcIndices() 
+    {
+        if (this.model.optionIndex < this.minRenderIndex)
+        { 
+            this.minRenderIndex = Math.max(this.minRenderIndex - this.model.optionWidth, this.model.optionMin);
+        }
+        else if (this.model.optionIndex > this.minRenderIndex + this.maxRenderRows * this.model.optionWidth - 1)
+        {
+            this.minRenderIndex = Math.min(this.minRenderIndex + this.model.optionWidth, this.model.optionMax - 1);
+        }
+
+        this.oldOptionIndex = this.model.optionIndex;
+    }
+
 }

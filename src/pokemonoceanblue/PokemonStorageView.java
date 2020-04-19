@@ -22,10 +22,10 @@ public class PokemonStorageView extends BaseView {
     private PokemonStorageModel storageModel;
     private PartyModel partyModel;
     private Image background;
-    private int oldOptionIndex;
     private int oldPartyOptionIndex;
-    private int minIndex = 0;
-    private int rowCount;
+    private int iconWidth;
+    private int iconHeight;
+    private int heightPerPokemon;
     
     /** 
      * Constructor for the Pokemon Storage view
@@ -33,6 +33,7 @@ public class PokemonStorageView extends BaseView {
      */
     public PokemonStorageView(PokemonStorageModel storageModel, PartyModel partyModel)
     {
+        super(storageModel);
         this.storageModel = storageModel;
         this.partyModel = partyModel;
         loadImage();
@@ -99,18 +100,8 @@ public class PokemonStorageView extends BaseView {
         Font font = new Font("Pokemon Fire Red", Font.PLAIN, 12 * graphicsScaling);      
         g.setFont(font);
 
-        int iconHeight = this.pokemonIconSprite.get(this.partyModel.team.get(0).getSpriteId()).getHeight(null) * graphicsScaling;
-        int iconWidth = this.pokemonIconSprite.get(this.partyModel.team.get(0).getSpriteId()).getWidth(null) * graphicsScaling;
 
-        this.rowCount = height / (iconHeight);
-        this.storageModel.optionWidth = (width * 3 / 5) / (iconWidth);
-        this.storageModel.optionHeight = this.storageModel.optionMax / this.storageModel.optionWidth;
 
-        // increase minIndex if screen size change causes the current index to be pushed off the bottom of the screen
-        if (this.minIndex < this.storageModel.optionIndex - this.rowCount * this.storageModel.optionWidth)
-        {
-            this.minIndex += this.storageModel.optionWidth;
-        }
 
         if (this.oldOptionIndex != this.storageModel.optionIndex || this.oldPartyOptionIndex != this.partyModel.optionIndex)
         {
@@ -162,8 +153,6 @@ public class PokemonStorageView extends BaseView {
             canvas
         );
 
-        int heightPerPokemon = ((height * 9 / 10) - 16 * graphicsScaling) / 6;
-
         // display the player's team
         for (int i = 0; i < this.partyModel.team.size(); i++)
         {
@@ -187,13 +176,13 @@ public class PokemonStorageView extends BaseView {
         }
 
         // draw the pokemon in storage
-        for (int i = 0; i < this.rowCount; i++)
+        for (int i = 0; i < this.maxRenderRows; i++)
         {
             for (int j = 0; j < this.storageModel.optionWidth; j++)
             {
-                if (this.minIndex + (i * this.storageModel.optionWidth) + j < this.storageModel.pokemonStorage.size())
+                if (this.minRenderIndex + (i * this.storageModel.optionWidth) + j < this.storageModel.pokemonStorage.size())
                 {
-                    String pokemonId = this.storageModel.pokemonStorage.get(this.minIndex + (i * this.storageModel.optionWidth) + j).getSpriteId();
+                    String pokemonId = this.storageModel.pokemonStorage.get(this.minRenderIndex + (i * this.storageModel.optionWidth) + j).getSpriteId();
                     g.drawImage(
                         this.pokemonIconSprite.get(pokemonId),
                         width / 5 + j * iconWidth,
@@ -209,50 +198,49 @@ public class PokemonStorageView extends BaseView {
         // display cursor
         if (this.storageModel.categoryIndex == 0)
         {
-            g.drawImage(
-                this.cursorSprite[0],
-                iconWidth / 2,
-                height / 20 + this.partyModel.optionIndex * heightPerPokemon,
-                this.cursorSprite[0].getWidth(null) * graphicsScaling,
-                this.cursorSprite[0].getHeight(null) * graphicsScaling,
-                canvas
-            );
-
             if (this.storageModel.currentPokemon != null)
             {
                 g.drawImage(
                     this.pokemonIconSprite.get(this.storageModel.currentPokemon.getSpriteId()),
                     width / 12 - iconWidth / 2,
-                    height / 20 + 9 * graphicsScaling + this.partyModel.optionIndex * heightPerPokemon,
+                    height / 20 + 9 * graphicsScaling + this.partyModel.optionIndex * heightPerPokemon - (heightPerPokemon / 4),
                     iconWidth,
                     iconHeight,
                     canvas
                 );
             }
-        }
-        else
-        {
+
             g.drawImage(
                 this.cursorSprite[0],
-                width / 5 + (this.storageModel.optionIndex % this.storageModel.optionWidth) * iconWidth,
-                height / 20 + (this.storageModel.optionIndex / this.storageModel.optionWidth) * heightPerPokemon - (heightPerPokemon / 2),
+                iconWidth / 2,
+                height / 20 + this.partyModel.optionIndex * heightPerPokemon - (heightPerPokemon / 4),
                 this.cursorSprite[0].getWidth(null) * graphicsScaling,
                 this.cursorSprite[0].getHeight(null) * graphicsScaling,
                 canvas
             );
-            
-
+        }
+        else
+        {
             if (this.storageModel.currentPokemon != null)
             {
                 g.drawImage(
                     this.pokemonIconSprite.get(this.storageModel.currentPokemon.getSpriteId()),
-                    width / 5 + (this.storageModel.optionIndex % this.storageModel.optionWidth) * iconWidth,
-                    height / 20 + (this.storageModel.optionIndex / this.storageModel.optionWidth) * heightPerPokemon - (heightPerPokemon / 4),
+                    width / 5 + ((this.storageModel.optionIndex - this.minRenderIndex) % this.storageModel.optionWidth) * iconWidth,
+                    height / 20 + ((this.storageModel.optionIndex - this.minRenderIndex) / this.storageModel.optionWidth) * heightPerPokemon - (heightPerPokemon / 4),
                     iconWidth,
                     iconHeight,
                     canvas
                 );
             }
+
+            g.drawImage(
+                this.cursorSprite[0],
+                width / 5 + ((this.storageModel.optionIndex - this.minRenderIndex) % this.storageModel.optionWidth) * iconWidth,
+                height / 20 + ((this.storageModel.optionIndex - this.minRenderIndex) / this.storageModel.optionWidth) * heightPerPokemon - (heightPerPokemon / 2),
+                this.cursorSprite[0].getWidth(null) * graphicsScaling,
+                this.cursorSprite[0].getHeight(null) * graphicsScaling,
+                canvas
+            );
         }
 
         // display a pop-up box of text options
@@ -262,18 +250,17 @@ public class PokemonStorageView extends BaseView {
         }
     }
 
-    private void calcIndices()
+    protected void calcIndices()
     {
-        if (this.storageModel.optionIndex < this.minIndex)
-        { 
-            this.minIndex = Math.max(this.minIndex - this.storageModel.optionWidth, 1);
-        }
-        else if (this.storageModel.optionIndex > this.minIndex + this.rowCount * this.storageModel.optionWidth - 1)
-        {
-            this.minIndex = Math.min(this.minIndex + this.storageModel.optionWidth, this.storageModel.pokemonStorage.size() - 1);
-        }
+        this.iconHeight = this.pokemonIconSprite.get(this.partyModel.team.get(0).getSpriteId()).getHeight(null) * graphicsScaling;
+        this.iconWidth = this.pokemonIconSprite.get(this.partyModel.team.get(0).getSpriteId()).getWidth(null) * graphicsScaling;
+        this.heightPerPokemon = ((height * 9 / 10) - 16 * graphicsScaling) / 6;
 
-        this.oldOptionIndex = this.storageModel.optionIndex;
+        this.storageModel.optionWidth = (width * 3 / 5) / (iconWidth);
+        this.storageModel.optionHeight = this.storageModel.optionMax / this.storageModel.optionWidth;
+        this.maxRenderRows = ((height * 17 / 20) / (heightPerPokemon));
+
+        super.calcIndices();
         this.oldPartyOptionIndex = this.partyModel.optionIndex;
 
         if (this.storageModel.categoryIndex == 0 && this.storageModel.optionIndex < this.storageModel.pokemonStorage.size())
@@ -290,7 +277,6 @@ public class PokemonStorageView extends BaseView {
         {
             this.pokemonSprite = null;
         }
-        
     }
 
     @Override
