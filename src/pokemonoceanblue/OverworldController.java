@@ -28,9 +28,10 @@ public class OverworldController {
             if (keysDown.contains(KeyEvent.VK_ESCAPE))
             {
                 this.model.openMenu();
+                this.model.actionCounter = this.model.ACTION_DELAY;
             }
             // move around in a menu if its open
-            else if (this.model.textOptions != null)
+            else if (this.model.textOptions != null || this.model.itemOptions.size() > 0)
             {
                 if (keysDown.contains(KeyEvent.VK_ENTER))
                 {
@@ -38,12 +39,13 @@ public class OverworldController {
                 }
                 if (keysDown.contains(KeyEvent.VK_UP))
                 {
-                    this.model.moveCursor(-1);
+                    this.model.moveIndex(0, -1);
                 }
                 else if (keysDown.contains(KeyEvent.VK_DOWN))
                 {
-                    this.model.moveCursor(1);
+                    this.model.moveIndex(0, 1);
                 }
+                this.model.actionCounter = this.model.ACTION_DELAY;
             }
             // otherwise move player around on map
             else

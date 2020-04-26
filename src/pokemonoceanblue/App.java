@@ -208,7 +208,7 @@ public class App extends JFrame implements KeyListener
         }
 
         // create the overworld
-        overworldModel = new OverworldModel(mapId, playerModel, this);
+        overworldModel = new OverworldModel(mapId, playerModel, this, inventoryModel);
         overworldController = new OverworldController(overworldModel);
         playerModel.setOverworldModel(overworldModel);
 

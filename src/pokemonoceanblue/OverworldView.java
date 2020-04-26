@@ -3,6 +3,7 @@ package pokemonoceanblue;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,12 +24,13 @@ public class OverworldView extends BaseView {
     private Map<String, Image> characterSprite = new HashMap<String, Image>();
     private int xOffset = -1;
     private int yOffset = -1;
-    private int[] ANIMATED_TILES = new int[]{0, 6, 7, 8, 67, 70};
-    private int[] ANIMATED_TILE_LENGTH = new int[]{8, 8, 8, 8, 5, 5};
+    private int[] ANIMATED_TILES = new int[]{0, 6, 7, 8, 67, 70, 88};
+    private int[] ANIMATED_TILE_LENGTH = new int[]{8, 8, 8, 8, 5, 5, 4};
     private Image mugshotBackgroundSprite;
     private Image mugshotCharacterSprite;
     private Image mugshotLightningSprite;
     private Image mugshotVsSprite;
+    private Image[] inventoryBorder = new Image[9];
     
     /** 
      * Constructor for the overworld view
@@ -150,6 +152,13 @@ public class OverworldView extends BaseView {
 
         ii = new ImageIcon(this.getClass().getResource("/mugshots/vs.png"));
         this.mugshotVsSprite = ii.getImage();
+
+        // load sprites for in shops
+        for (int i = 0; i < inventoryBorder.length; i++)
+        {
+            ii = new ImageIcon(this.getClass().getResource("/inventory/border" + i + ".png"));
+            inventoryBorder[i]  = ii.getImage();
+        }
     }
 
     /** 
@@ -279,7 +288,7 @@ public class OverworldView extends BaseView {
         // display text options
         if (this.model.textOptions != null)
         {
-            this.displayOptions(this.model.textOptions, this.model.optionIndex, g, canvas);
+            this.displayOptions(this.model.textOptions, this.model.textOptionIndex, g, canvas);
         }
 
         // display gym leader mugshot
@@ -333,6 +342,12 @@ public class OverworldView extends BaseView {
         }
 
         //this.renderRain(g, canvas, 24);
+
+        // display the current shop window
+        if (this.model.itemOptions.size() > 0)
+        {
+            this.renderShop(g, canvas);
+        }
     }
 
     /** 
@@ -367,6 +382,70 @@ public class OverworldView extends BaseView {
                     sprite.getWidth(null) * graphicsScaling, 
                     sprite.getHeight(null) * graphicsScaling, 
                     canvas); 
+    }
+
+    /**
+     * Renders the shpo interface, showing items available for purchase and their prices
+     * @param g
+     * @param canvas
+     */
+    private void renderShop(Graphics g, JPanel canvas)
+    {
+        int textWidth;
+        int fontSize = Math.max(16, height / 10);
+        int fontSpacing = fontSize * 2 / 3;
+        int iconScaling = (int)Math.floor(fontSpacing / 20);
+        Font font = new Font("Pokemon Fire Red", Font.PLAIN, fontSize);
+
+        // draw the box that holds all the item names
+        this.displayTextbox(inventoryBorder, width * 3 / 10, 0, width * 2 / 3, height * 7 / 10, g, canvas);
+
+        // draw the box that holds the player's current money
+        this.displayTextbox(inventoryBorder, 0, 0, width / 5, height / 5, g, canvas);
+
+        // display the player's current money
+        String money = "$" + String.valueOf(this.model.inventoryModel.getMoney());
+        textWidth = g.getFontMetrics(font).stringWidth(money);
+        g.drawString(money,
+            width / 5 - textWidth - 12 * graphicsScaling,
+            height / 5 - 12 * graphicsScaling);
+
+        // display item description
+        this.displayText(this.model.itemOptions.get(this.model.optionIndex).description, g, canvas);
+
+        for (int i = this.model.optionMin; i <= this.model.optionMax; i++)
+        {
+            Image sprite = itemSprite[this.model.itemOptions.get(this.minRenderIndex + i).itemId];
+
+            // draw the item's name
+            g.drawString(this.model.itemOptions.get(this.minRenderIndex + i).name,
+                width * 3 / 10 + (24 + sprite.getWidth(null)) * graphicsScaling,
+                (i * fontSpacing) + 30 * graphicsScaling);
+
+            // display an icon for the item
+            g.drawImage(sprite,
+                width * 3 / 10 + 16 * graphicsScaling,
+                (i * fontSpacing) + 30 * graphicsScaling - sprite.getHeight(null) * iconScaling,
+                sprite.getWidth(null) * iconScaling,
+                sprite.getHeight(null) * iconScaling,
+                canvas);
+
+            // display the item's price
+            String quantity = "$" + String.valueOf(this.model.itemOptions.get(this.minRenderIndex + i).cost);
+            textWidth = g.getFontMetrics(font).stringWidth(quantity);
+
+            g.drawString(quantity,
+                width * 29 / 30 - 24 * graphicsScaling - textWidth,
+                (i * fontSpacing) + 30 * graphicsScaling);
+        }
+
+        // draw an arrow showing the currently selected item
+        g.drawImage(this.arrowSprite,
+            width * 3 / 10 + 2 * graphicsScaling,
+            (this.model.optionIndex - this.model.optionMin) * fontSpacing + 30 * graphicsScaling - arrowSprite.getHeight(null) * 2 * iconScaling,
+            arrowSprite.getWidth(null) * 2 * iconScaling,
+            arrowSprite.getHeight(null) * 2 * iconScaling,
+            canvas);
     }
 
     /** 

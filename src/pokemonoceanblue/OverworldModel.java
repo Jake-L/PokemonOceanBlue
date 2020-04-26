@@ -11,7 +11,7 @@ import java.util.Random;
 import java.util.HashMap;
 import java.util.Map;
 
-public class OverworldModel {
+public class OverworldModel extends BaseModel {
     public int mapId;
     public byte[][] tiles;
     public byte[][] tilesOverlay;
@@ -22,8 +22,6 @@ public class OverworldModel {
     public ConversationModel conversation;
     private App app;
     private Map<Integer, List<Integer>> wildPokemon = new HashMap<Integer, List<Integer>>();
-    public String[] textOptions;
-    public int optionIndex;
     private List<ConversationTriggerModel> conversationTrigger = new ArrayList<ConversationTriggerModel>();
     private int areaId = -1;
     private List<AreaModel> areas = new ArrayList<AreaModel>();
@@ -31,18 +29,18 @@ public class OverworldModel {
     protected String mugshotCharacter;
     public boolean removeCharacter = false;
     public byte battleBackgroundId = 6;
-
-    // prevent players from accidently repeating actions by holdings keys
-    public int actionCounter = 15;
+    public List<ItemModel> itemOptions = new ArrayList<ItemModel>(); 
+    public InventoryModel inventoryModel;
     
     /** 
      * @param mapId unique identifier for the current map
      * @param playerModel model for the player to display it and calculate screen offset
      */
-    public OverworldModel(int mapId, CharacterModel playerModel, App app){
+    public OverworldModel(int mapId, CharacterModel playerModel, App app, InventoryModel inventoryModel){
         this.mapId = mapId;
         this.playerModel = playerModel;
         this.app = app;
+        this.inventoryModel = inventoryModel;
         
         this.readMapFile();
         this.loadWildPokemon();
@@ -129,6 +127,7 @@ public class OverworldModel {
         return output;
     }
 
+    @Override
     public void update()
     {
         // decrement action counter
@@ -309,6 +308,16 @@ public class OverworldModel {
                 {
                     this.textOptions = this.conversation.getOptions();
                 }
+                // open shop
+                else if (this.conversation.getShopId() == 1)
+                {
+                    this.itemOptions.add(new ItemModel(1, 1));
+                    this.itemOptions.add(new ItemModel(3, 1));
+                    this.optionMax = this.itemOptions.size() - 1;
+                    this.optionWidth = 1;
+                    this.optionHeight = this.optionMax;
+                    this.optionIndex = 0;
+                }
             }
             this.actionCounter = 15;
         }
@@ -455,18 +464,29 @@ public class OverworldModel {
     {
         if (this.actionCounter == 0)
         {
+            // exit a shop if it is open
+            if (this.itemOptions.size() > 0)
+            {
+                this.itemOptions.clear();
+                this.optionIndex = 0;
+                this.optionHeight = 0;
+                this.optionMax = 0;
+                this.optionWidth = 0;
+                this.conversation.nextEvent();
+            }
             // exit the menu if it was already open
             if (this.textOptions != null)
             {
                 this.textOptions = null;
                 this.actionCounter = 15;
-                this.optionIndex = 0;
+                this.textOptionIndex = 0;
             }
             // open the menu
             else if (this.conversation == null)
             {
                 this.textOptions = new String[]{"Pokedex", "Pokemon", "Bag"};
                 this.actionCounter = 15;
+                this.textOptionIndex = 0;
             }
         }
     }
@@ -474,50 +494,37 @@ public class OverworldModel {
     /**
      * Take action based on what the player selects in the menu
      */
+    @Override
     public void confirmSelection()
     {
         if (this.actionCounter == 0)
         {
             if (this.conversation != null)
             {
-                this.conversation.setOption(this.optionIndex);
-                this.openMenu();
+                if (this.itemOptions.size() > 0)
+                {
+                    this.inventoryModel.buyItem(this.itemOptions.get(this.optionIndex));
+                }
+                else
+                {
+                    this.conversation.setOption(this.textOptionIndex);
+                    this.openMenu();
+                }
             }
-            else if (this.textOptions[this.optionIndex] == "Pokedex")
+            else if (this.textOptions[this.textOptionIndex] == "Pokedex")
             {
                 app.openPokedex();
                 this.openMenu();
             }
-            else if (this.textOptions[this.optionIndex] == "Pokemon")
+            else if (this.textOptions[this.textOptionIndex] == "Pokemon")
             {
                 app.openParty(-1);
                 this.openMenu();
             }
-            else if (this.textOptions[this.optionIndex] == "Bag")
+            else if (this.textOptions[this.textOptionIndex] == "Bag")
             {
                 app.openInventory();
                 this.openMenu();
-            }
-        }
-    }
-
-    /**
-     * Change the currently selected option
-     * @param dy the direction to move the cursor
-     */
-    public void moveCursor(int dy)
-    {
-        if (this.actionCounter == 0)
-        {
-            if (dy > 0 && this.optionIndex < this.textOptions.length - 1)
-            {
-                this.optionIndex++;
-                this.actionCounter = 10;
-            }
-            else if (dy < 0 && this.optionIndex > 0)
-            {
-                this.optionIndex--;
-                this.actionCounter = 10;
             }
         }
     }

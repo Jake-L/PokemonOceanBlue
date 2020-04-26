@@ -354,6 +354,15 @@ public class ConversationModel
         return null;
     }
 
+    public int getShopId()
+    {
+        if (this.events.size() > 0)
+        {
+            return this.events.get(0).shopId;
+        }
+        return -1;
+    }
+
     /**
      * Remvoe characters and triggers, and update character's conversation
      * @param characters a list of all the characters on the current map
@@ -454,6 +463,7 @@ public class ConversationModel
         private int optionId;
         public final String mugshotBackground;
         public final String mugshotCharacter;
+        public int shopId;
 
         // variables for moving CPUs
         public int characterId;
@@ -516,8 +526,19 @@ public class ConversationModel
 
             this.giftPokemonId = rs.getInt("gift_pokemon_id");
             this.giftPokemonLevel = rs.getInt("gift_pokemon_level");
-            this.mugshotBackground = rs.getString("mugshot_background");
-            this.mugshotCharacter = rs.getString("mugshot_character");
+            
+            if (rs.getString("mugshot_character") != null && !rs.getString("mugshot_character").equals(""))
+            {
+                this.mugshotBackground = rs.getString("mugshot_background");
+                this.mugshotCharacter = rs.getString("mugshot_character");
+            }
+            else
+            {
+                this.mugshotBackground = null;
+                this.mugshotCharacter = null;
+            }
+
+            this.shopId = rs.getInt("shop_id");
         }
 
         /**

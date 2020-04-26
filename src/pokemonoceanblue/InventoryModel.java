@@ -11,6 +11,7 @@ public class InventoryModel extends BaseModel {
 
     public List<ItemModel>[] items; 
     public int bagIndex;
+    private int money = 5001;
     
     /** 
      * Constructor
@@ -124,6 +125,35 @@ public class InventoryModel extends BaseModel {
 
         // item not contained in inventory
         return false;
+    }
+
+    public void addMoney(int quantity)
+    {
+        this.money += quantity;
+    }
+
+    /**
+     * Attempts to spend money if the player has enough
+     * @param item the item the player wishes to buy
+     * @return true if the player has enough money or false otherwise
+     */
+    public boolean buyItem(ItemModel item)
+    {
+        if (this.money < item.quantity * item.cost)
+        {
+            return false;
+        }
+        else
+        {
+            this.addItem(item.itemId, item.quantity);
+            this.money -= item.quantity * item.cost;
+            return true;
+        }
+    }
+
+    public int getMoney()
+    {
+        return this.money;
     }
 
     /**

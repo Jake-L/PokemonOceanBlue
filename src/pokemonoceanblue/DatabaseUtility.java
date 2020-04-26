@@ -431,7 +431,8 @@ public class DatabaseUtility
                     gift_pokemon_level INT DEFAULT -1,
                     new_conversation_id INT DEFAULT -1,
                     mugshot_character VARCHAR(20) NULL,
-                    mugshot_background VARCHAR(20) NULL)
+                    mugshot_background VARCHAR(20) NULL,
+                    shop_id INT NULL)
                 """;
         runUpdate(query);
 
@@ -444,11 +445,11 @@ public class DatabaseUtility
                     option_id, next_conversation_event_id,
                     gift_pokemon_id, gift_pokemon_level,
                     new_conversation_id,
-                    mugshot_character, mugshot_background)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    mugshot_character, mugshot_background, shop_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
-        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int", "int", "int", "int", "int", "String", "String"};
+        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int", "int", "int", "int", "int", "String", "String", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================
