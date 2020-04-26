@@ -44,6 +44,7 @@ public class App extends JFrame implements KeyListener
     PokemonStorageModel pokemonStorageModel;
     PokemonStorageController pokemonStorageController;
     MusicPlayer musicPlayer;
+    AchievementsModel achievementsModel;
 
     List<NewPokemonModel> newPokemonQueue = new ArrayList<NewPokemonModel>();
 
@@ -116,6 +117,7 @@ public class App extends JFrame implements KeyListener
         this.inventoryModel = new InventoryModel();
         this.pokedexModel = new PokedexModel();
         this.pokemonStorageModel = new PokemonStorageModel();
+        this.achievementsModel = new AchievementsModel();
 
         this.evolveCheck = new EvolutionCheck();
 

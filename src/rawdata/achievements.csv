@@ -1,0 +1,75 @@
+Achievement ID,Name,Counter,Required Value,Reward ID,Reward Quantity,Description
+0,Collector I,0,10,,,Catch 10 Pokemon
+1,Collector II,0,50,,,Catch 50 Pokemon
+2,Collector III,0,100,,,Catch 100 Pokemon
+3,Collector IV,0,250,,,Catch 250 Pokemon
+4,Collector V,0,500,,,Catch 500 Pokemon
+5,Ultimate Collector,0,1000,,,Catch 1000 Pokemon
+6,Legendary Trio,0,3,,,Catch each of the three legendary Kanto birds.
+7,Mewtwo Tamer,0,1,,,Catch Mewtwo
+8,Mew,0,1,,,Catch Mew
+9,Foreign Specimen,0,1,,,Obtain a legendary Pokemon that is not native to Kanto
+10,Distanced Trainer,0,1,,,Leave a Pokemon in the daycare
+11,Pokemon Breeder,0,1,,,Obtain an egg from the Pokemon Daycare
+12,Egg Hatcher I,0,1,,,Hatch an egg
+13,Egg Hatcher II,0,10,,,Hatch 10 eggs
+14,Egg Hatcher III,0,50,,,Hatch 50 eggs
+15,Egg Hatcher IV,0,100,,,Hatch 100 eggs
+16,Pokemon Trainer I,0,10,,,Raise a Pokemon to level 10
+17,Pokemon Trainer II,0,50,,,Raise a Pokemon to level 50
+18,Pokemon Trainer III,0,100,,,Raise a Pokemon to level 100
+19,Evolution Enthusiast,0,10,,,Evolve 10 Pokemon
+20,Evolution Expert,0,50,,,Evolve 50 Pokemon
+21,Evolutionary,0,100,,,Evolve 100 Pokemon
+22,Geologist,0,1,,,Evolve a Pokemon using an evolution stone
+23,Finisher,0,12,,,Obtain all fully evolved starters from each region
+24,Companion,0,1,,,Achieve max happiness with one of your Pokemon
+25,Rare Breed,0,1,,,Obtain a shiny Pokemon
+26,Kanto Master,0,151,,,Complete the Kanto Pokedex
+27,Johto Master,0,100,,,Complete the Johto Pokedex
+28,Hoenn Master,0,135,,,Complete the Hoenn Pokedex
+29,Sinnoh Master,0,107,,,Complete the Sinnoh Pokedex
+30,Pokemon Master,0,493,,,Complete all four regional Pokedex
+31,Tutor User,0,1,,,Learn a move from a move tutor
+32,Tactician I,0,1,,,Use a super effective move in battle
+33,Tactician II,0,50,,,Use 50 super effective moves in battle
+34,Tactician III,0,100,,,Use 100 super effective moves in battle
+35,Tactician IV,0,250,,,Use 250 super effective moves in battle
+36,Tactical Mastermind,0,500,,,Use 500 super effective moves in battle
+37,Play to Strengths I,0,1,,,Use a move with Same Type Attack Bonus in battle
+38,Play to Strengths II,0,50,,,Use 50 moves with Same Type Attack Bonus in battle
+39,Play to Strengths III,0,100,,,Use 100 moves with Same Type Attack Bonus in battle
+40,Play to Strengths IV,,250,,,Use 250 moves with Same Type Attack Bonus in battle
+41,Play to Strengths V,0,500,,,Use 500 moves with Same Type Attack Bonus in battle
+42,Play to Strengths VI,0,1000,,,Use 1000 moves with Same Type Attack Bonus in battle
+43,Battle Winner I,0,10,,,Win 10 Pokemon battles
+44,Battle Winner II,0,50,,,Win 50 Pokemon battles
+45,Battle Winner III,0,100,,,Win 100 Pokemon battles
+46,Battle Winner IV,0,250,,,Win 250 Pokemon battles
+47,Battle Winner V,0,500,,,Win 500 Pokemon battles
+48,Badge Collector,0,8,,,Collect all 8 Kanto gym badges by defeating gym leaders in battle.
+49,Cruisin' for a Bruisin',0,30,,,Win all battles on the S.S. Anne
+50,Cerulean Champ,0,1,,,Win the Cerulean City Pokemon Tournament
+51,Vermillion Champ,0,1,,,Win the Vermillion City Pokemon Tournament
+52,Celadon Champ,0,1,,,Win the Celadon City Pokemon Tournament
+53,Champion,0,1,,,Win the Kanto Pokemon League.
+54,Contender,0,20,,,Win in 20 Pokemon tournaments
+55,Rival,0,5,,,Defeat Rival Gary in battle 5 times
+56,Vigilante I,0,1,,,Defeat a Team Rocket Grunt in battle
+57,Vigilante II,0,20,,,Defeat 20 Team Rocket Grunts in battle
+58,Vigilante III,0,50,,,Defeat 50 Team Rocket Grunts in battle
+59,Kingslayer,0,1,,,Defeat Giovanni in battle
+60,Dragon Slayer,0,1,,,Defeat Kanto Champion Lance in a battle
+61,Steven,0,1,,,Defeat Hoenn Champion Steven in a battle
+62,Wallace,0,1,,,Defeat Hoenn Champion Wallace in a battle
+63,Cynthia,0,1,,,Defeat Sinnoh Champion Cynthia in a battle
+64,Professor,0,1,,,Defeat Professor Oak in battle
+65,Jazz Man,0,1,,,Defeat Mirror B in battle
+66,Berry Fan,0,1,,,Harvest a berry
+67,Berry Enthusiast,0,10,,,Harvest 10 berries
+68,Berry Fanatic,0,50,,,Harvest 50 berries
+69,Berry Expert,0,100,,,Harvest 100 berries
+70,Berry Farmer,0,250,,,Harvest 250 berries
+71,Agriculturalist,0,500,,,Harvest 500 berries
+72,Big Spender,0,1000000,,,Spend 1 million currency
+73,Good Samaritan,0,100,,,Complete 100 Quests

@@ -72,7 +72,7 @@ public class DatabaseUtility
             "evolution_methods",  "pokemon_moves", "pokemon_location", 
             "conversation",  "type_effectiveness", "items", "battle",
             "portal", "map_object", "area", "character", "move_stat_effect",
-            "evolution_methods", "conversation_trigger", 
+            "evolution_methods", "conversation_trigger", "achievements",
             "moves",
             "map_template",
             "move_effect", 
@@ -624,6 +624,32 @@ public class DatabaseUtility
                 VALUES (1, 3, 3)
                 """;
         runUpdate(query);
+
+        //==================================================================================
+        // each achievements id, name, counter, required value, reward id, reward quantity, and description
+        query = "CREATE TABLE achievements("
+                + "achievement_id INT PRIMARY KEY, "
+                + "name VARCHAR(30) NOT NULL, "
+                + "counter INT NOT NULL, "
+                + "required_value INT NOT NULL, "
+                + "reward_id INT NULL, "
+                + "reward_quantity INT NULL, "
+                + "description VARCHAR(80) NOT NULL)";
+        runUpdate(query);
+
+        // fill achievements table with data
+        path = "/rawdata/achievements.csv";
+        query = "INSERT INTO achievements ("
+                    + "achievement_id, name, "
+                    + "counter, "
+                    + "required_value, "
+                    + "reward_id, reward_quantity, "
+                    + "description)"
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        dataTypes = new String[] {"int", "String", "int", "int", "int", "int", 
+            "String"};
+        loadTable(path, query, dataTypes);
 
         conn.commit();
         conn.setAutoCommit(true);
