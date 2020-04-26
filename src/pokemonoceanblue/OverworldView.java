@@ -401,14 +401,26 @@ public class OverworldView extends BaseView {
         this.displayTextbox(inventoryBorder, width * 3 / 10, 0, width * 2 / 3, height * 7 / 10, g, canvas);
 
         // draw the box that holds the player's current money
-        this.displayTextbox(inventoryBorder, 0, 0, width / 5, height / 5, g, canvas);
+        this.displayTextbox(inventoryBorder, 0, 0, width / 4, height / 5, g, canvas);
 
         // display the player's current money
         String money = "$" + String.valueOf(this.model.inventoryModel.getMoney());
         textWidth = g.getFontMetrics(font).stringWidth(money);
         g.drawString(money,
-            width / 5 - textWidth - 12 * graphicsScaling,
+            width / 4 - textWidth - 12 * graphicsScaling,
             height / 5 - 12 * graphicsScaling);
+
+        // draw the box that shows the player's currently owned quantity
+        this.displayTextbox(inventoryBorder, 0, height / 5 + 8 * graphicsScaling, width / 4, height / 5, g, canvas);
+        g.drawString("In bag: ",
+            12 * graphicsScaling,
+            height * 2 / 5 - 4 * graphicsScaling);
+
+        String quantityString = String.valueOf(this.model.inventoryModel.getQuantity(this.model.itemOptions.get(this.model.optionIndex).itemId));
+        textWidth = g.getFontMetrics(font).stringWidth(quantityString);
+        g.drawString(quantityString,
+            width / 4 - textWidth - 12 * graphicsScaling,
+            height * 2 / 5 - 4 * graphicsScaling);
 
         // display item description
         this.displayText(this.model.itemOptions.get(this.model.optionIndex).description, g, canvas);

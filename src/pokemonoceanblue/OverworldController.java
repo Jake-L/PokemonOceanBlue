@@ -22,59 +22,68 @@ public class OverworldController {
      */
     public void userInput(List<Integer> keysDown)
     {
-        if (keysDown.size() > 0 && this.model.actionCounter == 0)
+        if (this.model.actionCounter == 0)
         {
-            // open or close the menu
-            if (keysDown.contains(KeyEvent.VK_ESCAPE))
+            if (keysDown.size() > 0)
             {
-                this.model.openMenu();
-                this.model.actionCounter = this.model.ACTION_DELAY;
+                // open or close the menu
+                if (keysDown.contains(KeyEvent.VK_ESCAPE))
+                {
+                    this.model.openMenu();
+                    this.model.actionCounter = this.model.ACTION_DELAY;
+                }
+                // move around in a menu if its open
+                else if (this.model.textOptions != null || this.model.itemOptions.size() > 0)
+                {
+                    if (keysDown.contains(KeyEvent.VK_ENTER))
+                    {
+                        this.model.confirmSelection();
+                    }
+                    if (keysDown.contains(KeyEvent.VK_UP))
+                    {
+                        this.model.moveIndex(0, -1);
+                    }
+                    else if (keysDown.contains(KeyEvent.VK_DOWN))
+                    {
+                        this.model.moveIndex(0, 1);
+                    }
+                    this.model.actionCounter = this.model.ACTION_DELAY - Math.max(this.model.acceleration, 0);
+                }
+                // otherwise move player around on map
+                else
+                {
+                    int movespeed = 1;
+                    if (keysDown.contains(KeyEvent.VK_SHIFT))
+                    {
+                        movespeed = 2;
+                    }
+                    if (keysDown.contains(KeyEvent.VK_ENTER))
+                    {
+                        this.callCheckAction();
+                    }
+                    else if (keysDown.contains(KeyEvent.VK_UP))
+                    {
+                        this.playerModel.setMovement(0, -1, movespeed);
+                    }
+                    else if (keysDown.contains(KeyEvent.VK_DOWN))
+                    {
+                        this.playerModel.setMovement(0, 1, movespeed);
+                    }
+                    else if (keysDown.contains(KeyEvent.VK_LEFT))
+                    {
+                        this.playerModel.setMovement(-1, 0, movespeed);
+                    }
+                    else if (keysDown.contains(KeyEvent.VK_RIGHT))
+                    {
+                        this.playerModel.setMovement(1, 0, movespeed);
+                    }
+                }
             }
-            // move around in a menu if its open
-            else if (this.model.textOptions != null || this.model.itemOptions.size() > 0)
+            else if (this.model.acceleration > 0)
             {
-                if (keysDown.contains(KeyEvent.VK_ENTER))
-                {
-                    this.model.confirmSelection();
-                }
-                if (keysDown.contains(KeyEvent.VK_UP))
-                {
-                    this.model.moveIndex(0, -1);
-                }
-                else if (keysDown.contains(KeyEvent.VK_DOWN))
-                {
-                    this.model.moveIndex(0, 1);
-                }
-                this.model.actionCounter = this.model.ACTION_DELAY;
-            }
-            // otherwise move player around on map
-            else
-            {
-                int movespeed = 1;
-                if (keysDown.contains(KeyEvent.VK_SHIFT))
-                {
-                    movespeed = 2;
-                }
-                if (keysDown.contains(KeyEvent.VK_ENTER))
-                {
-                    this.callCheckAction();
-                }
-                else if (keysDown.contains(KeyEvent.VK_UP))
-                {
-                    this.playerModel.setMovement(0, -1, movespeed);
-                }
-                else if (keysDown.contains(KeyEvent.VK_DOWN))
-                {
-                    this.playerModel.setMovement(0, 1, movespeed);
-                }
-                else if (keysDown.contains(KeyEvent.VK_LEFT))
-                {
-                    this.playerModel.setMovement(-1, 0, movespeed);
-                }
-                else if (keysDown.contains(KeyEvent.VK_RIGHT))
-                {
-                    this.playerModel.setMovement(1, 0, movespeed);
-                }
+                // clear acceleration when player releases keys
+                this.model.acceleration = 0;
+                this.model.accelerationCounter = 0;
             }
         }
     }

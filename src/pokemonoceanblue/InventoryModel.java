@@ -157,6 +157,26 @@ public class InventoryModel extends BaseModel {
     }
 
     /**
+     * @param itemId the item to search for
+     * @return the quantity of the given item in the player's inventory
+     */
+    public int getQuantity(int itemId)
+    {
+        for (int i = 0; i < this.items.length; i++)
+        {
+            for (int j = 0; j < this.items[i].size(); j++)
+            {
+                if (this.items[i].get(j).itemId == itemId)
+                {
+                    return this.items[i].get(j).quantity;
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    /**
      * Move the cursor around within the inventory screen
      * @param dx the difference between the current index and the index to move to
      * @param dy the direction to move up or down within the items/text options

@@ -39,7 +39,7 @@ Achievement ID,Name,Counter,Required Value,Reward ID,Reward Quantity,Description
 37,Play to Strengths I,0,1,,,Use a move with Same Type Attack Bonus in battle
 38,Play to Strengths II,0,50,,,Use 50 moves with Same Type Attack Bonus in battle
 39,Play to Strengths III,0,100,,,Use 100 moves with Same Type Attack Bonus in battle
-40,Play to Strengths IV,,250,,,Use 250 moves with Same Type Attack Bonus in battle
+40,Play to Strengths IV,0,250,,,Use 250 moves with Same Type Attack Bonus in battle
 41,Play to Strengths V,0,500,,,Use 500 moves with Same Type Attack Bonus in battle
 42,Play to Strengths VI,0,1000,,,Use 1000 moves with Same Type Attack Bonus in battle
 43,Battle Winner I,0,10,,,Win 10 Pokemon battles

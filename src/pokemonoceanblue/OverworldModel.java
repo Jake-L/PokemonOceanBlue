@@ -131,10 +131,7 @@ public class OverworldModel extends BaseModel {
     public void update()
     {
         // decrement action counter
-        if (this.actionCounter > 0)
-        {
-            this.actionCounter--;
-        }
+        super.update();
 
         // update the CPUs
         Random rand = new Random();
@@ -317,6 +314,8 @@ public class OverworldModel extends BaseModel {
                     this.optionWidth = 1;
                     this.optionHeight = this.optionMax;
                     this.optionIndex = 0;
+                    this.acceleration = 0;
+                    this.accelerationCounter = 10;
                 }
             }
             this.actionCounter = 15;
@@ -472,6 +471,7 @@ public class OverworldModel extends BaseModel {
                 this.optionHeight = 0;
                 this.optionMax = 0;
                 this.optionWidth = 0;
+                this.acceleration = -1;
                 this.conversation.nextEvent();
             }
             // exit the menu if it was already open
