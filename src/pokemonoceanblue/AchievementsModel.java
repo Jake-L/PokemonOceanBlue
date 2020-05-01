@@ -113,47 +113,46 @@ public class AchievementsModel {
 
     /**
      * called when a battle is won
-     * @param trainerTitle is the defeated trainer's title
-     * @param trainerName is the defeated trainer's name
+     * @param trainerSpriteName is the defeated trainer's sprite name (their name/trainer class)
      */
-    public void setBattlesWon(String trainerTitle, String trainerName)
+    public void setBattlesWon(String trainerSpriteName)
     {
         //increase battles won achievements
         incrementCounter(43, 4, 1);
         //check for battle achievements for beating rocket grunts or specific trainers and increase achievement counters
-        if (trainerTitle.equals("Rocket Grunt"))
+        if (trainerSpriteName.equals("rocketGruntBoy") || trainerSpriteName.equals("rocketGruntGirl"))
         {
             incrementCounter(56, 2, 1);
         }
-        else if (trainerName.equals("Gary"))
+        else if (trainerSpriteName.equals("gary"))
         {
             incrementCounter(55, 0, 1);
         }
-        else if (trainerName.equals("Giovanni"))
+        else if (trainerSpriteName.equals("giovanni"))
         {
             incrementCounter(59, 0, 1);
         }
-        else if (trainerName.equals("Lance"))
+        else if (trainerSpriteName.equals("lance"))
         {
             incrementCounter(60, 0, 1);
         }
-        else if (trainerName.equals("Steven"))
+        else if (trainerSpriteName.equals("steven"))
         {
             incrementCounter(61, 0, 1);
         }
-        else if (trainerName.equals("Wallace"))
+        else if (trainerSpriteName.equals("wallace"))
         {
             incrementCounter(62, 0, 1);
         }
-        else if (trainerName.equals("Cynthia"))
+        else if (trainerSpriteName.equals("cynthia"))
         {
             incrementCounter(63, 0, 1);
         }
-        else if (trainerName.equals("Oak"))
+        else if (trainerSpriteName.equals("oak"))
         {
             incrementCounter(64, 0, 1);
         }
-        else if (trainerName.equals("Mirror B"))
+        else if (trainerSpriteName.equals("mirorb"))
         {
             incrementCounter(65, 0, 1);
         }
@@ -181,12 +180,12 @@ public class AchievementsModel {
      * @param achievementId is the id of the first achievement progressed
      * @param numAchievements is the number of proceeding achievements with the same requirements as the first
      */
-    private void incrementCounter(int achievementId, int numAchievements, int incrementation)
+    private void incrementCounter(int achievementId, int numAchievements, int increment)
     {
         //loop through progressed achievements and increment counter if required value has not been reached
-        for (int i = achievementId; i < (achievementId + numAchievements); i++)
+        for (int i = achievementId; i <= (achievementId + numAchievements); i++)
         {
-            this.achievements.get(i).counter = Math.min(this.achievements.get(i).requiredValue, this.achievements.get(i).counter + incrementation);
+            this.achievements.get(i).counter = Math.min(this.achievements.get(i).requiredValue, this.achievements.get(i).counter + increment);
         }
     }
     

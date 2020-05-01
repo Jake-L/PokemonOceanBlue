@@ -114,6 +114,7 @@ public class App extends JFrame implements KeyListener
         this.playSong(0);
 
         this.partyModel = new PartyModel();
+        this.partyModel.addPokemon(0, new PokemonModel(3, 30, false));
         this.inventoryModel = new InventoryModel();
         this.pokedexModel = new PokedexModel();
         this.pokemonStorageModel = new PokemonStorageModel();
@@ -267,6 +268,7 @@ public class App extends JFrame implements KeyListener
             if (pokemon.level == 0 && pokemon.stepCounter <= 0)
             {
                 newPokemonQueue.add(new NewPokemonModel(pokemon));
+                this.achievementsModel.setEggsHatched(pokemon.shiny);
             }
         }
 
@@ -287,9 +289,14 @@ public class App extends JFrame implements KeyListener
     public void addPokemon(PokemonModel pokemon)
     {
         // register the new pokemon in pokedex
-        this.pokedexModel.setCaught(pokemon.base_pokemon_id);
+        if (this.pokedexModel.setCaught(pokemon.base_pokemon_id))
+        {
+            // track that a new Pokemon was caught
+            this.achievementsModel.setNewPokemonObtained(pokemon.base_pokemon_id);
+        }
         NewPokemonModel newPokemonModel = new NewPokemonModel(pokemon, partyModel, pokemonStorageModel);
         this.newPokemonQueue.add(newPokemonModel);
+        this.achievementsModel.setPokemonCaught(pokemon.shiny);
     }
 
     /**
@@ -336,6 +343,10 @@ public class App extends JFrame implements KeyListener
                     if (this.battleModel.isComplete())
                     {
                         this.overworldModel.battleComplete();
+                        if (this.battleModel.trainerSpriteName != null)
+                        {
+                            this.achievementsModel.setBattlesWon(this.battleModel.trainerSpriteName);
+                        }
 
                         // check which pokemon leveled up
                         boolean[] evolveQueue = this.battleModel.getEvolveQueue();
@@ -579,6 +590,7 @@ public class App extends JFrame implements KeyListener
                     // add the evolution to a queue
                     NewPokemonModel newPokemonModel = new NewPokemonModel(partyModel.team.get(i), partyModel, evolvedPokemonId, i);
                     this.newPokemonQueue.add(newPokemonModel);
+                    this.achievementsModel.setPokemonEvolved(false);
                 }
             }
         }

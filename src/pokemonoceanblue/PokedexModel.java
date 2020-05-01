@@ -27,19 +27,20 @@ public class PokedexModel extends BaseModel
     /**
      * Increment the number of times a Pokemon has been caught
      * @param pokemonId the identifier of the caught pokemon
+     * @return true if it's the first time the Pokemon was caught
      */
-    public void setCaught(int pokemonId)
+    public boolean setCaught(int pokemonId)
     {
         this.caughtPokemon[pokemonId]++;
 
-        this.uniqueCaught = 0;
-
-        for (int i = 0; i < this.caughtPokemon.length; i++)
+        if (this.caughtPokemon[pokemonId] == 1)
         {
-            if (this.caughtPokemon[i] > 0)
-            {
-                this.uniqueCaught++;
-            }
+            this.uniqueCaught++;
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 
