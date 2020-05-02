@@ -95,33 +95,72 @@ public class PokemonModel
 
     /** 
      * Recalculates a Pokemon's level based off it's current experience
-     * Recalculates stats when a Pokemon levels up
      */
     private void calcLevel()
     {
-        int oldLevel = this.level;
         this.level = (int) Math.floor(Math.cbrt(xp));
-
-        if (oldLevel < this.level)
-        {
-            this.loadStats();
-        }
     }
 
     /**
      * Adds XP to the Pokemon and then recalculates level
+     * Recalculates stats when a Pokemon levels up
      * @param xp the xp to be added
      */
-    public void addXP(int xp)
+    public List<MoveModel> addXP(int xp)
     {
+        int oldLevel = this.level;
         this.xp += xp;
         this.calcLevel();
-
-        // load moves if hatching from a egg
-        if (this.xp - xp <= 1)
+        
+        if (oldLevel < this.level)
         {
-            this.loadMoves();
+            this.loadStats();
+
+            // load moves if hatching from a egg
+            if (oldLevel == 0)
+            {
+                this.loadMoves();
+            }
+            // otherwise, check for any new moves that can be learned by leveling up
+            else
+            {
+                return this.checkNewMoves(oldLevel);
+            }
         }
+        
+        return null;
+    }
+
+    /**
+     * Generate a list of moves that can be learned by the Pokemon leveling up
+     * @param oldLevel the Pokemon's previous level
+     * @return a list of new moves to that can be learned
+     */
+    private List<MoveModel> checkNewMoves(int oldLevel)
+    {
+        List<MoveModel> newMoves = new ArrayList<MoveModel>();
+
+        try
+        {
+            DatabaseUtility db = new DatabaseUtility();
+
+            String query = "SELECT move_id FROM pokemon_moves WHERE pokemon_id = " + this.pokemon_id
+                + " AND level > " + oldLevel
+                + " AND level <= " + this.level;
+
+            ResultSet rs = db.runQuery(query);
+
+            while(rs.next()) 
+            {
+                newMoves.add(new MoveModel(rs.getInt("move_id")));
+            }
+        }
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+        }  
+        
+        return newMoves;
     }
 
     /** 
@@ -293,6 +332,27 @@ public class PokemonModel
         {
             e.printStackTrace();
         }  
+    }
+
+    /**
+     * Attempts to learn a new move if the Pokemon has a move slot available
+     * @param newMove the move to be learned
+     * @return true if there was an open slot and the move was learned
+     */
+    public boolean addMove(MoveModel newMove)
+    {
+        if (this.moves.length < 4)
+        {
+            MoveModel[] newMoves = new MoveModel[this.moves.length + 1];
+            for (int i = 0; i < this.moves.length; i++)
+            {
+                newMoves[i] = this.moves[i];
+            }
+            newMoves[newMoves.length - 1] = newMove;
+            this.moves = newMoves;
+            return true;
+        }
+        return false;
     }
 
     public void decrementStepCounter()

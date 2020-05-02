@@ -870,6 +870,7 @@ public class BattleModel
             {
                 int xpGain = this.events.get(0).xp;
                 int xpMax = (int) Math.pow(this.team[0][this.currentPokemon[0]].level + 1, 3.0);
+                List<MoveModel> newMoves;
             
                 // check if the pokemon levels up from the xp gain
                 if (this.team[0][this.currentPokemon[0]].xp + xpGain >= xpMax)
@@ -881,7 +882,32 @@ public class BattleModel
                     event = new BattleEvent("", xpGain + this.team[0][this.currentPokemon[0]].xp - xpMax, 0, 0);
                     this.events.add(2, event);
 
-                    this.team[0][this.currentPokemon[0]].addXP(xpMax - this.team[0][this.currentPokemon[0]].xp);
+                    // add events for any new moves that the Pokemon learned from leveling up
+                    newMoves = this.team[0][this.currentPokemon[0]].addXP(xpMax - this.team[0][this.currentPokemon[0]].xp);
+                    for (int i = 0; i < newMoves.size(); i++)
+                    {
+                        // learn the move immediately if they have any open slots
+                        if (this.team[0][this.currentPokemon[0]].addMove(newMoves.get(i)))
+                        {
+                            this.events.add(2, new BattleEvent(
+                                this.team[0][this.currentPokemon[0]].name + " learned " + newMoves.get(i).name + "!", 
+                                0, 
+                                0, 
+                                null
+                            ));
+                        }
+                        // otherwise the playe rwill need to choose a move to replace
+                        else
+                        {
+                            this.events.add(2, new BattleEvent(
+                                this.team[0][this.currentPokemon[0]].name + " wants to learn " + newMoves.get(i).name + ", however it already knows four moves.", 
+                                0, 
+                                0, 
+                                null
+                            ));
+                        }
+                        
+                    }
 
                     // flag that the pokemon leveled up and may evolve
                     this.evolveQueue[this.currentPokemon[0]] = true;

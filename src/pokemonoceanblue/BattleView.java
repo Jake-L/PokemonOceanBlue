@@ -338,16 +338,19 @@ public class BattleView extends BaseView {
             }
         }
         
-        displayTextbox(this.textDisplayBox, 0, height * 3 / 4, width, height / 4, g, canvas);
-        
         if (this.model.battleOptions != null)
         {
-            displayTextOptions(g, canvas);
+            this.displayTextbox(this.textDisplayBox, 0, height * 3 / 4, width, height / 4, g, canvas);
+            this.displayTextOptions(g, canvas);
         }
-
+        else if (this.model.getText() != null)
+        {
+            this.displayText(this.model.getText(), g, canvas);
+        }
         else
         {
-            displayBattleText(g, canvas);
+            // still show a text box even if there's no text to display
+            this.displayTextbox(this.textDisplayBox, 0, height * 3 / 4, width, height / 4, g, canvas);
         }
     }
 
@@ -518,20 +521,6 @@ public class BattleView extends BaseView {
         g.drawString(">",
         24 * graphicsScaling + (width / 2) * (this.model.optionIndex % 2) - textWidth,
         (height * 3 / 4 + 24 * graphicsScaling) + graphicsScaling * 24 * (this.model.optionIndex / 2));
-    }
-
-    //displays text in a text box
-    private void displayBattleText(Graphics g, JPanel canvas)
-    {
-        Font font = new Font("Pokemon Fire Red", Font.PLAIN, 24 * graphicsScaling);
-        g.setFont(font);
-        String text = model.getText();
-        if (text != null)
-        {
-            g.drawString(text,
-                24 * graphicsScaling,
-                height * 3 / 4 + 24 * graphicsScaling);
-        }
     }
 
     @Override
