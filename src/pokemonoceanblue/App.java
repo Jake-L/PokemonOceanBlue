@@ -31,7 +31,7 @@ public class App extends JFrame implements KeyListener
     List<Integer> keysDown = new ArrayList<Integer>();
     OverworldModel overworldModel;
     BattleModel battleModel;
-    BattleController battleController;
+    BaseController BaseController;
     BaseController partyController;
     PartyModel partyModel;
     BaseController inventoryController;
@@ -141,21 +141,22 @@ public class App extends JFrame implements KeyListener
         if (viewManager.getCurrentView() == "TitleScreenView" && System.currentTimeMillis() - startTime > 1000 && playerModel == null)
         {
             // load the player's position from the database
-            try
-            {
-                DatabaseUtility db = new DatabaseUtility();
+            // try
+            // {
+            //     DatabaseUtility db = new DatabaseUtility();
 
-                String query = "SELECT * FROM player_location";
+            //     String query = "SELECT * FROM player_location";
 
-                ResultSet rs = db.runQuery(query);
+            //     ResultSet rs = db.runQuery(query);
 
-                this.setMap(rs.getInt("map_id"), rs.getInt("x"), rs.getInt("y"));
-            }
-            catch (SQLException ex) 
-            {
-                ex.printStackTrace();
-                this.setMap(1, 3, 3);
-            } 
+            //     this.setMap(rs.getInt("map_id"), rs.getInt("x"), rs.getInt("y"));
+            // }
+            // catch (SQLException ex) 
+            // {
+            //     ex.printStackTrace();
+            //     this.setMap(1, 3, 3);
+            // } 
+            this.setMap(0, 20, 60);
         }
     }
 
@@ -170,7 +171,7 @@ public class App extends JFrame implements KeyListener
         battleModel = new BattleModel(partyModel.getTeamArray(), battleId, this);
         BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
         viewManager.setView(battleView);
-        battleController = new BattleController(battleModel);
+        BaseController = new BaseController(battleModel);
     }
 
     public void createWildBattle(int pokemonId, int level)
@@ -187,7 +188,7 @@ public class App extends JFrame implements KeyListener
         battleModel = new BattleModel(team, partyModel.getTeamArray(), this);
         BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
         viewManager.setView(battleView);
-        battleController = new BattleController(battleModel);
+        BaseController = new BaseController(battleModel);
     }
 
     /**
@@ -331,8 +332,7 @@ public class App extends JFrame implements KeyListener
                 // update the battle
                 if (viewManager.getCurrentView().equals("BattleView") && this.battleModel != null)
                 {
-                    battleController.userInput(keysDown);
-                    battleModel.update();
+                    BaseController.userInput(keysDown);
 
                     String sound = this.battleModel.getSoundEffect();
                     if (sound != null)

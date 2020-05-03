@@ -63,9 +63,18 @@ public class BaseModel {
         }
         else if (dy != 0)
         {
-            if (dy > 0 && this.optionIndex + this.optionWidth <= this.optionMax)
+            if (dy > 0)
             {
-                this.optionIndex = this.optionIndex + this.optionWidth;
+                if (this.optionIndex + this.optionWidth <= this.optionMax)
+                {
+                    this.optionIndex = this.optionIndex + this.optionWidth;
+                }
+                // if at the last right index, but can move down-left, 
+                // then pressing down takes you to the lsat index
+                else if ((this.optionIndex - this.optionMin) / this.optionWidth < (this.optionMax - this.optionMin) / this.optionWidth)
+                {
+                    this.optionIndex = this.optionMax;
+                }
             }
             else if (dy < 0 && this.optionIndex - this.optionWidth >= this.optionMin)
             {

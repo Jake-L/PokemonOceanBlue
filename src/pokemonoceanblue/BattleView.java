@@ -271,7 +271,7 @@ public class BattleView extends BaseView {
 
             if (this.model.events.size() > 0)
             {
-                xpCurrent = (int) Math.min(xpCurrent + (this.model.events.get(0).xp * (60 - this.model.counter)) / 60.0, xpMax);
+                xpCurrent = (int) Math.min(xpCurrent + (this.model.events.get(0).xp * (60 - this.model.actionCounter)) / 60.0, xpMax);
             }
             g.drawImage(this.xp,
                 (int)(width * (9.0 / 10.0)) - (this.statusWindow[0].getWidth(null) * graphicsScaling) + (24 * graphicsScaling),
@@ -400,12 +400,12 @@ public class BattleView extends BaseView {
         byte healthBarFillIndex = 0;
 
         if((double)(this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].currentHP 
-            - (damage * (60 - this.model.counter))) / this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].stats[Stat.HP] < 0.2)
+            - (damage * (60 - this.model.actionCounter))) / this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].stats[Stat.HP] < 0.2)
         {
             healthBarFillIndex = 2;
         }
         else if((double)(this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].currentHP 
-            - (damage * (60 - this.model.counter))) / this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].stats[Stat.HP] < 0.5)
+            - (damage * (60 - this.model.actionCounter))) / this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].stats[Stat.HP] < 0.5)
         {
             healthBarFillIndex = 1;
         }
@@ -415,7 +415,7 @@ public class BattleView extends BaseView {
             x + (72 - 22 * teamIndex) * graphicsScaling,
             y + (25 - teamIndex) * graphicsScaling,
             (int)Math.ceil(this.healthBarFill[0].getWidth(null) * 
-                ((this.model.team[teamIndex][model.currentPokemon[teamIndex]].currentHP - (damage * (60 - this.model.counter))) * 48.0 / this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].stats[Stat.HP]) * graphicsScaling),
+                ((this.model.team[teamIndex][model.currentPokemon[teamIndex]].currentHP - (damage * (60 - this.model.actionCounter))) * 48.0 / this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].stats[Stat.HP]) * graphicsScaling),
             this.healthBarFill[0].getHeight(null) * graphicsScaling,
             canvas);
     }
@@ -465,11 +465,11 @@ public class BattleView extends BaseView {
 
     private int getPokemonFrame(int teamIndex)
     {
-        if (this.model.events.size() > 0 && this.model.events.get(0).newPokemonIndex > -1 && this.model.counter < 60)
+        if (this.model.events.size() > 0 && this.model.events.get(0).newPokemonIndex > -1 && this.model.actionCounter < 60)
         {
             if (this.model.events.get(0).attacker == teamIndex)
             {
-                return this.model.counter / 12 % 2;
+                return this.model.actionCounter / 12 % 2;
             }
         }
 
@@ -478,25 +478,25 @@ public class BattleView extends BaseView {
 
     private float getPokemonScale(int teamIndex)
     {
-        if (this.model.events.size() > 0 && this.model.events.get(0).newPokemonIndex > -1 && this.model.counter > 60)
+        if (this.model.events.size() > 0 && this.model.events.get(0).newPokemonIndex > -1 && this.model.actionCounter > 60)
         {
             if (this.model.events.get(0).attacker == teamIndex)
             {
                 this.hidePokemon[teamIndex] = false;
-                return 1.0f - (this.model.counter - 60) / 40.0f;
+                return 1.0f - (this.model.actionCounter - 60) / 40.0f;
             }
         }
         else if (this.model.events.size() > 0 
             && this.model.events.get(0).newPokemonIndex == -1
-            && this.model.counter <= 40)
+            && this.model.actionCounter <= 40)
         {
             if (this.model.events.get(0).attacker == teamIndex)
             {
-                if (this.model.counter == 1)
+                if (this.model.actionCounter == 1)
                 {
                     this.hidePokemon[teamIndex] = true;
                 }
-                return this.model.counter / 40.0f;
+                return this.model.actionCounter / 40.0f;
             }
         }
 

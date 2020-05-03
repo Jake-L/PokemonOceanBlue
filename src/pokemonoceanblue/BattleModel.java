@@ -6,14 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class BattleModel 
+public class BattleModel extends BaseModel
 {
     public PokemonModel[][] team = new PokemonModel[2][];
     public int[] currentPokemon = new int[2];
     public String[] battleOptions;
-    public int optionIndex = 0;
-    public final byte INPUTDELAY = 6;
-    public byte counter = this.INPUTDELAY;
     public List<BattleEvent> events = new ArrayList<BattleEvent>();
     public Random ranNum = new Random();
     private App app;
@@ -47,7 +44,7 @@ public class BattleModel
         this.team[1] = opponentTeam;
         this.app = app;
         this.isWild = true;
-        this.initialize();
+        this.initializeBattle();
     }
 
     public BattleModel(PokemonModel[] playerTeam, int battleId, App app)
@@ -56,14 +53,15 @@ public class BattleModel
         this.loadTeam(battleId);
         this.app = app;
         this.isWild = false;
-        this.initialize();
+        this.initializeBattle();
     }
 
     /**
      * Set initial variable values
      */
-    private void initialize()
+    public void initializeBattle()
     {
+        super.initialize();
         this.currentPokemon[0] = -1;
         this.currentPokemon[1] = -1;
         int firstPokemon = 0;
@@ -89,18 +87,22 @@ public class BattleModel
         }
         event = new BattleEvent("Trainer sent out " + this.team[0][firstPokemon].name + ".", firstPokemon, true, 0, -1, String.valueOf(this.team[0][firstPokemon].pokemon_id));
         this.events.add(event);
-        this.counter = 100;
+        this.actionCounter = 100;
         this.loadData();
     }
 
+    @Override
     public void confirmSelection()
     {
         if (this.events.size() == 0)
         {
-            this.counter = INPUTDELAY;
+            this.actionCounter = this.ACTION_DELAY;
             
             if (this.battleOptions != null)
             {
+                // clear the previous data on options, since it is going to change
+                this.optionMax = 0;
+
                 switch(this.battleOptions[this.optionIndex])
                 {    
                     case "FIGHT":
@@ -111,6 +113,8 @@ public class BattleModel
                         {
                             this.battleOptions[i] = String.valueOf(this.team[0][this.currentPokemon[0]].moves[i].name);
                         } 
+
+                        this.optionMax = this.battleOptions.length - 1;
                         break;
 
                     case "POKEMON":
@@ -136,7 +140,7 @@ public class BattleModel
                             this.team[0][this.currentPokemon[0]].moves[optionIndex],
                             0,
                             getAttackSound(0));
-                        this.counter = 60;
+                        this.actionCounter = 60;
                         
                         this.attackEvent[1] = enemyAttackEvent();
                         
@@ -194,7 +198,7 @@ public class BattleModel
         {
             BattleEvent event = new BattleEvent("Trainer used a " + itemId + ".", itemId, false, 0, -1, null);
             this.events.add(event);
-            this.counter = 60;            
+            this.actionCounter = 60;            
             this.events.add(this.enemyAttackEvent());
         }
     }
@@ -220,7 +224,7 @@ public class BattleModel
             this.events.add(event);
             event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", pokemon, true, 0, -1, String.valueOf(this.team[0][pokemon].pokemon_id));
             this.events.add(event);
-            this.counter = 60;
+            this.actionCounter = 60;
 
             // let the enemy attack after player switches
             this.events.add(this.enemyAttackEvent());
@@ -229,7 +233,7 @@ public class BattleModel
         {
             BattleEvent event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", pokemon, true, 0, -1, String.valueOf(this.team[0][pokemon].pokemon_id));
             this.events.add(event);
-            this.counter = 100;
+            this.actionCounter = 100;
         }
     }
 
@@ -631,19 +635,35 @@ public class BattleModel
      */
     public void loadBattleMenu()
     {
-        if (this.isWild)
+        if (this.events.size() == 0)
         {
-            this.battleOptions = new String[3];
-            this.battleOptions[2] = "POKEBALLS";
+            if (this.isWild)
+            {
+                this.battleOptions = new String[3];
+                this.battleOptions[2] = "POKEBALLS";
+            }
+            else
+            {
+                this.battleOptions = new String[2];
+            }
+            this.battleOptions[0] = "FIGHT";
+            this.battleOptions[1] = "POKEMON";
+            this.optionIndex = 0;
+            this.actionCounter = this.ACTION_DELAY;
+            this.optionMax = this.battleOptions.length - 1;
+            this.optionWidth = 2;
+            this.optionHeight = 2;
         }
-        else
-        {
-            this.battleOptions = new String[2];
-        }
-        this.battleOptions[0] = "FIGHT";
-        this.battleOptions[1] = "POKEMON";
-        this.optionIndex = 0;
-        this.counter = this.INPUTDELAY;
+    }
+
+    
+    /**
+     * Wrapper for loadBattleMenu that gets called by BaseController when user presses ESC
+     */
+    @Override
+    public void exitScreen()
+    {
+        this.loadBattleMenu();
     }
 
     /** 
@@ -651,7 +671,7 @@ public class BattleModel
      */ 
     public boolean isComplete()
     {
-        if (this.counter > 0 || this.events.size() > 0 || this.battleOptions != null)
+        if (this.actionCounter > 0 || this.events.size() > 0 || this.battleOptions != null)
         {
             return false;
         }
@@ -662,6 +682,21 @@ public class BattleModel
         }
 
         return false;
+    }
+
+    /**
+     * Needed for compatibility with BaseController
+     */
+    public int getSelection()
+    {
+        if (this.isComplete())
+        {
+            return -1;
+        }
+        else
+        {
+            return -2;
+        }
     }
 
     public PokemonModel getNewPokemon()
@@ -798,11 +833,12 @@ public class BattleModel
         return (int) Math.pow(enemyLevel, 2) * 2;
     }
 
+    @Override
     public void update()
     {
         // switch the current Pokemon
         // do this at the start of counter to show the switching animation
-        if (this.counter == 100 && this.events.get(0).newPokemonIndex > -1)
+        if (this.actionCounter == 100 && this.events.get(0).newPokemonIndex > -1)
         {
             int attacker = this.events.get(0).attacker;
             this.currentPokemon[attacker] = this.events.get(0).newPokemonIndex;
@@ -815,7 +851,7 @@ public class BattleModel
         }
 
         //calculate damage for an upcoming attack event and add second attack event if applicable
-        else if (this.counter == 60 && this.events.size() > 0 && this.events.get(0).damage > -1 && this.events.get(0).move != null && !this.moveProcessed[this.events.get(0).attacker])
+        else if (this.actionCounter == 60 && this.events.size() > 0 && this.events.get(0).damage > -1 && this.events.get(0).move != null && !this.moveProcessed[this.events.get(0).attacker])
         {
             int attacker = this.events.get(0).attacker;
             this.canAttack(attacker);
@@ -858,9 +894,9 @@ public class BattleModel
             this.events.get(0).sound = null;
         }
 
-        if (this.counter > 0)
+        if (this.actionCounter > 0)
         {
-            this.counter--;
+            this.actionCounter--;
         }
 
         // logic that happen at the end of an event
@@ -977,17 +1013,17 @@ public class BattleModel
                 // to show switching animation
                 if (this.events.get(0).newPokemonIndex > -1)
                 {
-                    this.counter = 100;
+                    this.actionCounter = 100;
                 }
                 else
                 {
-                    this.counter = 60;
+                    this.actionCounter = 60;
                 }
             }
         }
 
         //player sends out new pokemon to replace fainted one or battle returns to battle menu
-        else if (this.battleOptions == null && this.counter == 0)
+        else if (this.battleOptions == null && this.actionCounter == 0)
         {
             this.moveProcessed = new boolean[2];
             this.isCrit = new boolean[2];
@@ -997,6 +1033,7 @@ public class BattleModel
             if (!teamFainted(0) && this.team[0][this.currentPokemon[0]].currentHP == 0)
             {
                 this.battleOptions = null;
+                this.optionMax = 0;
                 this.app.openParty(this.currentPokemon[0]);
             }
             else
@@ -1004,6 +1041,20 @@ public class BattleModel
                 //reset all attack related variables at the end of a turn and load the battle menu
                 this.loadBattleMenu();
             }
+        }
+    }
+
+    /**
+     * Change the cursor position
+     * @param dx x-direction movement
+     * @param dy y-direction movement
+     */
+    @Override
+    public void moveIndex(final int dx, final int dy)
+    {
+        if (this.events.size() == 0 && this.battleOptions != null)
+        {
+            super.moveIndex(dx, dy);
         }
     }
     

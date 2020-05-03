@@ -328,7 +328,7 @@ public class OverworldModel extends BaseModel {
             this.actionCounter = 15;
         }
         // otherwise check for a cpu to interact with
-        else if (this.actionCounter == 0)
+        else
         {
             for (CharacterModel cpu : cpuModel)
             {
@@ -461,33 +461,28 @@ public class OverworldModel extends BaseModel {
      */
     public void openMenu()
     {
-        if (this.actionCounter == 0)
+        // exit a shop if it is open
+        if (this.itemOptions.size() > 0)
         {
-            // exit a shop if it is open
-            if (this.itemOptions.size() > 0)
-            {
-                this.itemOptions.clear();
-                this.optionIndex = 0;
-                this.optionHeight = 0;
-                this.optionMax = 0;
-                this.optionWidth = 0;
-                this.acceleration = -1;
-                this.conversation.nextEvent();
-            }
-            // exit the menu if it was already open
-            if (this.textOptions != null)
-            {
-                this.textOptions = null;
-                this.actionCounter = 15;
-                this.textOptionIndex = 0;
-            }
-            // open the menu
-            else if (this.conversation == null)
-            {
-                this.textOptions = new String[]{"Pokedex", "Pokemon", "Bag"};
-                this.actionCounter = 15;
-                this.textOptionIndex = 0;
-            }
+            this.itemOptions.clear();
+            this.optionIndex = 0;
+            this.optionHeight = 0;
+            this.optionMax = 0;
+            this.optionWidth = 0;
+            this.acceleration = -1;
+            this.conversation.nextEvent();
+        }
+        // exit the menu if it was already open
+        if (this.textOptions != null)
+        {
+            this.textOptions = null;
+            this.textOptionIndex = 0;
+        }
+        // open the menu
+        else if (this.conversation == null)
+        {
+            this.textOptions = new String[]{"Pokedex", "Pokemon", "Bag"};
+            this.textOptionIndex = 0;
         }
     }
 
@@ -497,35 +492,32 @@ public class OverworldModel extends BaseModel {
     @Override
     public void confirmSelection()
     {
-        if (this.actionCounter == 0)
+        if (this.conversation != null)
         {
-            if (this.conversation != null)
+            if (this.itemOptions.size() > 0)
             {
-                if (this.itemOptions.size() > 0)
-                {
-                    this.inventoryModel.buyItem(this.itemOptions.get(this.optionIndex));
-                }
-                else
-                {
-                    this.conversation.setOption(this.textOptionIndex);
-                    this.openMenu();
-                }
+                this.inventoryModel.buyItem(this.itemOptions.get(this.optionIndex));
             }
-            else if (this.textOptions[this.textOptionIndex] == "Pokedex")
+            else
             {
-                app.openPokedex();
+                this.conversation.setOption(this.textOptionIndex);
                 this.openMenu();
             }
-            else if (this.textOptions[this.textOptionIndex] == "Pokemon")
-            {
-                app.openParty(-1);
-                this.openMenu();
-            }
-            else if (this.textOptions[this.textOptionIndex] == "Bag")
-            {
-                app.openInventory();
-                this.openMenu();
-            }
+        }
+        else if (this.textOptions[this.textOptionIndex] == "Pokedex")
+        {
+            app.openPokedex();
+            this.openMenu();
+        }
+        else if (this.textOptions[this.textOptionIndex] == "Pokemon")
+        {
+            app.openParty(-1);
+            this.openMenu();
+        }
+        else if (this.textOptions[this.textOptionIndex] == "Bag")
+        {
+            app.openInventory();
+            this.openMenu();
         }
     }
 

@@ -26,6 +26,8 @@ public class BaseController
         {
             if (keysDown.size() > 0)
             {
+                this.model.actionCounter = this.model.ACTION_DELAY - Math.max(this.model.acceleration, 0);
+
                 if (keysDown.contains(KeyEvent.VK_ESCAPE))
                 {
                     this.model.exitScreen();
@@ -55,8 +57,6 @@ public class BaseController
                 {
                     this.model.moveIndex(0, 1);
                 }
-
-                this.model.actionCounter = this.model.ACTION_DELAY - Math.max(this.model.acceleration, 0);
             }
             else if (this.model.acceleration > 0)
             {
