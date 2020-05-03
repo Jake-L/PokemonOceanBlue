@@ -481,7 +481,7 @@ public class OverworldModel extends BaseModel {
         // open the menu
         else if (this.conversation == null)
         {
-            this.textOptions = new String[]{"Pokedex", "Pokemon", "Bag"};
+            this.textOptions = new String[]{"Pokedex", "Pokemon", "Bag", "Achievements"};
             this.textOptionIndex = 0;
         }
     }
@@ -501,6 +501,11 @@ public class OverworldModel extends BaseModel {
             else
             {
                 this.conversation.setOption(this.textOptionIndex);
+                this.openMenu();
+            }
+            else if (this.textOptions[this.textOptionIndex] == "Achievements")
+            {
+                app.openAchievements();
                 this.openMenu();
             }
         }

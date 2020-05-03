@@ -5,13 +5,28 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AchievementsModel {
+public class AchievementsModel extends BaseModel{
 
     List<AchievementDataModel> achievements = new ArrayList<AchievementDataModel>();
     
     public AchievementsModel()
     {
         loadEvents();
+        this.optionMax = this.achievements.size() - 1;
+    }
+
+    /**
+     * Set variables when creating a new view
+     */
+    @Override
+    public void initialize()
+    {
+        this.actionCounter = ACTION_DELAY;
+        this.optionIndex = 0;
+        this.returnValue = -2;
+        this.acceleration = 0;
+        this.accelerationCounter = 10;
+        this.optionMin = 0;
     }
 
     /**

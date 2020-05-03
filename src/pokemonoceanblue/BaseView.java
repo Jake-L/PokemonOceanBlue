@@ -21,6 +21,8 @@ abstract class BaseView {
     protected int maxRenderRows;
     protected int oldOptionIndex = -1;
     protected static Image[] itemSprite;
+    protected Image progressBar;
+    protected Image progressBarFill;
 
     public BaseView()
     {
@@ -57,6 +59,11 @@ abstract class BaseView {
                 itemSprite[i]  = ii.getImage();
             } 
         }
+
+        ii = new ImageIcon(this.getClass().getResource("/menus/progressBar.png"));
+        this.progressBar = ii.getImage();
+        ii = new ImageIcon(this.getClass().getResource("/menus/progressBarFill.png"));
+        this.progressBarFill = ii.getImage();
     }
 
     public BaseView(BaseModel model)
@@ -331,4 +338,25 @@ abstract class BaseView {
         this.oldOptionIndex = this.model.optionIndex;
     }
 
+    /**
+     * @param x the x coordinate of the progress bar
+     * @param y the y coordinate of the progress bar
+     * @param progress the percent progress of the bar to be filled
+     * @param g graphics object
+     * @param canvas JPanel to draw the images on
+     */
+    public void renderProgressBar(int x, int y, double progress, Graphics g, JPanel canvas)
+    {
+        g.drawImage(this.progressBar, x, y,
+            this.progressBar.getWidth(null) * graphicsScaling,
+            this.progressBar.getHeight(null) * graphicsScaling,
+            canvas);
+
+        g.drawImage(this.progressBarFill, 
+            x + 3 * graphicsScaling, 
+            y + 2 * graphicsScaling,
+            (int)(this.progressBarFill.getWidth(null) * progress * 64.0 * graphicsScaling),
+            this.progressBarFill.getHeight(null) * graphicsScaling,
+            canvas);
+    }
 }

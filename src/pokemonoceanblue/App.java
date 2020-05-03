@@ -45,6 +45,7 @@ public class App extends JFrame implements KeyListener
     PokemonStorageController pokemonStorageController;
     MusicPlayer musicPlayer;
     AchievementsModel achievementsModel;
+    BaseController achievementsController;
 
     List<NewPokemonModel> newPokemonQueue = new ArrayList<NewPokemonModel>();
 
@@ -258,6 +259,13 @@ public class App extends JFrame implements KeyListener
         PokemonStorageView psv = new PokemonStorageView(pokemonStorageModel, partyModel);
         pokemonStorageController = new PokemonStorageController(pokemonStorageModel, partyModel);
         viewManager.setView(psv);
+    }
+
+    public void openAchievements()
+    {
+        this.achievementsModel.initialize();
+        viewManager.setView(new AchievementsView(achievementsModel));
+        achievementsController = new BaseController(achievementsModel);
     }
 
     public void decrementStepCounter()
@@ -522,6 +530,20 @@ public class App extends JFrame implements KeyListener
                             OverworldView overworldView = new OverworldView(overworldModel);
                             viewManager.setView(overworldView);
                             pokedexController = null;
+                        }
+                    }
+                }
+                else if (viewManager.getCurrentView().equals("AchievementsView"))
+                {
+                    if (achievementsController != null)
+                    {
+                        achievementsController.userInput(keysDown);
+
+                        if (achievementsController.isComplete())
+                        {
+                            OverworldView overworldView = new OverworldView(overworldModel);
+                            viewManager.setView(overworldView);
+                            achievementsController = null;
                         }
                     }
                 }

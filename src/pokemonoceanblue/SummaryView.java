@@ -18,8 +18,6 @@ public class SummaryView extends BaseView {
     private Image[] pokemonSprites;
     private Image[] pokeballSprites;
     private Image[] typeSprites = new Image[18];
-    private Image progressBar;
-    private Image progressBarFill;
 
     public SummaryView(BaseModel model, List<PokemonModel> pokemonList)
     {
@@ -47,11 +45,6 @@ public class SummaryView extends BaseView {
             ii = new ImageIcon(this.getClass().getResource("/menus/type" + i + ".png"));
             this.typeSprites[i] = ii.getImage();
         }
-
-        ii = new ImageIcon(this.getClass().getResource("/menus/progressBar.png"));
-        this.progressBar = ii.getImage();
-        ii = new ImageIcon(this.getClass().getResource("/menus/progressBarFill.png"));
-        this.progressBarFill = ii.getImage();
     }
 
     /** 
@@ -141,28 +134,6 @@ public class SummaryView extends BaseView {
                     i * height / 6 + height / 8 + 16 * graphicsScaling);
             }
         }
-    }
-
-    /**
-     * @param x the x coordinate of the progress bar
-     * @param y the y coordinate of the progress bar
-     * @param progress the percent progress of the bar to be filled
-     * @param g graphics object
-     * @param canvas JPanel to draw the images on
-     */
-    private void renderProgressBar(int x, int y, double progress, Graphics g, JPanel canvas)
-    {
-        g.drawImage(this.progressBar, x, y,
-            this.progressBar.getWidth(null) * graphicsScaling,
-            this.progressBar.getHeight(null) * graphicsScaling,
-            canvas);
-
-        g.drawImage(this.progressBarFill, 
-            x + 3 * graphicsScaling, 
-            y + 2 * graphicsScaling,
-            (int)(this.progressBarFill.getWidth(null) * progress * 64.0 * graphicsScaling),
-            this.progressBarFill.getHeight(null) * graphicsScaling,
-            canvas);
     }
 
     @Override
