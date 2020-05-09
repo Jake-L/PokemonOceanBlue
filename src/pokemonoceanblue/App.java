@@ -116,6 +116,8 @@ public class App extends JFrame implements KeyListener
 
         this.partyModel = new PartyModel();
         this.partyModel.addPokemon(0, new PokemonModel(3, 30, false));
+        this.partyModel.addPokemon(0, new PokemonModel(4, 10, false));
+        this.partyModel.addPokemon(0, new PokemonModel(3, 0, false));
         this.inventoryModel = new InventoryModel();
         this.pokedexModel = new PokedexModel();
         this.pokemonStorageModel = new PokemonStorageModel();

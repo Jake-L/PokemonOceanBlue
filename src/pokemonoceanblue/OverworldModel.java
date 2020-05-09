@@ -503,11 +503,11 @@ public class OverworldModel extends BaseModel {
                 this.conversation.setOption(this.textOptionIndex);
                 this.openMenu();
             }
-            else if (this.textOptions[this.textOptionIndex] == "Achievements")
-            {
-                app.openAchievements();
-                this.openMenu();
-            }
+        }
+        else if (this.textOptions[this.textOptionIndex] == "Achievements")
+        {
+            app.openAchievements();
+            this.openMenu();
         }
         else if (this.textOptions[this.textOptionIndex] == "Pokedex")
         {

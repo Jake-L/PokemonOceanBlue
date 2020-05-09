@@ -58,6 +58,12 @@ public class BattleView extends BaseView {
         //load players pokemon back sprites
         for (int i = 0; i < pokemonSprite[0].length; i++)
         {
+            if (this.model.team[0][i].level == 0)
+            {
+                // don't load battle sprites for eggs
+                continue;
+            }
+
             for (int j = 0; j < 2; j++)
             {
                 shinyPrefix = model.team[0][i].shiny ? "shiny" : "";
