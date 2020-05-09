@@ -8,6 +8,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.util.ArrayList;
+import java.util.List;
 
 abstract class BaseView {
     protected byte graphicsScaling;
@@ -187,43 +189,64 @@ abstract class BaseView {
     protected void displayText(String text, Graphics g, JPanel canvas)    
     {
         // display the text box at the bottom of the screen
-        displayTextbox(textDisplayBox, 0, height * 3 / 4, width, height / 4, g, canvas);
+        this.displayTextbox(textDisplayBox, 0, height * 3 / 4, width, height / 4, g, canvas);
 
+        // fill the box with text
         int fontSize = Math.max(16, (int)(height * 0.105));
+        this.displayText(text, fontSize, 0, height * 3 / 4, width, height / 4, g, canvas);
+    }
+
+    /**
+     * Renders the given text within the given dimensions
+     * @param text the string to be displayed
+     * @param fontSize the size of the font
+     * @param x the left position of the box the text is being drawn in
+     * @param y the top position of the box the text is being drawn in
+     * @param boxWidth the width of the box the text is being drawn in
+     * @param boxHeight the height of the box the text is being drawn in
+     * @param g Graphics object
+     * @param canvas JPanel object
+     */
+    protected void displayText(String text, int fontSize, int x, int y, int boxWidth, int boxHeight, Graphics g, JPanel canvas)
+    {
+        if (text == null)
+        {
+            return;
+        }
+
         int fontSpacing = fontSize * 2 / 3;
         
         Font font = new Font("Pokemon Fire Red", Font.PLAIN, fontSize);
         g.setFont(font);
 
-        String[] renderText = new String[3];
-        renderText[0] = "";
-        renderText[1] = "";
-        renderText[2] = "";
+        List<String> renderText = new ArrayList<String>();
+        renderText.add("");
         String[] splitText = text.replace("$",",").split(" ");
         int index = 0;
         int line = 0;
 
         // split the string into multiple linse
-        while (index < splitText.length)
+        while (index < splitText.length && line <= (boxHeight - 16 * graphicsScaling) / fontSpacing)
         {
             // move to next line when end is reached
-            if (g.getFontMetrics(font).stringWidth(renderText[line] + splitText[index]) >= width - 16 * graphicsScaling 
-                && !renderText[line].equals("")
-                && line < 2)
+            if (g.getFontMetrics(font).stringWidth(renderText.get(line) + splitText[index]) >= boxWidth - 16 * graphicsScaling 
+                // force at least on word per line
+                && !renderText.get(line).equals(""))
             {
                 line++;
+                renderText.add("");
             }
 
-            renderText[line] = renderText[line] + splitText[index] + " ";
+            renderText.set(line, renderText.get(line) + splitText[index] + " ");
             index++;
         }
 
         // display the string
-        for (int i = 0; i < renderText.length; i++)
+        for (int i = 0; i < renderText.size(); i++)
         {
-            g.drawString(renderText[i], 
-                8 * graphicsScaling, 
-                height * 3 / 4 + (3 * graphicsScaling) + fontSpacing * (i+1));
+            g.drawString(renderText.get(i), 
+                x + 8 * graphicsScaling, 
+                y + (3 * graphicsScaling) + fontSpacing * (i+1));
         }
     }
 

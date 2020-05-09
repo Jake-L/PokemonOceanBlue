@@ -31,7 +31,7 @@ public class PokedexView extends BaseView
     {
         super(model);
         this.model = model;
-        loadImage();
+        this.loadImage();
     }
 
     /** 
@@ -87,7 +87,8 @@ public class PokedexView extends BaseView
     @Override
     public void render(Graphics g, JPanel canvas) 
     {
-        Font font = new Font("Pokemon Fire Red", Font.PLAIN, 12 * graphicsScaling);      
+        int fontSize = 12 * graphicsScaling;
+        Font font = new Font("Pokemon Fire Red", Font.PLAIN, fontSize);      
         g.setFont(font);
 
         int iconHeight = this.pokemonIconSprite[0].getHeight(null) * graphicsScaling;
@@ -146,9 +147,21 @@ public class PokedexView extends BaseView
         g.drawImage(
             this.pokemonSprite,
             2 * graphicsScaling,
-            height / 2 - this.pokemonSprite.getHeight(null) / 2 * graphicsScaling,
+            20 * graphicsScaling,
             this.pokemonSprite.getWidth(null) * graphicsScaling,
             this.pokemonSprite.getHeight(null) * graphicsScaling,
+            canvas
+        );
+
+        // display the Pokemon's description
+        this.displayText(
+            this.model.pokemonDescription[this.model.optionIndex],
+            fontSize,
+            0, 
+            height / 2, 
+            width / 5, 
+            height * 4 / 5, 
+            g, 
             canvas
         );
 

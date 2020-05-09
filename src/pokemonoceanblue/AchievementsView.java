@@ -41,7 +41,8 @@ public class AchievementsView extends BaseView{
     @Override
     public void render(Graphics g, JPanel canvas) 
     {
-        Font font = new Font("Pokemon Fire Red", Font.PLAIN, 10 * graphicsScaling);      
+        int fontSize = 10 * graphicsScaling;
+        Font font = new Font("Pokemon Fire Red", Font.PLAIN, fontSize);      
         g.setFont(font);
 
         g.drawImage(this.background, 0, 0, width, height, canvas);
@@ -58,14 +59,27 @@ public class AchievementsView extends BaseView{
             this.calcIndices();
         }
 
-        displayTextbox(textDisplayBox, 0, height / 12, width / 5, height * 4 / 5, g, canvas);
+        this.displayTextbox(textDisplayBox, 0, height / 12, width / 5, height * 4 / 5, g, canvas);
 
+        // display information for the currently hovered achievement
         AchievementDataModel hoveredAchievement = this.model.achievements.get(this.model.optionIndex);
         g.drawString("Name: " + hoveredAchievement.name, 8 * graphicsScaling, height / 10 + 10 * graphicsScaling);
         g.drawString("Progress: " + hoveredAchievement.counter + "/" + hoveredAchievement.requiredValue,
              8 * graphicsScaling, height / 10 + 25 * graphicsScaling);
-        renderProgressBar(8 * graphicsScaling, height / 10 + 35 * graphicsScaling,
+        this.renderProgressBar(8 * graphicsScaling, height / 10 + 35 * graphicsScaling,
             hoveredAchievement.counter / hoveredAchievement.requiredValue, g, canvas);
+
+        // display achievement description
+        this.displayText(
+            hoveredAchievement.description, 
+            fontSize,
+            0, 
+            height / 10 + 55 * graphicsScaling, 
+            width / 5, 
+            height * 4 / 5, 
+            g, 
+            canvas
+        );
 
         int achievementIndex = 0;
         for (int i = 0; i < this.maxRenderRows; i++)

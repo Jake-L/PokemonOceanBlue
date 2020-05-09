@@ -1,13 +1,17 @@
 package pokemonoceanblue;
 
+import java.sql.*;
+
 public class PokedexModel extends BaseModel
 {
-    public int[] caughtPokemon = new int[494];;
+    public int[] caughtPokemon = new int[494];
+    public String[] pokemonDescription = new String[494];
     public int uniqueCaught = 0;
 
     public PokedexModel()
     {
         this.optionMax = this.caughtPokemon.length - 1;
+        this.loadPokemonData();
     }
 
     /**
@@ -42,6 +46,30 @@ public class PokedexModel extends BaseModel
         {
             return false;
         }
+    }
+
+    /**
+     * Loads the descriptions of each Pokemon
+     */
+    private void loadPokemonData()
+    {
+        try
+        {
+            DatabaseUtility db = new DatabaseUtility();
+
+            String query = "SELECT pokemon_id, [description] FROM pokemon WHERE pokemon_id <= 493 ";
+
+            ResultSet rs = db.runQuery(query);
+
+            while(rs.next()) 
+            {
+                this.pokemonDescription[rs.getInt("pokemon_id")] = rs.getString("description");
+            }
+        }
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+        }  
     }
 
     /**

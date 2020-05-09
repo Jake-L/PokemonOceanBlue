@@ -105,7 +105,8 @@ public class DatabaseUtility
                     speed INT NOT NULL,
                     iv_gain INT NOT NULL,
                     capture_rate INT NOT NULL,
-                    base_pokemon_id INT NOT NULL)
+                    base_pokemon_id INT NOT NULL,
+                    [description] VARCHAR(130) NULL)
                 """;
         runUpdate(query);
 
@@ -119,12 +120,12 @@ public class DatabaseUtility
                     defense, special_attack,
                     special_defense, speed,
                     iv_gain, capture_rate,
-                    base_pokemon_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    base_pokemon_id, [description])
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         dataTypes = new String[] {"int", "String", "int", "int", "int", "int", 
-            "int", "int", "int", "int", "int", "int", "int"};
+            "int", "int", "int", "int", "int", "int", "int", "String"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================
@@ -417,7 +418,7 @@ public class DatabaseUtility
         //==================================================================================
         // all the text displayed in conversations
         query = """
-                CREATE TABLE conversation(
+                CREATE TABLE conversation (
                     conversation_id INT NOT NULL,
                     conversation_event_id INT NOT NULL,
                     text VARCHAR(100) NULL,
