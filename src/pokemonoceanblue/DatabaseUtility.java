@@ -73,6 +73,7 @@ public class DatabaseUtility
             "conversation",  "type_effectiveness", "items", "battle",
             "portal", "map_object", "area", "character", "move_stat_effect",
             "evolution_methods", "conversation_trigger", "achievements",
+            "player_pokedex",
             "moves",
             "map_template",
             "move_effect", 
@@ -627,6 +628,16 @@ public class DatabaseUtility
         runUpdate(query);
 
         //==================================================================================
+        // save the player's pokedex progress
+        query = """
+                CREATE TABLE player_pokedex (
+                    pokemon_id INT NOT NULL,
+                    number_caught INT NOT NULL,
+                    FOREIGN KEY(pokemon_id) REFERENCES pokemon(pokemon_id))
+                """;
+        runUpdate(query);
+
+        //==================================================================================
         // each achievements id, name, counter, required value, reward id, reward quantity, and description
         query = "CREATE TABLE achievements("
                 + "achievement_id INT PRIMARY KEY, "
@@ -652,7 +663,6 @@ public class DatabaseUtility
             "String"};
         loadTable(path, query, dataTypes);
 
-        conn.commit();
         conn.setAutoCommit(true);
     }
 
@@ -750,11 +760,13 @@ public class DatabaseUtility
      */
     public void savePokemon(List<PokemonModel> team, List<PokemonModel> pokemonStorage)
     {
-        // clear out past save data
-        this.runUpdate("DELETE FROM player_pokemon");
-
         try
         {
+            conn.setAutoCommit(false);
+            
+            // clear out past save data
+            this.runUpdate("DELETE FROM player_pokemon");
+
             String query = """
                 INSERT INTO player_pokemon (
                     pokemon_id, xp, shiny, gender_id, current_hp,
@@ -784,6 +796,7 @@ public class DatabaseUtility
             }
 
             statement.executeBatch();
+            conn.setAutoCommit(true);
         } 
         catch (Exception e)
         {
@@ -818,6 +831,49 @@ public class DatabaseUtility
             statement.setInt(2, x);
             statement.setInt(3, y);
             statement.executeUpdate();
+        } 
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Save the number of times the player has caught each Pokemon
+     * @param caughtPokemon the number of times the player has caught each Pokemon
+     */
+    public void savePokedex(int[] caughtPokemon)
+    {
+        try
+        {
+            conn.setAutoCommit(false);
+
+            // clear out past save data
+            this.runUpdate("DELETE FROM player_pokedex");
+
+            String query = """
+                INSERT INTO player_pokedex (
+                    pokemon_id, number_caught)
+                VALUES (?, ?)
+                """;
+
+            PreparedStatement statement;
+
+            statement = conn.prepareStatement(query);
+
+            // store the Pokemon in the Pokemon storage
+            for (int i = 1; i < caughtPokemon.length; i++)
+            {
+                if (caughtPokemon[i] > 0)
+                {
+                    statement.setInt(1, i);
+                    statement.setInt(2, caughtPokemon[i]);
+                    statement.addBatch();
+                }
+            }
+
+            statement.executeBatch();
+            conn.setAutoCommit(true);
         } 
         catch (Exception e)
         {

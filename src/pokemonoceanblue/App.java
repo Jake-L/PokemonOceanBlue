@@ -249,9 +249,6 @@ public class App extends JFrame implements KeyListener
         this.pokedexModel.initialize();
         viewManager.setView(new PokedexView(pokedexModel));
         pokedexController = new BaseController(pokedexModel);
-        DatabaseUtility db = new DatabaseUtility();
-        db.savePokemon(this.partyModel.team, this.pokemonStorageModel.pokemonStorage);
-        db.savePlayerLocation(this.overworldModel.mapId, this.playerModel.getX(), this.playerModel.getY());
     }
 
     public void openPokemonStorage()
@@ -268,6 +265,17 @@ public class App extends JFrame implements KeyListener
         this.achievementsModel.initialize();
         viewManager.setView(new AchievementsView(achievementsModel));
         achievementsController = new BaseController(achievementsModel);
+    }
+
+    /**
+     * Save the player's current progress
+     */
+    public void save()
+    {
+        DatabaseUtility db = new DatabaseUtility();
+        db.savePokemon(this.partyModel.team, this.pokemonStorageModel.pokemonStorage);
+        db.savePlayerLocation(this.overworldModel.mapId, this.playerModel.getX(), this.playerModel.getY());
+        db.savePokedex(this.pokedexModel.caughtPokemon);
     }
 
     public void decrementStepCounter()

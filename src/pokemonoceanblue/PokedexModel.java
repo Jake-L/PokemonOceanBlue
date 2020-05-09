@@ -11,6 +11,7 @@ public class PokedexModel extends BaseModel
     public PokedexModel()
     {
         this.optionMax = this.caughtPokemon.length - 1;
+        this.loadPokedex();
         this.loadPokemonData();
     }
 
@@ -64,6 +65,30 @@ public class PokedexModel extends BaseModel
             while(rs.next()) 
             {
                 this.pokemonDescription[rs.getInt("pokemon_id")] = rs.getString("description");
+            }
+        }
+        catch (SQLException e) 
+        {
+            e.printStackTrace();
+        }  
+    }
+
+    /**
+     * Loads saved Pokedex data
+     */
+    private void loadPokedex()
+    {
+        try
+        {
+            DatabaseUtility db = new DatabaseUtility();
+
+            String query = "SELECT pokemon_id, number_caught FROM player_pokedex";
+
+            ResultSet rs = db.runQuery(query);
+
+            while(rs.next()) 
+            {
+                this.caughtPokemon[rs.getInt("pokemon_id")] = rs.getInt("number_caught");
             }
         }
         catch (SQLException e) 
