@@ -41,6 +41,11 @@ public class BattleView extends BaseView {
     {
         this.model = model;
         loadImage(battleBackgroundId);
+        // if creating a new view for an existing battle, hide the enemy Pokemon if they already died
+        if (this.model.currentPokemon[1] > -1 && this.model.team[1][this.model.currentPokemon[1]].currentHP == 0)
+        {
+            this.hidePokemon[1] = true;
+        }
     }
 
     /** 

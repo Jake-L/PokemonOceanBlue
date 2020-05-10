@@ -13,7 +13,7 @@ import java.awt.Font;
  */
 public class SummaryView extends BaseView {
 
-    private BaseModel model;
+    private PartyModel model;
     private List<PokemonModel> pokemonList;
     private Image[] pokemonSprites;
     private Image[] pokeballSprites;
@@ -22,7 +22,7 @@ public class SummaryView extends BaseView {
     private Image pokemonHeader;
     private Image[] summaryBox = new Image[1];
 
-    public SummaryView(BaseModel model, List<PokemonModel> pokemonList)
+    public SummaryView(PartyModel model, List<PokemonModel> pokemonList)
     {
         this.model = model;
         this.pokemonList = pokemonList;
@@ -149,27 +149,68 @@ public class SummaryView extends BaseView {
             }
 
             //display pokemon moves
-            for (int i = 0; i < this.pokemonList.get(pokemonIndex).moves.length; i++)
+            int index = 0;
+            while (index < this.pokemonList.get(pokemonIndex).moves.length)
             {
-                g.drawImage(this.typeSprites[this.pokemonList.get(pokemonIndex).moves[i].typeId],
-                    (int)(width * (2.0 / 3.0)),
-                    i * height / 6 + height / 8 - 8 * graphicsScaling,
-                    this.typeSprites[0].getWidth(null) * graphicsScaling / 2,
-                    this.typeSprites[0].getHeight(null) * graphicsScaling / 2,
+                this.renderMove(this.pokemonList.get(pokemonIndex).moves[index], 
+                    width * 2 / 3, 
+                    index * height / 6 + height / 8, 
+                    this.model.hoverMoveIndex == index, 
+                    g, 
                     canvas);
-                
-                g.drawString(this.pokemonList.get(pokemonIndex).moves[i].name,
-                    (int)(width * (2.0 / 3.0) + 8 * graphicsScaling + this.typeSprites[i].getWidth(null)),
-                    i * height / 6 + height / 8 - 2 * graphicsScaling);
-
-                g.drawString("Dmg: " + String.valueOf(this.pokemonList.get(pokemonIndex).moves[i].power),
-                    (int)(width * (2.0 / 3.0)),
-                    i * height / 6 + height / 8 + 16 * graphicsScaling);
-
-                g.drawString("Acc: " + String.valueOf(this.pokemonList.get(pokemonIndex).moves[i].accuracy),
-                    (int)(width * (2.0 / 3.0) + graphicsScaling * 72),
-                    i * height / 6 + height / 8 + 16 * graphicsScaling);
+                index++;
             }
+            // display a new move if Pokemon is trying to learn it
+            if (this.model.newMove != null)
+            {
+                this.renderMove(this.model.newMove, 
+                    width * 2 / 3, 
+                    index * height / 6 + height / 8, 
+                    this.model.hoverMoveIndex == index, 
+                    g, 
+                    canvas);
+            }
+        }
+    }
+
+    /**
+     * Display one of the Pokemon's moves
+     * @param move the move to be displayed
+     * @param x left position of render area
+     * @param y top position of render area
+     * @param isHovered where the player is currently hovering this move
+     * @param g graphics object
+     * @param canvas JPanel object
+     */
+    private void renderMove(MoveModel move, int x, int y, boolean isHovered, Graphics g, JPanel canvas)
+    {
+        g.drawImage(this.typeSprites[move.typeId],
+            x,
+            y,
+            this.typeSprites[0].getWidth(null) * graphicsScaling / 2,
+            this.typeSprites[0].getHeight(null) * graphicsScaling / 2,
+            canvas);
+                
+        g.drawString(move.name,
+            x + 2 * graphicsScaling + this.typeSprites[0].getWidth(null) * graphicsScaling / 2,
+            y + 6 * graphicsScaling);
+
+        g.drawString("Dmg: " + move.power,
+            x,
+            y + 16 * graphicsScaling);
+
+        g.drawString("Acc: " + move.accuracy,
+            x + 72 * graphicsScaling,
+            y + 16 * graphicsScaling);
+
+        if (isHovered)
+        {
+            g.drawImage(this.arrowSprite,
+                x - 10 * graphicsScaling,
+                y,
+                this.arrowSprite.getWidth(null) * graphicsScaling,
+                this.arrowSprite.getHeight(null) * graphicsScaling,
+                canvas);
         }
     }
 

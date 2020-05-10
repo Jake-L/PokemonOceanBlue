@@ -238,6 +238,40 @@ public class BattleModel extends BaseModel
     }
 
     /**
+     * Set which move the Pokemon will learn
+     * @param newMove the move the Pokemon was trying to learn
+     * @param newMoveIndex the index of the move to replace, or -1
+     */
+    public void setNewMove(MoveModel newMove, int newMoveIndex)
+    {
+        // don't teach the new move
+        if (newMoveIndex == -1)
+        {
+            this.events.add(0, 
+                new BattleEvent(
+                    this.team[0][this.currentPokemon[0]].name + " did not learn " + newMove.name, 
+                    0, 
+                    0, 
+                    null
+                ));
+        }
+        // teach the new move at newMoveIndex
+        else
+        {
+            this.events.add(0, 
+                new BattleEvent(
+                    this.team[0][this.currentPokemon[0]].name + " forgot how to use " + this.team[0][this.currentPokemon[0]].moves[newMoveIndex].name 
+                        + "and learned " + newMove.name + "!", 
+                    0, 
+                    0, 
+                    null
+                ));
+            this.team[0][this.currentPokemon[0]].moves[newMoveIndex] = newMove;
+        }
+        this.actionCounter = 60;
+    }
+
+    /**
      * @return enemyAttackEvent is the battle event that stores the enemy attack
      */
     private BattleEvent enemyAttackEvent()
@@ -932,13 +966,14 @@ public class BattleModel extends BaseModel
                                 null
                             ));
                         }
-                        // otherwise the playe rwill need to choose a move to replace
+                        // otherwise the player will need to choose a move to replace
                         else
                         {
                             this.events.add(2, new BattleEvent(
                                 this.team[0][this.currentPokemon[0]].name + " wants to learn " + newMoves.get(i).name + ", however it already knows four moves.", 
                                 0, 
                                 0, 
+                                newMoves.get(i),
                                 null
                             ));
                         }
@@ -1004,6 +1039,11 @@ public class BattleModel extends BaseModel
                     BattleEvent event = new BattleEvent("The wild " + this.team[1][this.currentPokemon[1]].name + " escaped!", 0, -1, null);
                     this.events.add(1, event);
                 }
+            }
+            // open summary screen for player to chose which move to replace with the new move
+            else if (this.events.get(0).newMove != null)
+            {
+                this.app.openSummaryNewMove(this.currentPokemon[0], this.events.get(0).newMove);
             }
             this.events.remove(0);
 
@@ -1151,6 +1191,7 @@ public class BattleModel extends BaseModel
         public int statusEffect = -1;
         public MoveModel move;
         public int removalCondition;
+        public MoveModel newMove;
 
         /** 
          * Constructor
@@ -1225,6 +1266,20 @@ public class BattleModel extends BaseModel
             {
                 this.newPokemonIndex = index;
             }
+        }
+
+        /** 
+         * Constructor for learning new Moves
+         * @param text the text that will be displayed
+         * @param target the pokemon learning the new move
+         * @param removealCondition the pokemon learning the new move
+         * @param newMove the move the pokemon wants to learn
+         * @param sound file name of sound effect to be played
+         */
+        public BattleEvent(String text, int target, int removalCondition, MoveModel newMove, String sound)
+        {
+            this(text, target, removalCondition, sound);
+            this.newMove = newMove;
         }
     }
 

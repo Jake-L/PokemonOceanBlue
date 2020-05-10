@@ -31,7 +31,7 @@ public class App extends JFrame implements KeyListener
     List<Integer> keysDown = new ArrayList<Integer>();
     OverworldModel overworldModel;
     BattleModel battleModel;
-    BaseController BaseController;
+    BaseController battleController;
     BaseController partyController;
     PartyModel partyModel;
     BaseController inventoryController;
@@ -116,8 +116,9 @@ public class App extends JFrame implements KeyListener
 
         this.partyModel = new PartyModel();
         this.partyModel.addPokemon(0, new PokemonModel(3, 30, false));
-        this.partyModel.addPokemon(0, new PokemonModel(4, 10, false));
-        this.partyModel.addPokemon(0, new PokemonModel(3, 0, false));
+        this.partyModel.addPokemon(0, new PokemonModel(4, 15, false));
+        this.partyModel.addPokemon(0, new PokemonModel(1, 12, false));
+        this.partyModel.team.get(0).xp += 450;
         this.inventoryModel = new InventoryModel();
         this.pokedexModel = new PokedexModel();
         this.pokemonStorageModel = new PokemonStorageModel();
@@ -174,7 +175,7 @@ public class App extends JFrame implements KeyListener
         battleModel = new BattleModel(partyModel.getTeamArray(), battleId, this);
         BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
         viewManager.setView(battleView);
-        BaseController = new BaseController(battleModel);
+        battleController = new BaseController(battleModel);
     }
 
     public void createWildBattle(int pokemonId, int level)
@@ -191,7 +192,7 @@ public class App extends JFrame implements KeyListener
         battleModel = new BattleModel(team, partyModel.getTeamArray(), this);
         BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
         viewManager.setView(battleView);
-        BaseController = new BaseController(battleModel);
+        battleController = new BaseController(battleModel);
     }
 
     /**
@@ -240,6 +241,14 @@ public class App extends JFrame implements KeyListener
     public void openSummary(int currentPokemon)
     {
         this.partyModel.initialize(currentPokemon);
+        viewManager.setView(new SummaryView(partyModel, partyModel.team));
+        summaryController = new BaseController(partyModel);
+    }
+
+    public void openSummaryNewMove(int currentPokemon, MoveModel newMove)
+    {
+        this.partyModel.initialize(currentPokemon);
+        this.partyModel.setNewMove(newMove);
         viewManager.setView(new SummaryView(partyModel, partyModel.team));
         summaryController = new BaseController(partyModel);
     }
@@ -350,7 +359,7 @@ public class App extends JFrame implements KeyListener
                 // update the battle
                 if (viewManager.getCurrentView().equals("BattleView") && this.battleModel != null)
                 {
-                    BaseController.userInput(keysDown);
+                    battleController.userInput(keysDown);
 
                     String sound = this.battleModel.getSoundEffect();
                     if (sound != null)
@@ -469,8 +478,20 @@ public class App extends JFrame implements KeyListener
                 {
                     if (summaryController != null)
                     {
-                        summaryController.userInput(keysDown);
-                        if (!partyModel.isSummary)
+                        this.summaryController.userInput(keysDown);
+                        if (this.partyModel.newMove != null)
+                        {
+                            int returnValue = partyModel.getSelection();
+                            if (returnValue > -2)
+                            {
+                                this.summaryController = null;
+                                this.battleModel.setNewMove(this.partyModel.newMove, returnValue);
+                                // return to battle screen
+                                BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
+                                viewManager.setView(battleView);
+                            }
+                        }
+                        else if (!partyModel.isSummary)
                         {
                             this.summaryController = null;
                             this.openParty(-1);
