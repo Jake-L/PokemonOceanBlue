@@ -400,6 +400,14 @@ public class BattleView extends BaseView {
                 canvas);
         }
 
+        //display gender symbol
+        g.drawImage(genderIcons[this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].genderId],
+            x + (87 - 22 * teamIndex) * graphicsScaling,
+            y + (10 - teamIndex) * graphicsScaling,
+            genderIcons[0].getWidth(null) * graphicsScaling,
+            genderIcons[0].getHeight(null) * graphicsScaling,
+            canvas);
+
         //allows for gradual change in health bar visual
         double damage = 0.0;
         if (this.model.events.size() > 0 && this.model.events.get(0).damage > -1 && this.model.events.get(0).target == teamIndex)

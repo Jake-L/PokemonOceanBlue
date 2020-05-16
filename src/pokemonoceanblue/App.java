@@ -46,6 +46,7 @@ public class App extends JFrame implements KeyListener
     MusicPlayer musicPlayer;
     AchievementsModel achievementsModel;
     BaseController achievementsController;
+    DayCareModel dayCareModel;
 
     List<NewPokemonModel> newPokemonQueue = new ArrayList<NewPokemonModel>();
 
@@ -123,8 +124,8 @@ public class App extends JFrame implements KeyListener
         this.pokedexModel = new PokedexModel();
         this.pokemonStorageModel = new PokemonStorageModel();
         this.achievementsModel = new AchievementsModel();
-
         this.evolveCheck = new EvolutionCheck();
+        this.dayCareModel = new DayCareModel();
 
         this.update();
     }
@@ -160,7 +161,7 @@ public class App extends JFrame implements KeyListener
             //     ex.printStackTrace();
             //     this.setMap(1, 3, 3);
             // } 
-            this.setMap(0, 20, 60);
+            this.setMap(17, 7, 7);
         }
     }
 
@@ -307,6 +308,17 @@ public class App extends JFrame implements KeyListener
             viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
             newPokemonController = new BaseController(newPokemonQueue.get(0));
             newPokemonQueue.remove(0);
+        }
+
+        // check if an egg has been generated in the day care
+        int newEggId = this.dayCareModel.decrementStepCounter();
+        if (newEggId > -1)
+        {
+            // if an egg has hatched, deposit it right into Pokemon Storage
+            Random rand = new Random();
+            boolean shiny = rand.nextDouble() < this.pokedexModel.getShinyRate(newEggId) ? true : false;
+            this.pokemonStorageModel.addPokemon(new PokemonModel(newEggId, 1, shiny));
+            this.achievementsModel.setEggsHatched(shiny);
         }
     }
 

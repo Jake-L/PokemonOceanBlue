@@ -27,7 +27,7 @@ public class PokemonModel
     public int happiness = 70;
     int captureRate;
     int stepCounter;
-    public int genderId = 0;
+    public int genderId;
     
     /** 
      * Constructor
@@ -39,6 +39,7 @@ public class PokemonModel
         this.pokemon_id = id;
         this.level = level;
         this.shiny = shiny;
+        this.genderId = new Random().nextInt(2);
 
         if (level > 0)
         {

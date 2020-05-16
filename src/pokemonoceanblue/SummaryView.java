@@ -17,7 +17,6 @@ public class SummaryView extends BaseView {
     private List<PokemonModel> pokemonList;
     private Image[] pokemonSprites;
     private Image[] pokeballSprites;
-    private Image[] typeSprites = new Image[18];
     private Image pokemonBackground;
     private Image pokemonHeader;
     private Image[] summaryBox = new Image[1];
@@ -41,12 +40,6 @@ public class SummaryView extends BaseView {
             this.pokemonSprites[i] = ii.getImage();
             ii = new ImageIcon(this.getClass().getResource("/inventory/" + this.pokemonList.get(i).pokeballId + ".png"));
             this.pokeballSprites[i] = ii.getImage();
-        }
-
-        for (int i = 0; i < this.typeSprites.length; i++)
-        {
-            ii = new ImageIcon(this.getClass().getResource("/menus/type" + i + ".png"));
-            this.typeSprites[i] = ii.getImage();
         }
 
         ii = new ImageIcon(this.getClass().getResource("/menus/pokemonSummaryBackground.png"));
@@ -117,6 +110,14 @@ public class SummaryView extends BaseView {
                 width / 10 - 20 * graphicsScaling,
                 height / 20 + 32 * graphicsScaling);
 
+            // displays Pokemon gender
+            g.drawImage(genderIcons[this.pokemonList.get(pokemonIndex).genderId],
+                width / 10 + 40 * graphicsScaling,
+                height / 20 + 10 * graphicsScaling,
+                genderIcons[0].getWidth(null) * graphicsScaling,
+                genderIcons[0].getHeight(null) * graphicsScaling,
+                canvas);
+
             //displays pokemon number
             g.drawString("No." + this.pokemonList.get(pokemonIndex).base_pokemon_id,
                 24 * graphicsScaling,
@@ -125,11 +126,11 @@ public class SummaryView extends BaseView {
             //displays pokemon type(s)
             for (int i = 0; i < this.pokemonList.get(pokemonIndex).types.length; i++)
             {
-                g.drawImage(this.typeSprites[this.pokemonList.get(pokemonIndex).types[i]],
-                    (int)(24 * graphicsScaling + i * this.typeSprites[0].getWidth(null) * graphicsScaling / 1.5),
+                g.drawImage(typeSprites[this.pokemonList.get(pokemonIndex).types[i]],
+                    (int)(24 * graphicsScaling + i * typeSprites[0].getWidth(null) * graphicsScaling / 1.5),
                     height * 9 / 16 + 4 * graphicsScaling,
-                    this.typeSprites[0].getWidth(null) * graphicsScaling / 2,
-                    this.typeSprites[0].getHeight(null) * graphicsScaling / 2,
+                    typeSprites[0].getWidth(null) * graphicsScaling / 2,
+                    typeSprites[0].getHeight(null) * graphicsScaling / 2,
                     canvas);
             }
 
@@ -184,15 +185,15 @@ public class SummaryView extends BaseView {
      */
     private void renderMove(MoveModel move, int x, int y, boolean isHovered, Graphics g, JPanel canvas)
     {
-        g.drawImage(this.typeSprites[move.typeId],
+        g.drawImage(typeSprites[move.typeId],
             x,
             y,
-            this.typeSprites[0].getWidth(null) * graphicsScaling / 2,
-            this.typeSprites[0].getHeight(null) * graphicsScaling / 2,
+            typeSprites[0].getWidth(null) * graphicsScaling / 2,
+            typeSprites[0].getHeight(null) * graphicsScaling / 2,
             canvas);
                 
         g.drawString(move.name,
-            x + 2 * graphicsScaling + this.typeSprites[0].getWidth(null) * graphicsScaling / 2,
+            x + 2 * graphicsScaling + typeSprites[0].getWidth(null) * graphicsScaling / 2,
             y + 6 * graphicsScaling);
 
         g.drawString("Dmg: " + move.power,

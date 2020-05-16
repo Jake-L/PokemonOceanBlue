@@ -16,8 +16,6 @@ abstract class BaseView {
     protected int width;
     protected int height;
     protected Image[] textDisplayBox = new Image[9];
-    protected Image arrowSprite;
-    protected static Image[] rainSprite = new Image[6];
     protected BaseModel model;
     protected int minRenderIndex;
     protected int maxRenderRows;
@@ -25,6 +23,12 @@ abstract class BaseView {
     protected static Image[] itemSprite;
     protected Image progressBar;
     protected Image progressBarFill;
+
+    // sprites used by many subclasses
+    protected Image arrowSprite;
+    protected static Image[] rainSprite = new Image[6];
+    protected static Image[] genderIcons = new Image[2];
+    protected static Image[] typeSprites = new Image[18];
 
     public BaseView()
     {
@@ -45,6 +49,7 @@ abstract class BaseView {
             rainSprite[i]  = ii.getImage();
         }
 
+        // load sprites only once for all views
         if (itemSprite == null)
         {
             itemSprite = new Image[150];
@@ -60,6 +65,18 @@ abstract class BaseView {
                 ii = new ImageIcon(this.getClass().getResource("/inventory/" + i + ".png"));
                 itemSprite[i]  = ii.getImage();
             } 
+
+            for (int i = 0; i < typeSprites.length; i++)
+            {
+                ii = new ImageIcon(this.getClass().getResource("/menus/type" + i + ".png"));
+                typeSprites[i] = ii.getImage();
+            }
+
+            for (int i = 0; i < genderIcons.length; i++)
+        {
+            ii = new ImageIcon(this.getClass().getResource("/menus/gender" + i + ".png"));
+            genderIcons[i] = ii.getImage();
+        }
         }
 
         ii = new ImageIcon(this.getClass().getResource("/menus/progressBar.png"));
