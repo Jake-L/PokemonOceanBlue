@@ -81,12 +81,12 @@ public class MoveModel
                 Random rand = new Random();
                 query = "SELECT * FROM move_effect WHERE effect_id = " + effectId;
                 rs = db.runQuery(query);
-                this.moveEffect = new MoveEffect(
-                    effectId, 
-                    rs.getInt("target_type"), 
-                    rs.getInt("counter_min") + rand.nextInt(rs.getInt("counter_max") - rs.getInt("counter_min") + 1), 
-                    rs.getString("text")
-                );
+                // this.moveEffect = new MoveEffect(
+                //     effectId, 
+                //     rs.getInt("target_type"), 
+                //     rs.getInt("counter_min") + rand.nextInt(rs.getInt("counter_max") - rs.getInt("counter_min") + 1), 
+                //     rs.getString("text")
+                // );
             }
         }
         catch (SQLException e) 

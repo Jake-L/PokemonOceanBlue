@@ -197,10 +197,15 @@ public class OverworldView extends BaseView {
         {
             for (int x = 0 + Math.max(xOffset / 16,0); x < Math.min(model.tiles[y].length, this.model.playerModel.getX() + width / (16 * graphicsScaling)); x++)
             {
-                if (this.isAnimatedSprite(this.model.tiles[y][x]))
+                int animatedIndex = Arrays.binarySearch(ANIMATED_TILES, Math.abs(this.model.tiles[y][x]));
+                if (animatedIndex >= 0)
                 {
                     //load animated water sprite
-                    sprite = animatedTileSprite.get(String.format("%s-%s", Math.abs(this.model.tiles[y][x]), System.currentTimeMillis() / 160 % 8));
+                    sprite = animatedTileSprite.get(String.format("%s-%s", 
+                        Math.abs(this.model.tiles[y][x]), 
+                        System.currentTimeMillis() 
+                            / (20 * ANIMATED_TILE_LENGTH[animatedIndex]) 
+                            % ANIMATED_TILE_LENGTH[animatedIndex]));
                 }
                 else
                 {
@@ -294,6 +299,7 @@ public class OverworldView extends BaseView {
         // display gym leader mugshot
         if (this.mugshotCharacterSprite != null)
         {
+            // use separate loops for brackground and lightnight because background moves faster
             for (int i = -1; i < 2; i++)
             {
                 g.drawImage(
@@ -304,10 +310,15 @@ public class OverworldView extends BaseView {
                     this.mugshotBackgroundSprite.getHeight(null) * graphicsScaling,
                     canvas
                 );
+            }
 
+            int b = graphicsScaling * (int)((System.currentTimeMillis() / 3) % 256);
+
+            for (int i = -1; i < 2; i++)
+            {
                 g.drawImage(
                     this.mugshotLightningSprite, 
-                    (int)(System.currentTimeMillis() % (this.mugshotLightningSprite.getWidth(null)) + i * this.mugshotLightningSprite.getWidth(null)) * graphicsScaling, 
+                    b + (i * this.mugshotLightningSprite.getWidth(null) * graphicsScaling), 
                     height / 2 - this.mugshotLightningSprite.getHeight(null) * graphicsScaling / 2, 
                     this.mugshotLightningSprite.getWidth(null) * graphicsScaling, 
                     this.mugshotLightningSprite.getHeight(null) * graphicsScaling,
@@ -545,18 +556,6 @@ public class OverworldView extends BaseView {
         }
 
         return columnHeight;
-    }
-
-    private boolean isAnimatedSprite(int checkTileId)
-    {
-        for (int tileId : this.ANIMATED_TILES)
-        {
-            if (tileId == Math.abs(checkTileId))
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     @Override

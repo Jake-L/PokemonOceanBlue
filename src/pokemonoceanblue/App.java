@@ -113,7 +113,7 @@ public class App extends JFrame implements KeyListener
             }
         });
         
-        this.playSong(0);
+        this.playSong(0, false);
 
         this.partyModel = new PartyModel();
         this.partyModel.addPokemon(0, new PokemonModel(3, 30, false));
@@ -172,8 +172,8 @@ public class App extends JFrame implements KeyListener
 
     public void createTrainerBattle(int battleId)
     {
-        this.playSong(14);
         battleModel = new BattleModel(partyModel.getTeamArray(), battleId, this);
+        this.playSong(battleModel.musicId, true);
         BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
         viewManager.setView(battleView);
         battleController = new BaseController(battleModel);
@@ -181,7 +181,7 @@ public class App extends JFrame implements KeyListener
 
     public void createWildBattle(int pokemonId, int level)
     {
-        this.playSong(18);
+        this.playSong(100, true);
 
         //determine if the wild Pokemon is shiny
         Random rand = new Random();
@@ -687,8 +687,8 @@ public class App extends JFrame implements KeyListener
         }
     }
 
-    public void playSong(int songId)
+    public void playSong(int musicId, boolean skipTransition)
     {
-        musicPlayer.setSong(songId);
+        musicPlayer.setSong(musicId, skipTransition);
     }
 }

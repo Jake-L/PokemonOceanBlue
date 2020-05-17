@@ -434,6 +434,7 @@ public class DatabaseUtility
                     new_conversation_id INT DEFAULT -1,
                     mugshot_character VARCHAR(20) NULL,
                     mugshot_background VARCHAR(20) NULL,
+                    music_id INT NULL DEFAULT -1,
                     shop_id INT NULL)
                 """;
         runUpdate(query);
@@ -447,11 +448,13 @@ public class DatabaseUtility
                     option_id, next_conversation_event_id,
                     gift_pokemon_id, gift_pokemon_level,
                     new_conversation_id,
-                    mugshot_character, mugshot_background, shop_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    mugshot_character, mugshot_background, music_id,
+                    shop_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
-        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int", "int", "int", "int", "int", "String", "String", "int"};
+        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int", 
+            "int", "int", "int", "int", "String", "String", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================
@@ -564,6 +567,7 @@ public class DatabaseUtility
                     conversation_id INT NOT NULL,
                     wander_range INT NOT NULL,
                     direction INT NULL,
+                    music_id INT NULL,
                     FOREIGN KEY(map_id) REFERENCES map_template(map_id))
                 """;
         runUpdate(query);
@@ -574,11 +578,12 @@ public class DatabaseUtility
                 INSERT INTO character (
                     character_id, map_id, area_id,
                     name, sprite_name, x, y,
-                    conversation_id, wander_range, direction) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    conversation_id, wander_range, direction,
+                    music_id) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
-        dataTypes = new String[] {"int", "int", "int", "String", "String", "int", "int", "int", "int", "int"};
+        dataTypes = new String[] {"int", "int", "int", "String", "String", "int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

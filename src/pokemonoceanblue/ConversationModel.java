@@ -354,6 +354,16 @@ public class ConversationModel
         return null;
     }
 
+    public int getMusicId()
+    {
+        if (this.events.size() > 0 && this.events.get(0).musicId > 0)
+        {
+            return this.events.get(0).musicId;
+        }
+
+        return -1;
+    }
+
     public int getShopId()
     {
         if (this.events.size() > 0)
@@ -463,6 +473,7 @@ public class ConversationModel
         private int optionId;
         public final String mugshotBackground;
         public final String mugshotCharacter;
+        public int musicId;
         public int shopId;
 
         // variables for moving CPUs
@@ -538,6 +549,7 @@ public class ConversationModel
                 this.mugshotCharacter = null;
             }
 
+            this.musicId = rs.getInt("music_id");
             this.shopId = rs.getInt("shop_id");
         }
 

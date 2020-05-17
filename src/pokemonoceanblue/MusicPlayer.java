@@ -14,6 +14,7 @@ public class MusicPlayer
     private int newSong;
     private Clip currentClip;
     private int transitionCounter = 0;
+    boolean intro = false;
 
     public MusicPlayer()
     {
@@ -24,19 +25,19 @@ public class MusicPlayer
      * Queues the background music for the given song number
      * @param song the number of the song to be played
      */
-    public void setSong(int songId)
+    public void setSong(int musicId, boolean skipTransition)
     {
-        // only switch songs if the new song is different from the one currently being played
-        if (currentSong == -1)
+        if (currentSong == -1 || (skipTransition && musicId != currentSong))
         {
-            newSong = songId;
+            newSong = musicId;
             transitionCounter = 0;
             playSong();
             setVolume(0.25);
         }
-        else if (songId != currentSong)
+        // only switch songs if the new song is different from the one currently being played
+        else if (musicId != currentSong)
         {
-            newSong = songId;
+            newSong = musicId;
             transitionCounter = 25;
         }
         else
@@ -60,11 +61,24 @@ public class MusicPlayer
         try
         {
             // open and play the new song
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(this.getClass().getResource(String.format("/music/%s.wav", currentSong)));
-            currentClip = AudioSystem.getClip();
-            currentClip.open(audioStream);
-            fadeVolume();
-            currentClip.loop(Clip.LOOP_CONTINUOUSLY);
+            try
+            {
+                // if the song has an intro, play that first
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(this.getClass().getResource(String.format("/music/%sintro.wav", currentSong)));
+                currentClip = AudioSystem.getClip();
+                this.intro = true;
+                currentClip.open(audioStream);
+                currentClip.start();
+            }
+            catch (Exception e)
+            {
+                // otherwise just start with the looping part
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(this.getClass().getResource(String.format("/music/%s.wav", currentSong)));
+                currentClip = AudioSystem.getClip();
+                currentClip.open(audioStream);
+                fadeVolume();
+                currentClip.loop(Clip.LOOP_CONTINUOUSLY);
+            }   
         }
         catch (Exception e)
         {
@@ -80,6 +94,7 @@ public class MusicPlayer
         FloatControl gainControl = (FloatControl) currentClip.getControl(FloatControl.Type.MASTER_GAIN);
         float dB = (float) (Math.log(gain) / Math.log(10.0) * 20.0);
         gainControl.setValue(dB);
+        System.out.println(gain);
     }
 
     /**
@@ -88,6 +103,25 @@ public class MusicPlayer
     public void fadeVolume()
     {
         double gain;
+
+        if (this.intro && currentClip.getMicrosecondLength() - currentClip.getMicrosecondPosition() < 50000)
+        {
+            try
+            {
+                // switch from the intro to the looping part
+                AudioInputStream newAudioStream = AudioSystem.getAudioInputStream(this.getClass().getResource(String.format("/music/%s.wav", currentSong)));
+                currentClip = AudioSystem.getClip();
+                currentClip.open(newAudioStream);
+                currentClip.loop(Clip.LOOP_CONTINUOUSLY);
+                setVolume(0.25);
+                this.intro = false;
+            }
+            catch (Exception ex)
+            {
+                System.out.println("Error playing music");
+            }
+            
+        }
 
         if (transitionCounter > 0)
         {

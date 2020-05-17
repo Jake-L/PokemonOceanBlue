@@ -32,6 +32,7 @@ public class BattleModel extends BaseModel
     public int[][] statChanges = new int[2][8];
     public boolean[] willFlinch = new boolean[2];
     private boolean[] moveProcessed = new boolean[2];
+    public int musicId;
 
     /** 
      * Constructor
@@ -1125,9 +1126,9 @@ public class BattleModel extends BaseModel
             // if there are multiple characters with the same conversation id
             // the trainer shown in battle is the one with the lowest character id
             String query = String.format("""
-                SELECT b.pokemon_id, b.level, c.name, c.sprite_name
+                SELECT b.pokemon_id, b.level, c.name, c.sprite_name, COALESCE(c.music_id, 101) AS music_id
                 FROM battle b
-                INNER JOIN (select ch.name, ch.sprite_name, cv.conversation_id, cv.battle_id,
+                INNER JOIN (select ch.name, ch.sprite_name, ch.music_id, cv.conversation_id, cv.battle_id,
                 ROW_NUMBER() OVER(ORDER BY ch.character_id ASC) AS char_num
                 FROM conversation cv
                 INNER JOIN character ch
@@ -1144,6 +1145,7 @@ public class BattleModel extends BaseModel
                 loadTeam.add(new PokemonModel(rs.getInt(1), rs.getInt(2), false));
                 this.trainerName = rs.getString(3);
                 this.trainerSpriteName = rs.getString(4);
+                this.musicId = rs.getInt(5);
             }       
             
             this.team[1] = new PokemonModel[loadTeam.size()];

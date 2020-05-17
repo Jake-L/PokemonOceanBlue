@@ -317,6 +317,10 @@ public class OverworldModel extends BaseModel {
                     this.acceleration = 0;
                     this.accelerationCounter = 10;
                 }
+                else if (this.conversation.getMusicId() > -1)
+                {
+                    this.app.playSong(this.conversation.getMusicId(), true);
+                }
             }
             this.actionCounter = 15;
         }
@@ -401,7 +405,7 @@ public class OverworldModel extends BaseModel {
                 {
                     this.areaId = area.areaId;
                     this.battleBackgroundId = area.battleBackgroundId;
-                    this.app.playSong(area.musicId);
+                    this.app.playSong(area.musicId, false);
                     break;
                 }
             }
