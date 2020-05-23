@@ -31,16 +31,18 @@ public class OverworldModel extends BaseModel {
     public byte battleBackgroundId = 6;
     public List<ItemModel> itemOptions = new ArrayList<ItemModel>(); 
     public InventoryModel inventoryModel;
+    public DayCareModel dayCareModel;
     
     /** 
      * @param mapId unique identifier for the current map
      * @param playerModel model for the player to display it and calculate screen offset
      */
-    public OverworldModel(int mapId, CharacterModel playerModel, App app, InventoryModel inventoryModel){
+    public OverworldModel(int mapId, CharacterModel playerModel, App app, InventoryModel inventoryModel, DayCareModel dayCareModel){
         this.mapId = mapId;
         this.playerModel = playerModel;
         this.app = app;
         this.inventoryModel = inventoryModel;
+        this.dayCareModel = dayCareModel;
         
         this.readMapFile();
         this.loadWildPokemon();
@@ -182,7 +184,7 @@ public class OverworldModel extends BaseModel {
             }
 
             // determine if a character needs to be moved
-            else if (characterId >= -1)
+            else if (characterId > -1)
             {
                 CharacterModel character = this.getCharacterModel(characterId);
             
@@ -300,27 +302,7 @@ public class OverworldModel extends BaseModel {
             else
             {
                 this.conversation.nextEvent();
-
-                if (this.conversation.getOptions() != null)
-                {
-                    this.textOptions = this.conversation.getOptions();
-                }
-                // open shop
-                else if (this.conversation.getShopId() == 1)
-                {
-                    this.itemOptions.add(new ItemModel(1, 1));
-                    this.itemOptions.add(new ItemModel(3, 1));
-                    this.optionMax = this.itemOptions.size() - 1;
-                    this.optionWidth = 1;
-                    this.optionHeight = this.optionMax;
-                    this.optionIndex = 0;
-                    this.acceleration = 0;
-                    this.accelerationCounter = 10;
-                }
-                else if (this.conversation.getMusicId() > -1)
-                {
-                    this.app.playSong(this.conversation.getMusicId(), true);
-                }
+                this.checkConversationAction();
             }
             this.actionCounter = 15;
         }
@@ -365,6 +347,7 @@ public class OverworldModel extends BaseModel {
 
                         // start the conversation
                         this.conversation = new ConversationModel(cpu.conversationId, this.playerModel, cpu, false);
+                        this.checkConversationAction();
                         this.actionCounter = 15;
                         break;
                     }
@@ -382,15 +365,60 @@ public class OverworldModel extends BaseModel {
                     {
                         app.openPokemonStorage();
                     }
+                    else if (current.conversationId == 9998)
+                    {
+                        this.conversation = new DayCareConversationModel(this.dayCareModel);
+                        this.checkConversationAction();
+                    }
                     else
                     {
                         this.conversation = new ConversationModel(current.conversationId, this.playerModel, current.cpuModel, false);
+                        this.checkConversationAction();
                     }
                     
                     this.actionCounter = 15;
                     break;
                 }
             }
+        }
+    }
+
+    /**
+     * Actions happening at the start of each conversation event
+     */
+    private void checkConversationAction()
+    {
+        // show text options
+        if (this.conversation.getOptions() != null)
+        {
+            this.textOptions = this.conversation.getOptions();
+        }
+        // open shop
+        else if (this.conversation.getShopId() == 1)
+        {
+            this.itemOptions.add(new ItemModel(1, 1));
+            this.itemOptions.add(new ItemModel(3, 1));
+            this.optionMax = this.itemOptions.size() - 1;
+            this.optionWidth = 1;
+            this.optionHeight = this.optionMax;
+            this.optionIndex = 0;
+            this.acceleration = 0;
+            this.accelerationCounter = 10;
+        }
+        // play music
+        else if (this.conversation.getMusicId() > -1)
+        {
+            this.app.playSong(this.conversation.getMusicId(), true);
+        }
+        // open the party screen
+        else if (this.conversation.openParty())
+        {
+            this.app.openParty(-1, true);
+        }
+        // silently add a Pokemon to the player's party/PC
+        else if (this.conversation.getWithdrawnPokemon() > -1)
+        {
+            this.app.addPokemonSilent(this.dayCareModel.withdrawPokemon(this.conversation.getWithdrawnPokemon()));
         }
     }
 
@@ -455,6 +483,7 @@ public class OverworldModel extends BaseModel {
             if (current.x == x && current.y == y && current.autoTrigger)
             {
                 this.conversation = new ConversationModel(current.conversationId, this.playerModel, current.cpuModel, current.approachPlayer);
+                this.checkConversationAction();
                 break;
             }
         }
@@ -506,6 +535,7 @@ public class OverworldModel extends BaseModel {
             {
                 this.conversation.setOption(this.textOptionIndex);
                 this.openMenu();
+                this.checkConversationAction();
             }
         }
         else if (this.textOptions[this.textOptionIndex] == "Achievements")
@@ -520,7 +550,7 @@ public class OverworldModel extends BaseModel {
         }
         else if (this.textOptions[this.textOptionIndex] == "Pokemon")
         {
-            app.openParty(-1);
+            app.openParty(-1, false);
             this.openMenu();
         }
         else if (this.textOptions[this.textOptionIndex] == "Bag")
@@ -532,6 +562,24 @@ public class OverworldModel extends BaseModel {
         {
             app.save();
             this.openMenu();
+        }
+    }
+
+    /**
+     * Tell the overworld model which Pokemon was selected in the party screen
+     * Used for selecting a Pokemon to leave in the day care
+     * or to learn a move from a move tutor, etc.
+     * @return true if the Pokemon should be removed from the player's party
+     */
+    public boolean setPokemon(PokemonModel pokemon)
+    {
+        if (this.conversation != null)
+        {
+            return this.conversation.setPokemon(pokemon);
+        }
+        else
+        {
+            return false;
         }
     }
 

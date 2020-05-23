@@ -17,7 +17,7 @@ public class PokemonStorageController extends BaseController
     {
         super(pokemonStorageModel);
         this.partyModel = partyModel;
-        this.partyModel.initialize(-1);
+        this.partyModel.initialize(-1, false);
         this.partyModel.optionWidth = 1;
         this.partyModel.optionHeight = this.partyModel.optionMax;
         this.pokemonStorageModel = pokemonStorageModel;

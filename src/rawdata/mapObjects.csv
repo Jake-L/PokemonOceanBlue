@@ -685,6 +685,7 @@ map_id,area_id,name,x,y,y_offset
 24,0,table3,5,5,
 24,0,tv,5,2,
 25,0,daycareInterior,0,7,-10
+25,0,daycareCounter,0,3,
 25,0,doormat,2,8,-2
 0,3,house4,19,2,
 0,3,bigTree,17,1,

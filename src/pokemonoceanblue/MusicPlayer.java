@@ -94,7 +94,6 @@ public class MusicPlayer
         FloatControl gainControl = (FloatControl) currentClip.getControl(FloatControl.Type.MASTER_GAIN);
         float dB = (float) (Math.log(gain) / Math.log(10.0) * 20.0);
         gainControl.setValue(dB);
-        System.out.println(gain);
     }
 
     /**

@@ -121,7 +121,7 @@ public class BattleModel extends BaseModel
                     case "POKEMON":
 
                         this.battleOptions = null;
-                        this.app.openParty(this.currentPokemon[0]); 
+                        this.app.openParty(this.currentPokemon[0], true); 
                         break;
 
                     case "POKEBALLS":
@@ -1075,7 +1075,7 @@ public class BattleModel extends BaseModel
             {
                 this.battleOptions = null;
                 this.optionMax = 0;
-                this.app.openParty(this.currentPokemon[0]);
+                this.app.openParty(this.currentPokemon[0], true);
             }
             else
             {
@@ -1172,10 +1172,6 @@ public class BattleModel extends BaseModel
     public String getSoundEffect()
     {
         String sound = this.soundEffect;
-        if (sound != null)
-        {
-            System.out.println(sound);
-        }
         this.soundEffect = null;
         return sound;
     }

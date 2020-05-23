@@ -217,7 +217,7 @@ public class App extends JFrame implements KeyListener
         }
 
         // create the overworld
-        overworldModel = new OverworldModel(mapId, playerModel, this, inventoryModel);
+        overworldModel = new OverworldModel(mapId, playerModel, this, this.inventoryModel, this.dayCareModel);
         overworldController = new OverworldController(overworldModel);
         playerModel.setOverworldModel(overworldModel);
 
@@ -232,23 +232,23 @@ public class App extends JFrame implements KeyListener
         inventoryController = new BaseController(inventoryModel);
     }
 
-    public void openParty(int currentPokemon)
+    public void openParty(int currentPokemon, boolean returnSelection)
     {
-        this.partyModel.initialize(currentPokemon);
+        this.partyModel.initialize(currentPokemon, returnSelection);
         viewManager.setView(new PartyView(partyModel));
         partyController = new BaseController(partyModel);
     }
 
-    public void openSummary(int currentPokemon)
+    public void openSummary(int currentPokemon, boolean returnSelection)
     {
-        this.partyModel.initialize(currentPokemon);
+        this.partyModel.initialize(currentPokemon, returnSelection);
         viewManager.setView(new SummaryView(partyModel, partyModel.team));
         summaryController = new BaseController(partyModel);
     }
 
     public void openSummaryNewMove(int currentPokemon, MoveModel newMove)
     {
-        this.partyModel.initialize(currentPokemon);
+        this.partyModel.initialize(currentPokemon, false);
         this.partyModel.setNewMove(newMove);
         viewManager.setView(new SummaryView(partyModel, partyModel.team));
         summaryController = new BaseController(partyModel);
@@ -263,7 +263,7 @@ public class App extends JFrame implements KeyListener
 
     public void openPokemonStorage()
     {
-        partyModel.initialize(-1);
+        partyModel.initialize(-1, false);
         pokemonStorageModel.initialize();
         PokemonStorageView psv = new PokemonStorageView(pokemonStorageModel, partyModel);
         pokemonStorageController = new PokemonStorageController(pokemonStorageModel, partyModel);
@@ -304,7 +304,7 @@ public class App extends JFrame implements KeyListener
         // if any eggs hatched, show the animation
         if (newPokemonQueue.size() > 0 && overworldModel.conversation == null)
         {
-            this.partyModel.initialize(-1);
+            this.partyModel.initialize(-1, false);
             viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
             newPokemonController = new BaseController(newPokemonQueue.get(0));
             newPokemonQueue.remove(0);
@@ -351,6 +351,25 @@ public class App extends JFrame implements KeyListener
         Random rand = new Random();
         boolean shiny = rand.nextDouble() < this.pokedexModel.getShinyRate(pokemonId) ? true : false;
         this.addPokemon(new PokemonModel(pokemonId, pokemonLevel, shiny));
+    }
+
+    /**
+     * Add a Pokemon to your party if there is space, or PC otherwise, without displaying a notification
+     */
+    public void addPokemonSilent(PokemonModel pokemon)
+    {
+        if (pokemon == null)
+        {
+            return;
+        }
+        else if (this.partyModel.team.size() < 6)
+        {
+            this.partyModel.team.add(pokemon);
+        }
+        else 
+        {
+            this.pokemonStorageModel.addPokemon(pokemon);
+        }
     }
 
     public void update()
@@ -400,7 +419,7 @@ public class App extends JFrame implements KeyListener
 
                         if (newPokemonQueue.size() > 0)
                         {
-                            this.partyModel.initialize(-1);
+                            this.partyModel.initialize(-1, false);
                             viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
                             newPokemonController = new BaseController(newPokemonQueue.get(0));
                             newPokemonQueue.remove(0);
@@ -443,7 +462,7 @@ public class App extends JFrame implements KeyListener
                     }
                     else if (newPokemonQueue.size() > 0 && overworldModel.conversation == null)
                     {
-                        this.partyModel.initialize(-1);
+                        this.partyModel.initialize(-1, false);
                         viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
                         newPokemonController = new BaseController(newPokemonQueue.get(0));
                         newPokemonQueue.remove(0);
@@ -463,7 +482,7 @@ public class App extends JFrame implements KeyListener
                         if (partyModel.isSummary && returnValue > -1)
                         {
                             this.partyController = null;
-                            this.openSummary(-1);
+                            this.openSummary(-1, partyModel.returnSelection);
                         }
 
                         else if (returnValue >= -1)
@@ -482,6 +501,12 @@ public class App extends JFrame implements KeyListener
                                 // return to overworld screen
                                 OverworldView overworldView = new OverworldView(overworldModel);
                                 viewManager.setView(overworldView);
+                                // pass the selected Pokemon to overworld model
+                                if (overworldModel.setPokemon(returnValue >= 0 ? this.partyModel.team.get(returnValue) : null))
+                                {
+                                    // remove the Pokemon from the player's team if they were left in the day care, etc.
+                                    this.partyModel.team.remove(returnValue);
+                                }
                             }
                         }
                     }
@@ -506,7 +531,7 @@ public class App extends JFrame implements KeyListener
                         else if (!partyModel.isSummary)
                         {
                             this.summaryController = null;
-                            this.openParty(-1);
+                            this.openParty(-1, partyModel.returnSelection);
                         }
                     }
                 }
@@ -548,7 +573,7 @@ public class App extends JFrame implements KeyListener
                         {
                             if (newPokemonQueue.size() > 0)
                             {
-                                this.partyModel.initialize(-1);
+                                this.partyModel.initialize(-1, false);
                                 viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
                                 newPokemonController = new BaseController(newPokemonQueue.get(0));
                                 newPokemonQueue.remove(0);

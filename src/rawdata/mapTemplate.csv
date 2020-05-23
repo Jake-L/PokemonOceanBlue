@@ -6,7 +6,7 @@ map_id,map_template_id,overlay,comment
 4,1,0,
 5,1,0,
 6,6,0,
-7,7,0,
+7,7,0,Viridian pokemon center
 8,1,0,
 9,1,0,
 10,1,0,
@@ -20,11 +20,11 @@ map_id,map_template_id,overlay,comment
 18,15,0,
 19,15,0,
 20,20,0,
-21,7,0,
+21,7,0,Pewter pokemon center
 22,1,0,
 23,1,0,
 24,1,0,
-25,25,0,
+25,25,0,day care
 30,30,0,
-31,31,0,
-32,31,0,
+31,31,0,viridian pokemart
+32,31,0,pewter pokemart

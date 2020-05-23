@@ -46,7 +46,6 @@ public class AchievementsView extends BaseView{
         g.setFont(font);
 
         g.drawImage(this.background, 0, 0, width, height, canvas);
-        System.out.println(this.model.optionIndex);
 
         int iconHeight = (int)(this.achievementWindow[0].getHeight(null) * graphicsScaling / 1.25);
         int iconWidth = (int)(this.achievementWindow[0].getWidth(null) * graphicsScaling / 1.25);

@@ -20,3 +20,4 @@ map_id,area_id,x,y,conversation_id,character_id,clear_conversation_id,auto_trigg
 31,0,2,5,43,40,-1,0,0,Pokemart
 32,0,3,4,43,17,-1,0,0,Pokemart
 32,0,2,5,43,40,-1,0,0,Pokemart
+25,0,2,3,9998,-1,-1,0,0,Day care

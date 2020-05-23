@@ -42,3 +42,4 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 39,0,3,,hiker,71,31,42,0,0,
 40,31,0,,breederBoy,2,4,43,0,1,
 40,32,0,,breederBoy,2,4,43,0,1,
+41,25,0,,breederGirl,2,2,9998,0,2,

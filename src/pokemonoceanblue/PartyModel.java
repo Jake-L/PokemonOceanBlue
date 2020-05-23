@@ -10,6 +10,7 @@ public class PartyModel extends BaseModel
 {
     public List<PokemonModel> team = new ArrayList<PokemonModel>();
     public boolean isSummary = false;
+    public boolean returnSelection = false;
     public int battleActivePokemon;
     public int switchPokemonIndex = -1;
     public boolean updateOrder = false;
@@ -25,11 +26,13 @@ public class PartyModel extends BaseModel
     /**
      * Set variables when creating a new view
      * @param battleActivePokemon the Pokemon currently selected, or -1 if not in a battle
+     * @param returnSelection true if the screen was opened for the player to select a Pokemon 
      */
-    public void initialize(int battleActivePokemon)
+    public void initialize(int battleActivePokemon, boolean returnSelection)
     {
         this.actionCounter = ACTION_DELAY;
         this.returnValue = -2;
+        this.returnSelection = returnSelection;
 
         // track which Pokemon is active in battle
         this.battleActivePokemon = battleActivePokemon;
@@ -134,62 +137,74 @@ public class PartyModel extends BaseModel
                 this.returnValue = this.hoverMoveIndex;
             }
         }
-        // look at the Pokemon's summary
+        // exit the Pokemon's summary
         else if (this.isSummary)
         {
             this.isSummary = !this.isSummary;
         }
-        // if not in battles, open summary screen
-        else if (this.battleActivePokemon == -1)
+        // swap the current Pokemon with the previously selected Pokemon
+        else if (this.switchPokemonIndex > -1)
         {
-            // swap the current Pokemon with the previously selected Pokemon
-            if (this.switchPokemonIndex > -1)
+            int firstIndex = this.switchPokemonIndex < this.optionIndex ? this.switchPokemonIndex : this.optionIndex;
+            int secondIndex = this.switchPokemonIndex > this.optionIndex ? this.switchPokemonIndex : this.optionIndex;
+            this.team.add(secondIndex, this.team.get(firstIndex));
+            this.team.add(firstIndex, this.team.get(secondIndex + 1));
+            this.team.remove(firstIndex + 1);
+            this.team.remove(secondIndex + 1);
+            this.switchPokemonIndex = -1;
+            this.updateOrder = true;
+        }
+        // show pop-up box of options
+        else if (this.textOptions == null)
+        {
+            if (returnSelection)
             {
-                int firstIndex = this.switchPokemonIndex < this.optionIndex ? this.switchPokemonIndex : this.optionIndex;
-                int secondIndex = this.switchPokemonIndex > this.optionIndex ? this.switchPokemonIndex : this.optionIndex;
-                this.team.add(secondIndex, this.team.get(firstIndex));
-                this.team.add(firstIndex, this.team.get(secondIndex + 1));
-                this.team.remove(firstIndex + 1);
-                this.team.remove(secondIndex + 1);
-                this.switchPokemonIndex = -1;
-                this.updateOrder = true;
+                this.textOptions = new String[] {"SELECT", "SUMMARY", "CANCEL"};
             }
-            // show pop-up box of options
-            else if (this.textOptions == null)
+            else
             {
                 this.textOptions = new String[] {"SUMMARY", "SWITCH", "CANCEL"};
             }
-            // open summary screen
-            else if (this.textOptionIndex == 0)
-            {
-                this.isSummary = !this.isSummary;
-                this.returnValue = this.optionIndex;
-            }
-            // select a Pokemon to be swapped
-            else if (this.textOptionIndex == 1)
-            {
-                this.switchPokemonIndex = this.optionIndex;
-                this.textOptions = null;
-            }
-            // close the pop-up window
-            else if (this.textOptionIndex == 2)
-            {
-                this.textOptions = null;
-            }
-
-            this.textOptionIndex = 0;
         }
-        // if in battle, return the chosen Pokemon
-        else if (this.battleActivePokemon != this.optionIndex && this.team.get(this.optionIndex).level > 0)
+        // open summary screen
+        else if (this.textOptions[this.textOptionIndex].equals("SUMMARY"))
         {
+            this.isSummary = !this.isSummary;
             this.returnValue = this.optionIndex;
-            this.optionIndex = -1;
         }
-        // don't substitute a Pokemon for itself
-        else 
+        // select a Pokemon to be swapped
+        else if (this.textOptions[this.textOptionIndex].equals("SWITCH"))
         {
-            this.exitScreen();
+            this.switchPokemonIndex = this.optionIndex;
+            this.textOptions = null;
         }
+        // close the pop-up window
+        else if (this.textOptions[this.textOptionIndex].equals("CANCEL"))
+        {
+            this.textOptions = null;
+        }
+        else if (this.textOptions[this.textOptionIndex].equals("SELECT"))
+        {
+            // if not in battle, return the chosen Pokemon
+            if (this.battleActivePokemon == -1)
+            {
+                this.returnValue = this.optionIndex;
+                this.optionIndex = -1; 
+            }
+            // if in battle, return the chosen Pokemon if it isn't the currently active Pokemon
+            else if (this.battleActivePokemon != this.optionIndex && this.team.get(this.optionIndex).level > 0)
+            {
+                this.returnValue = this.optionIndex;
+                this.optionIndex = -1;
+            }
+            // if trying to select the Pokemon currently in battle, exit the party screen
+            else 
+            {
+                this.exitScreen();
+            }
+        }
+
+        this.textOptionIndex = 0;
     }
 
     public PokemonModel[] getTeamArray()

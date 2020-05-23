@@ -9,7 +9,7 @@ public class ConversationModel
     private final int TEXT_LENGTH = 15;
     public final int conversationId;
     private int counter = 0;
-    private List<ConversationEvent> events = new ArrayList<ConversationEvent>();
+    protected List<ConversationEvent> events = new ArrayList<ConversationEvent>();
     private boolean approachPlayer;
     private boolean battleStarted = false;
     
@@ -164,6 +164,7 @@ public class ConversationModel
     public void setOption(int index)
     {
         this.events.get(0).nextConversationEventId = this.events.get(0).optionOutcome[index];
+        this.counter = 0;
         this.nextEvent();
     }
 
@@ -233,7 +234,7 @@ public class ConversationModel
             this.counter--;
         }
         // auto advance through some events without waiting for player to press anything
-        if (!this.isComplete() && this.counter == 0 && this.events.get(0).autoAdvance)
+        if (!this.isComplete() && this.counter == 0 && this.events.get(0).autoAdvance && this.events.get(0).options == null)
         {
             this.nextEvent();
         }
@@ -457,24 +458,59 @@ public class ConversationModel
         return this.counter;
     }
 
+    /**
+     * @return true if the party screen needs to be opened for user to pick a Pokemon
+     */
+    public boolean openParty()
+    {
+        if (this.events.size() > 0)
+        {
+            return this.events.get(0).openParty;
+        }
+        return false;
+    }
+
+    /**
+     * Set which Pokemon the user selected
+     * @return true if the Pokemon should be removed from player's party
+     */
+    public boolean setPokemon(PokemonModel pokemon)
+    {
+        return false;
+    }
+
+    /**
+     * @return the index of the Pokemon being withrdrawn from the daycare
+     */
+    public int getWithdrawnPokemon()
+    {
+        if (this.events.size() > 0)
+        {
+            return this.events.get(0).withdrawnPokemon;
+        }
+        return -1;
+    }
+
     class ConversationEvent
     {
         public int conversationEventId;
         public final String text;
         public String[] options = new String[0];
         public int[] optionOutcome = new int[0];
-        public int battleId;
+        public int battleId = -1;
         public final boolean autoAdvance;
         public final boolean healTeam;
         public int nextConversationEventId;
         public final int newConversationId;
-        public int giftPokemonId;
-        public int giftPokemonLevel;
+        public int giftPokemonId = -1;
+        public int giftPokemonLevel = -1;
         private int optionId;
         public final String mugshotBackground;
         public final String mugshotCharacter;
         public int musicId;
         public int shopId;
+        public boolean openParty = false;
+        public int withdrawnPokemon = -1;
 
         // variables for moving CPUs
         public int characterId;
@@ -574,9 +610,21 @@ public class ConversationModel
             this.mugshotCharacter = null;
             this.text = null;
             this.newConversationId = -1;
-            this.giftPokemonId = -1;
-            this.giftPokemonLevel = -1;
-            this.battleId = -1;
+        }
+
+        public ConversationEvent(int conversationEventId, int nextConversationEventId, String text, int withdrawnPokemon)
+        {
+            this.conversationEventId = conversationEventId;
+            this.text = text;
+            this.nextConversationEventId = nextConversationEventId;
+            this.withdrawnPokemon = withdrawnPokemon;
+
+            this.autoAdvance = false;
+            this.healTeam = false;
+            this.mugshotBackground = null;
+            this.mugshotCharacter = null;
+            this.newConversationId = -1;
+            this.characterId = -1;
         }
 
         public void setOptions(String[] options, int[] optionOutcome)
