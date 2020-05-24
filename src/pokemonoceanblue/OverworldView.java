@@ -18,14 +18,14 @@ import java.util.Arrays;
 public class OverworldView extends BaseView {
 
     private OverworldModel model;
-    private Image[] tileSprite = new Image[90];
+    private Image[] tileSprite = new Image[91];
     private Map<String, Image> animatedTileSprite = new HashMap<String, Image>();
     private Map<String, Image> mapObjectSprite = new HashMap<String, Image>();
     private Map<String, Image> characterSprite = new HashMap<String, Image>();
     private int xOffset = -1;
     private int yOffset = -1;
-    private int[] ANIMATED_TILES = new int[]{0, 6, 7, 8, 67, 70, 88};
-    private int[] ANIMATED_TILE_LENGTH = new int[]{8, 8, 8, 8, 5, 5, 4};
+    private int[] ANIMATED_TILES = new int[]{0, 6, 7, 8, 67, 70, 88, 90};
+    private int[] ANIMATED_TILE_LENGTH = new int[]{8, 8, 8, 8, 5, 5, 4, 5};
     private Image mugshotBackgroundSprite;
     private Image mugshotCharacterSprite;
     private Image mugshotLightningSprite;
@@ -204,7 +204,7 @@ public class OverworldView extends BaseView {
                     sprite = animatedTileSprite.get(String.format("%s-%s", 
                         Math.abs(this.model.tiles[y][x]), 
                         System.currentTimeMillis() 
-                            / (20 * ANIMATED_TILE_LENGTH[animatedIndex]) 
+                            / (1280 / ANIMATED_TILE_LENGTH[animatedIndex]) 
                             % ANIMATED_TILE_LENGTH[animatedIndex]));
                 }
                 else

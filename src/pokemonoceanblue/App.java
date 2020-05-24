@@ -181,6 +181,12 @@ public class App extends JFrame implements KeyListener
 
     public void createWildBattle(int pokemonId, int level)
     {
+        if (this.partyModel.team.size() == 0)
+        {
+            // prevent starting wild Pokemon battle when the player has no Pokemon
+            return;
+        }
+
         this.playSong(100, true);
 
         //determine if the wild Pokemon is shiny

@@ -460,7 +460,7 @@ public class OverworldModel extends BaseModel {
         this.checkArea(x, y);
 
         // check for wild Pokemon encounters
-        if (this.tiles[y][x] == 0 || this.tiles[y][x] == 4)
+        if (this.tiles[y][x] == 0 || this.tiles[y][x] == 4 || this.tiles[y][x] == 90)
         {
             int index = this.areaId * 1000 + this.tiles[y][x];
             Random rand = new Random();
