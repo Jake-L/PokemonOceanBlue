@@ -231,7 +231,7 @@ public class OverworldModel extends BaseModel {
         if (y < 0 || y >= this.tiles.length
             || x < 0 || x >= this.tiles[y].length
             || this.tiles[y][x] < 0
-            || (this.tiles[y][x] == 0 && !surf))
+            || ((this.tiles[y][x] == 0 || this.tiles[y][x] == 1) && !surf))
         {
             return false;
         }
@@ -307,7 +307,9 @@ public class OverworldModel extends BaseModel {
             this.actionCounter = 15;
         }
         // surf if facing water
-        else if (!this.playerModel.surf && tiles[y][x] == 0 && this.playerModel.getMovementCounter() <= 0)
+        else if (!this.playerModel.surf 
+            && (tiles[y][x] == 0 || tiles[y][x] == 1) 
+            && this.playerModel.getMovementCounter() <= 0)
         {
             this.playerModel.surf = true;
             this.playerModel.setMovement(x - this.playerModel.getX(), y - this.playerModel.getY(), 1);
@@ -460,7 +462,7 @@ public class OverworldModel extends BaseModel {
         this.checkArea(x, y);
 
         // check for wild Pokemon encounters
-        if (this.tiles[y][x] == 0 || this.tiles[y][x] == 4 || this.tiles[y][x] == 90)
+        if (this.tiles[y][x] == 0 || this.tiles[y][x] == 5 || this.tiles[y][x] == 90)
         {
             int index = this.areaId * 1000 + this.tiles[y][x];
             Random rand = new Random();
@@ -471,7 +473,7 @@ public class OverworldModel extends BaseModel {
             }
         }
         // player is no longer surfing when they step onto solid land
-        if (this.tiles[y][x] > 0)
+        if (this.tiles[y][x] > 1)
         {
             this.playerModel.surf = false;
         }

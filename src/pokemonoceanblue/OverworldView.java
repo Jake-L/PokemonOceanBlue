@@ -18,7 +18,7 @@ import java.util.Arrays;
 public class OverworldView extends BaseView {
 
     private OverworldModel model;
-    private Image[] tileSprite = new Image[91];
+    private Image[] tileSprite = new Image[100];
     private Map<String, Image> animatedTileSprite = new HashMap<String, Image>();
     private Map<String, Image> mapObjectSprite = new HashMap<String, Image>();
     private Map<String, Image> characterSprite = new HashMap<String, Image>();
@@ -284,6 +284,11 @@ public class OverworldView extends BaseView {
             characterIndex++;
         }
 
+        if (this.model.mapId == 14)
+        {
+            this.renderDarkness(g, canvas);
+        }
+        
         // display conversation text
         if (this.model.conversation != null && this.model.conversation.getText() != null)
         {
@@ -556,6 +561,16 @@ public class OverworldView extends BaseView {
         }
 
         return columnHeight;
+    }
+
+    /**
+     * Display a black rectangle over the screen at 20% opacity to make it look darker
+     */
+    private void renderDarkness(Graphics g, JPanel canvas)
+    {
+        Color colour = new Color(0, 0, 0, 51);
+        g.setColor(colour);
+        g.fillRect(0, 0, width, height);
     }
 
     @Override
