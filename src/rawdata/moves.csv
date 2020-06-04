@@ -101,7 +101,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 102,Mimic,1,,-1,0,1,10,0,0,0,0,83
 103,Screech,1,,85,0,1,10,0,100,0,0,-1
 104,Double Team,1,,-1,0,1,7,0,100,0,0,-1
-105,Recover,1,,-1,0,1,7,0,0,0,0,33
+105,Recover,1,,-1,0,1,7,0,0,0,0,-1
 106,Harden,1,,-1,0,1,7,0,100,0,0,-1
 107,Minimize,1,,-1,0,1,7,0,100,0,0,109
 108,Smokescreen,1,,100,0,1,10,0,100,0,0,-1
@@ -131,7 +131,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 132,Constrict,1,10,100,0,2,10,0,10,0,0,-1
 133,Amnesia,14,,-1,0,1,7,0,100,0,0,-1
 134,Kinesis,14,,80,0,1,10,0,100,0,0,-1
-135,Soft-Boiled,1,,-1,0,1,7,0,0,0,0,33
+135,Soft-Boiled,1,,-1,0,1,7,0,0,0,0,-1
 136,High Jump Kick,2,130,90,0,2,10,0,0,0,0,46
 137,Glare,1,,100,0,1,10,0,100,1,0,-1
 138,Dream Eater,14,100,100,0,3,10,0,0,0,-50,9
@@ -202,7 +202,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 205,Rollout,6,30,90,0,2,10,0,0,0,0,118
 206,False Swipe,1,40,100,0,2,10,0,0,0,0,102
 207,Swagger,1,,85,0,1,10,0,100,6,0,-1
-208,Milk Drink,1,,-1,0,1,7,0,0,0,0,33
+208,Milk Drink,1,,-1,0,1,7,0,0,0,0,-1
 209,Spark,13,65,100,0,2,10,0,30,1,0,-1
 210,Fury Cutter,7,40,95,0,2,10,0,0,0,0,120
 211,Steel Wing,9,70,90,0,2,10,0,10,0,0,-1
@@ -227,12 +227,12 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 231,Iron Tail,9,100,85,0,2,10,0,30,0,0,-1
 232,Metal Claw,9,55,95,0,2,10,0,10,0,0,-1
 233,Vital Throw,2,70,-1,-1,2,10,0,0,0,0,-1
-234,Morning Sun,1,,-1,0,1,7,0,0,0,0,133
-235,Synthesis,12,,-1,0,1,7,0,0,0,0,133
-236,Moonlight,18,,-1,0,1,7,0,0,0,0,133
+234,Morning Sun,1,,-1,0,1,7,0,0,0,0,-1
+235,Synthesis,12,,-1,0,1,7,0,0,0,0,-1
+236,Moonlight,18,,-1,0,1,7,0,0,0,0,-1
 237,Hidden Power,1,60,100,0,3,10,0,0,0,0,136
 238,Cross Chop,2,100,80,0,2,10,0,0,0,0,44
-239,Twister,16,40,100,0,3,11,20,0,0,0,147
+239,Twister,16,40,100,0,3,11,20,0,0,0,150
 240,Rain Dance,11,,-1,0,1,12,0,0,0,0,137
 241,Sunny Day,10,,-1,0,1,12,0,0,0,0,138
 242,Crunch,17,80,100,0,2,10,0,20,0,0,-1
@@ -283,7 +283,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 300,Mud Sport,5,,-1,0,1,12,0,0,0,0,202
 301,Ice Ball,15,30,90,0,2,10,0,0,0,0,118
 302,Needle Arm,12,60,100,0,2,10,30,0,0,0,-1
-303,Slack Off,1,,-1,0,1,7,0,0,0,0,33
+303,Slack Off,1,,-1,0,1,7,0,0,0,0,-1
 304,Hyper Voice,1,90,100,0,3,11,0,0,0,0,-1
 305,Poison Fang,4,50,100,0,2,10,0,50,5,0,-1
 306,Crush Claw,1,75,95,0,2,10,0,50,0,0,-1
@@ -426,7 +426,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 453,Aqua Jet,11,40,100,1,2,10,0,0,0,0,-1
 454,Attack Order,7,90,100,0,2,10,0,0,0,0,44
 455,Defend Order,7,,-1,0,1,7,0,100,0,0,-1
-456,Heal Order,7,,-1,0,1,7,0,0,0,0,33
+456,Heal Order,7,,-1,0,1,7,0,0,0,0,-1
 457,Head Smash,6,150,80,0,2,10,0,0,0,50,-1
 458,Double Hit,1,35,90,0,2,10,0,0,0,0,45
 459,Roar of Time,16,150,90,0,3,10,0,0,0,0,81
