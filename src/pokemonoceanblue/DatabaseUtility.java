@@ -72,7 +72,7 @@ public class DatabaseUtility
             "evolution_methods",  "pokemon_moves", "pokemon_location", 
             "conversation",  "type_effectiveness", "items", "battle",
             "portal", "map_object", "area", "character", "move_stat_effect",
-            "evolution_methods", "conversation_trigger", "achievements",
+            "conversation_trigger", "achievements",
             "player_pokedex",
             "moves",
             "map_template",
@@ -221,7 +221,9 @@ public class DatabaseUtility
                     trigger_item_id INT NULL,
                     gender_id INT NULL,
                     map_id INT NULL,
-                    time_of_day VARCHAR(10) NULL)
+                    time_of_day VARCHAR(10) NULL,
+                    FOREIGN KEY(pre_species_id) REFERENCES pokemon(pokemon_id),
+                    FOREIGN KEY(evolved_species_id) REFERENCES pokemon(pokemon_id))
                 """;
         runUpdate(query);
 
@@ -425,7 +427,7 @@ public class DatabaseUtility
                     text VARCHAR(100) NULL,
                     battle_id INT DEFAULT -1,
                     heal_team INT DEFAULT 0,
-                    character_id INT NOT NULL,
+                    character_id INT DEFAULT -1,
                     movement_direction INT DEFAULT -1,
                     option_id INT DEFAULT -1,
                     next_conversation_event_id INT DEFAULT -1, 
@@ -695,23 +697,38 @@ public class DatabaseUtility
 
                 for (int i = 0; i < dataTypes.length; i++)
                 {
-                    if (i >= data.length)
+                    if (dataTypes[i] == "int")
                     {
-                        // set null value, since there was no value
-                        statement.setObject(i+1, null);
-                    }
-                    else if (dataTypes[i] == "int")
-                    {
-                        // use setObject to allow for null values
-                        statement.setObject(i+1, data[i].equals("") ? null : Integer.parseInt(data[i]));
+                        if (i >= data.length || data[i].equals(""))
+                        {
+                            statement.setInt(i+1, -1);
+                        }
+                        else
+                        {
+                            statement.setInt(i+1, Integer.parseInt(data[i]));
+                        }                        
                     }
                     else if (dataTypes[i] == "String")
                     {
-                        statement.setString(i+1, data[i]);
+                        if (i >= data.length || data[i].equals(""))
+                        {
+                            statement.setString(i+1, "");
+                        }
+                        else
+                        {
+                            statement.setString(i+1, data[i]);
+                        }    
                     }
                     else if (dataTypes[i] == "float")
                     {
-                        statement.setFloat(i+1, Float.parseFloat(data[i]));
+                        if (i >= data.length || data[i].equals(""))
+                        {
+                            statement.setFloat(i+1, -1);
+                        }
+                        else
+                        {
+                            statement.setFloat(i+1, Float.parseFloat(data[i]));
+                        }   
                     }
                 }  
 

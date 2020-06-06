@@ -1,7 +1,6 @@
 package pokemonoceanblue;
 
 import java.sql.*;
-import java.util.Random;
 
 public class MoveModel 
 {
@@ -78,15 +77,15 @@ public class MoveModel
             // get move effect
             if (effectId >= 0)
             {
-                Random rand = new Random();
                 query = "SELECT * FROM move_effect WHERE effect_id = " + effectId;
                 rs = db.runQuery(query);
-                // this.moveEffect = new MoveEffect(
-                //     effectId, 
-                //     rs.getInt("target_type"), 
-                //     rs.getInt("counter_min") + rand.nextInt(rs.getInt("counter_max") - rs.getInt("counter_min") + 1), 
-                //     rs.getString("text")
-                // );
+                this.moveEffect = new MoveEffect(
+                    effectId, 
+                    rs.getInt("target_type"), 
+                    rs.getInt("counter_min"),
+                    rs.getInt("counter_max"), 
+                    rs.getString("text")
+                );
             }
         }
         catch (SQLException e) 
@@ -119,14 +118,17 @@ public class MoveModel
     {
         public final int effectId;
         public int targetId;
+        public int minCounter;
+        public int maxCounter;
         public int counter;
         public String text; 
 
-        public MoveEffect(int effectId, int targetId, int counter, String text)
+        public MoveEffect(int effectId, int targetId, int minCounter, int maxCounter, String text)
         {
             this.effectId = effectId;
             this.targetId = targetId;
-            this.counter = counter;
+            this.minCounter = minCounter;
+            this.maxCounter = maxCounter;
             this.text = text;
         }
     }

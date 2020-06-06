@@ -32,7 +32,8 @@ public class EvolutionCheck
 
             // load move data
             String query = "SELECT * FROM evolution_methods "
-                            + "WHERE pre_species_id = " + preSpeciesId;
+                            + "WHERE pre_species_id = " + preSpeciesId
+                            + " ORDER BY trigger_item_id DESC, map_id DESC";
 
             ResultSet rs = db.runQuery(query);
 
@@ -62,7 +63,7 @@ public class EvolutionCheck
                 {
                     evolve = -1;
                 }
-                else if (mapId != currentMapId)
+                else if (mapId > -1 && mapId != currentMapId)
                 {
                     evolve = -1;
                 }
