@@ -417,28 +417,25 @@ public class BattleModel extends BaseModel
      */
     private void recoil(int attacker, MoveModel move)
     {
-        BattleEvent event;
-        if (move.recoil > 0)
+        String text = this.team[attacker][this.currentPokemon[attacker]].name + " healed itself.";
+        int damage;
+        //moves that have power=0 use attackers max hp to calc healing
+        if (move.power == 0)
         {
-            event = new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + " is hit with recoil.",
-                (int)(Math.ceil(Math.min(this.events.get(0).damage, 
-                this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]].currentHP) * (move.recoil / 100.0))),
-                attacker,
-                attacker,
-                null,
-                attacker,
-                null);
+            damage = (int)(this.team[attacker][this.currentPokemon[attacker]].stats[0] * (move.recoil / 100.0));
+        }
+        else if (move.recoil > 0)
+        {
+            text = this.team[attacker][this.currentPokemon[attacker]].name + " is hit with recoil.";
+            damage = (int)(Math.ceil(Math.min(this.events.get(0).damage * (move.recoil / 100.0), 
+                this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]].currentHP)));
         }
         else
         {
-            event = new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + " healed itself.",
-                (int)(Math.floor(this.events.get(0).damage * (move.recoil / 100.0))),
-                attacker,
-                attacker,
-                null,
-                attacker,
-                null);
+            damage = (int)(Math.floor(this.events.get(0).damage * (move.recoil / 100.0)));
         }
+
+        BattleEvent event = new BattleEvent(text, damage, attacker, attacker, null, attacker, null);
         this.events.add(event);
     }
 

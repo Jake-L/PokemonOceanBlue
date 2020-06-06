@@ -10,7 +10,7 @@ map_id,area_id,name,min_x,max_x,min_y,max_y,music_id,battle_background_id
 20,0,Pewter City Gym,0,13,0,13,23,6
 17,1,Route 3,36,999,0,999,3,0
 16,1,Cinnabar Islands,0,60,56,90,56,1
-33,0,Route 4,0,13,55,999,3,0
-33,1,Cerulean City,14,77,35,92,56,1
+33,0,Route 4,0,13,56,999,3,0
+33,1,Cerulean City,14,77,35,999,56,1
 33,2,Route 24,0,999,0,34,3,1
 33,3,Route 24,0,13,35,55,3,1
