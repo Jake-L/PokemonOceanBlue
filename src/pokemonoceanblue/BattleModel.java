@@ -33,6 +33,7 @@ public class BattleModel extends BaseModel
     public boolean[] willFlinch = new boolean[2];
     private boolean[] moveProcessed = new boolean[2];
     public int musicId;
+    public int badgeIndex = -1;
 
     /** 
      * Constructor
@@ -48,10 +49,10 @@ public class BattleModel extends BaseModel
         this.initializeBattle();
     }
 
-    public BattleModel(PokemonModel[] playerTeam, int battleId, App app)
+    public BattleModel(PokemonModel[] playerTeam, int battleId, App app, int enemyScalingFactor)
     {
         this.team[0] = playerTeam;
-        this.loadTeam(battleId);
+        this.loadTeam(battleId, enemyScalingFactor);
         this.app = app;
         this.isWild = false;
         this.initializeBattle();
@@ -1112,9 +1113,20 @@ public class BattleModel extends BaseModel
      * Load the enemy team
      * @param battleId unique identifier for the enemy's team
      */
-    private void loadTeam(int battleId)
+    private void loadTeam(int battleId, int enemyScalingFactor)
     {
         List<PokemonModel> loadTeam = new ArrayList<PokemonModel>();
+
+        // Pokemon league lets Pokemon's level scale up by max 75
+        if (battleId >= 1300)
+        {
+            enemyScalingFactor = Math.min(75, enemyScalingFactor);
+        }
+        // everywhere else Pokemon's level scale up by max 50
+        else
+        {
+            enemyScalingFactor = Math.min(50, enemyScalingFactor);
+        }
         
         try
         {
@@ -1139,7 +1151,7 @@ public class BattleModel extends BaseModel
 
             while(rs.next()) 
             {
-                loadTeam.add(new PokemonModel(rs.getInt(1), rs.getInt(2), false));
+                loadTeam.add(new PokemonModel(rs.getInt(1), rs.getInt(2) + enemyScalingFactor, false));
                 this.trainerName = rs.getString(3);
                 this.trainerSpriteName = rs.getString(4);
                 this.musicId = rs.getInt(5);
@@ -1147,6 +1159,14 @@ public class BattleModel extends BaseModel
             
             this.team[1] = new PokemonModel[loadTeam.size()];
             loadTeam.toArray(this.team[1]);
+
+            // store if the player gets a badge for winning this battle
+            switch (battleId)
+            {
+                case 10:
+                    this.badgeIndex = 0;
+                    break;
+            }
         }
         catch (SQLException e) 
         {

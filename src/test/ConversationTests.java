@@ -2,11 +2,10 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import org.junit.Test;
 
 import pokemonoceanblue.ConversationModel;
 import pokemonoceanblue.Direction;

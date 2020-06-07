@@ -47,6 +47,9 @@ public class App extends JFrame implements KeyListener
     AchievementsModel achievementsModel;
     BaseController achievementsController;
     DayCareModel dayCareModel;
+    boolean[] badges = new boolean[8];
+    int enemyScalingFactor = 0;
+    TournamentModel tournamentModel;
 
     List<NewPokemonModel> newPokemonQueue = new ArrayList<NewPokemonModel>();
 
@@ -118,8 +121,7 @@ public class App extends JFrame implements KeyListener
         this.partyModel = new PartyModel();
         this.partyModel.addPokemon(0, new PokemonModel(3, 30, false));
         this.partyModel.addPokemon(0, new PokemonModel(4, 15, false));
-        this.partyModel.addPokemon(0, new PokemonModel(1, 12, false));
-        this.partyModel.team.get(0).xp += 450;
+        this.partyModel.addPokemon(0, new PokemonModel(150, 99, false));
         this.inventoryModel = new InventoryModel();
         this.pokedexModel = new PokedexModel();
         this.pokemonStorageModel = new PokemonStorageModel();
@@ -172,7 +174,7 @@ public class App extends JFrame implements KeyListener
 
     public void createTrainerBattle(int battleId)
     {
-        battleModel = new BattleModel(partyModel.getTeamArray(), battleId, this);
+        battleModel = new BattleModel(partyModel.getTeamArray(), battleId, this, this.enemyScalingFactor);
         this.playSong(battleModel.musicId, true);
         BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
         viewManager.setView(battleView);
@@ -193,7 +195,7 @@ public class App extends JFrame implements KeyListener
         Random rand = new Random();
         boolean shiny = rand.nextDouble() < this.pokedexModel.getShinyRate(pokemonId) ? true : false;
         PokemonModel[] team = new PokemonModel[1];
-        team[0] = new PokemonModel(pokemonId, level, shiny);
+        team[0] = new PokemonModel(pokemonId, level + Math.min(this.enemyScalingFactor, 50), shiny);
 
         // create the battle
         battleModel = new BattleModel(team, partyModel.getTeamArray(), this);
@@ -223,12 +225,26 @@ public class App extends JFrame implements KeyListener
         }
 
         // create the overworld
-        overworldModel = new OverworldModel(mapId, playerModel, this, this.inventoryModel, this.dayCareModel);
-        overworldController = new OverworldController(overworldModel);
-        playerModel.setOverworldModel(overworldModel);
+        if (mapId == 1000)
+        {
+            // use a special constructor when in a tournament
+            if (this.tournamentModel == null)
+            {
+                this.tournamentModel = new TournamentModel(0);
+            }
 
-        OverworldView overworldView = new OverworldView(overworldModel);
-        viewManager.setView(overworldView);
+            this.overworldModel = new OverworldModel(mapId, playerModel, this, this.tournamentModel);
+        }
+        else
+        {
+            this.overworldModel = new OverworldModel(mapId, playerModel, this, this.inventoryModel, this.dayCareModel);
+        }
+        
+        this.overworldController = new OverworldController(this.overworldModel);
+        playerModel.setOverworldModel(this.overworldModel);
+
+        OverworldView overworldView = new OverworldView(this.overworldModel);
+        this.viewManager.setView(overworldView);
     }
 
     public void openInventory()
@@ -412,6 +428,13 @@ public class App extends JFrame implements KeyListener
                             this.achievementsModel.setBattlesWon(this.battleModel.trainerSpriteName);
                         }
 
+                        // check if the player earned a badge
+                        if (this.battleModel.badgeIndex > -1)
+                        {
+                            this.badges[this.battleModel.badgeIndex] = true;
+                            this.enemyScalingFactor += 5;
+                        }
+
                         // check which pokemon leveled up
                         boolean[] evolveQueue = this.battleModel.getEvolveQueue();
 
@@ -472,6 +495,22 @@ public class App extends JFrame implements KeyListener
                         viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
                         newPokemonController = new BaseController(newPokemonQueue.get(0));
                         newPokemonQueue.remove(0);
+                    }
+                    else if (this.tournamentModel != null && overworldModel.conversation == null && overworldModel.mapId % 100 == 0)
+                    {
+                        // player finished a round of the tournament, move them into waiting room
+                        this.tournamentModel.nextRound();
+                        if (this.tournamentModel.getCharacter() == null)
+                        {
+                            // player won tournament
+                            this.setMap(this.overworldModel.mapId + 2, 6, 3);
+                            this.tournamentModel = null;
+                        }
+                        else
+                        {
+                            // enter the waiting room before the next round
+                            this.setMap(this.overworldModel.mapId + 1, 7, 7);
+                        }
                     }
                     else if (this.battleModel == null)
                     {

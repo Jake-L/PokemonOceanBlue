@@ -207,7 +207,7 @@ public class BattleView extends BaseView {
 
         // draw base under the player's Pokemon
         g.drawImage(this.backgroundBase[0],
-            width / 4 - this.backgroundBase[0].getWidth(null) * graphicsScaling / 2,
+            width / 10,
             height * 3 / 4 - this.backgroundBase[0].getHeight(null) * graphicsScaling,
             this.backgroundBase[0].getWidth(null) * graphicsScaling,
             this.backgroundBase[0].getHeight(null) * graphicsScaling,
@@ -322,7 +322,7 @@ public class BattleView extends BaseView {
             g, 
             canvas);
 
-        //renders player  and enemy team at sides of the screen
+        //renders player and enemy team at sides of the screen
         for (int j = 0; j < this.pokemonIconSprites.length; j++)
         {
             for (int i = 0; i < this.pokemonIconSprites[j].length; i++)
@@ -444,7 +444,7 @@ public class BattleView extends BaseView {
         int pokemonFrame = this.getPokemonFrame(teamIndex);
 
         // set x position
-        double x = width * 0.25;
+        double x = width / 10 + this.backgroundBase[0].getWidth(null) * graphicsScaling / 2;
         if (teamIndex == 1)
         {
             x = width * 0.6;

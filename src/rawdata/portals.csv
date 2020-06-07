@@ -58,3 +58,7 @@ map_id,area_id,x,y,dest_map_id,dest_area_id,dest_x,dest_y,comment
 31,0,5,9,0,2,17,37,pokemart -> virdian city
 17,0,14,32,32,0,5,8,pewter city -> pokemart
 32,0,5,9,17,0,14,33,pokemart -> pewter city
+1001,0,4,4,1000,0,6,6,Cerulean tournament waiting room -> battle room
+1101,0,4,4,1100,0,6,6,Celadon tournament waiting room -> battle room
+1201,0,4,4,1200,0,6,6,Cinnabar tournament waiting room -> battle room
+1301,0,4,4,1300,0,6,6,Pokemon League tournament waiting room -> battle room

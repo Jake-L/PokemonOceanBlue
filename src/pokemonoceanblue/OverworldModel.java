@@ -52,6 +52,34 @@ public class OverworldModel extends BaseModel {
         this.loadConversationTriggers();
         this.loadAreas();
         this.checkArea(playerModel.getX(), playerModel.getY());
+        this.checkAutoTriggers(playerModel.getX(), playerModel.getY());
+    }
+
+    /**
+     * Constructor used for creating tournament battle rooms
+     * @param mapId
+     * @param playerModel
+     * @param app
+     * @param tournamentModel
+     */
+    public OverworldModel(int mapId, CharacterModel playerModel, App app, TournamentModel tournamentModel)
+    {
+        this.mapId = mapId;
+        this.playerModel = playerModel;
+        this.app = app;
+
+        this.readMapFile();
+        this.loadMapObjects();
+        this.loadPortals();
+        this.loadAreas();
+        this.checkArea(playerModel.getX(), playerModel.getY());
+
+        CharacterModel character = tournamentModel.getCharacter();
+        character.setOverworldModel(this);
+        this.cpuModel.add(character);
+
+        this.conversationTrigger.add(new ConversationTriggerModel(character.conversationId, character, 6, 6, -1, true, false));
+        this.checkAutoTriggers(playerModel.getX(), playerModel.getY());
     }
 
     /** 
@@ -356,7 +384,6 @@ public class OverworldModel extends BaseModel {
                 }
             }
         
-
             // check for an object to interact with
             for (ConversationTriggerModel current : this.conversationTrigger)
             {
@@ -478,6 +505,16 @@ public class OverworldModel extends BaseModel {
             this.playerModel.surf = false;
         }
 
+        this.checkAutoTriggers(x, y);
+    }
+
+    /**
+     * Check if any conversations should be started automatically
+     * @param x
+     * @param y
+     */
+    private void checkAutoTriggers(int x, int y)
+    {
         ConversationTriggerModel current;
         for (int i = 0; i < this.conversationTrigger.size(); i++)
         {

@@ -23,7 +23,7 @@ public class ConversationTriggerModel
      * @param autoTrigger true if the trigger starts based on movement, false if the player must press enter to interact
      * @param approachPlayer true if the CPU should work towards the player if there is a gap
      */
-    public ConversationTriggerModel(int conversationId, CharacterModel cpuModel, int x, int y, int clearConversationId, boolean autoTrigger, boolean appraochPlayer)
+    public ConversationTriggerModel(int conversationId, CharacterModel cpuModel, int x, int y, int clearConversationId, boolean autoTrigger, boolean approachPlayer)
     {
         this.conversationId = conversationId;
         this.cpuModel = cpuModel;
@@ -31,6 +31,6 @@ public class ConversationTriggerModel
         this.y = y;
         this.clearConversationId = clearConversationId;
         this.autoTrigger = autoTrigger;
-        this.approachPlayer = appraochPlayer;
+        this.approachPlayer = approachPlayer;
     }
 }
