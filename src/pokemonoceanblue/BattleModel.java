@@ -33,6 +33,7 @@ public class BattleModel extends BaseModel
     public boolean[] willFlinch = new boolean[2];
     private boolean[] moveProcessed = new boolean[2];
     private byte[][] statusEffectCounter = new byte[2][];
+    private boolean isPlayerDefeated;
     public int musicId;
     public int badgeIndex = -1;
 
@@ -1065,6 +1066,17 @@ public class BattleModel extends BaseModel
             else if (this.events.get(0).newMove != null)
             {
                 this.app.openSummaryNewMove(this.currentPokemon[0], this.events.get(0).newMove);
+            }
+
+            //check if player should blackout
+            if (teamFainted(0) && !this.isPlayerDefeated)
+            {
+                BattleEvent event = new BattleEvent("Player was defeated by " + trainerName + "!",
+                    0, -1, null);
+                this.events.add(event);
+                event = new BattleEvent("Player blacked out!", 0, -1, null);
+                this.events.add(event);
+                this.isPlayerDefeated = true;
             }
             this.events.remove(0);
 
