@@ -400,6 +400,57 @@ public class BattleTests {
     }
 
     /**
+     * Test that badly poison target takes more damage from second tick than first
+     * Done giving toxic 100 accuracy then using it on lvl 1 rattata
+     */
+    @Test
+    public void testBadlyPoison() {
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(19, 100, false);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(19, 1, false);
+        //give lvl 100 rattata toxic with perfect accuracy and give both rattatas splash
+        team[0].moves = new MoveModel[2];
+        team[0].moves[0] = new MoveModel(92);
+        team[0].moves[0].accuracy = -1;
+        team[0].moves[1] = new MoveModel(150);
+        enemyTeam[0].moves = new MoveModel[1];
+        enemyTeam[0].moves[0] = new MoveModel(150);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
+        // skip opening animations
+        updateBattleModel(battleModel, 500);
+        assertEquals(0, battleModel.events.size());
+        // choose "FIGHT"
+        battleModel.confirmSelection();
+        // choose "toxic"
+        updateBattleModel(battleModel, 20);
+        battleModel.confirmSelection();
+        // wait for all the battle text to process
+        updateBattleModel(battleModel, 100);
+        updateBattleModel(battleModel, 500);
+        assertEquals(7, enemyTeam[0].statusEffect);
+        int firstTick = enemyTeam[0].stats[0] - enemyTeam[0].currentHP;
+        //get through next turn with splash
+        assertEquals(0, battleModel.events.size());
+        // choose "FIGHT"
+        battleModel.confirmSelection();
+        // choose "splash"
+        updateBattleModel(battleModel, 20);
+        battleModel.optionIndex = 1;
+        updateBattleModel(battleModel, 20);
+        battleModel.confirmSelection();
+        // wait for all the battle text to process
+        updateBattleModel(battleModel, 100);
+        updateBattleModel(battleModel, 500);
+        //check if more damage was dealt by second tick of toxic
+        int secondTick = enemyTeam[0].stats[0] - enemyTeam[0].currentHP - firstTick;
+        if (firstTick >= secondTick)
+        {
+            fail();
+        }
+    }
+
+    /**
      * Updates battleModel in a loop to skip through animations
      * and input delays
      * @param battleModel

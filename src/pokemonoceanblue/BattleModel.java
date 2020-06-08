@@ -32,6 +32,7 @@ public class BattleModel extends BaseModel
     public int[][] statChanges = new int[2][8];
     public boolean[] willFlinch = new boolean[2];
     private boolean[] moveProcessed = new boolean[2];
+    private byte[][] statusEffectCounter = new byte[2][];
     public int musicId;
     public int badgeIndex = -1;
 
@@ -70,6 +71,8 @@ public class BattleModel extends BaseModel
         BattleEvent event;
         this.isSeen = new boolean[this.team[1].length];
         this.isSeen[0] = true;
+        this.statusEffectCounter[0] = new byte[this.team[0].length];
+        this.statusEffectCounter[1] = new byte[this.team[1].length];
 
         // send out the first Pokemon with HP > 0 and that's not an egg
         while (this.team[0][firstPokemon].currentHP == 0 || this.team[0][firstPokemon].level == 0)
@@ -133,6 +136,14 @@ public class BattleModel extends BaseModel
 
                     default:
                         
+                        //increase statusEffectCounter at the beginning of each turn if pokemon starts turn with a status effect
+                        for (int i = 0; i < 2; i++)
+                        {
+                            if (this.team[i][this.currentPokemon[i]].statusEffect > 0)
+                            {
+                                this.statusEffectCounter[i][this.currentPokemon[i]]++;
+                            }
+                        }
                         int firstAttacker;
                         this.battleOptions = null;
                         this.attackEvent[0] = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " used " + this.team[0][this.currentPokemon[0]].moves[this.optionIndex].name + ".",
@@ -320,8 +331,8 @@ public class BattleModel extends BaseModel
     {
         if (this.ranNum.nextInt(101) <= move.effectChance && this.team[defender][this.currentPokemon[defender]].statusEffect == 0)
         {
-            String[] statusEffectMessages = {" was paralyzed."," fell asleep."," was frozen solid."," was burned."," was badly poisoned."," became confused."};
-            if (move.ailmentId < 7)
+            String[] statusEffectMessages = {" was paralyzed."," fell asleep."," was frozen solid."," was burned."," was poisoned."," became confused."," was badly poisoned."};
+            if (move.ailmentId < 8)
             {
                 BattleEvent event = new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + statusEffectMessages[move.ailmentId - 1], 
                     move.ailmentId, defender, defender, null);
@@ -346,6 +357,7 @@ public class BattleModel extends BaseModel
                 this.events.get(0).damage = damageCalc(this.events.get(0).move, attacker, (attacker + 1) % 2);
             }
             else if ((attackingPokemon.statusEffect == 2 && this.ranNum.nextInt(101) < 41) ||
+                (attackingPokemon.statusEffect == 2 && this.statusEffectCounter[attacker][this.currentPokemon[attacker]] > 2) ||
                 (attackingPokemon.statusEffect == 3 && this.ranNum.nextInt(101) < 31))
             {
                 event = new BattleEvent(attackingPokemon.name + (attackingPokemon.statusEffect == 2 ? " woke up!" : " thawed out."),
@@ -401,10 +413,19 @@ public class BattleModel extends BaseModel
         String[] statusEffectMessages = {" is hurt by burn."," is hurt by poison."};
         for (int i = 0; i < 2; i++)
         {
+            BattleEvent event;
             if (this.team[i][this.currentPokemon[i]].statusEffect > 3 && this.team[i][this.currentPokemon[i]].statusEffect < 6)
             {
-                BattleEvent event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + statusEffectMessages[this.team[i][this.currentPokemon[i]].statusEffect - 4],
+                event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + statusEffectMessages[this.team[i][this.currentPokemon[i]].statusEffect - 4],
                     (int)Math.ceil(this.team[i][this.currentPokemon[i]].stats[0] / 8.0),
+                    i, i, null, i, null);
+                this.events.add(event);
+            }
+            //badly poisoned
+            else if (this.team[i][this.currentPokemon[i]].statusEffect == 7)
+            {
+                event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + " is badly hurt by poison.",
+                    (int)Math.ceil((this.team[i][this.currentPokemon[i]].stats[0] * (1 + this.statusEffectCounter[i][this.currentPokemon[i]])) / 8.0),
                     i, i, null, i, null);
                 this.events.add(event);
             }
@@ -991,6 +1012,7 @@ public class BattleModel extends BaseModel
             else if (this.events.get(0).statusEffect > -1)
             {
                 this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].statusEffect = (byte)this.events.get(0).statusEffect;
+                this.statusEffectCounter[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]] = 0;
             }
             else if (this.events.get(0).damage > -1)
             {

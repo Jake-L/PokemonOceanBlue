@@ -19,7 +19,7 @@ public class PartyView extends BaseView {
     private Image hpBar;
     private Image[] faintedPokemonWindows = new Image[3];
     private Image background;
-    private Image[] statusEffectImages = new Image[6];
+    private Image[] statusEffectImages = new Image[7];
     private Map<String, Image> pokemonIconSprite = new HashMap<String, Image>();
     private Map<String, Image> pokemonSprite = new HashMap<String, Image>();
     
@@ -210,7 +210,7 @@ public class PartyView extends BaseView {
             
             //display status condition
             int statusEffect = this.model.team.get(i).statusEffect;
-            if (statusEffect > 0 && statusEffect < 7)
+            if (statusEffect > 0 && statusEffect < 8)
             {
                 g.drawImage(this.statusEffectImages[statusEffect - 1],
                     (i % 2) * (width / 3 + 8 * graphicsScaling) + 72 * graphicsScaling,
