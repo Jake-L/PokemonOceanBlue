@@ -182,7 +182,7 @@ public class BattleView extends BaseView {
         }
         
         //loads background image
-        ii = new ImageIcon(this.getClass().getResource("/battle/Background" + battleBackgroundId + "" + timeOfDayCode + ".png"));
+        ii = new ImageIcon(this.getClass().getResource("/battle/background" + battleBackgroundId + "" + timeOfDayCode + ".png"));
         this.background = ii.getImage();
     }
 

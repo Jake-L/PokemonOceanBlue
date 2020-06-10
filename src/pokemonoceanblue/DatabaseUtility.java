@@ -22,10 +22,10 @@ public class DatabaseUtility
         {
             try
             {
-                this.url =  "jdbc:sqlite:" + this.getClass().getResource("/database/pokemon.db").toURI().getPath();
-
+                this.url =  "jdbc:sqlite::resource:" + this.getClass().getResource("/database/pokemon.db");
+                
                 // create a connection to the database
-                conn = DriverManager.getConnection(url);
+                conn = DriverManager.getConnection(this.url);
 
                 conn.createStatement().execute("PRAGMA foreign_keys = ON");
                 
@@ -35,10 +35,6 @@ public class DatabaseUtility
             {
                 System.out.println(e.getMessage());
             } 
-            catch (URISyntaxException e)
-            {
-                System.out.println(e.getMessage());
-            }
         }
         
     }
