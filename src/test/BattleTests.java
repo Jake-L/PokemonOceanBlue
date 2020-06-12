@@ -428,7 +428,7 @@ public class BattleTests {
         // wait for all the battle text to process
         updateBattleModel(battleModel, 100);
         updateBattleModel(battleModel, 500);
-        assertEquals(7, enemyTeam[0].statusEffect);
+        assertEquals(6, enemyTeam[0].statusEffect);
         int firstTick = enemyTeam[0].stats[0] - enemyTeam[0].currentHP;
         //get through next turn with splash
         assertEquals(0, battleModel.events.size());

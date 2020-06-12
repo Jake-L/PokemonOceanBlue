@@ -17,7 +17,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 16,Gust,3,40,100,0,3,10,0,0,0,0,150
 17,Wing Attack,3,60,100,0,2,10,0,0,0,0,-1
 19,Fly,3,90,95,0,2,10,0,0,0,0,156
-20,Bind,1,15,85,0,2,10,0,100,8,0,43
+20,Bind,1,15,85,0,2,10,0,100,0,0,43
 21,Slam,1,80,75,0,2,10,0,0,0,0,-1
 22,Vine Whip,12,45,100,0,2,10,0,0,0,0,-1
 23,Stomp,1,65,100,0,2,10,30,0,0,0,151
@@ -32,7 +32,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 32,Horn Drill,1,-1,30,0,2,10,0,0,0,0,-1
 33,Tackle,1,40,100,0,2,10,0,0,0,0,-1
 34,Body Slam,1,85,100,0,2,10,0,30,1,0,-1
-35,Wrap,1,15,90,0,2,10,0,100,8,0,43
+35,Wrap,1,15,90,0,2,10,0,100,0,0,43
 36,Take Down,1,90,85,0,2,10,0,0,0,25,-1
 37,Thrash,1,120,100,0,2,8,0,0,0,0,28
 38,Double-Edge,1,120,100,0,2,10,0,0,0,33,-1
@@ -44,7 +44,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 44,Bite,17,60,100,0,2,10,30,0,0,0,-1
 45,Growl,1,,100,0,1,11,0,100,0,0,-1
 47,Sing,1,,55,0,1,10,0,100,2,0,-1
-48,Supersonic,1,,55,0,1,10,0,100,6,0,-1
+48,Supersonic,1,,55,0,1,10,0,100,7,0,-1
 49,Sonic Boom,1,20,90,0,3,10,0,0,0,0,42
 50,Disable,1,,100,0,1,10,0,0,13,0,87
 51,Acid,4,40,100,0,3,11,0,10,0,0,-1
@@ -56,7 +56,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 57,Surf,11,90,100,0,3,9,0,0,0,0,258
 58,Ice Beam,15,90,100,0,3,10,0,10,3,0,-1
 59,Blizzard,15,110,70,0,3,11,0,10,3,0,-1
-60,Psybeam,14,65,100,0,3,10,0,10,6,0,-1
+60,Psybeam,14,65,100,0,3,10,0,10,7,0,-1
 61,Bubble Beam,11,65,100,0,3,10,0,10,0,0,-1
 62,Aurora Beam,15,65,100,0,3,10,0,10,0,0,-1
 63,Hyper Beam,1,150,90,0,3,10,0,0,0,0,81
@@ -79,7 +79,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 80,Petal Dance,12,120,100,0,3,8,0,0,0,0,28
 81,String Shot,7,,95,0,1,11,0,100,0,0,-1
 82,Dragon Rage,16,40,100,0,3,10,0,0,0,0,42
-83,Fire Spin,10,35,85,0,3,10,0,100,8,0,43
+83,Fire Spin,10,35,85,0,3,10,0,100,0,0,43
 84,Thunder Shock,13,40,100,0,3,10,0,10,1,0,-1
 85,Thunderbolt,13,90,100,0,3,10,0,10,1,0,-1
 86,Thunder Wave,13,,90,0,1,10,0,100,1,0,-1
@@ -88,8 +88,8 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 89,Earthquake,5,100,100,0,2,9,0,0,0,0,148
 90,Fissure,5,-1,30,0,2,10,0,0,0,0,-1
 91,Dig,5,80,100,0,2,10,0,0,0,0,257
-92,Toxic,4,,90,0,1,10,0,100,7,0,-1
-93,Confusion,14,50,100,0,3,10,0,10,6,0,-1
+92,Toxic,4,,90,0,1,10,0,100,6,0,-1
+93,Confusion,14,50,100,0,3,10,0,10,7,0,-1
 94,Psychic,14,90,100,0,3,10,0,10,0,0,-1
 95,Hypnosis,14,,60,0,1,10,0,100,2,0,-1
 96,Meditate,14,,-1,0,1,7,0,100,0,0,-1
@@ -105,7 +105,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 106,Harden,1,,-1,0,1,7,0,100,0,0,-1
 107,Minimize,1,,-1,0,1,7,0,100,0,0,109
 108,Smokescreen,1,,100,0,1,10,0,100,0,0,-1
-109,Confuse Ray,8,,90,0,1,10,0,100,6,0,-1
+109,Confuse Ray,8,,90,0,1,10,0,100,7,0,-1
 110,Withdraw,11,,-1,0,1,7,0,100,0,0,-1
 111,Defense Curl,1,,-1,0,1,7,0,100,0,0,157
 112,Barrier,14,,-1,0,1,7,0,100,0,0,-1
@@ -123,7 +123,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 125,Bone Club,5,65,85,0,2,10,10,0,0,0,-1
 126,Fire Blast,10,110,85,0,3,10,0,10,4,0,-1
 127,Waterfall,11,80,100,0,2,10,20,0,0,0,-1
-128,Clamp,11,35,85,0,2,10,0,100,8,0,43
+128,Clamp,11,35,85,0,2,10,0,100,0,0,43
 129,Swift,1,60,-1,0,3,11,0,0,0,0,-1
 130,Skull Bash,1,130,100,0,2,10,0,100,0,0,146
 131,Spike Cannon,1,20,100,0,2,10,0,0,0,0,30
@@ -141,7 +141,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 143,Sky Attack,3,140,90,0,2,10,30,0,0,0,76
 144,Transform,1,,-1,0,1,10,0,0,0,0,58
 145,Bubble,11,40,100,0,3,11,0,10,0,0,-1
-146,Dizzy Punch,1,70,100,0,2,10,0,20,6,0,-1
+146,Dizzy Punch,1,70,100,0,2,10,0,20,7,0,-1
 147,Spore,12,,100,0,1,10,0,100,2,0,-1
 148,Flash,1,,100,0,1,10,0,100,0,0,-1
 149,Psywave,14,30,100,0,3,10,0,0,0,0,-1
@@ -164,11 +164,11 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 166,Sketch,1,,-1,0,1,10,0,0,0,0,96
 167,Triple Kick,2,10,90,0,2,10,0,0,0,0,105
 168,Thief,17,60,100,0,2,10,0,0,0,0,-1
-170,Mind Reader,1,,-1,0,1,10,0,0,0,0,95
+170,Mind Reader,14,,-1,0,1,10,0,0,0,0,95
 171,Nightmare,8,,100,0,1,10,0,0,9,0,108
 172,Flame Wheel,10,60,100,0,2,10,0,10,4,0,-1
 173,Snore,1,50,100,0,3,10,30,0,0,0,93
-174,Curse,8,,-1,0,1,1,0,0,0,0,110
+174,Curse,8,,-1,0,1,1,0,100,8,50,-1
 175,Flail,1,,100,0,2,10,0,0,0,0,100
 176,Conversion 2,1,,-1,0,1,10,0,0,0,0,94
 177,Aeroblast,3,100,95,0,3,10,0,0,0,0,44
@@ -179,7 +179,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 183,Mach Punch,2,40,100,1,2,10,0,0,0,0,-1
 184,Scary Face,1,,100,0,1,10,0,100,0,0,-1
 185,Feint Attack,17,60,-1,0,2,10,0,0,0,0,-1
-186,Sweet Kiss,18,,75,0,1,10,0,100,6,0,-1
+186,Sweet Kiss,18,,75,0,1,10,0,100,7,0,-1
 187,Belly Drum,1,,-1,0,1,7,0,0,0,0,143
 188,Sludge Bomb,4,90,100,0,3,10,0,30,5,0,-1
 189,Mud-Slap,5,20,100,0,3,10,0,100,0,0,-1
@@ -200,7 +200,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 204,Charm,18,,100,0,1,10,0,100,0,0,-1
 205,Rollout,6,30,90,0,2,10,0,0,0,0,118
 206,False Swipe,1,40,100,0,2,10,0,0,0,0,102
-207,Swagger,1,,85,0,1,10,0,100,6,0,-1
+207,Swagger,1,,85,0,1,10,0,100,7,0,-1
 208,Milk Drink,1,,-1,0,1,7,0,0,0,-50,-1
 209,Spark,13,65,100,0,2,10,0,30,1,0,-1
 210,Fury Cutter,7,40,95,0,2,10,0,0,0,0,120
@@ -215,7 +215,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 220,Pain Split,1,,-1,0,1,10,0,0,0,0,92
 221,Sacred Fire,10,100,95,0,2,10,0,50,4,0,-1
 222,Magnitude,5,,100,0,2,9,0,0,0,0,127
-223,Dynamic Punch,2,100,50,0,2,10,0,100,6,0,-1
+223,Dynamic Punch,2,100,50,0,2,10,0,100,7,0,-1
 224,Megahorn,7,120,85,0,2,10,0,0,0,0,-1
 225,Dragon Breath,16,60,100,0,3,10,0,30,1,0,-1
 226,Baton Pass,1,,-1,0,1,7,0,0,0,0,128
@@ -242,13 +242,13 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 247,Shadow Ball,8,80,100,0,3,10,0,20,0,0,-1
 248,Future Sight,14,120,100,0,3,10,0,0,0,0,149
 249,Rock Smash,2,40,100,0,2,10,0,50,0,0,-1
-250,Whirlpool,11,35,85,0,3,10,0,100,8,0,262
+250,Whirlpool,11,35,85,0,3,10,0,100,0,0,262
 252,Fake Out,1,40,100,3,2,10,100,0,0,0,159
 253,Uproar,1,90,100,0,3,8,0,0,0,0,160
 257,Heat Wave,10,95,90,0,3,11,0,10,4,0,-1
 258,Hail,15,,-1,0,1,12,0,0,0,0,165
-259,Torment,17,,100,0,1,10,0,0,12,0,166
-260,Flatter,17,,100,0,1,10,0,100,6,0,-1
+259,Torment,17,,70,0,1,10,0,100,8,0,-1
+260,Flatter,17,,100,0,1,10,0,100,7,0,-1
 261,Will-O-Wisp,10,,85,0,1,10,0,100,4,0,-1
 263,Facade,1,70,100,0,2,10,0,0,0,0,170
 264,Focus Punch,2,150,100,-3,2,10,0,0,0,0,171
@@ -275,14 +275,14 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 295,Luster Purge,14,70,100,0,3,10,0,50,0,0,-1
 296,Mist Ball,14,70,100,0,3,10,0,50,0,0,-1
 297,Feather Dance,3,,100,0,1,10,0,100,0,0,-1
-298,Teeter Dance,1,,100,0,1,9,0,100,6,0,-1
+298,Teeter Dance,1,,100,0,1,9,0,100,7,0,-1
 299,Blaze Kick,10,85,90,0,2,10,0,10,4,0,44
 300,Mud Sport,5,,-1,0,1,12,0,0,0,0,202
 301,Ice Ball,15,30,90,0,2,10,0,0,0,0,118
 302,Needle Arm,12,60,100,0,2,10,30,0,0,0,-1
 303,Slack Off,1,,-1,0,1,7,0,0,0,-50,-1
 304,Hyper Voice,1,90,100,0,3,11,0,0,0,0,-1
-305,Poison Fang,4,50,100,0,2,10,0,50,7,0,-1
+305,Poison Fang,4,50,100,0,2,10,0,50,6,0,-1
 306,Crush Claw,1,75,95,0,2,10,0,50,0,0,-1
 307,Blast Burn,10,150,90,0,3,10,0,0,0,0,81
 308,Hydro Cannon,11,150,90,0,3,10,0,0,0,0,81
@@ -300,11 +300,11 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 321,Tickle,18,,100,0,1,10,0,100,0,0,-1
 322,Cosmic Power,14,,-1,0,1,7,0,100,0,0,-1
 323,Water Spout,11,150,100,0,3,11,0,0,0,0,191
-324,Signal Beam,7,75,100,0,3,10,0,10,6,0,-1
+324,Signal Beam,7,75,100,0,3,10,0,10,7,0,-1
 325,Shadow Punch,8,60,-1,0,2,10,0,0,0,0,-1
 326,Extrasensory,14,80,100,0,3,10,10,0,0,0,-1
 327,Sky Uppercut,2,85,90,0,2,10,0,0,0,0,208
-328,Sand Tomb,5,35,85,0,2,10,0,100,8,0,43
+328,Sand Tomb,5,35,85,0,2,10,0,100,0,0,43
 329,Sheer Cold,15,-1,30,0,3,10,0,0,0,0,-1
 330,Muddy Water,11,90,85,0,3,11,0,30,0,0,-1
 331,Bullet Seed,12,25,100,0,2,10,0,0,0,0,30
@@ -326,7 +326,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 349,Dragon Dance,16,,-1,0,1,7,0,100,0,0,-1
 350,Rock Blast,6,25,90,0,2,10,0,0,0,0,30
 351,Shock Wave,13,60,-1,0,3,10,0,0,0,0,-1
-352,Water Pulse,11,60,100,0,3,10,0,20,6,0,-1
+352,Water Pulse,11,60,100,0,3,10,0,20,7,0,-1
 353,Doom Desire,9,140,100,0,3,10,0,0,0,0,149
 354,Psycho Boost,14,140,90,0,3,10,0,100,0,0,-1
 355,Roost,3,,-1,0,1,7,0,0,0,-50,-1
@@ -399,7 +399,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 428,Zen Headbutt,14,80,90,0,2,10,20,0,0,0,-1
 429,Mirror Shot,9,65,85,0,3,10,0,30,0,0,-1
 430,Flash Cannon,9,80,100,0,3,10,0,10,0,0,-1
-431,Rock Climb,1,90,85,0,2,10,0,20,6,0,-1
+431,Rock Climb,1,90,85,0,2,10,0,20,7,0,-1
 432,Defog,3,,-1,0,1,10,0,0,0,0,259
 433,Trick Room,14,,-1,-7,1,12,0,0,0,0,260
 434,Draco Meteor,16,130,90,0,3,10,0,100,0,0,-1
@@ -430,7 +430,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 460,Spacial Rend,16,100,95,0,3,10,0,0,0,0,44
 461,Lunar Dance,14,,-1,0,1,7,0,0,0,0,-1
 462,Crush Grip,1,120,100,0,3,0,0,0,0,0,238
-463,Magma Storm,10,100,75,0,3,10,0,100,8,0,43
+463,Magma Storm,10,100,75,0,3,10,0,100,0,0,43
 464,Dark Void,17,,50,0,1,11,0,100,2,0,-1
 465,Seed Flare,12,120,85,0,3,10,0,40,0,0,-1
 466,Ominous Wind,8,60,100,0,3,10,0,10,0,0,-1
@@ -474,7 +474,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 10009,Shadow Rave,10002,70,100,0,3,6,0,40,0,0,-1
 10010,Shadow Storm,10002,95,100,0,3,6,0,0,0,0,-1
 10011,Shadow Wave,10002,50,100,0,3,6,0,0,0,0,-1
-10012,Shadow Down,10002,,100,0,1,6,0,0,6,0,-1
+10012,Shadow Down,10002,,100,0,1,6,0,0,7,0,-1
 10013,Shadow Half,10002,,100,0,3,12,0,0,0,0,-1
 10014,Shadow Hold,10002,,-1,0,1,6,0,0,0,0,-1
 10015,Shadow Mist,10002,,100,0,1,6,0,0,4,0,-1

@@ -332,8 +332,8 @@ public class BattleModel extends BaseModel
     {
         if (this.ranNum.nextInt(101) <= move.effectChance && this.team[defender][this.currentPokemon[defender]].statusEffect == 0)
         {
-            String[] statusEffectMessages = {" was paralyzed."," fell asleep."," was frozen solid."," was burned."," was poisoned."," became confused."," was badly poisoned."};
-            if (move.ailmentId < 8)
+            String[] statusEffectMessages = {" was paralyzed."," fell asleep."," was frozen solid."," was burned."," was poisoned."," was badly poisoned."," became confused."," was cursed."};
+            if (move.ailmentId < 9)
             {
                 BattleEvent event = new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + statusEffectMessages[move.ailmentId - 1], 
                     move.ailmentId, defender, defender, null);
@@ -384,7 +384,7 @@ public class BattleModel extends BaseModel
             event = new BattleEvent(attackingPokemon.name + " flinched!", attacker, attacker, null);
         }
         //check if attacker is confused, if so use random move
-        else if (attackingPokemon.statusEffect == 6)
+        else if (attackingPokemon.statusEffect == 7)
         {
             //25% chance of snapping out of confusion
             if (this.ranNum.nextInt(101) < 26)
@@ -414,21 +414,32 @@ public class BattleModel extends BaseModel
         String[] statusEffectMessages = {" is hurt by burn."," is hurt by poison."};
         for (int i = 0; i < 2; i++)
         {
-            BattleEvent event;
-            if (this.team[i][this.currentPokemon[i]].statusEffect > 3 && this.team[i][this.currentPokemon[i]].statusEffect < 6)
+            if (this.team[i][this.currentPokemon[i]].statusEffect > 3)
             {
-                event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + statusEffectMessages[this.team[i][this.currentPokemon[i]].statusEffect - 4],
-                    (int)Math.ceil(this.team[i][this.currentPokemon[i]].stats[0] / 8.0),
-                    i, i, null, i, null);
-                this.events.add(event);
-            }
-            //badly poisoned
-            else if (this.team[i][this.currentPokemon[i]].statusEffect == 7)
-            {
-                event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + " is badly hurt by poison.",
-                    (int)Math.ceil((this.team[i][this.currentPokemon[i]].stats[0] * (1 + this.statusEffectCounter[i][this.currentPokemon[i]])) / 8.0),
-                    i, i, null, i, null);
-                this.events.add(event);
+                BattleEvent event;
+                if (this.team[i][this.currentPokemon[i]].statusEffect < 6)
+                {
+                    event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + statusEffectMessages[this.team[i][this.currentPokemon[i]].statusEffect - 4],
+                        (int)Math.ceil(this.team[i][this.currentPokemon[i]].stats[0] / 8.0),
+                        i, i, null, i, null);
+                    this.events.add(event);
+                }
+                //badly poisoned
+                else if (this.team[i][this.currentPokemon[i]].statusEffect == 6)
+                {
+                    event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + " is badly hurt by poison.",
+                        (int)Math.ceil((this.team[i][this.currentPokemon[i]].stats[0] * (1 + this.statusEffectCounter[i][this.currentPokemon[i]])) / 8.0),
+                        i, i, null, i, null);
+                    this.events.add(event);
+                }
+                //curse
+                else if (this.team[i][this.currentPokemon[i]].statusEffect == 8)
+                {
+                    event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + " is hurt by the curse.",
+                    (int)Math.ceil(this.team[i][this.currentPokemon[i]].stats[0] / 4.0),
+                        i, i, null, i, null);
+                    this.events.add(event);
+                }
             }
         }
     }
@@ -440,16 +451,14 @@ public class BattleModel extends BaseModel
      */
     private void recoil(int attacker, MoveModel move)
     {
-        String text = this.team[attacker][this.currentPokemon[attacker]].name + " healed itself.";
         int damage;
-        //moves that have power=0 use attackers max hp to calc healing
+        //moves that have power=0 use attackers max hp to calc healing/recoil
         if (move.power == 0)
         {
             damage = (int)(this.team[attacker][this.currentPokemon[attacker]].stats[0] * (move.recoil / 100.0));
         }
         else if (move.recoil > 0)
         {
-            text = this.team[attacker][this.currentPokemon[attacker]].name + " is hit with recoil.";
             damage = (int)(Math.ceil(Math.min(this.events.get(0).damage * (move.recoil / 100.0), 
                 this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]].currentHP)));
         }
@@ -458,7 +467,8 @@ public class BattleModel extends BaseModel
             damage = (int)(Math.floor(this.events.get(0).damage * (move.recoil / 100.0)));
         }
 
-        BattleEvent event = new BattleEvent(text, damage, attacker, attacker, null, attacker, null);
+        BattleEvent event = new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name +
+            (move.recoil < 0 ? " healed itself." : " is hit with recoil."), damage, attacker, attacker, null, attacker, null);
         this.events.add(event);
     }
 
@@ -733,6 +743,14 @@ public class BattleModel extends BaseModel
 
         if (teamFainted(0) || teamFainted(1) || this.isCaught)
         {
+            //remove confusion/curse
+            for (int i = 0; i < this.team[0].length; i++)
+            {
+                if (this.team[0][i].statusEffect > 6)
+                {
+                    this.team[0][i].statusEffect = 0;
+                }
+            }
             return true;
         }
 
@@ -771,90 +789,57 @@ public class BattleModel extends BaseModel
      */ 
     private void checkFainted()
     {
-        if (this.team[1][this.currentPokemon[1]].currentHP == 0)
+        for (int j = 0; j < 2; j++)
         {
-            //remove all events performed by or affecting the fainted pokemon
-            boolean faintEventExists = false;
-            int i = 0;
-            while (i < this.events.size())
+            if (this.team[j][this.currentPokemon[j]].currentHP == 0)
             {
-                if (this.events.get(i).newPokemonIndex == -1 && this.events.get(i).attacker == 1)
+                //remove all events performed by or affecting the fainted pokemon
+                boolean faintEventExists = false;
+                int i = 0;
+                while (i < this.events.size())
                 {
-                    faintEventExists = true;
-                    break;
+                    if (this.events.get(i).newPokemonIndex == -1 && this.events.get(i).attacker == j)
+                    {
+                        faintEventExists = true;
+                        break;
+                    }
+                    if (this.events.get(i).removalCondition == j)
+                    {
+                        this.events.remove(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
                 }
-                if (this.events.get(i).removalCondition == 1)
+                if (!faintEventExists)
                 {
-                    this.events.remove(i);
-                }
-                else
-                {
-                    i++;
-                }
-            }
-            if (!faintEventExists)
-            {
-                this.team[0][this.currentPokemon[0]].updateHappiness(1);
-                this.team[0][this.currentPokemon[0]].updateIVs(this.team[1][this.currentPokemon[1]].ivGain);
-                BattleEvent event = new BattleEvent(
-                    this.team[1][this.currentPokemon[1]].name + " fainted.", 
-                    -1, 
-                    true, 
-                    1,
-                    -1,
-                    null);
-                this.events.add(event);
-
-                event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " gained " + xpCalc(this.team[1][this.currentPokemon[1]].level) + " experience.",
-                    xpCalc(this.team[1][this.currentPokemon[1]].level), 0, 0);
-                this.events.add(event);
-
-                //send out enemy's next pokemon if any remain
-                if (!teamFainted(1))
-                {
-                    event = new BattleEvent(this.trainerName + " sent out " + this.team[1][this.currentPokemon[1] + 1].name, 
-                        this.currentPokemon[1] + 1, 
-                        true, 
-                        1,
-                        -1,
-                        String.valueOf(this.team[1][this.currentPokemon[1] + 1].pokemon_id));
+                    BattleEvent event = new BattleEvent(this.team[j][this.currentPokemon[j]].name + " fainted.", -1, true, 1, -1, null);
                     this.events.add(event);
+                    if (j == 0)
+                    {
+                        this.team[0][this.currentPokemon[0]].updateHappiness(-5);
+                    }
+                    else 
+                    {
+                        this.team[0][this.currentPokemon[0]].updateHappiness(1);
+                        this.team[0][this.currentPokemon[0]].updateIVs(this.team[1][this.currentPokemon[1]].ivGain);
+                        int xp = xpCalc(this.team[1][this.currentPokemon[1]].level);
+                        event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " gained " + xp + " experience.", xp, 0, 0);
+                        this.events.add(event);
+                        //send out enemy's next pokemon if any remain
+                        if (!teamFainted(1))
+                        {
+                            event = new BattleEvent(this.trainerName + " sent out " + this.team[1][this.currentPokemon[1] + 1].name, 
+                                this.currentPokemon[1] + 1, 
+                                true, 
+                                1,
+                                -1,
+                                String.valueOf(this.team[1][this.currentPokemon[1] + 1].pokemon_id));
+                            this.events.add(event);
+                        }
+                    }
                 }
-            }
-        }
-
-        if (this.team[0][this.currentPokemon[0]].currentHP == 0)
-        {
-            //remove all events performed by or affecting the fainted pokemon
-            boolean faintEventExists = false;
-            int i = 0;
-            while (i < this.events.size())
-            {
-                if (this.events.get(i).newPokemonIndex == -1 && this.events.get(i).attacker == 0)
-                {
-                    faintEventExists = true;
-                    break;
-                }
-                if (this.events.get(i).removalCondition == 0)
-                {
-                    this.events.remove(i);
-                }
-                else
-                {
-                    i++;
-                }
-            }
-            if (!faintEventExists)
-            {
-                this.team[0][this.currentPokemon[0]].updateHappiness(-5);
-                BattleEvent event = new BattleEvent(
-                    this.team[0][this.currentPokemon[0]].name + " fainted.", 
-                    -1, 
-                    true, 
-                    0,
-                    -1,
-                    null);
-                this.events.add(event);
             }
         }
     }
@@ -896,6 +881,11 @@ public class BattleModel extends BaseModel
         if (this.actionCounter == 100 && this.events.get(0).newPokemonIndex > -1)
         {
             int attacker = this.events.get(0).attacker;
+            //remove confusion/curse
+            if (this.currentPokemon[attacker] != -1 && this.team[attacker][this.currentPokemon[attacker]].statusEffect > 6)
+            {
+                this.team[attacker][this.currentPokemon[attacker]].statusEffect = 0;
+            }
             this.currentPokemon[attacker] = this.events.get(0).newPokemonIndex;
             //reset stat changes on switched pokemon
             this.statChanges[attacker] = new int[8];
@@ -1071,7 +1061,7 @@ public class BattleModel extends BaseModel
             //check if player should blackout
             if (teamFainted(0) && !this.isPlayerDefeated)
             {
-                BattleEvent event = new BattleEvent("Player was defeated by " + trainerName + "!",
+                BattleEvent event = new BattleEvent("Player was defeated by " + (this.isWild ? "the wild " + this.team[1][0].name : trainerName) + "!",
                     0, -1, null);
                 this.events.add(event);
                 event = new BattleEvent("Player blacked out!", 0, -1, null);
@@ -1255,7 +1245,7 @@ public class BattleModel extends BaseModel
         }
 
         /** 
-         * Constructor
+         * Constructor for status effects inflicted
          * @param text the text that will be displayed
          * @param damage the damage that will be taken by target
          * @param target the pokemon that will recieve the damage
@@ -1269,7 +1259,7 @@ public class BattleModel extends BaseModel
         }
 
         /** 
-         * Constructor
+         * Constructor for moves used
          * @param text the text that will be displayed
          * @param damage the damage that will be taken by target
          * @param target the pokemon that will recieve the damage
@@ -1284,7 +1274,7 @@ public class BattleModel extends BaseModel
         }
 
         /** 
-         * Constructor
+         * Constructor for xp gained by the players pokemon
          * @param text the text that will be displayed
          * @param xp the amount of xp earned
          * @param attacker the team performing event
@@ -1296,7 +1286,7 @@ public class BattleModel extends BaseModel
             this.xp = xp;
         }
         /** 
-         * Constructor
+         * Constructor for using an item or changing pokemon
          * @param text the text that will be displayed
          * @param index is the index of the item or pokemon used
          * @param isPokemon determines whether index refers to item or pokemon
