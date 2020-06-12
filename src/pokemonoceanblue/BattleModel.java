@@ -480,8 +480,8 @@ public class BattleModel extends BaseModel
                 BattleEvent event;
                 int statId = move.moveStatEffects[i].statId;
                 int statChange = move.moveStatEffects[i].statChange;
-                //when target id is 7 or 10 the move applies stat changes to the user, otherwise applied to foe
-                if (move.targetId == 7 || (move.targetId == 10 && move.power > 0))
+                //when target id is 7 the move applies stat changes to the user, otherwise applied to foe
+                if (move.targetId == 7)
                 {
                     target = attacker;
                 }

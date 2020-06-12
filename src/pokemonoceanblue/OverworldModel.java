@@ -71,13 +71,15 @@ public class OverworldModel extends BaseModel {
         this.readMapFile();
         this.loadMapObjects();
         this.loadPortals();
+        this.loadCharacters();
+        this.loadConversationTriggers();
         this.loadAreas();
         this.checkArea(playerModel.getX(), playerModel.getY());
 
         CharacterModel character = tournamentModel.getCharacter();
         character.setOverworldModel(this);
         this.cpuModel.add(character);
-
+        
         this.conversationTrigger.add(new ConversationTriggerModel(character.conversationId, character, 6, 6, -1, true, false));
         this.checkAutoTriggers(playerModel.getX(), playerModel.getY());
     }
@@ -489,7 +491,10 @@ public class OverworldModel extends BaseModel {
         this.checkArea(x, y);
 
         // check for wild Pokemon encounters
-        if (this.tiles[y][x] == 0 || this.tiles[y][x] == 5 || this.tiles[y][x] == 90)
+        if (this.tiles[y][x] == 0 
+            || this.tiles[y][x] == 1 
+            || this.tiles[y][x] == 5 
+            || this.tiles[y][x] == 90)
         {
             int index = this.areaId * 1000 + this.tiles[y][x];
             Random rand = new Random();
@@ -782,7 +787,8 @@ public class OverworldModel extends BaseModel {
                 LEFT JOIN area a
                 ON a.area_id = c.area_id
                 AND a.map_id = c.map_id
-                WHERE c.map_id = 
+                WHERE COALESCE(c.conversation_id, 0) < 1000 
+                AND c.map_id = 
                 """ + this.mapId;
 
             ResultSet rs = db.runQuery(query);

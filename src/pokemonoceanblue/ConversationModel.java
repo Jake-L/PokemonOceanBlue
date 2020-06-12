@@ -150,7 +150,7 @@ public class ConversationModel
      */
     public String[] getOptions()
     {
-        if (this.events.size() > 0 && this.events.get(0).options.length > 0)
+        if (this.events.size() > 0 && this.events.get(0).options != null && this.events.get(0).options.length > 0)
         {
             return this.events.get(0).options;
         }
@@ -495,7 +495,7 @@ public class ConversationModel
     {
         public int conversationEventId;
         public final String text;
-        public String[] options = new String[0];
+        public String[] options;
         public int[] optionOutcome = new int[0];
         public int battleId = -1;
         public final boolean autoAdvance;
@@ -504,7 +504,7 @@ public class ConversationModel
         public final int newConversationId;
         public int giftPokemonId = -1;
         public int giftPokemonLevel = -1;
-        private int optionId;
+        private int optionId = -1;
         public final String mugshotBackground;
         public final String mugshotCharacter;
         public int musicId;

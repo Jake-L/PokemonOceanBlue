@@ -1,6 +1,8 @@
 package test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
@@ -85,6 +87,43 @@ public class ConversationTests {
         assertTrue(healTeam);
 
         // finish conversation
+        continueConversation(conversationModel, 2);
+        assertTrue(conversationModel.isComplete());
+    }
+
+    @Test
+    public void testMovementAndBattle() {
+        CharacterModel playerModel = new CharacterModel("red", 9, 6, -1, -1, 0, Direction.DOWN);
+        CharacterModel characterModel = new CharacterModel("campBoy", 6, 6, 4, 0, 0, Direction.DOWN);
+        ConversationModel conversationModel = new ConversationModel(4, playerModel, characterModel, true);
+
+        // check for correct default values
+        assertNull(conversationModel.getOptions());
+        assertEquals(-1, conversationModel.getBattleId());
+        assertFalse(conversationModel.isComplete());
+
+        // check for correct movement values
+        assertEquals(0, conversationModel.getMovementCharacterId());
+        assertEquals(1, conversationModel.getMovementDx());
+        assertEquals(0, conversationModel.getMovementDy());
+        conversationModel.setCharacterMoved();    
+        updateConversation(conversationModel, 16);
+
+        assertEquals(0, conversationModel.getMovementCharacterId());
+        assertEquals(1, conversationModel.getMovementDx());
+        assertEquals(0, conversationModel.getMovementDy());
+        conversationModel.setCharacterMoved(); 
+        updateConversation(conversationModel, 16);
+        conversationModel.nextEvent();
+
+        // handle the battle
+        updateConversation(conversationModel, 16);
+        assertEquals(0, conversationModel.getBattleId());
+        conversationModel.setBattleStarted();
+        conversationModel.setBattleComplete();
+
+        // finish conversation
+        assertEquals(-1, conversationModel.getBattleId());
         continueConversation(conversationModel, 2);
         assertTrue(conversationModel.isComplete());
     }
