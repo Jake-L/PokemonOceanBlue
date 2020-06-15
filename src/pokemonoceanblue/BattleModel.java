@@ -332,7 +332,7 @@ public class BattleModel extends BaseModel
     {
         if (this.ranNum.nextInt(101) <= move.effectChance && this.team[defender][this.currentPokemon[defender]].statusEffect == 0)
         {
-            String[] statusEffectMessages = {" was paralyzed."," fell asleep."," was frozen solid."," was burned."," was poisoned."," was badly poisoned."," became confused."," was cursed."};
+            String[] statusEffectMessages = {" was paralyzed."," fell asleep."," was frozen solid."," was burned."," was poisoned."," was badly poisoned."," was cursed."," became confused."};
             if (move.ailmentId < 9)
             {
                 BattleEvent event = new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + statusEffectMessages[move.ailmentId - 1], 
@@ -384,7 +384,7 @@ public class BattleModel extends BaseModel
             event = new BattleEvent(attackingPokemon.name + " flinched!", attacker, attacker, null);
         }
         //check if attacker is confused, if so use random move
-        else if (attackingPokemon.statusEffect == 7)
+        else if (attackingPokemon.statusEffect == 8)
         {
             //25% chance of snapping out of confusion
             if (this.ranNum.nextInt(101) < 26)
@@ -411,35 +411,27 @@ public class BattleModel extends BaseModel
      */
     private void endOfTurnEffects()
     {
-        String[] statusEffectMessages = {" is hurt by burn."," is hurt by poison."};
+        String[] statusEffectMessages = {" is hurt by burn."," is hurt by poison."," is badly hurt by poison."," is hurt by the curse."};
         for (int i = 0; i < 2; i++)
         {
-            if (this.team[i][this.currentPokemon[i]].statusEffect > 3)
+            byte statusEffect = this.team[i][this.currentPokemon[i]].statusEffect;
+            if (statusEffect > 3 && statusEffect < 8)
             {
-                BattleEvent event;
-                if (this.team[i][this.currentPokemon[i]].statusEffect < 6)
-                {
-                    event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + statusEffectMessages[this.team[i][this.currentPokemon[i]].statusEffect - 4],
-                        (int)Math.ceil(this.team[i][this.currentPokemon[i]].stats[0] / 8.0),
-                        i, i, null, i, null);
-                    this.events.add(event);
-                }
+                BattleEvent event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + statusEffectMessages[this.team[i][this.currentPokemon[i]].statusEffect - 4],
+                    (int)Math.ceil(this.team[i][this.currentPokemon[i]].stats[0] / 8.0),
+                    i, i, null, i, null);
+
                 //badly poisoned
-                else if (this.team[i][this.currentPokemon[i]].statusEffect == 6)
+                if (this.team[i][this.currentPokemon[i]].statusEffect == 6)
                 {
-                    event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + " is badly hurt by poison.",
-                        (int)Math.ceil((this.team[i][this.currentPokemon[i]].stats[0] * (1 + this.statusEffectCounter[i][this.currentPokemon[i]])) / 8.0),
-                        i, i, null, i, null);
-                    this.events.add(event);
+                    event.damage = (int)Math.ceil((this.team[i][this.currentPokemon[i]].stats[0] * (1 + this.statusEffectCounter[i][this.currentPokemon[i]])) / 8.0);
                 }
                 //curse
-                else if (this.team[i][this.currentPokemon[i]].statusEffect == 8)
+                else if (this.team[i][this.currentPokemon[i]].statusEffect == 7)
                 {
-                    event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + " is hurt by the curse.",
-                    (int)Math.ceil(this.team[i][this.currentPokemon[i]].stats[0] / 4.0),
-                        i, i, null, i, null);
-                    this.events.add(event);
+                    event.damage = (int)Math.ceil(this.team[i][this.currentPokemon[i]].stats[0] / 4.0);
                 }
+                this.events.add(event);
             }
         }
     }
@@ -475,7 +467,7 @@ public class BattleModel extends BaseModel
     /** 
      * creates event for the stat changes applied by a move used
      * @param attacker the attacking team
-     * @param move the move that inflicts the heal or recoil
+     * @param move the move that inflicts the stat change
      */
     private void statChanges(int attacker, MoveModel move)
     {
@@ -498,20 +490,13 @@ public class BattleModel extends BaseModel
                 //check if stat cannot be changed any further
                 if ((this.statChanges[target][statId] == 6 && statChange > 0) || (this.statChanges[target][statId] == -6 && statChange < 0))
                 {
-                    event = new BattleEvent(this.team[target][this.currentPokemon[target]].name + "'s " + 
-                        changedStat[statId] + " cannot be " + 
-                        (this.statChanges[target][statId] < 0 ? "increased" : "decreased") + " any further.",
-                        target,
-                        target,
-                        null);
+                    event = new BattleEvent(this.team[target][this.currentPokemon[target]].name + "'s " + changedStat[statId] + " cannot be " +
+                        (this.statChanges[target][statId] < 0 ? "increased" : "decreased") + " any further.", target, target, null);
                 }
                 else
                 {
                     event = new BattleEvent(this.team[target][this.currentPokemon[target]].name + "'s " +
-                        changedStat[statId] + statChangeMessages[statChange + 2],
-                        target,
-                        target,
-                        null);
+                        changedStat[statId] + statChangeMessages[statChange + 2], target, target, null);
                     //apply stat change with limits of |6|
                     this.statChanges[target][statId] = (statChange / Math.abs(statChange)) * Math.min(6, Math.abs(statChange + this.statChanges[target][statId]));
                 }
@@ -532,7 +517,7 @@ public class BattleModel extends BaseModel
     }
     
     /** 
-     * @param moveIndex the current move of the attacker
+     * @param move the current move of the attacker
      * @param attacker the attacking team
      * @param defender the defending team
      * @return damage
@@ -1233,8 +1218,11 @@ public class BattleModel extends BaseModel
         public MoveModel newMove;
 
         /** 
-         * Constructor
+         * Base Constructor
          * @param text the text that will be displayed
+         * @param attacker the team performing the event
+         * @param removalCondition determines whether the event should be removed when a pokemon faints
+         * @param sound the file name of sound effect to be played when the event occurs
          */
         public BattleEvent(String text, int attacker, int removalCondition, String sound)
         {
@@ -1246,10 +1234,8 @@ public class BattleModel extends BaseModel
 
         /** 
          * Constructor for status effects inflicted
-         * @param text the text that will be displayed
-         * @param damage the damage that will be taken by target
-         * @param target the pokemon that will recieve the damage
-         * @param attacker the team performing event
+         * @param statusEffect the status effect that will be applied
+         * @param target the pokemon that will recieve the status effect
          */
         public BattleEvent(String text, int statusEffect, int target, int removalCondition, String sound)
         {
@@ -1260,10 +1246,9 @@ public class BattleModel extends BaseModel
 
         /** 
          * Constructor for moves used
-         * @param text the text that will be displayed
          * @param damage the damage that will be taken by target
          * @param target the pokemon that will recieve the damage
-         * @param attacker the team performing event
+         * @param move the move that inflicts the damage (null if damage is not applied by a move)
          */
         public BattleEvent(String text, int damage, int target, int attacker, MoveModel move, int removalCondition, String sound)
         {
@@ -1275,22 +1260,18 @@ public class BattleModel extends BaseModel
 
         /** 
          * Constructor for xp gained by the players pokemon
-         * @param text the text that will be displayed
          * @param xp the amount of xp earned
-         * @param attacker the team performing event
          */
-
         public BattleEvent(String text, int xp, int attacker, int removalCondition)
         {
             this(text, attacker, removalCondition, null);
             this.xp = xp;
         }
+
         /** 
          * Constructor for using an item or changing pokemon
-         * @param text the text that will be displayed
          * @param index is the index of the item or pokemon used
          * @param isPokemon determines whether index refers to item or pokemon
-         * @param attacker the team performing event
          */
         public BattleEvent(String text, int index, boolean isPokemon, int attacker, int removalCondition, String sound)
         {
@@ -1309,11 +1290,8 @@ public class BattleModel extends BaseModel
 
         /** 
          * Constructor for learning new Moves
-         * @param text the text that will be displayed
          * @param target the pokemon learning the new move
-         * @param removealCondition the pokemon learning the new move
          * @param newMove the move the pokemon wants to learn
-         * @param sound file name of sound effect to be played
          */
         public BattleEvent(String text, int target, int removalCondition, MoveModel newMove, String sound)
         {
