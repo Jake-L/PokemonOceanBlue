@@ -80,7 +80,7 @@ public class OverworldModel extends BaseModel {
         character.setOverworldModel(this);
         this.cpuModel.add(character);
         
-        this.conversationTrigger.add(new ConversationTriggerModel(character.conversationId, character, 6, 6, -1, true, false));
+        this.conversationTrigger.add(new ConversationTriggerModel(character.conversationId, character, 7, 6, -1, true, false));
         this.checkAutoTriggers(playerModel.getX(), playerModel.getY());
     }
 
@@ -214,7 +214,7 @@ public class OverworldModel extends BaseModel {
             }
 
             // determine if a character needs to be moved
-            else if (characterId > -1)
+            else if (characterId > -2)
             {
                 CharacterModel character = this.getCharacterModel(characterId);
             

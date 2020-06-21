@@ -21,3 +21,4 @@ map_id,area_id,x,y,conversation_id,character_id,clear_conversation_id,auto_trigg
 32,0,3,4,43,17,-1,0,0,Pokemart
 32,0,2,5,43,40,-1,0,0,Pokemart
 25,0,2,3,9998,-1,-1,0,0,Day care
+1000,0,5,9,44,-1,-1,1,0,Cerulean Tournament

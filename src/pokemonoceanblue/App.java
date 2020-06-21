@@ -503,7 +503,7 @@ public class App extends JFrame implements KeyListener
                         if (this.tournamentModel.getCharacter() == null)
                         {
                             // player won tournament
-                            this.setMap(this.overworldModel.mapId + 2, 6, 3);
+                            this.setMap(this.overworldModel.mapId + 2, 4, 5);
                             this.tournamentModel = null;
                         }
                         else
