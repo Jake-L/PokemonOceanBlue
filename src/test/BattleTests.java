@@ -24,7 +24,7 @@ public class BattleTests {
         enemyTeam[0] = new PokemonModel(1, 1, false);
         // make sure Pikachu knows thunder wave
         assertEquals("THUNDER WAVE", team[0].moves[3].name);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // run a few loops to make sure thunder wave lands
@@ -55,7 +55,7 @@ public class BattleTests {
         enemyTeam[0] = new PokemonModel(129, 1, false);
         // make sure whiscash knows fissure
         assertEquals("FISSURE", team[0].moves[0].name);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // run until fissure lands
@@ -97,7 +97,7 @@ public class BattleTests {
         enemyTeam[0] = new PokemonModel(129, 1, false);
         // make sure rattata knows double edge
         assertEquals("DOUBLE-EDGE", team[0].moves[0].name);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // run through a sequence of battle
@@ -126,7 +126,7 @@ public class BattleTests {
         // make sure bulbasaur knows tackle and gastly only knows swords dance 
         assertEquals("TACKLE", team[0].moves[0].name);
         enemyTeam[0].moves[0] = new MoveModel(14);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // run through a sequence of battle
@@ -153,7 +153,7 @@ public class BattleTests {
         enemyTeam[0] = new PokemonModel(1, 1, false);
         // give crobat fakeout
         team[0].moves[0] = new MoveModel(252);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // run through a sequence of battle
@@ -186,7 +186,7 @@ public class BattleTests {
         team[0].moves[1] = new MoveModel(33);
         team[0].moves[2] = new MoveModel(33);
         team[0].moves[3] = new MoveModel(33);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // run a few loops to check that a random attack is used
@@ -229,7 +229,7 @@ public class BattleTests {
         enemyTeam[1] = new PokemonModel(2, 1, false);
         // make sure Pikachu knows discharge
         assertEquals("DISCHARGE", team[0].moves[2].name);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // make sure first Pokemon is sent out
@@ -261,7 +261,7 @@ public class BattleTests {
         // create the battle
         PokemonModel[] enemyTeam = new PokemonModel[1];
         enemyTeam[0] = new PokemonModel(1, 1, false);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
 
@@ -281,7 +281,7 @@ public class BattleTests {
         enemyTeam[0] = new PokemonModel(129, 1, false);
         // make sure metapod knows harden
         assertEquals("HARDEN", team[0].moves[0].name);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // run a few loops to check that metapods defense changes
@@ -320,7 +320,7 @@ public class BattleTests {
         team[0].moves = new MoveModel[2];
         team[0].moves[0] = new MoveModel(147);
         team[0].moves[1] = new MoveModel(33);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         //put lvl 100 asleep
@@ -369,7 +369,7 @@ public class BattleTests {
         team[0].moves[0] = new MoveModel(104);
         assertEquals("DOUBLE TEAM", team[0].moves[0].name);
         enemyTeam[0].moves[0] = new MoveModel(132);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // run a few loops to check that metapods defense changes
@@ -416,7 +416,7 @@ public class BattleTests {
         team[0].moves[1] = new MoveModel(150);
         enemyTeam[0].moves = new MoveModel[1];
         enemyTeam[0].moves[0] = new MoveModel(150);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         assertEquals(0, battleModel.events.size());

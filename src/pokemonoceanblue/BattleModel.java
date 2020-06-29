@@ -36,13 +36,14 @@ public class BattleModel extends BaseModel
     private boolean isPlayerDefeated;
     public int musicId;
     public int badgeIndex = -1;
+    public byte weather;
 
     /** 
      * Constructor
      * @param opponentTeam the opposing trainers pokemon team
      * @param playerTeam the players pokemon team
      */
-    public BattleModel(PokemonModel[] opponentTeam, PokemonModel[] playerTeam, App app)
+    public BattleModel(PokemonModel[] opponentTeam, PokemonModel[] playerTeam, App app, byte weather)
     {
         this.team[0] = playerTeam;
         this.team[1] = opponentTeam;
@@ -51,7 +52,7 @@ public class BattleModel extends BaseModel
         this.initializeBattle();
     }
 
-    public BattleModel(PokemonModel[] playerTeam, int battleId, App app, int enemyScalingFactor)
+    public BattleModel(PokemonModel[] playerTeam, int battleId, App app, int enemyScalingFactor, byte weather)
     {
         this.team[0] = playerTeam;
         this.loadTeam(battleId, enemyScalingFactor);
@@ -505,6 +506,27 @@ public class BattleModel extends BaseModel
         }
     }
 
+    private void moveEffect(MoveModel move, int attacker)
+    {
+        int effectId = move.moveEffect.effectId;
+        PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
+
+        if (effectId < 141 && effectId > 136)
+        {
+            BattleEvent event;
+            if (this.weather == effectId - 136)
+            {
+                event = new BattleEvent("But it failed.", attacker, attacker, null);
+            }
+            else
+            {
+                String[] weatherMessages = {"the sunlight to turn harsh.","rain to fall.","a sandstorm.","hail to fall."};
+                event = new BattleEvent(attackingPokemon.name + " caused " + weatherMessages[effectId - 137], attacker, attacker, (byte)(effectId - 136));
+            }
+            this.events.add(event);
+        }
+    }
+
     private int getAccuracy(int attacker, int moveAccuracy)
     {
         int defender = (attacker + 1) % 2;
@@ -888,6 +910,10 @@ public class BattleModel extends BaseModel
             this.effectivenessMessage(this.modifier[attacker], attacker);
             if (!this.unableToMove[attacker] && this.events.get(0).move != null && !this.attackMissed[attacker])
             {
+                if (this.events.get(0).move.moveEffect != null && this.events.get(0).move.moveEffect.effectId > -1)
+                {
+                    this.moveEffect(this.events.get(0).move, attacker);
+                }
                 if (this.attackEvent[(attacker + 1) % 2] != null && ranNum.nextInt(101) <= this.events.get(0).move.flinchChance)
                 {
                     this.willFlinch[(attacker + 1) % 2] = true;
@@ -1041,6 +1067,11 @@ public class BattleModel extends BaseModel
             else if (this.events.get(0).newMove != null)
             {
                 this.app.openSummaryNewMove(this.currentPokemon[0], this.events.get(0).newMove);
+            }
+            //change weather
+            else if (this.events.get(0).newWeatherId > -1)
+            {
+                this.weather = this.events.get(0).newWeatherId;
             }
 
             //check if player should blackout
@@ -1216,6 +1247,7 @@ public class BattleModel extends BaseModel
         public MoveModel move;
         public int removalCondition;
         public MoveModel newMove;
+        public byte newWeatherId = -1;
 
         /** 
          * Base Constructor
@@ -1297,6 +1329,16 @@ public class BattleModel extends BaseModel
         {
             this(text, target, removalCondition, sound);
             this.newMove = newMove;
+        }
+
+        /**
+         * Constructor for changing the weather
+         * @param newWeatherId
+         */
+        public BattleEvent(String text, int attacker, int removalCondition, byte newWeatherId)
+        {
+            this(text, attacker, removalCondition, null);
+            this.newWeatherId = newWeatherId;
         }
     }
 

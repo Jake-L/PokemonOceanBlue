@@ -32,6 +32,7 @@ public class OverworldModel extends BaseModel {
     public List<ItemModel> itemOptions = new ArrayList<ItemModel>(); 
     public InventoryModel inventoryModel;
     public DayCareModel dayCareModel;
+    public byte weather;
     
     /** 
      * @param mapId unique identifier for the current map
