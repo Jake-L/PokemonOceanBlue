@@ -408,17 +408,18 @@ public class BattleModel extends BaseModel
     }
 
     /** 
-     * checks if either pokemon should suffer an end of turn effect (poison, leech seed, burn, etc.)
+     * checks if either pokemon should suffer an end of turn effect
      */
     private void endOfTurnEffects()
     {
-        String[] statusEffectMessages = {" is hurt by burn."," is hurt by poison."," is badly hurt by poison."," is hurt by the curse."};
+        String[] effectMessages = {" is hurt by burn."," is hurt by poison."," is badly hurt by poison."," is hurt by the curse.","sandstorm.","hail."};
+        //check for status effect end of turn effects
         for (int i = 0; i < 2; i++)
         {
             byte statusEffect = this.team[i][this.currentPokemon[i]].statusEffect;
             if (statusEffect > 3 && statusEffect < 8)
             {
-                BattleEvent event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + statusEffectMessages[this.team[i][this.currentPokemon[i]].statusEffect - 4],
+                BattleEvent event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + effectMessages[this.team[i][this.currentPokemon[i]].statusEffect - 4],
                     (int)Math.ceil(this.team[i][this.currentPokemon[i]].stats[0] / 8.0),
                     i, i, null, i, null);
 
@@ -434,6 +435,28 @@ public class BattleModel extends BaseModel
                 }
                 this.events.add(event);
             }
+        }
+        //check for end of turn damage from hail/sandstorm
+        if (this.weather > 2)
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                PokemonModel pokemon = this.team[i][this.currentPokemon[i]];
+                boolean isImmune = false;
+                for (int j = 0; j < pokemon.types.length; j++)
+                {
+                    if ((this.weather == 3 && (pokemon.types[j] == 9 || pokemon.types[j] == 6 || pokemon.types[j] == 5)) || (this.weather == 4 && pokemon.types[j] == 15))
+                    {
+                        isImmune = true;
+                    }
+                }
+                if (!isImmune)
+                {
+                    BattleEvent event = new BattleEvent(pokemon.name + " is hurt by the " + effectMessages[this.weather + 1],
+                        (int)Math.ceil(pokemon.stats[0] / 16.0), i, i, null, i, null);
+                    this.events.add(event);
+                }
+            }    
         }
     }
 
@@ -903,7 +926,7 @@ public class BattleModel extends BaseModel
         }
 
         //calculate damage for an upcoming attack event and add second attack event if applicable
-        else if (this.actionCounter == 60 && this.events.size() > 0 && this.events.get(0).damage > -1 && this.events.get(0).move != null && !this.moveProcessed[this.events.get(0).attacker])
+        else if (this.actionCounter == 60 && this.events.size() > 0 && this.events.get(0).damage == 1 && this.events.get(0).move != null && !this.moveProcessed[this.events.get(0).attacker])
         {
             int attacker = this.events.get(0).attacker;
             this.canAttack(attacker);
@@ -918,11 +941,11 @@ public class BattleModel extends BaseModel
                 {
                     this.willFlinch[(attacker + 1) % 2] = true;
                 }
-                else if (this.events.get(0).damage * this.events.get(0).move.recoil != 0)
+                if (this.events.get(0).move.recoil != 0)
                 {
                     this.recoil(attacker, this.events.get(0).move);
                 }
-                else if (this.events.get(0).move.ailmentId > 0)
+                if (this.events.get(0).move.ailmentId > 0)
                 {
                     this.statusEffect(attacker, (attacker + 1) % 2, this.events.get(0).move);
                 }
@@ -1016,7 +1039,7 @@ public class BattleModel extends BaseModel
                 this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].statusEffect = (byte)this.events.get(0).statusEffect;
                 this.statusEffectCounter[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]] = 0;
             }
-            else if (this.events.get(0).damage > -1)
+            else if (this.events.get(0).damage > 0)
             {
                 this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP -= 
                     Math.min((this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP), 
@@ -1024,7 +1047,7 @@ public class BattleModel extends BaseModel
 
                 this.checkFainted();
             }
-            else if (this.events.get(0).damage < 0 && this.events.get(0).target != -1 && this.events.get(0).attacker == this.events.get(0).target)
+            else if (this.events.get(0).damage < 0)
             {
                 // self-healing
                 this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP = 
@@ -1236,7 +1259,7 @@ public class BattleModel extends BaseModel
     class BattleEvent
     {
         public final String text;
-        public int damage = -1;
+        public int damage = 0;
         public int target = -1;
         public int newPokemonIndex = -2;
         public int itemId = -1;

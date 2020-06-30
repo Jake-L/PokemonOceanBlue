@@ -122,6 +122,7 @@ public class App extends JFrame implements KeyListener
         this.partyModel.addPokemon(0, new PokemonModel(3, 30, false));
         this.partyModel.addPokemon(0, new PokemonModel(4, 15, false));
         this.partyModel.addPokemon(0, new PokemonModel(150, 99, false));
+        this.partyModel.team.get(0).moves[0] = new MoveModel(258);
         this.inventoryModel = new InventoryModel();
         this.pokedexModel = new PokedexModel();
         this.pokemonStorageModel = new PokemonStorageModel();
@@ -163,7 +164,7 @@ public class App extends JFrame implements KeyListener
             //     ex.printStackTrace();
             //     this.setMap(1, 3, 3);
             // } 
-            this.setMap(17, 7, 7);
+            this.setMap(0, 15, 7);
         }
     }
 
@@ -174,7 +175,7 @@ public class App extends JFrame implements KeyListener
 
     public void createTrainerBattle(int battleId)
     {
-        battleModel = new BattleModel(partyModel.getTeamArray(), battleId, this, this.enemyScalingFactor);
+        battleModel = new BattleModel(partyModel.getTeamArray(), battleId, this, this.enemyScalingFactor, overworldModel.weather);
         this.playSong(battleModel.musicId, true);
         BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
         viewManager.setView(battleView);
@@ -198,7 +199,7 @@ public class App extends JFrame implements KeyListener
         team[0] = new PokemonModel(pokemonId, level + Math.min(this.enemyScalingFactor, 50), shiny);
 
         // create the battle
-        battleModel = new BattleModel(team, partyModel.getTeamArray(), this);
+        battleModel = new BattleModel(team, partyModel.getTeamArray(), this, overworldModel.weather);
         BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
         viewManager.setView(battleView);
         battleController = new BaseController(battleModel);
