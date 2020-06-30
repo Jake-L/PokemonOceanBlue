@@ -630,12 +630,19 @@ public class BattleModel extends BaseModel
                 crit = 1.5f;                        
                 this.isCrit[attacker] = true;
             }
+
+            double weatherMod = 1.0;
+            //check if weather conditions will affect damage (fire and water type moves in rain or sunlight)
+            if ((this.weather == 2 || this.weather == 1) && (move.typeId == 10 || move.typeId == 11))
+            {
+                weatherMod = ((this.weather == 2 && move.typeId == 10) || (this.weather == 1 && move.typeId == 11) ? 0.5 : 1.5);
+            }
             return (int)Math.ceil((
-                        (attackingPokemon.level * 2.0 / 5.0 + 2.0) 
+                        (attackingPokemon.level * 2.0 / 5.0 + 2.0)
                         * (move.power) 
                         * (attackingPokemon.getStat(attack_stat, this.statChanges[attacker][attack_stat]) * 1.0
                         / defendingPokemon.getStat(defense_stat, this.statChanges[defender][defense_stat])) / 50 + 2) 
-                    * this.modifier[attacker] * stab * crit);
+                    * this.modifier[attacker] * stab * crit * weatherMod);
         }
 
         else
