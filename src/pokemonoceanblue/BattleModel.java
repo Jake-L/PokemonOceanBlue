@@ -6,12 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import pokemonoceanblue.MoveModel.MoveEffect;
+
 public class BattleModel extends BaseModel
 {
     public PokemonModel[][] team = new PokemonModel[2][];
     public int[] currentPokemon = new int[2];
     public String[] battleOptions;
     public List<BattleEvent> events = new ArrayList<BattleEvent>();
+    private List<MultiTurnEffect> multiTurnEffects = new ArrayList<MultiTurnEffect>();
     public Random ranNum = new Random();
     private App app;
     private float[][] typeEffectiveness = new float[19][19];
@@ -438,6 +441,29 @@ public class BattleModel extends BaseModel
                 this.events.add(event);
             }
         }
+        //check for multiTurnEffects
+        if (this.multiTurnEffects.size() > 0)
+        {
+            int i = 0;
+            while (i < this.multiTurnEffects.size())
+            {
+                MultiTurnEffect effect = this.multiTurnEffects.get(i);
+                if (((effect.counter < effect.duration && effect.effectTimingId == 0) || effect.counter == effect.duration) && effect.damage > 0)
+                {
+                    BattleEvent event = new BattleEvent(effect.text, effect.damage, effect.target, effect.attacker, null, effect.target, null);
+                    this.events.add(event);
+                }
+                this.multiTurnEffects.get(i).counter++;
+                if (effect.counter > effect.duration)
+                {
+                    this.multiTurnEffects.remove(i);
+                }
+                else
+                {
+                    i++;
+                }
+            }
+        }
         //check for end of turn damage from hail/sandstorm
         if (this.weather > 2)
         {
@@ -547,7 +573,7 @@ public class BattleModel extends BaseModel
     {
         int effectId = move.moveEffect.effectId;
         PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
-
+        //effects that change the weather
         if (effectId < 141 && effectId > 136)
         {
             BattleEvent event;
@@ -561,6 +587,15 @@ public class BattleModel extends BaseModel
                 event = new BattleEvent(attackingPokemon.name + " caused " + weatherMessages[effectId - 137], attacker, attacker, (byte)(effectId - 136));
             }
             this.events.add(event);
+        }
+        //effects that trap opponent, dealing damage each turn
+        else if (effectId == 43)
+        {
+            BattleEvent event = new BattleEvent(this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]].name + " is trapped in a " + move.name + "!",
+                attacker, (attacker + 1) % 2, null);
+            this.events.add(event);
+            MultiTurnEffect effect = new MultiTurnEffect(move, move.moveEffect, attacker);
+            this.multiTurnEffects.add(effect);
         }
     }
 
@@ -1392,19 +1427,32 @@ public class BattleModel extends BaseModel
         }
     }
 
-    // class MultiTurnEffect
-    // {
-    //     int effectId;
-    //     int attacker;
-    //     int target;
-    //     int duration;
-    //     int damage;
-    //     int healing;
-    //     byte timeEffectOccurs;
+    class MultiTurnEffect
+    {
+        String text;
+        int effectId;
+        int attacker;
+        int target;
+        int duration;
+        int damage;
+        int healing;
+        int counter = 0;
+        //if 0 then effect occurs throughout duration, if 1 effect occurs at end of duration
+        byte effectTimingId;
 
-    //     public MultiTurnEffect(int effectId)
-    //     {
-
-    //     }
-    // }
+        public MultiTurnEffect(MoveModel move, MoveEffect moveEffect, int attacker)
+        {
+            this.effectId = moveEffect.effectId;
+            this.attacker = attacker;
+            this.target = moveEffect.targetId;
+            this.duration = ranNum.nextInt(moveEffect.maxCounter - moveEffect.minCounter + 1) + moveEffect.minCounter;
+            if (moveEffect.effectId == 43)
+            {
+                this.text = team[target][currentPokemon[target]].name + " is damaged by " + move.name + ".";
+                this.damage = (int)Math.ceil(team[target][currentPokemon[target]].stats[0] / 16.0);
+                this.healing = 0;
+                this.effectTimingId = 0;
+            }
+        }
+    }
 }    
