@@ -2,7 +2,6 @@ package pokemonoceanblue;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.sql.*;
 import java.util.List;
 

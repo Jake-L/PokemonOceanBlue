@@ -1218,6 +1218,12 @@ public class BattleModel extends BaseModel
                 this.trainerName = rs.getString(3);
                 this.trainerSpriteName = rs.getString(4);
                 this.musicId = rs.getInt(5);
+
+                // set the default trainer battle music
+                if (this.musicId == -1)
+                {
+                    this.musicId = 101;
+                }
             }       
             
             this.team[1] = new PokemonModel[loadTeam.size()];

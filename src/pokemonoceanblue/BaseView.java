@@ -25,8 +25,11 @@ abstract class BaseView {
     protected Image progressBarFill;
 
     // sprites used by many subclasses
-    protected Image arrowSprite;
+    protected static Image arrowSprite;
+    protected static Image[] sunnySprite = new Image[3];
     protected static Image[] rainSprite = new Image[6];
+    protected static Image[] hailSprite = new Image[5];
+    protected static Image sandstormSprite;
     protected static Image[] genderIcons = new Image[2];
     protected static Image[] typeSprites = new Image[18];
 
@@ -40,18 +43,10 @@ abstract class BaseView {
             textDisplayBox[i]  = ii.getImage();
         }
 
-        ii = new ImageIcon(this.getClass().getResource("/inventory/arrow.png"));
-        arrowSprite = ii.getImage();
-
-        for (int i = 0; i < rainSprite.length; i++)
-        {
-            ii = new ImageIcon(this.getClass().getResource("/battle/rain" + i + ".png"));
-            rainSprite[i]  = ii.getImage();
-        }
-
         // load sprites only once for all views
         if (itemSprite == null)
         {
+            // load item sprites
             itemSprite = new Image[150];
 
             for (int i = 0; i < 4; i++)
@@ -66,17 +61,45 @@ abstract class BaseView {
                 itemSprite[i]  = ii.getImage();
             } 
 
+            // load type sprites
             for (int i = 0; i < typeSprites.length; i++)
             {
                 ii = new ImageIcon(this.getClass().getResource("/menus/type" + i + ".png"));
                 typeSprites[i] = ii.getImage();
             }
 
+            // load gender icons
             for (int i = 0; i < genderIcons.length; i++)
-        {
-            ii = new ImageIcon(this.getClass().getResource("/menus/gender" + i + ".png"));
-            genderIcons[i] = ii.getImage();
-        }
+            {
+                ii = new ImageIcon(this.getClass().getResource("/menus/gender" + i + ".png"));
+                genderIcons[i] = ii.getImage();
+            }
+
+            // load arrow sprite
+            ii = new ImageIcon(this.getClass().getResource("/inventory/arrow.png"));
+            arrowSprite = ii.getImage();
+    
+            // load weather sprites
+            for (int i = 0; i < sunnySprite.length; i++)
+            {
+                ii = new ImageIcon(this.getClass().getResource("/battle/sunny" + i + ".png"));
+                sunnySprite[i]  = ii.getImage();
+            }
+    
+            for (int i = 0; i < rainSprite.length; i++)
+            {
+                ii = new ImageIcon(this.getClass().getResource("/battle/rain" + i + ".png"));
+                rainSprite[i]  = ii.getImage();
+            }
+    
+            for (int i = 0; i < hailSprite.length; i++)
+            {
+                ii = new ImageIcon(this.getClass().getResource("/battle/hail" + i + ".png"));
+                hailSprite[i]  = ii.getImage();
+            }
+    
+            ii = new ImageIcon(this.getClass().getResource("/battle/sandstorm.png"));
+            sandstormSprite  = ii.getImage(); 
         }
 
         ii = new ImageIcon(this.getClass().getResource("/menus/progressBar.png"));
@@ -339,25 +362,101 @@ abstract class BaseView {
         return image;
     }
 
-    protected void renderRain(Graphics g, JPanel canvas, int counter)
+    protected void renderSunny(Graphics g, JPanel canvas)
     {
+        int distance = 512;
+        float speed = 0.03f;
+        long input_x = (System.currentTimeMillis() / 8) % distance - (distance / 2);
+        g.drawImage(
+            sunnySprite[0],
+            width * 3 / 4 + (int)(Math.pow(speed * input_x, 2) * graphicsScaling),
+            (int)(Math.pow(speed * input_x, 2) * graphicsScaling),
+            sunnySprite[0].getWidth(null) * graphicsScaling,
+            sunnySprite[0].getHeight(null) * graphicsScaling,
+            canvas
+        );
+
+        // tint the screen yellow
+        g.setColor(new Color(1.0f, 1.0f, 0, 0.15f));
+        g.fillRect(0, 0, width, height);
+    }
+
+    protected void renderRain(Graphics g, JPanel canvas)
+    {
+        int rainCounterWidth = (int)Math.round(width / (60.0 * graphicsScaling));
+        int rainCounterHeight = (int)Math.round(height / (50.0 * graphicsScaling));
+        int counter = width / (20 * graphicsScaling);
+
         for (int i = 0; i < counter; i++)
         {
+            // pick the frame of the rain animation
             int factor = (int)(((System.currentTimeMillis() + (85 * i)) / 85) % 6);
+            // introduces the appearance of randomness into the location of the rain
             int adjust_factor = (int)(((System.currentTimeMillis() + 85 * i) / (85*6)) % 2);
             g.drawImage(
                 rainSprite[factor],
-                50 + 250 * (i % 8) + 150 * adjust_factor,
-                200 * (i % 5) + 20 * (i / 7) - 150 * adjust_factor,
+                (12 + 62 * (i % rainCounterWidth) + 37 * adjust_factor) * graphicsScaling,
+                (50 * (i % rainCounterHeight) + 5 * (i / 7) - 37 * adjust_factor) * graphicsScaling,
                 rainSprite[0].getWidth(null) * graphicsScaling,
                 rainSprite[0].getHeight(null) * graphicsScaling,
                 canvas
             );
         }
 
+        // tint the screen blue
         g.setColor(new Color(0, 0.25f, 0.5f, 0.25f));
         g.fillRect(0, 0, width, height);
-        
+    }
+
+    protected void renderHail(Graphics g, JPanel canvas)
+    {
+        int rainCounterWidth = (int)Math.round(width / (60.0 * graphicsScaling));
+        int rainCounterHeight = (int)Math.round(height / (50.0 * graphicsScaling));
+        int counter = width / (20 * graphicsScaling);
+
+        for (int i = 0; i < counter; i++)
+        {
+            // pick the frame of the rain animation
+            //int factor = (int)(((System.currentTimeMillis() + (300 * i)) / 300) % 3) + (i % 3);
+            int factor = (int)(((System.currentTimeMillis() / 300) % 3)) + 2 * (i % 2);
+            // introduces the appearance of randomness into the location of the rain
+            //int adjust_factor = (int)(((System.currentTimeMillis() + 85 * i) / (85*3)) % 2);
+            g.drawImage(
+                hailSprite[factor],
+                (int)(12 + 62 * (i % rainCounterWidth) + (System.currentTimeMillis() / 30) % 30) * graphicsScaling,
+                (int)(50 * (i % rainCounterHeight) + 5 * (i / 7) + (System.currentTimeMillis() / 30) % 30) * graphicsScaling,
+                hailSprite[factor].getWidth(null) * graphicsScaling,
+                hailSprite[factor].getHeight(null) * graphicsScaling,
+                canvas
+            );
+        }
+
+        // tint the screen a blueish white
+        g.setColor(new Color(0.5f, 0.5f, 1.0f, 0.25f));
+        g.fillRect(0, 0, width, height);
+    }
+
+    protected void renderSandstorm(Graphics g, JPanel canvas)
+    {
+        // render the moving sand animation
+        for (int i = -1; i <= width / (sandstormSprite.getWidth(null) * graphicsScaling); i++)
+        {
+            for (int j = -1; j <= height / (sandstormSprite.getHeight(null) * graphicsScaling); j++)
+            {
+                g.drawImage(
+                    sandstormSprite,
+                    (int)(i * sandstormSprite.getWidth(null) + (System.currentTimeMillis() / 8) % sandstormSprite.getWidth(null)) * graphicsScaling,
+                    (int)((j * sandstormSprite.getHeight(null) + ((System.currentTimeMillis() % 4096) / ((float)sandstormSprite.getHeight(null))) % sandstormSprite.getHeight(null)) * graphicsScaling),
+                    sandstormSprite.getWidth(null) * graphicsScaling,
+                    sandstormSprite.getHeight(null) * graphicsScaling,
+                    canvas
+                );
+            }
+        }
+
+        // tint the screen brown
+        g.setColor(new Color(0.8f, 0.4f, 0, 0.25f));
+        g.fillRect(0, 0, width, height);
     }
 
     /**
