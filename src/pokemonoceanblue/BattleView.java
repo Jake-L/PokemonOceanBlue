@@ -165,12 +165,12 @@ public class BattleView extends BaseView {
 
         for (int i = 0; i < this.backgroundBase.length; i++)
         {
-            ii = new ImageIcon(this.getClass().getResource("/battle/base" + battleBackgroundId + "" + i + "" + model.getTimeOfDayId() + ".png"));
+            ii = new ImageIcon(this.getClass().getResource("/battle/base" + battleBackgroundId + "" + i + "" + Utils.getTimeOfDayId() + ".png"));
             this.backgroundBase[i]  = ii.getImage();
         }
         
         //loads background image
-        ii = new ImageIcon(this.getClass().getResource("/battle/background" + battleBackgroundId + "" + model.getTimeOfDayId() + ".png"));
+        ii = new ImageIcon(this.getClass().getResource("/battle/background" + battleBackgroundId + "" + Utils.getTimeOfDayId() + ".png"));
         this.background = ii.getImage();
     }
 
@@ -251,21 +251,7 @@ public class BattleView extends BaseView {
                 canvas);
         }
 
-        switch (this.model.weather)
-        {
-            case 1:
-                this.renderSunny(g, canvas);
-                break;
-            case 2:
-                this.renderRain(g, canvas);
-                break;
-            case 3:
-                this.renderSandstorm(g, canvas);
-                break;
-            case 4:
-                this.renderHail(g, canvas);
-                break;
-        }
+        this.renderWeather(this.model.weather, g, canvas);
 
         // set text colour back to black
         Color colour = new Color(0, 0, 0, 255);

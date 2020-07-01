@@ -286,7 +286,12 @@ public class OverworldView extends BaseView {
 
         if (this.model.mapId == 14)
         {
+            // make Viridian forest appear darker
             this.renderDarkness(g, canvas);
+        }
+        else
+        {
+            this.renderWeather(this.model.weather, g, canvas);
         }
         
         // display conversation text
@@ -356,8 +361,6 @@ public class OverworldView extends BaseView {
             g.setColor(new Color(0, 0, 0, (int)(255 * (1 - Math.abs((this.model.conversation.getCounter() - 8) / 8.0)))));
             g.fillRect(0, 0, width, height);
         }
-
-        //this.renderRain(g, canvas, 24);
 
         // display the current shop window
         if (this.model.itemOptions.size() > 0)

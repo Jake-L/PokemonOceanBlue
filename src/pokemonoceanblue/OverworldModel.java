@@ -54,6 +54,13 @@ public class OverworldModel extends BaseModel {
         this.loadAreas();
         this.checkArea(playerModel.getX(), playerModel.getY());
         this.checkAutoTriggers(playerModel.getX(), playerModel.getY());
+
+        if (this.tiles.length > 20 && this.mapId != 14)
+        {
+            // generate random weather when on a large map
+            // since most large maps are outside
+            this.weather = (byte)(new Random().nextInt(5));
+        }
     }
 
     /**
@@ -803,7 +810,7 @@ public class OverworldModel extends BaseModel {
                     rs.getInt("conversation_id"),
                     rs.getInt("character_id"),
                     rs.getInt("wander_range"),
-                    Direction.DOWN.getDirection(rs.getInt("direction"))
+                    Utils.getDirection(rs.getInt("direction"))
                 );
                 
                 currentModel.setOverworldModel(this);

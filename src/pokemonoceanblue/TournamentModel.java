@@ -40,7 +40,7 @@ public class TournamentModel {
                     rs.getInt("conversation_id"),
                     rs.getInt("character_id"),
                     rs.getInt("wander_range"),
-                    Direction.DOWN.getDirection(rs.getInt("direction"))
+                    Utils.getDirection(rs.getInt("direction"))
                 );
                 TournamentDataModel tournamentDataModel = new TournamentDataModel(characterModel, rs.getString("name"));
 

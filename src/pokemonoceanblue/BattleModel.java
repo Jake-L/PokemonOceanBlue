@@ -50,6 +50,7 @@ public class BattleModel extends BaseModel
         this.app = app;
         this.isWild = true;
         this.initializeBattle();
+        this.weather = weather;
     }
 
     public BattleModel(PokemonModel[] playerTeam, int battleId, App app, int enemyScalingFactor, byte weather)
@@ -59,6 +60,7 @@ public class BattleModel extends BaseModel
         this.app = app;
         this.isWild = false;
         this.initializeBattle();
+        this.weather = weather;
     }
 
     /**
@@ -549,7 +551,7 @@ public class BattleModel extends BaseModel
         if (effectId < 141 && effectId > 136)
         {
             BattleEvent event;
-            if (this.weather == effectId - 136 || (effectId == 137 && this.getTimeOfDayId() == 1))
+            if (this.weather == effectId - 136 || (effectId == 137 && Utils.getTimeOfDayId() == 1))
             {
                 event = new BattleEvent("But it failed.", attacker, attacker, null);
             }

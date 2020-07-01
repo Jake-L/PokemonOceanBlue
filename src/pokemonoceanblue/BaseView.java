@@ -29,6 +29,7 @@ abstract class BaseView {
     protected static Image[] sunnySprite = new Image[3];
     protected static Image[] rainSprite = new Image[6];
     protected static Image[] hailSprite = new Image[5];
+    protected static Image[] snowSprite = new Image[3];
     protected static Image sandstormSprite;
     protected static Image[] genderIcons = new Image[2];
     protected static Image[] typeSprites = new Image[18];
@@ -96,6 +97,12 @@ abstract class BaseView {
             {
                 ii = new ImageIcon(this.getClass().getResource("/battle/hail" + i + ".png"));
                 hailSprite[i]  = ii.getImage();
+            }
+
+            for (int i = 0; i < snowSprite.length; i++)
+            {
+                ii = new ImageIcon(this.getClass().getResource("/battle/snow" + i + ".png"));
+                snowSprite[i]  = ii.getImage();
             }
     
             ii = new ImageIcon(this.getClass().getResource("/battle/sandstorm.png"));
@@ -360,6 +367,25 @@ abstract class BaseView {
         }
 
         return image;
+    }
+
+    protected void renderWeather(int weatherId, Graphics g, JPanel canvas)
+    {
+        switch (weatherId)
+        {
+            case 1:
+                this.renderSunny(g, canvas);
+                break;
+            case 2:
+                this.renderRain(g, canvas);
+                break;
+            case 3:
+                this.renderSandstorm(g, canvas);
+                break;
+            case 4:
+                this.renderHail(g, canvas);
+                break;
+        }
     }
 
     protected void renderSunny(Graphics g, JPanel canvas)
