@@ -21,4 +21,9 @@ map_id,area_id,x,y,conversation_id,character_id,clear_conversation_id,auto_trigg
 32,0,3,4,43,17,-1,0,0,Pokemart
 32,0,2,5,43,40,-1,0,0,Pokemart
 25,0,2,3,9998,-1,-1,0,0,Day care
+34,0,6,14,46,42,-1,1,0,Gym Leader Misty
+35,0,5,3,17,17,-1,0,0,Nurse Joy
+35,0,9,2,9999,-1,-1,0,0,Pokemon Storage
+36,0,3,4,43,17,-1,0,0,Pokemart
+36,0,2,5,43,40,-1,0,0,Pokemart
 1000,0,5,9,44,-1,-1,1,0,Cerulean Tournament

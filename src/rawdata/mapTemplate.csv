@@ -19,7 +19,7 @@ map_id,map_template_id,overlay,comment
 17,17,1,pewter city
 18,15,0,
 19,15,0,
-20,20,0,
+20,20,0,Pewter gym
 21,7,0,Pewter pokemon center
 22,1,0,
 23,1,0,
@@ -29,6 +29,9 @@ map_id,map_template_id,overlay,comment
 31,31,0,viridian pokemart
 32,31,0,pewter pokemart
 33,33,0,
+34,34,0,Cerulean gym
+35,7,0,Cerulean pokemon center
+36,31,0,Cerulean pokemart
 1000,1000,0,Cerulean tournament battle room
 1001,1001,0,Cerulean tournament waiting room
 1002,1002,0,Cerulean tournament entrance

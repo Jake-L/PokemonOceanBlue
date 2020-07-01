@@ -14,3 +14,4 @@ map_id,area_id,name,min_x,max_x,min_y,max_y,music_id,battle_background_id
 33,1,Cerulean City,14,77,35,999,56,1
 33,2,Route 24,0,999,0,34,3,1
 33,3,Route 24,0,13,35,55,3,1
+34,0,Cerulean City Gym,0,20,0,20,23,2
