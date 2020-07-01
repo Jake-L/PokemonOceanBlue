@@ -472,6 +472,18 @@ public class BattleModel extends BaseModel
         if (move.power == 0)
         {
             damage = (int)(this.team[attacker][this.currentPokemon[attacker]].stats[0] * (move.recoil / 100.0));
+            //morning sun, moonlight, synthesis heal for 2/3 hp when sun is shining 1/2 hp in clear weather 1/4 in other weather
+            if (move.moveEffect != null && move.moveEffect.effectId == 141)
+            {
+                if (this.weather > 1)
+                {
+                    damage /= 2;
+                }
+                else if (this.weather == 1)
+                {
+                    damage = (int)(damage * 4.0 / 3.0);
+                }
+            }
         }
         else if (move.recoil > 0)
         {
@@ -537,7 +549,7 @@ public class BattleModel extends BaseModel
         if (effectId < 141 && effectId > 136)
         {
             BattleEvent event;
-            if (this.weather == effectId - 136)
+            if (this.weather == effectId - 136 || (effectId == 137 && this.getTimeOfDayId() == 1))
             {
                 event = new BattleEvent("But it failed.", attacker, attacker, null);
             }

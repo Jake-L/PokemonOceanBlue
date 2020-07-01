@@ -1,5 +1,7 @@
 package pokemonoceanblue;
 
+import java.util.Calendar;
+
 public class BaseModel {
     public int actionCounter;
     public int optionIndex;
@@ -171,5 +173,18 @@ public class BaseModel {
         String sound = this.soundEffect;
         this.soundEffect = null;
         return sound;
+    }
+
+    public byte getTimeOfDayId()
+    {
+        int hour =  Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if (hour <= 7 || hour > 19)
+        {
+            return 1;
+        }
+        else 
+        {
+            return 0;
+        }
     }
 }

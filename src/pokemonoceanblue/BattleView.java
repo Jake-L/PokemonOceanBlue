@@ -8,7 +8,6 @@ import javax.swing.JPanel;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.Calendar;
 import java.awt.AlphaComposite;
 import javax.imageio.ImageIO;
 import java.awt.Color;
@@ -164,25 +163,14 @@ public class BattleView extends BaseView {
             partyBorder[i]  = ii.getImage();
         }
 
-        // decide if it is day time or night time
-        byte timeOfDayCode;
-        int hour =  Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
-        if (hour <= 7 || hour > 19)
-        {
-            timeOfDayCode = 1;
-        }
-        else 
-        {
-            timeOfDayCode = 0;
-        }
         for (int i = 0; i < this.backgroundBase.length; i++)
         {
-            ii = new ImageIcon(this.getClass().getResource("/battle/base" + battleBackgroundId + "" + i + "" + timeOfDayCode + ".png"));
+            ii = new ImageIcon(this.getClass().getResource("/battle/base" + battleBackgroundId + "" + i + "" + model.getTimeOfDayId() + ".png"));
             this.backgroundBase[i]  = ii.getImage();
         }
         
         //loads background image
-        ii = new ImageIcon(this.getClass().getResource("/battle/background" + battleBackgroundId + "" + timeOfDayCode + ".png"));
+        ii = new ImageIcon(this.getClass().getResource("/battle/background" + battleBackgroundId + "" + model.getTimeOfDayId() + ".png"));
         this.background = ii.getImage();
     }
 
