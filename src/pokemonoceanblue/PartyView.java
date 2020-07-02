@@ -19,7 +19,7 @@ public class PartyView extends BaseView {
     private Image hpBar;
     private Image[] faintedPokemonWindows = new Image[3];
     private Image background;
-    private Image[] statusEffectImages = new Image[7];
+    private Image[] statusEffectImages = new Image[8];
     private Map<String, Image> pokemonIconSprite = new HashMap<String, Image>();
     private Map<String, Image> pokemonSprite = new HashMap<String, Image>();
     
