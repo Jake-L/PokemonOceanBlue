@@ -441,20 +441,31 @@ public class BattleModel extends BaseModel
                 this.events.add(event);
             }
         }
-        //check for multiTurnEffects
+        //check for multiTurnEffects by looping through list
         if (this.multiTurnEffects.size() > 0)
         {
             int i = 0;
             while (i < this.multiTurnEffects.size())
             {
                 MultiTurnEffect effect = this.multiTurnEffects.get(i);
-                if (((effect.counter < effect.duration && effect.effectTimingId == 0) || effect.counter == effect.duration) && effect.damage > 0)
+                //add damage/recoil event if applicable
+                if ((effect.counter < effect.duration && effect.effectTimingId == 0) || effect.counter == effect.duration || effect.duration == -1)
                 {
-                    BattleEvent event = new BattleEvent(effect.text, effect.damage, effect.target, effect.attacker, null, effect.target, null);
-                    this.events.add(event);
+                    if (effect.damage != 0)
+                    {
+                        BattleEvent event = new BattleEvent(effect.text, effect.damage, effect.target, effect.attacker, null, effect.target, null);
+                        this.events.add(event);
+                    }
+                    if (effect.recoil != 0)
+                    {
+                        BattleEvent event = new BattleEvent(effect.text, effect.recoil, effect.attacker, effect.attacker, null, effect.target, null);
+                        this.events.add(event);
+                    }
                 }
+                //increment effect counter
                 this.multiTurnEffects.get(i).counter++;
-                if (effect.counter > effect.duration)
+                //remove effects that have finished
+                if (effect.counter > effect.duration && effect.duration > -1)
                 {
                     this.multiTurnEffects.remove(i);
                 }
@@ -473,7 +484,8 @@ public class BattleModel extends BaseModel
                 boolean isImmune = false;
                 for (int j = 0; j < pokemon.types.length; j++)
                 {
-                    if ((this.weather == 3 && (pokemon.types[j] == 9 || pokemon.types[j] == 6 || pokemon.types[j] == 5)) || (this.weather == 4 && pokemon.types[j] == 15))
+                    if (pokemon.currentHP == 0 || (this.weather == 3 && (pokemon.types[j] == 9 || pokemon.types[j] == 6 || pokemon.types[j] == 5)) ||
+                        (this.weather == 4 && pokemon.types[j] == 15))
                     {
                         isImmune = true;
                     }
@@ -588,15 +600,49 @@ public class BattleModel extends BaseModel
             }
             this.events.add(event);
         }
-        //effects that trap opponent, dealing damage each turn
-        else if (effectId == 43)
+        //multiTurnEffects
+        else if (effectId == 43 || effectId == 85)
         {
-            BattleEvent event = new BattleEvent(this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]].name + " is trapped in a " + move.name + "!",
-                attacker, (attacker + 1) % 2, null);
-            this.events.add(event);
+            addMultiTurnEffect(move, effectId, attacker);
+        }
+    }
+
+    //checks if effect to be added is already in effect
+    private void addMultiTurnEffect(MoveModel move, int effectId, int attacker)
+    {
+        boolean willFail = false;
+        for (int i = 0; i < this.multiTurnEffects.size(); i++)
+        {
+            if (this.multiTurnEffects.get(i).effectId == effectId && this.multiTurnEffects.get(i).attacker == attacker)
+            {
+                willFail = true;
+            }
+        }
+        BattleEvent event;
+        if (willFail)
+        {
+            event = new BattleEvent("But it failed.", attacker, attacker, null);
+        }
+        else
+        {
             MultiTurnEffect effect = new MultiTurnEffect(move, move.moveEffect, attacker);
+            PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
+            PokemonModel defendingPokemon = this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]];
+            if (effectId == 43)
+            {
+                event = new BattleEvent(defendingPokemon.name + " is trapped in a " + move.name + "!", attacker, (attacker + 1) % 2, null);
+            }
+            else if (effectId == 85 && defendingPokemon.types[0] != 12 && defendingPokemon.types[defendingPokemon.types.length -1] != 12)
+            {
+                event = new BattleEvent(defendingPokemon.name + " is seeded.", attacker, (attacker + 1) % 2, null);
+            }
+            else
+            {
+                event = new BattleEvent("But it failed.", attacker, attacker, null);
+            }
             this.multiTurnEffects.add(effect);
         }
+        this.events.add(event);
     }
 
     private int getAccuracy(int attacker, int moveAccuracy)
@@ -873,57 +919,70 @@ public class BattleModel extends BaseModel
     /** 
      * checks if any pokemon have fainted after damage has been applied
      */ 
-    private void checkFainted()
+    private void checkFainted(int damagedTeamIndex)
     {
-        for (int j = 0; j < 2; j++)
+        if (this.team[damagedTeamIndex][this.currentPokemon[damagedTeamIndex]].currentHP == 0)
         {
-            if (this.team[j][this.currentPokemon[j]].currentHP == 0)
+            //remove all events performed by or affecting the fainted pokemon
+            boolean faintEventExists = false;
+            int i = 0;
+            while (i < this.events.size())
             {
-                //remove all events performed by or affecting the fainted pokemon
-                boolean faintEventExists = false;
-                int i = 0;
-                while (i < this.events.size())
+                if (this.events.get(i).newPokemonIndex == -1 && this.events.get(i).attacker == damagedTeamIndex)
                 {
-                    if (this.events.get(i).newPokemonIndex == -1 && this.events.get(i).attacker == j)
-                    {
-                        faintEventExists = true;
-                        break;
-                    }
-                    if (this.events.get(i).removalCondition == j)
-                    {
-                        this.events.remove(i);
-                    }
-                    else
-                    {
-                        i++;
-                    }
+                    faintEventExists = true;
+                    break;
                 }
-                if (!faintEventExists)
+                if (this.events.get(i).removalCondition == damagedTeamIndex)
                 {
-                    BattleEvent event = new BattleEvent(this.team[j][this.currentPokemon[j]].name + " fainted.", -1, true, 1, -1, null);
+                    this.events.remove(i);
+                }
+                else
+                {
+                    i++;
+                }
+            }
+            i = 0;
+            while (i < this.multiTurnEffects.size())
+            {
+                if (this.multiTurnEffects.get(i).removalCondition == damagedTeamIndex || this.multiTurnEffects.get(i).removalCondition == 2)
+                {
+                    this.multiTurnEffects.remove(i);
+                }
+                else
+                {
+                    i++;
+                }
+            }
+            if (!faintEventExists)
+            {
+                BattleEvent event = new BattleEvent(this.team[damagedTeamIndex][this.currentPokemon[damagedTeamIndex]].name + " fainted.", -1, true, 1, -1, null);
+                this.events.add(event);
+                if ((this.moveProcessed[0] || this.moveProcessed[1]) && (!this.moveProcessed[0] || !this.moveProcessed[1]))
+                {
+                    this.endOfTurnEffects();
+                }
+                if (damagedTeamIndex == 0)
+                {
+                    this.team[0][this.currentPokemon[0]].updateHappiness(-5);
+                }
+                else 
+                {
+                    this.team[0][this.currentPokemon[0]].updateHappiness(1);
+                    this.team[0][this.currentPokemon[0]].updateIVs(this.team[1][this.currentPokemon[1]].ivGain);
+                    int xp = xpCalc(this.team[1][this.currentPokemon[1]].level);
+                    event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " gained " + xp + " experience.", xp, 0, 0);
                     this.events.add(event);
-                    if (j == 0)
+                    //send out enemy's next pokemon if any remain
+                    if (!teamFainted(1))
                     {
-                        this.team[0][this.currentPokemon[0]].updateHappiness(-5);
-                    }
-                    else 
-                    {
-                        this.team[0][this.currentPokemon[0]].updateHappiness(1);
-                        this.team[0][this.currentPokemon[0]].updateIVs(this.team[1][this.currentPokemon[1]].ivGain);
-                        int xp = xpCalc(this.team[1][this.currentPokemon[1]].level);
-                        event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " gained " + xp + " experience.", xp, 0, 0);
+                        event = new BattleEvent(this.trainerName + " sent out " + this.team[1][this.currentPokemon[1] + 1].name, 
+                            this.currentPokemon[1] + 1, 
+                            true, 
+                            1,
+                            -1,
+                            String.valueOf(this.team[1][this.currentPokemon[1] + 1].pokemon_id));
                         this.events.add(event);
-                        //send out enemy's next pokemon if any remain
-                        if (!teamFainted(1))
-                        {
-                            event = new BattleEvent(this.trainerName + " sent out " + this.team[1][this.currentPokemon[1] + 1].name, 
-                                this.currentPokemon[1] + 1, 
-                                true, 
-                                1,
-                                -1,
-                                String.valueOf(this.team[1][this.currentPokemon[1] + 1].pokemon_id));
-                            this.events.add(event);
-                        }
                     }
                 }
             }
@@ -1101,7 +1160,7 @@ public class BattleModel extends BaseModel
                     Math.min((this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP), 
                     (this.events.get(0).damage));
 
-                this.checkFainted();
+                this.checkFainted(this.events.get(0).target);
             }
             else if (this.events.get(0).damage < 0)
             {
@@ -1435,8 +1494,10 @@ public class BattleModel extends BaseModel
         int target;
         int duration;
         int damage;
-        int healing;
+        int recoil;
         int counter = 0;
+        //-1 if never end, 0 if end when player pokemon leaves field, 1 if end enemy pokemon leaves field, 2 if end when either leaves field
+        int removalCondition;
         //if 0 then effect occurs throughout duration, if 1 effect occurs at end of duration
         byte effectTimingId;
 
@@ -1445,13 +1506,29 @@ public class BattleModel extends BaseModel
             this.effectId = moveEffect.effectId;
             this.attacker = attacker;
             this.target = moveEffect.targetId;
-            this.duration = ranNum.nextInt(moveEffect.maxCounter - moveEffect.minCounter + 1) + moveEffect.minCounter;
+            if (moveEffect.minCounter < 0)
+            {
+                this.duration = -1;
+            }
+            else
+            {
+                this.duration = ranNum.nextInt(moveEffect.maxCounter - moveEffect.minCounter + 1) + moveEffect.minCounter;
+            }
             if (moveEffect.effectId == 43)
             {
                 this.text = team[target][currentPokemon[target]].name + " is damaged by " + move.name + ".";
-                this.damage = (int)Math.ceil(team[target][currentPokemon[target]].stats[0] / 16.0);
-                this.healing = 0;
+                this.damage = (int)Math.ceil(team[target][currentPokemon[target]].stats[0] / 8.0);
+                this.recoil = 0;
                 this.effectTimingId = 0;
+                this.removalCondition = this.target;
+            }
+            else if (moveEffect.effectId == 85)
+            {
+                this.text = team[target][currentPokemon[target]].name + "'s health was sapped.";
+                this.damage = (int)Math.ceil(team[target][currentPokemon[target]].stats[0] / 8.0);
+                this.recoil = this.damage * -1;
+                this.effectTimingId = 0;
+                this.removalCondition = 2;
             }
         }
     }

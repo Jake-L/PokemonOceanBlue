@@ -28,7 +28,7 @@ public class BattleView extends BaseView {
     private Image[] pokeballSprite = new Image[4];
     private Image[][] pokemonIconSprites = new Image[2][];
     private Image trainerSprite;
-    private Image[] statusEffectImages = new Image[7];
+    private Image[] statusEffectImages = new Image[8];
     private boolean[] hidePokemon = new boolean[2];
     private Image[] partyBorder = new Image[9];
     
