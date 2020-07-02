@@ -18,7 +18,7 @@ public class BattleModel extends BaseModel
     public Random ranNum = new Random();
     private App app;
     private float[][] typeEffectiveness = new float[19][19];
-    private float[] modifier = new float[2];
+    private float[] typeModifier = new float[2];
     private int enemyMove;
     public boolean isCaught;
     public boolean isWild;
@@ -313,15 +313,15 @@ public class BattleModel extends BaseModel
      */
     private String getAttackSound(int attacker)
     {
-        if (this.modifier[attacker] > 1)
+        if (this.typeModifier[attacker] > 1)
         {
             return "superdamage";
         }
-        else if (this.modifier[attacker] < 1 && this.modifier[attacker] > 0)
+        else if (this.typeModifier[attacker] < 1 && this.typeModifier[attacker] > 0)
         {
             return "weakdamage";
         }
-        else if (this.modifier[attacker] == 1)
+        else if (this.typeModifier[attacker] == 1)
         {
             return "damage";
         }
@@ -377,14 +377,14 @@ public class BattleModel extends BaseModel
             }
             else
             {
-                this.modifier[attacker] = 1.0f;
+                this.typeModifier[attacker] = 1.0f;
                 this.unableToMove[attacker] = true;
                 this.events.remove(0);
             }
         }
         else if (this.willFlinch[attacker])
         {
-            this.modifier[attacker] = 1.0f;
+            this.typeModifier[attacker] = 1.0f;
             this.unableToMove[attacker] = true;
             this.events.remove(0);
             event = new BattleEvent(attackingPokemon.name + " flinched!", attacker, attacker, null);
@@ -666,9 +666,8 @@ public class BattleModel extends BaseModel
     {
         int attack_stat;
         int defense_stat;
-        float stab = 1.0f;
-        this.modifier[attacker] = 1;
-        float crit = 1.0f;
+        this.typeModifier[attacker] = 1;
+        float otherModifiers = 1.0f;
         PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
         PokemonModel defendingPokemon = this.team[defender][this.currentPokemon[defender]];
 
@@ -701,45 +700,68 @@ public class BattleModel extends BaseModel
             this.attackMissed[attacker] = true;
             return 0;
         }
-
+        //check if attack does not miss
         if (move.accuracy == -1 || this.ranNum.nextInt(101) <= this.getAccuracy(attacker, move.accuracy))
         {
             for (int i = 0; i < defendingPokemon.types.length; i++)
             {
-                this.modifier[attacker] = this.typeEffectiveness[move.typeId][defendingPokemon.types[i]] * this.modifier[attacker];
+                this.typeModifier[attacker] = this.typeEffectiveness[move.typeId][defendingPokemon.types[i]] * this.typeModifier[attacker];
             }
-
-            if (move.typeId == attackingPokemon.types[0] || move.typeId == attackingPokemon.types[attackingPokemon.types.length - 1])
+            //check for move effect that determines moves damage
+            if (move.moveEffect != null)
             {
-                stab = 1.5f;
+                if (this.typeModifier[attacker] > 0)
+                {
+                    if (move.moveEffect.effectId == 42)
+                    {
+                        return move.power;
+                    }
+                    if (move.moveEffect.effectId == 88)
+                    {
+                        return attackingPokemon.level;
+                    }
+                }
+                if (move.moveEffect.effectId == 41)
+                {
+                    return (int)Math.ceil(defendingPokemon.currentHP / 2.0);
+                }
             }
-
-            if (move.power == -1 && this.modifier[attacker] != 0)
+            //move doesn't affect opponent
+            if (this.typeModifier[attacker] == 0)
+            {
+                return 0;
+            }
+            //one hit KO
+            if (move.power == -1)
             {
                 this.isOneHit[attacker] = true;
                 return defendingPokemon.currentHP;
             }
-
+            //same type attack bonus
+            if (move.typeId == attackingPokemon.types[0] || move.typeId == attackingPokemon.types[attackingPokemon.types.length - 1])
+            {
+                otherModifiers *= 1.5f;
+            }
+            //critical hit bonus
             if (this.ranNum.nextInt(9) == 0 && move.power > 0)
             {
-                crit = 1.5f;                        
+                otherModifiers *= 1.5f;                        
                 this.isCrit[attacker] = true;
             }
 
-            double weatherMod = 1.0;
             //check if weather conditions will affect damage (fire and water type moves in rain or sunlight)
             if ((this.weather == 2 || this.weather == 1) && (move.typeId == 10 || move.typeId == 11))
             {
-                weatherMod = ((this.weather == 2 && move.typeId == 10) || (this.weather == 1 && move.typeId == 11) ? 0.5 : 1.5);
+                otherModifiers *= ((this.weather == 2 && move.typeId == 10) || (this.weather == 1 && move.typeId == 11) ? 0.5 : 1.5);
             }
             return (int)Math.ceil((
                         (attackingPokemon.level * 2.0 / 5.0 + 2.0)
                         * (move.power) 
                         * (attackingPokemon.getStat(attack_stat, this.statChanges[attacker][attack_stat]) * 1.0
                         / defendingPokemon.getStat(defense_stat, this.statChanges[defender][defense_stat])) / 50 + 2) 
-                    * this.modifier[attacker] * stab * crit * weatherMod);
+                    * this.typeModifier[attacker] * otherModifiers);
         }
-
+        //missed attack
         else
         {
             this.attackMissed[attacker] = true;
@@ -775,7 +797,7 @@ public class BattleModel extends BaseModel
             BattleEvent event = new BattleEvent("It's a one hit KO!", attacker, attacker, null);
             this.events.add(event);
         }
-        else if (this.isCrit[attacker] && this.modifier[attacker] > 0)
+        else if (this.isCrit[attacker] && this.typeModifier[attacker] > 0)
         {
             BattleEvent event = new BattleEvent("A critical hit!", attacker, attacker, null);
             this.events.add(event);
@@ -853,7 +875,6 @@ public class BattleModel extends BaseModel
         }
     }
 
-    
     /**
      * Wrapper for loadBattleMenu that gets called by BaseController when user presses ESC
      */
@@ -1045,7 +1066,7 @@ public class BattleModel extends BaseModel
         {
             int attacker = this.events.get(0).attacker;
             this.canAttack(attacker);
-            this.effectivenessMessage(this.modifier[attacker], attacker);
+            this.effectivenessMessage(this.typeModifier[attacker], attacker);
             if (!this.unableToMove[attacker] && this.events.get(0).move != null && !this.attackMissed[attacker])
             {
                 if (this.events.get(0).move.moveEffect != null && this.events.get(0).move.moveEffect.effectId > -1)
@@ -1528,7 +1549,7 @@ public class BattleModel extends BaseModel
                 this.damage = (int)Math.ceil(team[target][currentPokemon[target]].stats[0] / 8.0);
                 this.recoil = this.damage * -1;
                 this.effectTimingId = 0;
-                this.removalCondition = 2;
+                this.removalCondition = this.target;
             }
         }
     }
