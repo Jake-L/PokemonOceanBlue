@@ -131,8 +131,22 @@ public class BattleModel extends BaseModel
 
                     case "POKEMON":
 
-                        this.battleOptions = null;
-                        this.app.openParty(this.currentPokemon[0], true); 
+                        //check if player can switch pokemon before opening the party
+                        boolean canSwitch = true;
+                        for (int i = 0; i < this.multiTurnEffects.size(); i++)
+                        {
+                            if (this.multiTurnEffects.get(i).effectId == 43 && this.multiTurnEffects.get(i).target == 0)
+                            {
+                                canSwitch = false;
+                                break;
+                            }
+                        }
+                        if (canSwitch)
+                        {
+                            this.battleOptions = null;
+                            this.app.openParty(this.currentPokemon[0], true); 
+                            break;
+                        }
                         break;
 
                     case "POKEBALLS":
@@ -334,15 +348,15 @@ public class BattleModel extends BaseModel
      * @param defender the defending team
      * @param move the move that inflicts the status effect
      */
-    private void statusEffect(int attacker, int defender, MoveModel move)
+    private void statusEffect(int attacker, int defender, int effectChance, int ailmentId)
     {
-        if (this.ranNum.nextInt(101) <= move.effectChance && this.team[defender][this.currentPokemon[defender]].statusEffect == 0)
+        if (this.ranNum.nextInt(101) <= effectChance && this.team[defender][this.currentPokemon[defender]].statusEffect == 0)
         {
             String[] statusEffectMessages = {" was paralyzed."," fell asleep."," was frozen solid."," was burned."," was poisoned."," was badly poisoned."," was cursed."," became confused."};
-            if (move.ailmentId < 9)
+            if (ailmentId < 9)
             {
-                BattleEvent event = new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + statusEffectMessages[move.ailmentId - 1], 
-                    move.ailmentId, defender, defender, null);
+                BattleEvent event = new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + statusEffectMessages[ailmentId - 1], 
+                    ailmentId, defender, defender, null);
                 this.events.add(event);
             }
         }
@@ -604,6 +618,19 @@ public class BattleModel extends BaseModel
         else if (effectId == 43 || effectId == 85)
         {
             addMultiTurnEffect(move, effectId, attacker);
+        }
+        //splash
+        else if (effectId == 86)
+        {
+            BattleEvent event = new BattleEvent("Nothing happened.", attacker, attacker, null);
+            this.events.add(event);
+        }
+        //tri-attack
+        else if (effectId == 37)
+        {
+            //decide whether move will paralyze, freeze, or burn
+            int ailmentId = ranNum.nextInt(3);
+            this.statusEffect(attacker, (attacker + 1) % 2, move.effectChance, ailmentId + (ailmentId % 2) * 2 + 1);
         }
     }
 
@@ -1069,25 +1096,26 @@ public class BattleModel extends BaseModel
             this.effectivenessMessage(this.typeModifier[attacker], attacker);
             if (!this.unableToMove[attacker] && this.events.get(0).move != null && !this.attackMissed[attacker])
             {
-                if (this.events.get(0).move.moveEffect != null && this.events.get(0).move.moveEffect.effectId > -1)
+                MoveModel move = this.events.get(0).move;
+                if (move.moveEffect != null && move.moveEffect.effectId > -1)
                 {
-                    this.moveEffect(this.events.get(0).move, attacker);
+                    this.moveEffect(move, attacker);
                 }
-                if (this.attackEvent[(attacker + 1) % 2] != null && ranNum.nextInt(101) <= this.events.get(0).move.flinchChance)
+                if (this.attackEvent[(attacker + 1) % 2] != null && ranNum.nextInt(101) <= move.flinchChance)
                 {
                     this.willFlinch[(attacker + 1) % 2] = true;
                 }
-                if (this.events.get(0).move.recoil != 0)
+                if (move.recoil != 0)
                 {
-                    this.recoil(attacker, this.events.get(0).move);
+                    this.recoil(attacker, move);
                 }
-                if (this.events.get(0).move.ailmentId > 0)
+                if (move.ailmentId > 0)
                 {
-                    this.statusEffect(attacker, (attacker + 1) % 2, this.events.get(0).move);
+                    this.statusEffect(attacker, (attacker + 1) % 2, move.effectChance, move.ailmentId);
                 }
-                if (this.events.get(0).move.moveStatEffects.length > 0)
+                if (move.moveStatEffects.length > 0)
                 {
-                    this.statChanges(attacker, this.events.get(0).move);
+                    this.statChanges(attacker, move);
                 }
             }
             if (this.attackEvent[(attacker + 1) % 2] != null)
@@ -1526,7 +1554,7 @@ public class BattleModel extends BaseModel
         {
             this.effectId = moveEffect.effectId;
             this.attacker = attacker;
-            this.target = moveEffect.targetId;
+            this.target = (moveEffect.targetId + attacker) % 2;
             if (moveEffect.minCounter < 0)
             {
                 this.duration = -1;

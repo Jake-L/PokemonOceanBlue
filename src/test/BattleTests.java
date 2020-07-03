@@ -7,8 +7,10 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
+import pokemonoceanblue.App;
 import pokemonoceanblue.BattleModel;
 import pokemonoceanblue.MoveModel;
+import pokemonoceanblue.PartyModel;
 import pokemonoceanblue.PokemonModel;
 
 public class BattleTests {
@@ -448,6 +450,42 @@ public class BattleTests {
         {
             fail();
         }
+    }
+
+    /**
+     * Test that certain moveEffects will prevent player from switching pokemon
+     * Done by using two bulbasaurs, enemy bulbasaur uses nightmare, player bulbasaur tries to switch out
+     */
+    @Test
+    public void testUnableToSwitchPokemon() {
+        PokemonModel[] team = new PokemonModel[2];
+        team[0] = new PokemonModel(1, 1, false);
+        team[1] = new PokemonModel(4, 3, false);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(1, 1, false);
+        //give enemy bulbasaur nightmare as only move
+        enemyTeam[0].moves = new MoveModel[1];
+        enemyTeam[0].moves[0] = new MoveModel(171);
+        //give player bulbasaur splash for first turn
+        team[0].moves[0] = new MoveModel(150);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+        // skip opening animations
+        updateBattleModel(battleModel, 500);
+        assertEquals(0, battleModel.events.size());
+        // choose "FIGHT"
+        battleModel.confirmSelection();
+        // choose "splash"
+        updateBattleModel(battleModel, 20);
+        battleModel.confirmSelection();
+        // wait for all the battle text to process
+        updateBattleModel(battleModel, 600);
+        //try switching pokemon
+        assertEquals(0, battleModel.events.size());
+        // choose "POKEMON"
+        battleModel.optionIndex = 1;
+        battleModel.confirmSelection();
+        //make sure party screen was not opened
+        assertNotEquals(battleModel.battleOptions, null); 
     }
 
     /**
