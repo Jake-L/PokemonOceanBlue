@@ -13,20 +13,18 @@ import java.awt.Font;
  */
 public class SummaryView extends BaseView {
 
-    private PartyModel model;
-    private List<PokemonModel> pokemonList;
+    private SummaryModel model;
     private Image[] pokemonSprites;
     private Image[] pokeballSprites;
     private Image pokemonBackground;
     private Image pokemonHeader;
     private Image[] summaryBox = new Image[1];
 
-    public SummaryView(PartyModel model, List<PokemonModel> pokemonList)
+    public SummaryView(SummaryModel model)
     {
         this.model = model;
-        this.pokemonList = pokemonList;
-        this.pokeballSprites = new Image[this.pokemonList.size()];
-        this.pokemonSprites = new Image[this.pokemonList.size()];
+        this.pokeballSprites = new Image[this.model.pokemonList.size()];
+        this.pokemonSprites = new Image[this.model.pokemonList.size()];
         this.loadImage();
     }
 
@@ -34,11 +32,11 @@ public class SummaryView extends BaseView {
     {
         ImageIcon ii;
 
-        for (int i = 0; i < this.pokemonList.size(); i++)
+        for (int i = 0; i < this.pokemonSprites.length; i++)
         {
-            ii = new ImageIcon(this.getClass().getResource("/pokemon/frame0/" + this.pokemonList.get(i).getSpriteId() + ".png"));
+            ii = new ImageIcon(this.getClass().getResource("/pokemon/frame0/" + this.model.pokemonList.get(i).getSpriteId() + ".png"));
             this.pokemonSprites[i] = ii.getImage();
-            ii = new ImageIcon(this.getClass().getResource("/inventory/" + this.pokemonList.get(i).pokeballId + ".png"));
+            ii = new ImageIcon(this.getClass().getResource("/inventory/" + this.model.pokemonList.get(i).pokeballId + ".png"));
             this.pokeballSprites[i] = ii.getImage();
         }
 
@@ -91,12 +89,12 @@ public class SummaryView extends BaseView {
             canvas);
         
         //displays pokemon name
-        g.drawString(this.pokemonList.get(pokemonIndex).getName(),
+        g.drawString(this.model.pokemonList.get(pokemonIndex).getName(),
             width / 10 - 20 * graphicsScaling,
             height / 20 + 17 * graphicsScaling);
 
         // only show stats for Pokemon, not Eggs
-        if (this.pokemonList.get(pokemonIndex).level > 0)
+        if (this.model.pokemonList.get(pokemonIndex).level > 0)
         {
             // g.drawImage(this.summaryBox[0],
             //     4 * graphicsScaling,
@@ -106,12 +104,12 @@ public class SummaryView extends BaseView {
             //     canvas);
 
             //displays pokemon level
-            g.drawString("Lv." + this.pokemonList.get(pokemonIndex).level,
+            g.drawString("Lv." + this.model.pokemonList.get(pokemonIndex).level,
                 width / 10 - 20 * graphicsScaling,
                 height / 20 + 32 * graphicsScaling);
 
             // displays Pokemon gender
-            g.drawImage(genderIcons[this.pokemonList.get(pokemonIndex).genderId],
+            g.drawImage(genderIcons[this.model.pokemonList.get(pokemonIndex).genderId],
                 width / 10 + 40 * graphicsScaling,
                 height / 20 + 10 * graphicsScaling,
                 genderIcons[0].getWidth(null) * graphicsScaling,
@@ -119,14 +117,14 @@ public class SummaryView extends BaseView {
                 canvas);
 
             //displays pokemon number
-            g.drawString("No." + this.pokemonList.get(pokemonIndex).base_pokemon_id,
+            g.drawString("No." + this.model.pokemonList.get(pokemonIndex).base_pokemon_id,
                 24 * graphicsScaling,
                 height * 9 / 16);
 
             //displays pokemon type(s)
-            for (int i = 0; i < this.pokemonList.get(pokemonIndex).types.length; i++)
+            for (int i = 0; i < this.model.pokemonList.get(pokemonIndex).types.length; i++)
             {
-                g.drawImage(typeSprites[this.pokemonList.get(pokemonIndex).types[i]],
+                g.drawImage(typeSprites[this.model.pokemonList.get(pokemonIndex).types[i]],
                     (int)(24 * graphicsScaling + i * typeSprites[0].getWidth(null) * graphicsScaling / 1.5),
                     height * 9 / 16 + 4 * graphicsScaling,
                     typeSprites[0].getWidth(null) * graphicsScaling / 2,
@@ -136,9 +134,9 @@ public class SummaryView extends BaseView {
 
             //displays pokemon stats
             String[] stats = {"HP","ATTACK","DEFENSE","SP. ATTACK","SP. DEFENSE","SPEED"};
-            for (int i = 0; i < this.pokemonList.get(pokemonIndex).stats.length; i++)
+            for (int i = 0; i < this.model.pokemonList.get(pokemonIndex).stats.length; i++)
             {
-                g.drawString(String.valueOf(this.pokemonList.get(pokemonIndex).stats[i]),
+                g.drawString(String.valueOf(this.model.pokemonList.get(pokemonIndex).stats[i]),
                     width / 3 + 32 * graphicsScaling,
                     height * (i + 2) / 16);
                 
@@ -146,14 +144,14 @@ public class SummaryView extends BaseView {
                     width / 4,
                     height * (i + 2) / 16);
 
-                this.renderProgressBar(width * 7 / 16, height * (i + 2) / 16 - 8 * graphicsScaling, this.pokemonList.get(pokemonIndex).ivs[i] / 64.0, g, canvas);
+                this.renderProgressBar(width * 7 / 16, height * (i + 2) / 16 - 8 * graphicsScaling, this.model.pokemonList.get(pokemonIndex).ivs[i] / 64.0, g, canvas);
             }
 
             //display pokemon moves
             int index = 0;
-            while (index < this.pokemonList.get(pokemonIndex).moves.length)
+            while (index < this.model.pokemonList.get(pokemonIndex).moves.length)
             {
-                this.renderMove(this.pokemonList.get(pokemonIndex).moves[index], 
+                this.renderMove(this.model.pokemonList.get(pokemonIndex).moves[index], 
                     width * 2 / 3, 
                     index * height / 6 + height / 8, 
                     this.model.hoverMoveIndex == index, 
@@ -206,11 +204,11 @@ public class SummaryView extends BaseView {
 
         if (isHovered)
         {
-            g.drawImage(this.arrowSprite,
+            g.drawImage(arrowSprite,
                 x - 10 * graphicsScaling,
                 y,
-                this.arrowSprite.getWidth(null) * graphicsScaling,
-                this.arrowSprite.getHeight(null) * graphicsScaling,
+                arrowSprite.getWidth(null) * graphicsScaling,
+                arrowSprite.getHeight(null) * graphicsScaling,
                 canvas);
         }
     }

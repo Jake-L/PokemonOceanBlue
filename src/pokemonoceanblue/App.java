@@ -43,6 +43,7 @@ public class App extends JFrame implements KeyListener
     EvolutionCheck evolveCheck;
     PokemonStorageModel pokemonStorageModel;
     PokemonStorageController pokemonStorageController;
+    SummaryModel summaryModel;
     MusicPlayer musicPlayer;
     AchievementsModel achievementsModel;
     BaseController achievementsController;
@@ -52,6 +53,7 @@ public class App extends JFrame implements KeyListener
     TournamentModel tournamentModel;
 
     List<NewPokemonModel> newPokemonQueue = new ArrayList<NewPokemonModel>();
+    List<BaseModel> modelQueue = new ArrayList<BaseModel>();
 
     // number of milliseconds between frames
     private final byte FRAME_LENGTH = 32;
@@ -260,21 +262,23 @@ public class App extends JFrame implements KeyListener
         this.partyModel.initialize(currentPokemon, returnSelection);
         viewManager.setView(new PartyView(partyModel));
         partyController = new BaseController(partyModel);
+        this.modelQueue.add(0, this.partyModel);
     }
 
-    public void openSummary(int currentPokemon, boolean returnSelection)
+    public void openSummary(int currentPokemon, List<PokemonModel> pokemonList)
     {
-        this.partyModel.initialize(currentPokemon, returnSelection);
-        viewManager.setView(new SummaryView(partyModel, partyModel.team));
-        summaryController = new BaseController(partyModel);
+        this.summaryModel = new SummaryModel(pokemonList, currentPokemon, null);
+        viewManager.setView(new SummaryView(this.summaryModel));
+        summaryController = new BaseController(this.summaryModel);
+        this.modelQueue.add(0, this.summaryModel);
     }
 
     public void openSummaryNewMove(int currentPokemon, MoveModel newMove)
     {
-        this.partyModel.initialize(currentPokemon, false);
-        this.partyModel.setNewMove(newMove);
-        viewManager.setView(new SummaryView(partyModel, partyModel.team));
-        summaryController = new BaseController(partyModel);
+        this.summaryModel = new SummaryModel(partyModel.team, currentPokemon, newMove);
+        viewManager.setView(new SummaryView(this.summaryModel));
+        summaryController = new BaseController(this.summaryModel);
+        this.modelQueue.add(0, this.summaryModel);
     }
 
     public void openPokedex()
@@ -291,6 +295,7 @@ public class App extends JFrame implements KeyListener
         PokemonStorageView psv = new PokemonStorageView(pokemonStorageModel, partyModel);
         pokemonStorageController = new PokemonStorageController(pokemonStorageModel, partyModel);
         viewManager.setView(psv);
+        this.modelQueue.add(0, this.pokemonStorageModel);
     }
 
     public void openAchievements()
@@ -528,12 +533,13 @@ public class App extends JFrame implements KeyListener
                         if (partyModel.isSummary && returnValue > -1)
                         {
                             this.partyController = null;
-                            this.openSummary(-1, partyModel.returnSelection);
+                            this.openSummary(returnValue, partyModel.team);
                         }
 
                         else if (returnValue >= -1)
                         {
                             this.partyController = null;
+                            this.modelQueue.remove(0);
 
                             if (this.battleModel != null)
                             {
@@ -562,22 +568,33 @@ public class App extends JFrame implements KeyListener
                     if (summaryController != null)
                     {
                         this.summaryController.userInput(keysDown);
-                        if (this.partyModel.newMove != null)
+                        if (this.summaryModel.newMove != null)
                         {
-                            int returnValue = partyModel.getSelection();
+                            int returnValue = this.summaryModel.getSelection();
                             if (returnValue > -2)
                             {
+                                this.modelQueue.remove(0);
                                 this.summaryController = null;
-                                this.battleModel.setNewMove(this.partyModel.newMove, returnValue);
+                                this.battleModel.setNewMove(this.summaryModel.newMove, returnValue);
                                 // return to battle screen
                                 BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
                                 viewManager.setView(battleView);
                             }
                         }
-                        else if (!partyModel.isSummary)
+                        else if (this.summaryModel.getSelection() > -2)
                         {
+                            // return from the summary screen to the party screen or pokemon storage screen
+                            this.modelQueue.remove(0);
+                            if (this.modelQueue.get(0).toString().equals("PokemonStorageModel"))
+                            {
+                                this.openPokemonStorage();
+                            }
+                            else
+                            {
+                                this.openParty(this.partyModel.battleActivePokemon, partyModel.returnSelection);
+                            }
                             this.summaryController = null;
-                            this.openParty(-1, partyModel.returnSelection);
+                            this.summaryModel = null;
                         }
                     }
                 }
@@ -668,10 +685,24 @@ public class App extends JFrame implements KeyListener
                         pokemonStorageController.userInput(keysDown);
                         pokemonStorageModel.update();
 
-                        if (pokemonStorageController.isComplete())
+                        if (pokemonStorageModel.getSelection() > -1)
+                        {
+                            // open the summary for the current selected Pokemon
+                            if (this.pokemonStorageModel.categoryIndex == 0)
+                            {
+                                this.openSummary(pokemonStorageModel.getSelection(), partyModel.team);
+                            }
+                            else
+                            {
+                                this.openSummary(pokemonStorageModel.getSelection(), pokemonStorageModel.pokemonStorage);
+                            }
+                        }
+
+                        else if (pokemonStorageController.isComplete())
                         {
                             OverworldView overworldView = new OverworldView(overworldModel);
                             viewManager.setView(overworldView);
+                            this.modelQueue.remove(0);
                             pokemonStorageController = null;
                         }
                     }

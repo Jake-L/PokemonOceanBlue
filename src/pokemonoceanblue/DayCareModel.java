@@ -91,6 +91,7 @@ public class DayCareModel
             // if an egg is ready to hatch, return the new Pokemon's id
             if (this.eggCounters.get(i) <= 0)
             {
+                this.eggCounters.remove(i);
                 return this.pokemon[0].genderId == 0 
                     ? this.getFirstEvolution(this.pokemon[0].base_pokemon_id)
                     : this.getFirstEvolution(this.pokemon[1].base_pokemon_id);

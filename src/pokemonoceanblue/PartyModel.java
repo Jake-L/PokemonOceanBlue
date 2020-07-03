@@ -14,8 +14,6 @@ public class PartyModel extends BaseModel
     public int battleActivePokemon;
     public int switchPokemonIndex = -1;
     public boolean updateOrder = false;
-    public int hoverMoveIndex = -1;
-    public MoveModel newMove;
 
     public PartyModel()
     {
@@ -45,23 +43,12 @@ public class PartyModel extends BaseModel
 
         this.optionMax = this.team.size() - 1;
 
-        // when looking at summaries, move through one dimension
-        if (this.isSummary)
-        {
-            this.optionWidth = 1;
-            this.optionHeight = this.optionMax;
-        }
-        else
-        {
-            this.optionWidth = 2;
-            this.optionHeight = 3;
-        }
+        this.optionWidth = 2;
+        this.optionHeight = 3;
 
         this.textOptions = null;
         this.textOptionIndex = 0;
         this.switchPokemonIndex = -1;
-        this.hoverMoveIndex = -1;
-        this.newMove = null;
     }
 
     /**
@@ -90,55 +77,11 @@ public class PartyModel extends BaseModel
         }  
     }
 
-    /**
-     * @param newMove the newMove to set
-     */
-    public void setNewMove(MoveModel newMove) 
-    {
-        this.newMove = newMove;
-        this.hoverMoveIndex = 0;
-        this.isSummary = true;
-    }
-
-    @Override
-    public void moveIndex(int dx, int dy)
-    {
-        if (this.isSummary && this.hoverMoveIndex > -1)
-        {
-            // move through the list of moves to view their descriptions
-            if ((dx > 0 || dy > 0) && this.hoverMoveIndex < this.team.get(this.optionIndex).moves.length)
-            {
-                this.hoverMoveIndex++;
-            } 
-            else if ((dx < 0 || dy < 0) && this.hoverMoveIndex > 0)
-            {
-                this.hoverMoveIndex--;
-            } 
-        }
-        else if (this.newMove == null)
-        {
-            super.moveIndex(dx, dy);
-        }   
-    }
-
     @Override
     public void confirmSelection()
     {
-        // replace one of the Pokemon's moves with the new move
-        if (this.newMove != null)
-        {
-            // if player selects new move, don't learn it
-            if (this.hoverMoveIndex == 4)
-            {
-                this.returnValue = -1;
-            }
-            else
-            {
-                this.returnValue = this.hoverMoveIndex;
-            }
-        }
         // exit the Pokemon's summary
-        else if (this.isSummary)
+        if (this.isSummary)
         {
             this.isSummary = !this.isSummary;
         }
@@ -254,7 +197,20 @@ public class PartyModel extends BaseModel
             {
                 this.team.add(pokemon);
             }
+
+            this.optionMax = this.team.size() - 1;
         }
-        
+    }
+
+    public PokemonModel removePokemon(int index)
+    {
+        PokemonModel returnPokemon = this.team.remove(this.optionIndex);
+        this.optionMax = this.team.size() - 1;
+        return returnPokemon;
+    }
+
+    @Override
+    public String toString(){
+        return "PartyModel";
     }
 }

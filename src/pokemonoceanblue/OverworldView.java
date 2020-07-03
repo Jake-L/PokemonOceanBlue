@@ -471,7 +471,7 @@ public class OverworldView extends BaseView {
         }
 
         // draw an arrow showing the currently selected item
-        g.drawImage(this.arrowSprite,
+        g.drawImage(arrowSprite,
             width * 3 / 10 + 2 * graphicsScaling,
             (this.model.optionIndex - this.model.optionMin) * fontSpacing + 30 * graphicsScaling - arrowSprite.getHeight(null) * 2 * iconScaling,
             arrowSprite.getWidth(null) * 2 * iconScaling,

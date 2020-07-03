@@ -336,7 +336,7 @@ abstract class BaseView {
         }  
         
         // render the arrow
-        g.drawImage(this.arrowSprite,
+        g.drawImage(arrowSprite,
             width - textWidth - 21 * graphicsScaling,
             height * 3 / 4 - fontSpacing * (textOptions.length - optionIndex - 1) - (8 + arrowSprite.getHeight(null) * 2) * graphicsScaling,
             arrowSprite.getWidth(null) * 2 * graphicsScaling,

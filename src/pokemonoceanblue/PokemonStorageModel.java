@@ -46,8 +46,12 @@ public class PokemonStorageModel extends BaseModel
     @Override
     public void exitScreen()
     {
+        if (this.textOptions != null)
+        {
+            this.textOptions = null;
+        }
         // only exit the screen when not hovering a Pokemon
-        if (this.currentPokemon == null)
+        else if (this.currentPokemon == null)
         {
             this.returnValue = -1;
         }
@@ -75,6 +79,7 @@ public class PokemonStorageModel extends BaseModel
             // view the Pokemon's summary
             else if (this.textOptionIndex == 1)
             {
+                this.returnValue = this.optionIndex;
                 this.textOptions = null;
             }
             // exit the text options
@@ -126,5 +131,10 @@ public class PokemonStorageModel extends BaseModel
         {
             this.pokemonStorage.add(pokemon);
         }  
+    }
+
+    @Override
+    public String toString(){
+        return "PokemonStorageModel";
     }
 }

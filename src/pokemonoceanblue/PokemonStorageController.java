@@ -44,18 +44,40 @@ public class PokemonStorageController extends BaseController
                 if (keysDown.contains(KeyEvent.VK_ENTER))
                 {
                     // pick up the currently hovered Pokemon
-                    if (this.pokemonStorageModel.currentPokemon == null)
+                    if (this.pokemonStorageModel.currentPokemon == null 
+                        && this.pokemonStorageModel.textOptions == null)
                     {
-                        // make sure you don't remove the only Pokemon in the player's team
-                        if (this.partyModel.team.size() > 1)
-                        {   
-                            this.pokemonStorageModel.currentPokemon = this.partyModel.team.remove(this.partyModel.optionIndex);
+                        // don't show the text options if hovering the empty space at the end of the list
+                        if (this.partyModel.optionIndex < this.partyModel.team.size())
+                        {
+                            this.pokemonStorageModel.textOptions = new String[]{"MOVE", "SUMMARY", "CANCEL"}; 
                         }
+                    }
+                    else if (this.pokemonStorageModel.textOptions != null 
+                        && this.pokemonStorageModel.textOptionIndex == 0)
+                    {
+                        // don't withdraw the last Pokemon in their party
+                        if (this.partyModel.team.size() > 1)
+                        {
+                            this.pokemonStorageModel.currentPokemon = this.partyModel.removePokemon(this.partyModel.optionIndex);
+                        }
+                        this.pokemonStorageModel.textOptions = null;
+                    }
+                    // view the Pokemon's summary
+                    else if (this.pokemonStorageModel.textOptionIndex == 1)
+                    {
+                        this.pokemonStorageModel.returnValue = this.partyModel.optionIndex;
+                        this.pokemonStorageModel.textOptions = null;
+                    }
+                    // exit the text options
+                    else if (this.pokemonStorageModel.textOptionIndex == 2)
+                    {
+                        this.pokemonStorageModel.textOptions = null;
                     }
                     else if (this.partyModel.optionIndex < this.partyModel.team.size())
                     {
                         // swap the Pokemon you're hovering with the one you were holding
-                        PokemonModel newPokemon = this.partyModel.team.remove(this.partyModel.optionIndex);
+                        PokemonModel newPokemon = this.partyModel.removePokemon(this.partyModel.optionIndex);
                         this.partyModel.addPokemon(this.partyModel.optionIndex, this.pokemonStorageModel.currentPokemon);
                         this.pokemonStorageModel.currentPokemon = newPokemon;
                     }
@@ -68,7 +90,7 @@ public class PokemonStorageController extends BaseController
                 }
 
                 // move from the party selection to the storage selection
-                else if (keysDown.contains(KeyEvent.VK_RIGHT))
+                else if (keysDown.contains(KeyEvent.VK_RIGHT) && this.pokemonStorageModel.textOptions == null)
                 {
                     this.pokemonStorageModel.categoryIndex++;
                     // find the appropriate spot to move the cursor
@@ -81,12 +103,33 @@ public class PokemonStorageController extends BaseController
 
                 else if (keysDown.contains(KeyEvent.VK_UP))
                 {
-                    this.partyModel.moveIndex(0, -1);
+                    if (this.pokemonStorageModel.textOptions == null)
+                    {
+                        this.partyModel.moveIndex(0, -1);
+                    }
+                    else
+                    {
+                        this.pokemonStorageModel.moveIndex(0, -1);
+                    }
                 }
 
                 else if (keysDown.contains(KeyEvent.VK_DOWN))
                 {
-                    this.partyModel.moveIndex(0, 1);
+                    if (this.pokemonStorageModel.textOptions == null)
+                    {
+                        if (this.pokemonStorageModel.currentPokemon != null && this.partyModel.optionIndex == this.partyModel.optionMax)
+                        {
+                            this.partyModel.optionIndex++;
+                        }
+                        else
+                        {
+                            this.partyModel.moveIndex(0, 1);
+                        }
+                    }
+                    else
+                    {
+                        this.pokemonStorageModel.moveIndex(0, 1);
+                    }
                 }
 
                 this.model.update();
