@@ -132,9 +132,4 @@ public class PokemonStorageModel extends BaseModel
             this.pokemonStorage.add(pokemon);
         }  
     }
-
-    @Override
-    public String toString(){
-        return "PokemonStorageModel";
-    }
 }

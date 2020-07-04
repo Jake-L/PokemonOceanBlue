@@ -2,7 +2,6 @@ package pokemonoceanblue;
 
 import java.awt.Graphics;
 import java.awt.Image;
-import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -211,11 +210,5 @@ public class SummaryView extends BaseView {
                 arrowSprite.getHeight(null) * graphicsScaling,
                 canvas);
         }
-    }
-
-    @Override
-    public String toString()
-    {
-        return "SummaryView";
     }
 }

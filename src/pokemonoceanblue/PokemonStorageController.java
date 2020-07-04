@@ -151,7 +151,6 @@ public class PokemonStorageController extends BaseController
                 else
                 {
                     super.userInput(keysDown);
-                    this.model.update();
                 }
             }
 

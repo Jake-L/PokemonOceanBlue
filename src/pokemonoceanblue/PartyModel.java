@@ -208,9 +208,4 @@ public class PartyModel extends BaseModel
         this.optionMax = this.team.size() - 1;
         return returnPokemon;
     }
-
-    @Override
-    public String toString(){
-        return "PartyModel";
-    }
 }

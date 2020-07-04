@@ -284,10 +284,4 @@ public class PokemonStorageView extends BaseView {
             this.pokemonSprite = null;
         }
     }
-
-    @Override
-    public String toString()
-    {
-        return "PokemonStorageView";
-    }
 }

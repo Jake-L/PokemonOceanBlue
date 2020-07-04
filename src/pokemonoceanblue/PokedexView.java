@@ -188,10 +188,4 @@ public class PokedexView extends BaseView
 
         //this.displayText(this.model.text, g, canvas);
     }
-
-    @Override
-    public String toString()
-    {
-        return "PokedexView";
-    }
 }

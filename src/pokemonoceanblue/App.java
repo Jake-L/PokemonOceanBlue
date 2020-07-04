@@ -24,33 +24,26 @@ import java.awt.Font;
 public class App extends JFrame implements KeyListener
 {
     private static final long serialVersionUID = -1949827959244745733L;
-    OverworldController overworldController;
     CharacterModel playerModel;
     CharacterModel oldPlayerModel;
     ViewManager viewManager;
     List<Integer> keysDown = new ArrayList<Integer>();
     OverworldModel overworldModel;
     BattleModel battleModel;
-    BaseController battleController;
-    BaseController partyController;
     PartyModel partyModel;
-    BaseController inventoryController;
     InventoryModel inventoryModel;
-    BaseController newPokemonController;
-    BaseController summaryController;
     PokedexModel pokedexModel;
-    BaseController pokedexController;
     EvolutionCheck evolveCheck;
     PokemonStorageModel pokemonStorageModel;
     PokemonStorageController pokemonStorageController;
     SummaryModel summaryModel;
     MusicPlayer musicPlayer;
     AchievementsModel achievementsModel;
-    BaseController achievementsController;
     DayCareModel dayCareModel;
     boolean[] badges = new boolean[8];
     int enemyScalingFactor = 0;
     TournamentModel tournamentModel;
+    BaseController currentController;
 
     List<NewPokemonModel> newPokemonQueue = new ArrayList<NewPokemonModel>();
     List<BaseModel> modelQueue = new ArrayList<BaseModel>();
@@ -148,7 +141,7 @@ public class App extends JFrame implements KeyListener
         }
 
         // pressing any key will advance from the title screen
-        if (viewManager.getCurrentView() == "TitleScreenView" && System.currentTimeMillis() - startTime > 1000 && playerModel == null)
+        if (viewManager.getCurrentView().equals("TitleScreenView") && System.currentTimeMillis() - startTime > 1000 && playerModel == null)
         {
             // load the player's position from the database
             // try
@@ -181,7 +174,7 @@ public class App extends JFrame implements KeyListener
         this.playSong(battleModel.musicId, true);
         BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
         viewManager.setView(battleView);
-        battleController = new BaseController(battleModel);
+        this.addModelQueue(battleModel);
     }
 
     public void createWildBattle(int pokemonId, int level)
@@ -204,7 +197,7 @@ public class App extends JFrame implements KeyListener
         battleModel = new BattleModel(team, partyModel.getTeamArray(), this, overworldModel.weather);
         BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
         viewManager.setView(battleView);
-        battleController = new BaseController(battleModel);
+        this.addModelQueue(battleModel);
     }
 
     /**
@@ -243,7 +236,8 @@ public class App extends JFrame implements KeyListener
             this.overworldModel = new OverworldModel(mapId, playerModel, this, this.inventoryModel, this.dayCareModel);
         }
         
-        this.overworldController = new OverworldController(this.overworldModel);
+        this.modelQueue.clear();
+        this.addModelQueue(this.overworldModel);
         playerModel.setOverworldModel(this.overworldModel);
 
         OverworldView overworldView = new OverworldView(this.overworldModel);
@@ -254,38 +248,39 @@ public class App extends JFrame implements KeyListener
     {
         this.inventoryModel.initialize();
         viewManager.setView(new InventoryView(inventoryModel));
-        inventoryController = new BaseController(inventoryModel);
+        this.addModelQueue(this.inventoryModel);
     }
 
     public void openParty(int currentPokemon, boolean returnSelection)
     {
         this.partyModel.initialize(currentPokemon, returnSelection);
         viewManager.setView(new PartyView(partyModel));
-        partyController = new BaseController(partyModel);
-        this.modelQueue.add(0, this.partyModel);
+        if (!this.modelQueue.get(0).getClass().getSimpleName().equals("PartyModel"))
+        {
+            this.addModelQueue(this.partyModel);
+        }
+        
     }
 
     public void openSummary(int currentPokemon, List<PokemonModel> pokemonList)
     {
         this.summaryModel = new SummaryModel(pokemonList, currentPokemon, null);
         viewManager.setView(new SummaryView(this.summaryModel));
-        summaryController = new BaseController(this.summaryModel);
-        this.modelQueue.add(0, this.summaryModel);
+        this.addModelQueue(this.summaryModel);
     }
 
     public void openSummaryNewMove(int currentPokemon, MoveModel newMove)
     {
         this.summaryModel = new SummaryModel(partyModel.team, currentPokemon, newMove);
         viewManager.setView(new SummaryView(this.summaryModel));
-        summaryController = new BaseController(this.summaryModel);
-        this.modelQueue.add(0, this.summaryModel);
+        this.addModelQueue(this.summaryModel);
     }
 
     public void openPokedex()
     {
         this.pokedexModel.initialize();
         viewManager.setView(new PokedexView(pokedexModel));
-        pokedexController = new BaseController(pokedexModel);
+        this.addModelQueue(this.pokedexModel);
     }
 
     public void openPokemonStorage()
@@ -293,16 +288,71 @@ public class App extends JFrame implements KeyListener
         partyModel.initialize(-1, false);
         pokemonStorageModel.initialize();
         PokemonStorageView psv = new PokemonStorageView(pokemonStorageModel, partyModel);
-        pokemonStorageController = new PokemonStorageController(pokemonStorageModel, partyModel);
         viewManager.setView(psv);
-        this.modelQueue.add(0, this.pokemonStorageModel);
+        this.addModelQueue(this.pokemonStorageModel);
     }
 
     public void openAchievements()
     {
         this.achievementsModel.initialize();
         viewManager.setView(new AchievementsView(achievementsModel));
-        achievementsController = new BaseController(achievementsModel);
+        this.addModelQueue(this.achievementsModel);
+    }
+
+    public void openController()
+    {
+        if (this.modelQueue.size() > 0)
+        {
+            BaseModel newModel = this.modelQueue.get(0);
+
+            // PokemonStorageController has unique constructor arguments
+            if (newModel.getClass().getSimpleName().equals("PokemonStorageModel"))
+            {
+                this.currentController = new PokemonStorageController(this.pokemonStorageModel, this.partyModel);
+            }
+            // Overworld has a unique controller
+            else if (newModel.getClass().getSimpleName().equals("OverworldModel"))
+            {
+                this.currentController = new OverworldController(this.overworldModel);
+            }
+            // all other controllers just take the model as an argument
+            else
+            {
+                this.currentController = new BaseController(newModel);
+            }
+        }
+    }
+
+    /**
+     * Returns to the preview screen
+     * For example, returns from the inventory screen to either the overworld or battle
+     * If there are any new Pokemon / evolution animations to show, this function will show them
+     */
+    public void exitCurrentView()
+    {
+        this.modelQueue.remove(0);
+        this.currentController = null;
+
+        // return to a battle
+        if (this.modelQueue.get(0).getClass().getSimpleName().equals("BattleModel"))
+        {
+            BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
+            viewManager.setView(battleView);
+        }
+        // show the new pokemon screen
+        else if (newPokemonQueue.size() > 0)
+        {
+            this.partyModel.initialize(-1, false);
+            viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
+            this.addModelQueue(newPokemonQueue.get(0));
+            newPokemonQueue.remove(0);
+        }
+        // return to overworld
+        else if (this.modelQueue.get(0).getClass().getSimpleName().equals("OverworldModel"))
+        {
+            OverworldView overworldView = new OverworldView(overworldModel);
+            viewManager.setView(overworldView);
+        }
     }
 
     /**
@@ -334,7 +384,7 @@ public class App extends JFrame implements KeyListener
         {
             this.partyModel.initialize(-1, false);
             viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
-            newPokemonController = new BaseController(newPokemonQueue.get(0));
+            this.addModelQueue(this.newPokemonQueue.get(0));
             newPokemonQueue.remove(0);
         }
 
@@ -400,6 +450,17 @@ public class App extends JFrame implements KeyListener
         }
     }
 
+    /**
+     * Add a model the queue to be displayed
+     * @param model the new model to be displayed
+     */
+    public void addModelQueue(BaseModel model)
+    {
+        System.out.println("Adding " + model.getClass().getSimpleName() + " to queue.");
+        this.modelQueue.add(0, model);
+        this.currentController = null;
+    }
+
     public void update()
     {
         // the last time the function was run
@@ -415,11 +476,20 @@ public class App extends JFrame implements KeyListener
             // update on a set interval
             if (System.currentTimeMillis() - lastRun > FRAME_LENGTH)
             {
+                if (this.currentController != null)
+                {
+                    // update the existing controller
+                    this.currentController.userInput(keysDown);
+                }
+                else if (this.viewManager.previousViewComplete())
+                {
+                    // create the new controller
+                    this.openController();
+                }
+
                 // update the battle
                 if (viewManager.getCurrentView().equals("BattleView") && this.battleModel != null)
                 {
-                    battleController.userInput(keysDown);
-
                     String sound = this.battleModel.getSoundEffect();
                     if (sound != null)
                     {
@@ -452,19 +522,8 @@ public class App extends JFrame implements KeyListener
 
                         this.checkEvolution(evolveQueue);
 
-                        if (newPokemonQueue.size() > 0)
-                        {
-                            this.partyModel.initialize(-1, false);
-                            viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
-                            newPokemonController = new BaseController(newPokemonQueue.get(0));
-                            newPokemonQueue.remove(0);
-                        }
                         // return to overworld screen
-                        else
-                        {
-                            OverworldView overworldView = new OverworldView(overworldModel);
-                            viewManager.setView(overworldView);
-                        }
+                        this.exitCurrentView();
 
                         this.battleModel = null;
                     }
@@ -473,7 +532,6 @@ public class App extends JFrame implements KeyListener
                 else if (viewManager.getCurrentView().equals("OverworldView"))
                 {
                     playerModel.update(true);
-                    overworldModel.update();
 
                     if (oldPlayerModel != null)
                     {
@@ -499,7 +557,7 @@ public class App extends JFrame implements KeyListener
                     {
                         this.partyModel.initialize(-1, false);
                         viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
-                        newPokemonController = new BaseController(newPokemonQueue.get(0));
+                        this.addModelQueue(newPokemonQueue.get(0));
                         newPokemonQueue.remove(0);
                     }
                     else if (this.tournamentModel != null && overworldModel.conversation == null && overworldModel.mapId % 100 == 0)
@@ -518,74 +576,54 @@ public class App extends JFrame implements KeyListener
                             this.setMap(this.overworldModel.mapId + 1, 7, 7);
                         }
                     }
-                    else if (this.battleModel == null)
-                    {
-                        // only read user input when previous map is no longer visible
-                        overworldController.userInput(keysDown);
-                    }
                 }
                 else if (viewManager.getCurrentView().equals("PartyView"))
                 {
-                    if (partyController != null)
+                    if (this.currentController != null)
                     {
-                        partyController.userInput(keysDown);
                         int returnValue = partyModel.getSelection();
                         if (partyModel.isSummary && returnValue > -1)
                         {
-                            this.partyController = null;
                             this.openSummary(returnValue, partyModel.team);
                         }
 
                         else if (returnValue >= -1)
                         {
-                            this.partyController = null;
-                            this.modelQueue.remove(0);
-
                             if (this.battleModel != null)
                             {
                                 this.battleModel.setPokemon(returnValue);
-                                // return to battle screen
-                                BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
-                                viewManager.setView(battleView);
                             }
-                            else
+                            else if (overworldModel.setPokemon(returnValue >= 0 ? this.partyModel.team.get(returnValue) : null))
                             {
-                                // return to overworld screen
-                                OverworldView overworldView = new OverworldView(overworldModel);
-                                viewManager.setView(overworldView);
-                                // pass the selected Pokemon to overworld model
-                                if (overworldModel.setPokemon(returnValue >= 0 ? this.partyModel.team.get(returnValue) : null))
-                                {
-                                    // remove the Pokemon from the player's team if they were left in the day care, etc.
-                                    this.partyModel.team.remove(returnValue);
-                                }
+                                // remove the Pokemon from the player's team if they were left in the day care, etc.
+                                this.partyModel.team.remove(returnValue);
                             }
+
+                            // return to overworld or battle screen
+                            this.exitCurrentView();
                         }
                     }
                 }
                 else if (viewManager.getCurrentView().equals("SummaryView"))
                 {
-                    if (summaryController != null)
+                    if (this.currentController != null)
                     {
-                        this.summaryController.userInput(keysDown);
                         if (this.summaryModel.newMove != null)
                         {
                             int returnValue = this.summaryModel.getSelection();
                             if (returnValue > -2)
                             {
-                                this.modelQueue.remove(0);
-                                this.summaryController = null;
                                 this.battleModel.setNewMove(this.summaryModel.newMove, returnValue);
+
                                 // return to battle screen
-                                BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
-                                viewManager.setView(battleView);
+                                this.exitCurrentView();
                             }
                         }
                         else if (this.summaryModel.getSelection() > -2)
                         {
                             // return from the summary screen to the party screen or pokemon storage screen
                             this.modelQueue.remove(0);
-                            if (this.modelQueue.get(0).toString().equals("PokemonStorageModel"))
+                            if (this.modelQueue.get(0).getClass().getSimpleName().equals("PokemonStorageModel"))
                             {
                                 this.openPokemonStorage();
                             }
@@ -593,98 +631,43 @@ public class App extends JFrame implements KeyListener
                             {
                                 this.openParty(this.partyModel.battleActivePokemon, partyModel.returnSelection);
                             }
-                            this.summaryController = null;
+                            this.currentController = null;
                             this.summaryModel = null;
                         }
                     }
                 }
                 else if (viewManager.getCurrentView().equals("InventoryView"))
                 {
-                    inventoryModel.update();
-
-                    if (inventoryController != null)
+                    if (this.currentController != null)
                     {
-                        inventoryController.userInput(keysDown);
                         int returnValue = inventoryModel.getSelection();
                         if (returnValue >= -1)
                         {
-                            this.inventoryController = null;
-
                             if (this.battleModel != null)
                             {
                                 this.battleModel.setItem(returnValue);
-                                // return to battle screen
-                                BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
-                                viewManager.setView(battleView);
                             }
-                            else
-                            {
-                                // return to overworld screen
-                                OverworldView overworldView = new OverworldView(overworldModel);
-                                viewManager.setView(overworldView);
-                            }
+                            // return to overworld or battle screen
+                            this.exitCurrentView();
                         }
                     }
                 }
-                else if (viewManager.getCurrentView().equals("NewPokemonView"))
+                else if (viewManager.getCurrentView().equals("PokedexView")
+                    || viewManager.getCurrentView().equals("AchievementsView")
+                    || viewManager.getCurrentView().equals("NewPokemonView"))
                 {
-                    if (newPokemonController != null)
+                    if (this.currentController != null)
                     {
-                        newPokemonController.userInput(keysDown);
-
-                        if (newPokemonController.isComplete())
+                        if (this.currentController.isComplete())
                         {
-                            if (newPokemonQueue.size() > 0)
-                            {
-                                this.partyModel.initialize(-1, false);
-                                viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
-                                newPokemonController = new BaseController(newPokemonQueue.get(0));
-                                newPokemonQueue.remove(0);
-                            }
-                            else
-                            {
-                                OverworldView overworldView = new OverworldView(overworldModel);
-                                viewManager.setView(overworldView);
-                                newPokemonController = null;
-                            }
-                        }
-                    }
-                }
-                else if (viewManager.getCurrentView().equals("PokedexView"))
-                {
-                    if (pokedexController != null)
-                    {
-                        pokedexController.userInput(keysDown);
-
-                        if (pokedexController.isComplete())
-                        {
-                            OverworldView overworldView = new OverworldView(overworldModel);
-                            viewManager.setView(overworldView);
-                            pokedexController = null;
-                        }
-                    }
-                }
-                else if (viewManager.getCurrentView().equals("AchievementsView"))
-                {
-                    if (achievementsController != null)
-                    {
-                        achievementsController.userInput(keysDown);
-
-                        if (achievementsController.isComplete())
-                        {
-                            OverworldView overworldView = new OverworldView(overworldModel);
-                            viewManager.setView(overworldView);
-                            achievementsController = null;
+                            this.exitCurrentView();
                         }
                     }
                 }
                 else if (viewManager.getCurrentView().equals("PokemonStorageView"))
                 {
-                    if (pokemonStorageController != null)
+                    if (this.currentController != null)
                     {
-                        pokemonStorageController.userInput(keysDown);
-                        pokemonStorageModel.update();
-
                         if (pokemonStorageModel.getSelection() > -1)
                         {
                             // open the summary for the current selected Pokemon
@@ -698,12 +681,9 @@ public class App extends JFrame implements KeyListener
                             }
                         }
 
-                        else if (pokemonStorageController.isComplete())
+                        else if (this.currentController.isComplete())
                         {
-                            OverworldView overworldView = new OverworldView(overworldModel);
-                            viewManager.setView(overworldView);
-                            this.modelQueue.remove(0);
-                            pokemonStorageController = null;
+                            this.exitCurrentView();
                         }
                     }
                 }
@@ -731,8 +711,6 @@ public class App extends JFrame implements KeyListener
                     System.out.println(String.format("Thread interrupted: %s", e.getMessage()));
                 }
             }
-
-
         }
     }
 

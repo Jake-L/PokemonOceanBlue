@@ -635,6 +635,15 @@ public class OverworldModel extends BaseModel {
         }
     }
 
+    /**
+     * Wrapper for openMenu function to follow BaseModel structure
+     */
+    @Override
+    public void exitScreen()
+    {
+        this.openMenu();
+    }
+
     /** 
      * load a list of wild pokemon that can appear on the current map
      */

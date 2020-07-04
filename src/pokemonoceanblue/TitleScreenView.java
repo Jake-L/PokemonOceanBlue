@@ -73,9 +73,4 @@ public class TitleScreenView extends BaseView {
 
         this.displayText("Welcome to Pokemon OceanBlue", g, canvas);
     }
-
-    @Override
-    public String toString(){
-        return "TitleScreenView";
-    }
 }

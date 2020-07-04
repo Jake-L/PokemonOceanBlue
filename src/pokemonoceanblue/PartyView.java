@@ -227,10 +227,4 @@ public class PartyView extends BaseView {
             this.displayOptions(this.model.textOptions, this.model.textOptionIndex, g, canvas);
         }
     }
-
-    @Override
-    public String toString()
-    {
-        return "PartyView";
-    }
 }

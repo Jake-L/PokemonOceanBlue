@@ -3,8 +3,8 @@ package pokemonoceanblue;
 import java.awt.event.KeyEvent;
 import java.util.List;
 
-public class OverworldController {
-    private OverworldModel model;
+public class OverworldController extends BaseController {
+    private OverworldModel overworldModel;
     private CharacterModel playerModel;
 
     /** 
@@ -12,7 +12,8 @@ public class OverworldController {
      * @param model the model of the character to be managed by the controller
      */
     public OverworldController(OverworldModel model){
-        this.model = model;
+        super(model);
+        this.overworldModel = model;
         this.playerModel = model.playerModel;
     }
 
@@ -20,6 +21,7 @@ public class OverworldController {
      * Reads user input and moves the player accordingly
      * @param keysDown currently pressed keys
      */
+    @Override
     public void userInput(List<Integer> keysDown)
     {
         if (this.model.actionCounter == 0)
@@ -27,27 +29,12 @@ public class OverworldController {
             if (keysDown.size() > 0)
             {
                 // open or close the menu
-                if (keysDown.contains(KeyEvent.VK_ESCAPE))
-                {
-                    this.model.openMenu();
-                    this.model.actionCounter = this.model.ACTION_DELAY;
-                }
                 // move around in a menu if its open
-                else if (this.model.textOptions != null || this.model.itemOptions.size() > 0)
+                if (keysDown.contains(KeyEvent.VK_ESCAPE)
+                    || this.model.textOptions != null 
+                    || this.overworldModel.itemOptions.size() > 0)
                 {
-                    if (keysDown.contains(KeyEvent.VK_ENTER))
-                    {
-                        this.model.confirmSelection();
-                    }
-                    if (keysDown.contains(KeyEvent.VK_UP))
-                    {
-                        this.model.moveIndex(0, -1);
-                    }
-                    else if (keysDown.contains(KeyEvent.VK_DOWN))
-                    {
-                        this.model.moveIndex(0, 1);
-                    }
-                    this.model.actionCounter = this.model.ACTION_DELAY - Math.max(this.model.acceleration, 0);
+                    super.userInput(keysDown);
                 }
                 // otherwise move player around on map
                 else
@@ -77,6 +64,7 @@ public class OverworldController {
                     {
                         this.playerModel.setMovement(1, 0, movespeed);
                     }
+                    this.model.update();
                 }
             }
             else if (this.model.acceleration > 0)
@@ -84,7 +72,16 @@ public class OverworldController {
                 // clear acceleration when player releases keys
                 this.model.acceleration = 0;
                 this.model.accelerationCounter = 0;
+                this.model.update();
             }
+            else
+            {
+                this.model.update();
+            }
+        }
+        else
+        {
+            this.model.update();
         }
     }
 
@@ -116,6 +113,6 @@ public class OverworldController {
         }
 
         // check if there is anything to interact with
-        this.model.checkAction(checkX, checkY);
+        this.overworldModel.checkAction(checkX, checkY);
     }
 }

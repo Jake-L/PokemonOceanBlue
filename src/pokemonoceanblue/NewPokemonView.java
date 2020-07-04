@@ -139,10 +139,4 @@ public class NewPokemonView extends BaseView {
             );
         }
     }
-
-    @Override
-    public String toString()
-    {
-        return "NewPokemonView";
-    }
 }

@@ -149,10 +149,4 @@ public class InventoryView extends BaseView {
             canvas);
 
     }
-
-    @Override
-    public String toString()
-    {
-        return "InventoryView";
-    }
 }

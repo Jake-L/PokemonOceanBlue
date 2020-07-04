@@ -528,9 +528,4 @@ public class BattleView extends BaseView {
         24 * graphicsScaling + (width / 2) * (this.model.optionIndex % 2) - textWidth,
         (height * 3 / 4 + 24 * graphicsScaling) + graphicsScaling * 24 * (this.model.optionIndex / 2));
     }
-
-    @Override
-    public String toString(){
-        return "BattleView";
-    }
 }

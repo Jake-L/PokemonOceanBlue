@@ -107,10 +107,4 @@ public class AchievementsView extends BaseView{
             }
         }
     }
-    
-    @Override
-    public String toString()
-    {
-        return "AchievementsView";
-    }
 }

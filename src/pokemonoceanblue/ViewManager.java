@@ -57,10 +57,10 @@ public class ViewManager extends JPanel {
             return;
         }
         if (this.view != null && 
-            (this.view.toString().equals("TitleScreenView")
-            || (this.view.toString().equals("OverworldView") && view.toString().equals("BattleView"))
-            || (this.view.toString().equals("BattleView") && view.toString().equals("OverworldView")
-            || (this.view.toString().equals("OverworldView") && view.toString().equals("OverworldView")))))
+            (this.view.getClass().getSimpleName().equals("TitleScreenView")
+            || (this.view.getClass().getSimpleName().equals("OverworldView") && view.getClass().getSimpleName().equals("BattleView"))
+            || (this.view.getClass().getSimpleName().equals("BattleView") && view.getClass().getSimpleName().equals("OverworldView")
+            || (this.view.getClass().getSimpleName().equals("OverworldView") && view.getClass().getSimpleName().equals("OverworldView")))))
         {
             this.newView = view;
             this.transitionCounter = this.TRANSITION_MAX;
@@ -118,7 +118,7 @@ public class ViewManager extends JPanel {
 
     public String getCurrentView()
     {
-        return this.view.toString();
+        return this.view.getClass().getSimpleName();
     }
 
     public boolean previousViewComplete()

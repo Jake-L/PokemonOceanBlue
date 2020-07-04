@@ -575,9 +575,4 @@ public class OverworldView extends BaseView {
         g.setColor(colour);
         g.fillRect(0, 0, width, height);
     }
-
-    @Override
-    public String toString(){
-        return "OverworldView";
-    }
 }
