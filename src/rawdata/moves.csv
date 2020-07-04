@@ -115,7 +115,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 116,Focus Energy,1,0,-1,0,1,7,0,0,0,0,48
 117,Bide,1,0,-1,1,2,7,0,0,0,0,27
 118,Metronome,1,0,-1,0,1,7,0,0,0,0,84
-120,Self-Destruct,1,200,100,0,2,9,0,0,0,0,8
+120,Self-Destruct,1,200,-1,0,2,9,0,0,0,0,8
 121,Egg Bomb,1,100,75,0,2,10,0,0,0,0,-1
 122,Lick,8,30,100,0,2,10,0,30,1,0,-1
 123,Smog,4,30,70,0,3,10,0,40,5,0,-1
@@ -148,7 +148,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 150,Splash,1,0,-1,0,1,7,0,0,0,0,86
 151,Acid Armor,4,0,-1,0,1,7,0,100,0,0,-1
 152,Crabhammer,11,100,90,0,2,10,0,0,0,0,44
-153,Explosion,1,250,100,0,2,9,0,0,0,0,8
+153,Explosion,1,250,-1,0,2,9,0,0,0,0,8
 154,Fury Swipes,1,18,80,0,2,10,0,0,0,0,30
 155,Bonemerang,5,50,90,0,2,10,0,0,0,0,45
 156,Rest,14,0,-1,0,1,7,0,0,0,0,38

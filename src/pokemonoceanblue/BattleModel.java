@@ -648,13 +648,20 @@ public class BattleModel extends BaseModel
                     duration = i;
                     break;
                 }
-                BattleEvent event = this.events.get(0);
-                event.damage = damageCalc(move, attacker, (attacker + 1) % 2);
+                BattleEvent event = new BattleEvent(attackingPokemon.name + " used " + move.name + ".",
+                    damageCalc(move, attacker, (attacker + 1) % 2), (attacker + 1) % 2, attacker, move, attacker, null);
                 this.events.add(1, event);
                 remainingHp -= event.damage;
             }
             BattleEvent event = new BattleEvent("Hit " + (duration + 1) + " time(s)!", attacker, -1, null);
             this.events.add(1 + duration, event);
+        }
+        //self destruct and explosion
+        else if (effectId == 8)
+        {
+            BattleEvent event = new BattleEvent(attackingPokemon.name + " used " + move.name + ".",
+                attackingPokemon.stats[0], attacker, attacker, move, -1, null);
+            this.events.add(event);
         }
     }
 
@@ -1028,7 +1035,8 @@ public class BattleModel extends BaseModel
             }
             if (!faintEventExists)
             {
-                BattleEvent event = new BattleEvent(this.team[damagedTeamIndex][this.currentPokemon[damagedTeamIndex]].name + " fainted.", -1, true, 1, -1, null);
+                BattleEvent event = new BattleEvent(this.team[damagedTeamIndex][this.currentPokemon[damagedTeamIndex]].name + " fainted.",
+                    -1, true, damagedTeamIndex, -1, null);
                 this.events.add(event);
                 if ((this.moveProcessed[0] || this.moveProcessed[1]) && (!this.moveProcessed[0] || !this.moveProcessed[1]))
                 {
