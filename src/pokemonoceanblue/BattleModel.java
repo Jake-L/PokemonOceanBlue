@@ -416,7 +416,9 @@ public class BattleModel extends BaseModel
             {
                 event = new BattleEvent(attackingPokemon.name + " is confused.", 0, attacker, attacker, null);
                 this.events.add(0, event);
-                this.events.get(1).move = attackingPokemon.moves[this.ranNum.nextInt(attackingPokemon.moves.length)];
+                MoveModel ranMove = attackingPokemon.moves[this.ranNum.nextInt(attackingPokemon.moves.length)];
+                this.events.get(1).move = ranMove;
+                this.events.get(1).text = attackingPokemon.name + " used " + ranMove.name + ".";
             }
             this.events.get(1).damage = damageCalc(this.events.get(1).move, attacker, (attacker + 1) % 2);
         }
@@ -631,6 +633,28 @@ public class BattleModel extends BaseModel
             //decide whether move will paralyze, freeze, or burn
             int ailmentId = ranNum.nextInt(3);
             this.statusEffect(attacker, (attacker + 1) % 2, move.effectChance, ailmentId + (ailmentId % 2) * 2 + 1);
+        }
+        //multiple hit moves
+        else if (effectId == 30 || effectId == 45)
+        {
+            //duration is number of hits - 1 because first hit is done in update
+            int duration = ranNum.nextInt(move.moveEffect.maxCounter - move.moveEffect.minCounter + 1) + move.moveEffect.minCounter - 1;
+            //use remaining hp to check if defending pokemon will faint prematurely
+            int remainingHp = this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]].currentHP - this.events.get(0).damage;
+            for (int i = 0; i < duration; i++)
+            {
+                if (remainingHp <= 0)
+                {
+                    duration = i;
+                    break;
+                }
+                BattleEvent event = this.events.get(0);
+                event.damage = damageCalc(move, attacker, (attacker + 1) % 2);
+                this.events.add(1, event);
+                remainingHp -= event.damage;
+            }
+            BattleEvent event = new BattleEvent("Hit " + (duration + 1) + " time(s)!", attacker, -1, null);
+            this.events.add(1 + duration, event);
         }
     }
 
@@ -1428,7 +1452,7 @@ public class BattleModel extends BaseModel
 
     class BattleEvent
     {
-        public final String text;
+        public String text;
         public int damage = 0;
         public int target = -1;
         public int newPokemonIndex = -2;
