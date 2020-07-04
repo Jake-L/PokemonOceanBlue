@@ -26,7 +26,7 @@ public class EvolutionCheck
             int triggerItemId;
             int genderId;
             int mapId;
-            String timeOfDay;
+            int timeOfDay;
 
             // load move data
             String query = "SELECT * FROM evolution_methods "
@@ -43,7 +43,7 @@ public class EvolutionCheck
                 triggerItemId = rs.getInt("trigger_item_id");
                 genderId = rs.getInt("gender_id");
                 mapId = rs.getInt("map_id");
-                timeOfDay = rs.getString("time_of_day");
+                timeOfDay = rs.getInt("time_of_day");
 
                 if (pokemon.pokemon_id != preSpeciesId)
                 {
@@ -65,8 +65,7 @@ public class EvolutionCheck
                 {
                     evolve = -1;
                 }
-                else if ((timeOfDay == "day" && Utils.getTimeOfDayId() == 0)
-                    || (timeOfDay == "night" && Utils.getTimeOfDayId() == 1))
+                else if (timeOfDay >= 0 && Utils.getTimeOfDayId() == timeOfDay)
                 {
                     return -1;
                 }

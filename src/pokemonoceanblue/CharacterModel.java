@@ -189,7 +189,6 @@ public class CharacterModel {
             // update the player's grid position immediately
             this.x += this.dx;
             this.y += this.dy;
-            System.out.printf("new position %s, %s\n", this.x, this.y);
         }
     }
 
@@ -210,6 +209,7 @@ public class CharacterModel {
 
                 if (updateOverworld)
                 {
+                    System.out.printf("new position %s, %s\n", this.x, this.y);
                     this.overworldModel.checkMovement(this.x, this.y);
                 }
             }

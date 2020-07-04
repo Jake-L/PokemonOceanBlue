@@ -456,7 +456,6 @@ public class App extends JFrame implements KeyListener
      */
     public void addModelQueue(BaseModel model)
     {
-        System.out.println("Adding " + model.getClass().getSimpleName() + " to queue.");
         this.modelQueue.add(0, model);
         this.currentController = null;
     }
@@ -531,8 +530,6 @@ public class App extends JFrame implements KeyListener
                 // update the players position
                 else if (viewManager.getCurrentView().equals("OverworldView"))
                 {
-                    playerModel.update(true);
-
                     if (oldPlayerModel != null)
                     {
                         // continue to animate the player's movement on the old map during a transition

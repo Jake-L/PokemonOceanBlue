@@ -564,7 +564,7 @@ public class BattleModel extends BaseModel
         if (ranNum.nextInt(101) <= move.effectChance)
         {
             String[] statChangeMessages = {" fell sharply.", " fell.", "", " rose.", " rose sharply."};
-            String[] changedStat = {"", " attack", " special attack", " defense", " special defense", " speed", " accuracy", " evasiveness"};
+            String[] changedStat = {"", " attack", " defense", " special attack", " special defense", " speed", " accuracy", " evasiveness"};
             int target = (attacker + 1) % 2;
             //loop through all stat changes in case there are multiple
             for (int i = 0; i < move.moveStatEffects.length; i++)
@@ -1354,6 +1354,23 @@ public class BattleModel extends BaseModel
         {
             enemyScalingFactor = Math.min(50, enemyScalingFactor);
         }
+
+        enemyScalingFactor = 35;
+
+        // limit the number of Pokemon the enemy can have in early stages of the game
+        int teamLimit = 3;
+        if (enemyScalingFactor >= 35)
+        {
+            teamLimit = 6;
+        }
+        else if (enemyScalingFactor >= 25)
+        {
+            teamLimit = 5;
+        }
+        else if (enemyScalingFactor >= 10)
+        {
+            teamLimit = 4;
+        }
         
         try
         {
@@ -1362,7 +1379,12 @@ public class BattleModel extends BaseModel
             // if there are multiple characters with the same conversation id
             // the trainer shown in battle is the one with the lowest character id
             String query = String.format("""
-                SELECT b.pokemon_id, b.level, c.name, c.sprite_name, COALESCE(c.music_id, 101) AS music_id
+                SELECT 
+                    COALESCE(em2.pre_species_id, em1.pre_species_id, b.pokemon_id), 
+                    b.level + @level_scaling, 
+                    c.name, 
+                    c.sprite_name, 
+                    COALESCE(c.music_id, 101) AS music_id
                 FROM battle b
                 INNER JOIN (select ch.name, ch.sprite_name, ch.music_id, cv.conversation_id, cv.battle_id,
                 ROW_NUMBER() OVER(ORDER BY ch.character_id ASC) AS char_num
@@ -1371,14 +1393,23 @@ public class BattleModel extends BaseModel
                 ON ch.conversation_id = cv.conversation_id
                 AND cv.battle_id = %s) c
                 ON b.battle_id = c.battle_id 
+                -- evolution is dynamic based on level scaling
+                LEFT JOIN evolution_methods em1
+                ON b.pokemon_id = em1.evolved_species_id
+                AND b.level + @level_scaling < em1.enemy_minimum_level
+                LEFT JOIN evolution_methods em2
+                ON em1.pre_species_id = em2.evolved_species_id
+                AND b.level + @level_scaling < em2.enemy_minimum_level
                 WHERE char_num = 1
-                """, battleId);
+                LIMIT %s
+                """.replace("@level_scaling", String.valueOf(enemyScalingFactor)), 
+                battleId, teamLimit);
 
             ResultSet rs = db.runQuery(query);
 
             while(rs.next()) 
             {
-                loadTeam.add(new PokemonModel(rs.getInt(1), rs.getInt(2) + enemyScalingFactor, false));
+                loadTeam.add(new PokemonModel(rs.getInt(1), rs.getInt(2), false));
                 this.trainerName = rs.getString(3);
                 this.trainerSpriteName = rs.getString(4);
                 this.musicId = rs.getInt(5);

@@ -216,7 +216,10 @@ public class DatabaseUtility
                     trigger_item_id INT NULL,
                     gender_id INT NULL,
                     map_id INT NULL,
-                    time_of_day VARCHAR(10) NULL,
+                    held_item_id INT NULL,
+                    time_of_day INT NULL,
+                    relative_physical_stats INT NULL,
+                    enemy_minimum_level INT NOT NULL,
                     FOREIGN KEY(pre_species_id) REFERENCES pokemon(pokemon_id),
                     FOREIGN KEY(evolved_species_id) REFERENCES pokemon(pokemon_id))
                 """;
@@ -226,11 +229,12 @@ public class DatabaseUtility
         path = "/rawdata/evolutionMethod.csv";
         query = """
                 INSERT INTO evolution_methods (
-                    pre_species_id, evolved_species_id, minimum_level, minimum_happiness, trigger_item_id, gender_id, map_id, time_of_day)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    pre_species_id, evolved_species_id, minimum_level, minimum_happiness, trigger_item_id, 
+                    gender_id, map_id, held_item_id, time_of_day, relative_physical_stats, enemy_minimum_level)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
        
-        dataTypes = new String[] {"int", "int", "int", "int", "int", "int", "int", "String"};
+        dataTypes = new String[] {"int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

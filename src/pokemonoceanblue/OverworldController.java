@@ -24,6 +24,8 @@ public class OverworldController extends BaseController {
     @Override
     public void userInput(List<Integer> keysDown)
     {
+        this.playerModel.update(true);
+
         if (this.model.actionCounter == 0)
         {
             if (keysDown.size() > 0)
