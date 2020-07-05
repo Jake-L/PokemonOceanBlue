@@ -1462,6 +1462,27 @@ public class BattleModel extends BaseModel
                 case 10:
                     this.badgeIndex = 0;
                     break;
+                case 12:
+                    this.badgeIndex = 1;
+                    break;
+                case 14:
+                    this.badgeIndex = 2;
+                    break;
+                case 15:
+                    this.badgeIndex = 3;
+                    break;
+                case 16:
+                    this.badgeIndex = 4;
+                    break;
+                case 17:
+                    this.badgeIndex = 5;
+                    break;
+                case 18:
+                    this.badgeIndex = 6;
+                    break;
+                case 19:
+                    this.badgeIndex = 7;
+                    break;
             }
         }
         catch (SQLException e) 

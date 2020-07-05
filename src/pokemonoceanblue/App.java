@@ -504,7 +504,7 @@ public class App extends JFrame implements KeyListener
                         }
 
                         // check if the player earned a badge
-                        if (this.battleModel.badgeIndex > -1)
+                        if (this.battleModel.badgeIndex > -1 && !this.badges[this.battleModel.badgeIndex])
                         {
                             this.badges[this.battleModel.badgeIndex] = true;
                             this.enemyScalingFactor += 5;
@@ -566,6 +566,7 @@ public class App extends JFrame implements KeyListener
                             // player won tournament
                             this.setMap(this.overworldModel.mapId + 2, 4, 5);
                             this.tournamentModel = null;
+                            this.enemyScalingFactor += 1;
                         }
                         else
                         {
