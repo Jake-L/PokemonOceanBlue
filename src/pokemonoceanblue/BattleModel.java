@@ -89,15 +89,15 @@ public class BattleModel extends BaseModel
 
         if (this.isWild)
         {
-            event = new BattleEvent("A wild " + this.team[1][0].name + " appeared!", 0, true, 1, -1, String.valueOf(this.team[1][0].pokemon_id));
+            event = new BattleEvent("A wild " + this.team[1][0].name + " appeared!", 0, true, 1, -1);
             this.events.add(event);
         }
         else
         {
-            event = new BattleEvent(this.trainerName + " sent out " + this.team[1][0].name + ".", 0, true, 1, -1, String.valueOf(this.team[1][0].pokemon_id));
+            event = new BattleEvent(this.trainerName + " sent out " + this.team[1][0].name + ".", 0, true, 1, -1);
             this.events.add(event);
         }
-        event = new BattleEvent("Trainer sent out " + this.team[0][firstPokemon].name + ".", firstPokemon, true, 0, -1, String.valueOf(this.team[0][firstPokemon].pokemon_id));
+        event = new BattleEvent("Trainer sent out " + this.team[0][firstPokemon].name + ".", firstPokemon, true, 0, -1);
         this.events.add(event);
         this.actionCounter = 100;
         this.loadData();
@@ -168,12 +168,7 @@ public class BattleModel extends BaseModel
                         int firstAttacker;
                         this.battleOptions = null;
                         this.attackEvent[0] = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " used " + this.team[0][this.currentPokemon[0]].moves[this.optionIndex].name + ".",
-                            1,
-                            1,
-                            0,
-                            this.team[0][this.currentPokemon[0]].moves[optionIndex],
-                            0,
-                            getAttackSound(0));
+                            1, 1, 0, this.team[0][this.currentPokemon[0]].moves[optionIndex], 0);
                         this.actionCounter = 60;
                         
                         this.attackEvent[1] = enemyAttackEvent();
@@ -230,7 +225,7 @@ public class BattleModel extends BaseModel
         }
         else
         {
-            BattleEvent event = new BattleEvent("Trainer used a " + itemId + ".", itemId, false, 0, -1, null);
+            BattleEvent event = new BattleEvent("Trainer used a " + itemId + ".", itemId, false, 0, -1);
             this.events.add(event);
             this.actionCounter = 60;            
             this.events.add(this.enemyAttackEvent());
@@ -248,15 +243,9 @@ public class BattleModel extends BaseModel
         }
         else if (this.team[0][this.currentPokemon[0]].currentHP > 0)
         {
-            BattleEvent event = new BattleEvent(
-                "Trainer withdrew " + this.team[0][Math.abs(this.currentPokemon[0])].name + ".", 
-                -1,
-                true,
-                0,
-                -1,
-                null);
+            BattleEvent event = new BattleEvent("Trainer withdrew " + this.team[0][Math.abs(this.currentPokemon[0])].name + ".", -1, true, 0, -1);
             this.events.add(event);
-            event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", pokemon, true, 0, -1, String.valueOf(this.team[0][pokemon].pokemon_id));
+            event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", pokemon, true, 0, -1);
             this.events.add(event);
             this.actionCounter = 60;
 
@@ -265,7 +254,7 @@ public class BattleModel extends BaseModel
         }
         else
         {
-            BattleEvent event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", pokemon, true, 0, -1, String.valueOf(this.team[0][pokemon].pokemon_id));
+            BattleEvent event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", pokemon, true, 0, -1);
             this.events.add(event);
             this.actionCounter = 100;
         }
@@ -312,12 +301,7 @@ public class BattleModel extends BaseModel
     {
         this.enemyMove = ranNum.nextInt(this.team[1][this.currentPokemon[1]].moves.length);
         BattleEvent enemyAttackEvent = new BattleEvent("Enemy " + this.team[1][this.currentPokemon[1]].name + " used " + this.team[1][this.currentPokemon[1]].moves[enemyMove].name + ".",
-            1,
-            0,
-            1,
-            this.team[1][this.currentPokemon[1]].moves[enemyMove],
-            1,
-            getAttackSound(1));
+            1, 0, 1, this.team[1][this.currentPokemon[1]].moves[enemyMove], 1);
         return enemyAttackEvent;
     }
 
@@ -346,7 +330,8 @@ public class BattleModel extends BaseModel
      * creates event for the status effect inflicted by current move
      * @param attacker the attacking team
      * @param defender the defending team
-     * @param move the move that inflicts the status effect
+     * @param effectChance the chance that the move that inflicts the status effect
+     * @param ailmentId the status effect to be inflicted
      */
     private void statusEffect(int attacker, int defender, int effectChance, int ailmentId)
     {
@@ -356,7 +341,7 @@ public class BattleModel extends BaseModel
             if (ailmentId < 9)
             {
                 BattleEvent event = new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + statusEffectMessages[ailmentId - 1], 
-                    ailmentId, defender, defender, null);
+                    ailmentId, defender, defender);
                 this.events.add(event);
             }
         }
@@ -382,10 +367,7 @@ public class BattleModel extends BaseModel
                 (attackingPokemon.statusEffect == 3 && this.ranNum.nextInt(101) < 31))
             {
                 event = new BattleEvent(attackingPokemon.name + (attackingPokemon.statusEffect == 2 ? " woke up!" : " thawed out."),
-                    0,
-                    attacker,
-                    attacker,
-                    null);
+                    0, attacker, attacker);
                 this.events.add(0, event);
                 this.events.get(1).damage = damageCalc(this.events.get(1).move, attacker, (attacker + 1) % 2);
             }
@@ -414,7 +396,7 @@ public class BattleModel extends BaseModel
             }
             else
             {
-                event = new BattleEvent(attackingPokemon.name + " is confused.", 0, attacker, attacker, null);
+                event = new BattleEvent(attackingPokemon.name + " is confused.", 0, attacker, attacker);
                 this.events.add(0, event);
                 MoveModel ranMove = attackingPokemon.moves[this.ranNum.nextInt(attackingPokemon.moves.length)];
                 this.events.get(1).move = ranMove;
@@ -441,8 +423,7 @@ public class BattleModel extends BaseModel
             if (statusEffect > 3 && statusEffect < 8)
             {
                 BattleEvent event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + effectMessages[this.team[i][this.currentPokemon[i]].statusEffect - 4],
-                    (int)Math.ceil(this.team[i][this.currentPokemon[i]].stats[0] / 8.0),
-                    i, i, null, i, null);
+                    (int)Math.ceil(this.team[i][this.currentPokemon[i]].stats[0] / 8.0), i, i, null, i);
 
                 //badly poisoned
                 if (this.team[i][this.currentPokemon[i]].statusEffect == 6)
@@ -469,12 +450,12 @@ public class BattleModel extends BaseModel
                 {
                     if (effect.damage != 0)
                     {
-                        BattleEvent event = new BattleEvent(effect.text, effect.damage, effect.target, effect.attacker, null, effect.target, null);
+                        BattleEvent event = new BattleEvent(effect.text, effect.damage, effect.target, effect.attacker, null, effect.target);
                         this.events.add(event);
                     }
                     if (effect.recoil != 0)
                     {
-                        BattleEvent event = new BattleEvent(effect.text, effect.recoil, effect.attacker, effect.attacker, null, effect.target, null);
+                        BattleEvent event = new BattleEvent(effect.text, effect.recoil, effect.attacker, effect.attacker, null, effect.target);
                         this.events.add(event);
                     }
                 }
@@ -509,7 +490,7 @@ public class BattleModel extends BaseModel
                 if (!isImmune)
                 {
                     BattleEvent event = new BattleEvent(pokemon.name + " is hurt by the " + effectMessages[this.weather + 1],
-                        (int)Math.ceil(pokemon.stats[0] / 16.0), i, i, null, i, null);
+                        (int)Math.ceil(pokemon.stats[0] / 16.0), i, i, null, i);
                     this.events.add(event);
                 }
             }    
@@ -552,7 +533,7 @@ public class BattleModel extends BaseModel
         }
 
         BattleEvent event = new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name +
-            (move.recoil < 0 ? " healed itself." : " is hit with recoil."), damage, attacker, attacker, null, attacker, null);
+            (move.recoil < 0 ? " healed itself." : " is hit with recoil."), damage, attacker, attacker, null, attacker);
         this.events.add(event);
     }
 
@@ -649,7 +630,7 @@ public class BattleModel extends BaseModel
                     break;
                 }
                 BattleEvent event = new BattleEvent(attackingPokemon.name + " used " + move.name + ".",
-                    damageCalc(move, attacker, (attacker + 1) % 2), (attacker + 1) % 2, attacker, move, attacker, null);
+                    damageCalc(move, attacker, (attacker + 1) % 2), (attacker + 1) % 2, attacker, move, attacker);
                 this.events.add(1, event);
                 remainingHp -= event.damage;
             }
@@ -660,7 +641,7 @@ public class BattleModel extends BaseModel
         else if (effectId == 8)
         {
             BattleEvent event = new BattleEvent(attackingPokemon.name + " used " + move.name + ".",
-                attackingPokemon.stats[0], attacker, attacker, move, -1, null);
+                attackingPokemon.stats[0], attacker, attacker, move, -1);
             this.events.add(event);
         }
     }
@@ -1036,7 +1017,7 @@ public class BattleModel extends BaseModel
             if (!faintEventExists)
             {
                 BattleEvent event = new BattleEvent(this.team[damagedTeamIndex][this.currentPokemon[damagedTeamIndex]].name + " fainted.",
-                    -1, true, damagedTeamIndex, -1, null);
+                    -1, true, damagedTeamIndex, -1);
                 this.events.add(event);
                 if ((this.moveProcessed[0] || this.moveProcessed[1]) && (!this.moveProcessed[0] || !this.moveProcessed[1]))
                 {
@@ -1051,17 +1032,13 @@ public class BattleModel extends BaseModel
                     this.team[0][this.currentPokemon[0]].updateHappiness(1);
                     this.team[0][this.currentPokemon[0]].updateIVs(this.team[1][this.currentPokemon[1]].ivGain);
                     int xp = xpCalc(this.team[1][this.currentPokemon[1]].level);
-                    event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " gained " + xp + " experience.", xp, 0, 0);
+                    event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " gained " + xp + " experience.", xp, 0, true);
                     this.events.add(event);
                     //send out enemy's next pokemon if any remain
                     if (!teamFainted(1))
                     {
                         event = new BattleEvent(this.trainerName + " sent out " + this.team[1][this.currentPokemon[1] + 1].name, 
-                            this.currentPokemon[1] + 1, 
-                            true, 
-                            1,
-                            -1,
-                            String.valueOf(this.team[1][this.currentPokemon[1] + 1].pokemon_id));
+                            this.currentPokemon[1] + 1, true, 1, -1);
                         this.events.add(event);
                     }
                 }
@@ -1162,11 +1139,24 @@ public class BattleModel extends BaseModel
             this.attackEvent[1] = null;
             this.moveProcessed[attacker] = true;
         }
-
-        else if (this.events.size() > 0 && this.events.get(0).sound != null)
+        //determine the sound that will be played for current event if applicable
+        if (this.actionCounter == 60 && this.events.size() > 0)
         {
-            this.soundEffect = this.events.get(0).sound;
-            this.events.get(0).sound = null;
+            if (this.events.get(0).damage > 0)
+            {
+                if (this.events.get(0).move != null)
+                {
+                    this.soundEffect = this.getAttackSound(this.events.get(0).attacker);
+                }
+                else
+                {
+                    this.soundEffect = "damage";
+                }
+            }
+            else if (this.events.get(0).newPokemonIndex > -1)
+            {
+                this.soundEffect = String.valueOf(this.team[this.events.get(0).attacker][this.events.get(0).newPokemonIndex].pokemon_id);
+            }
         }
 
         if (this.actionCounter > 0)
@@ -1212,11 +1202,7 @@ public class BattleModel extends BaseModel
                         {
                             this.events.add(2, new BattleEvent(
                                 this.team[0][this.currentPokemon[0]].name + " wants to learn " + newMoves.get(i).name + ", however it already knows four moves.", 
-                                0, 
-                                0, 
-                                newMoves.get(i),
-                                null
-                            ));
+                                0, 0, newMoves.get(i)));
                         }
                         
                     }
@@ -1519,7 +1505,6 @@ public class BattleModel extends BaseModel
         public int itemId = -1;
         public int attacker;
         public int xp = 0;
-        public String sound;
         public int statusEffect = -1;
         public MoveModel move;
         public int removalCondition;
@@ -1531,14 +1516,12 @@ public class BattleModel extends BaseModel
          * @param text the text that will be displayed
          * @param attacker the team performing the event
          * @param removalCondition determines whether the event should be removed when a pokemon faints
-         * @param sound the file name of sound effect to be played when the event occurs
          */
-        public BattleEvent(String text, int attacker, int removalCondition, String sound)
+        public BattleEvent(String text, int attacker, int removalCondition)
         {
             this.text = text;
             this.attacker = attacker;
             this.removalCondition = removalCondition;
-            this.sound = sound;
         }
 
         /** 
@@ -1546,9 +1529,9 @@ public class BattleModel extends BaseModel
          * @param statusEffect the status effect that will be applied
          * @param target the pokemon that will recieve the status effect
          */
-        public BattleEvent(String text, int statusEffect, int target, int removalCondition, String sound)
+        public BattleEvent(String text, int statusEffect, int target, int removalCondition)
         {
-            this(text, target, removalCondition, sound);
+            this(text, target, removalCondition);
             this.statusEffect = statusEffect;
             this.target = target;
         }
@@ -1559,9 +1542,9 @@ public class BattleModel extends BaseModel
          * @param target the pokemon that will recieve the damage
          * @param move the move that inflicts the damage (null if damage is not applied by a move)
          */
-        public BattleEvent(String text, int damage, int target, int attacker, MoveModel move, int removalCondition, String sound)
+        public BattleEvent(String text, int damage, int target, int attacker, MoveModel move, int removalCondition)
         {
-            this(text, attacker, removalCondition, sound);
+            this(text, attacker, removalCondition);
             this.damage = damage;
             this.target = target;
             this.move = move;
@@ -1571,20 +1554,21 @@ public class BattleModel extends BaseModel
          * Constructor for xp gained by the players pokemon
          * @param xp the amount of xp earned
          */
-        public BattleEvent(String text, int xp, int attacker, int removalCondition)
+        public BattleEvent(String text, int xp, int attacker, boolean isXp)
         {
-            this(text, attacker, removalCondition, null);
+            this(text, attacker, attacker);
             this.xp = xp;
         }
 
         /** 
          * Constructor for using an item or changing pokemon
          * @param index is the index of the item or pokemon used
-         * @param isPokemon determines whether index refers to item or pokemon
+         * @param isPokemon determines whether index refers to item or 
+         * @param sound the file name of sound effect to be played when the event occurs
          */
-        public BattleEvent(String text, int index, boolean isPokemon, int attacker, int removalCondition, String sound)
+        public BattleEvent(String text, int index, boolean isPokemon, int attacker, int removalCondition)
         {
-            this(text, attacker, removalCondition, sound);
+            this(text, attacker, removalCondition);
             
             if (!isPokemon)
             {
@@ -1602,9 +1586,9 @@ public class BattleModel extends BaseModel
          * @param target the pokemon learning the new move
          * @param newMove the move the pokemon wants to learn
          */
-        public BattleEvent(String text, int target, int removalCondition, MoveModel newMove, String sound)
+        public BattleEvent(String text, int target, int removalCondition, MoveModel newMove)
         {
-            this(text, target, removalCondition, sound);
+            this(text, target, removalCondition);
             this.newMove = newMove;
         }
 
@@ -1614,7 +1598,7 @@ public class BattleModel extends BaseModel
          */
         public BattleEvent(String text, int attacker, int removalCondition, byte newWeatherId)
         {
-            this(text, attacker, removalCondition, null);
+            this(text, attacker, removalCondition);
             this.newWeatherId = newWeatherId;
         }
     }
