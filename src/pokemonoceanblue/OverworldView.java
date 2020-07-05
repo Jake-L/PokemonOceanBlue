@@ -293,6 +293,9 @@ public class OverworldView extends BaseView {
         {
             this.renderWeather(this.model.weather, g, canvas);
         }
+
+        // put text colour back to black
+        g.setColor(colour);
         
         // display conversation text
         if (this.model.conversation != null && this.model.conversation.getText() != null)
