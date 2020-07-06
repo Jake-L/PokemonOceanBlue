@@ -757,19 +757,36 @@ public class BattleModel extends BaseModel
             //check for move effect that determines moves damage
             if (move.moveEffect != null)
             {
+                int effectId = move.moveEffect.effectId;
                 if (this.typeModifier[attacker] > 0)
                 {
-                    if (move.moveEffect.effectId == 42)
+                    if (effectId == 42)
                     {
                         return move.power;
                     }
-                    if (move.moveEffect.effectId == 88)
+                    if (effectId == 88)
                     {
                         return attackingPokemon.level;
                     }
-                    if (move.moveEffect.effectId == 44)
+                    if (effectId == 44)
                     {
                         critChance += 10;
+                    }
+                    else if (effectId == 122)
+                    {
+                        move.power = (int)Math.ceil(attackingPokemon.happiness / 2.0);
+                    }
+                    else if (effectId == 124)
+                    {
+                        move.power = (int)Math.ceil((200 - attackingPokemon.happiness) / 2.0);
+                    }
+                    else if (effectId == 170 && (attackingPokemon.statusEffect == 1 || attackingPokemon.statusEffect == 4 || attackingPokemon.statusEffect == 5))
+                    {
+                        otherModifiers *= 2.0f;
+                    }
+                    else if (effectId == 222 && defendingPokemon.currentHP < Math.ceil(defendingPokemon.stats[0] / 2.0))
+                    {
+                        otherModifiers *= 2.0f;
                     }
                 }
                 if (move.moveEffect.effectId == 41)

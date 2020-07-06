@@ -7,10 +7,8 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import pokemonoceanblue.App;
 import pokemonoceanblue.BattleModel;
 import pokemonoceanblue.MoveModel;
-import pokemonoceanblue.PartyModel;
 import pokemonoceanblue.PokemonModel;
 
 public class BattleTests {
