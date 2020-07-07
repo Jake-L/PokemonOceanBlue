@@ -691,6 +691,7 @@ public class BattleModel extends BaseModel
     {
         int attack_stat;
         int defense_stat;
+        int movePower = move.power;
         this.typeModifier[attacker] = 1;
         float otherModifiers = 1.0f;
         PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
@@ -742,7 +743,7 @@ public class BattleModel extends BaseModel
                 {
                     if (effectId == 42)
                     {
-                        return move.power;
+                        return movePower;
                     }
                     if (effectId == 88)
                     {
@@ -754,11 +755,11 @@ public class BattleModel extends BaseModel
                     }
                     else if (effectId == 122)
                     {
-                        move.power = (int)Math.ceil(attackingPokemon.happiness / 2.0);
+                        movePower = (int)Math.ceil(attackingPokemon.happiness / 2.0);
                     }
                     else if (effectId == 124)
                     {
-                        move.power = (int)Math.ceil((200 - attackingPokemon.happiness) / 2.0);
+                        movePower = (int)Math.ceil((200 - attackingPokemon.happiness) / 2.0);
                     }
                     else if (effectId == 170 && (attackingPokemon.statusEffect == 1 || attackingPokemon.statusEffect == 4 || attackingPokemon.statusEffect == 5))
                     {
@@ -767,6 +768,19 @@ public class BattleModel extends BaseModel
                     else if (effectId == 222 && defendingPokemon.currentHP < Math.ceil(defendingPokemon.stats[0] / 2.0))
                     {
                         otherModifiers *= 2.0f;
+                    }
+                    else if (effectId == 284 && defendingPokemon.statusEffect == 5)
+                    {
+                        otherModifiers *= 2.0f;
+                    }
+                    else if (effectId == 238)
+                    {
+                        movePower = 1 + 120 * defendingPokemon.currentHP / defendingPokemon.stats[0];
+                    }
+                    else if (effectId == 294)
+                    {
+                        int speedRatio = Math.min(attackingPokemon.stats[5] / defendingPokemon.stats[5], 4);
+                        movePower = (speedRatio < 2 ? 60 : speedRatio * 40 - (speedRatio / 4) * 10);
                     }
                 }
                 if (move.moveEffect.effectId == 41)
@@ -780,7 +794,7 @@ public class BattleModel extends BaseModel
                 return 0;
             }
             //one hit KO
-            if (move.power == -1)
+            if (movePower == -1)
             {
                 this.isOneHit[attacker] = true;
                 return defendingPokemon.currentHP;
@@ -791,7 +805,7 @@ public class BattleModel extends BaseModel
                 otherModifiers *= 1.5f;
             }
             //critical hit bonus
-            if (this.ranNum.nextInt(100 - critChance) == 0 && move.power > 0)
+            if (this.ranNum.nextInt(100 - critChance) == 0 && movePower > 0)
             {
                 otherModifiers *= 1.5f;
                 this.isCrit[attacker] = true;
@@ -803,7 +817,7 @@ public class BattleModel extends BaseModel
             }
             return (int)Math.ceil((
                         (attackingPokemon.level * 2.0 / 5.0 + 2.0)
-                        * (move.power) 
+                        * (movePower) 
                         * (attackingPokemon.getStat(attack_stat, this.statChanges[attacker][attack_stat]) * 1.0
                         / defendingPokemon.getStat(defense_stat, this.statChanges[defender][defense_stat])) / 50 + 2) 
                     * this.typeModifier[attacker] * otherModifiers);
