@@ -62,7 +62,7 @@ public class App extends JFrame implements KeyListener
         new App();
     }
 
-    private void createAndShowGUI() {
+    protected void createAndShowGUI() {
         // this code should be uncommented when testing database changes
         DatabaseUtility db = new DatabaseUtility();
         db.prepareDatabase();
@@ -504,7 +504,10 @@ public class App extends JFrame implements KeyListener
                         }
 
                         // check if the player earned a badge
-                        if (this.battleModel.badgeIndex > -1 && !this.badges[this.battleModel.badgeIndex])
+                        if (this.battleModel.badgeIndex > -1 
+                            && !this.badges[this.battleModel.badgeIndex] 
+                            // make sure they don't earn badges from fighting gym leaders in tournaments
+                            && this.overworldModel.mapId < 1000)
                         {
                             this.badges[this.battleModel.badgeIndex] = true;
                             this.enemyScalingFactor += 5;

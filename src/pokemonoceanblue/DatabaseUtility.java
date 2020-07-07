@@ -11,7 +11,6 @@ public class DatabaseUtility
     // db parameters
     String url;
 
-
     /** 
      * Constructor
      */
@@ -299,6 +298,7 @@ public class DatabaseUtility
                     x INT NOT NULL,
                     y INT NOT NULL,
                     y_adjust INT NULL DEFAULT 0,
+                    PRIMARY KEY (map_id, area_id, x, y),
                     FOREIGN KEY(map_id) REFERENCES map_template(map_id))
                 """;
         runUpdate(query);
