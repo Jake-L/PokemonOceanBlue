@@ -1096,8 +1096,9 @@ public class BattleModel extends BaseModel
             int attacker = this.events.get(0).attacker;
             int attackEventIndex = this.canAttack(attacker);
             this.effectivenessMessage(this.typeModifier[attacker], attacker);
-            if ((attackEventIndex > -1 && this.events.get(attackEventIndex).move != null && !this.attackMissed[attacker]) || 
-                (this.events.get(0).move.moveEffect != null && this.events.get(0).move.moveEffect.effectId == 46))
+            if (attackEventIndex > -1 && this.events.get(attackEventIndex).move != null && 
+                ((!this.attackMissed[attacker]) || 
+                (this.events.get(attackEventIndex).move.moveEffect != null && this.events.get(attackEventIndex).move.moveEffect.effectId == 46)))
             {
                 MoveModel move = this.events.get(attackEventIndex).move;
                 if (move.moveEffect != null && move.moveEffect.effectId > -1)
@@ -1359,8 +1360,6 @@ public class BattleModel extends BaseModel
         {
             enemyScalingFactor = Math.min(50, enemyScalingFactor);
         }
-
-        enemyScalingFactor = 35;
 
         // limit the number of Pokemon the enemy can have in early stages of the game
         int teamLimit = 3;

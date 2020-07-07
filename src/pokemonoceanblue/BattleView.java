@@ -277,14 +277,6 @@ public class BattleView extends BaseView {
                 (int)(96 * ((double)(xpCurrent - xpMin) / (xpMax - xpMin)) * graphicsScaling),
                 this.xp.getHeight(null) * graphicsScaling,
                 canvas);
-
-            //displays health of trainer pokemon
-            g.drawString(String.valueOf(this.model.team[0][this.model.currentPokemon[0]].currentHP),
-                (int)(width * (9.0 / 10.0)) - ((this.statusWindow[0].getWidth(null) - 88) * graphicsScaling) - g.getFontMetrics(font).stringWidth(String.valueOf(this.model.team[0][this.model.currentPokemon[0]].currentHP)),
-                height / 2 + 38 * graphicsScaling);
-            g.drawString(String.valueOf(this.model.team[0][this.model.currentPokemon[0]].stats[Stat.HP]),
-                (int)(width * (9.0 / 10.0)) - ((this.statusWindow[0].getWidth(null) - 97) * graphicsScaling),
-                height / 2 + 38 * graphicsScaling);
         }
 
         // render enemy Pokemon's status window
@@ -354,6 +346,7 @@ public class BattleView extends BaseView {
 
     private void renderPokemonStatusWindow(int teamIndex, Graphics g, JPanel canvas)
     {
+        Font font = new Font("Pokemon Fire Red", Font.PLAIN, 12 * graphicsScaling);    
         int x = teamIndex == 0 ? width * 9 / 10 - (this.statusWindow[0].getWidth(null) * graphicsScaling): width / 10;
         int y = teamIndex == 0 ? height / 2 : height / 10;
 
@@ -397,21 +390,23 @@ public class BattleView extends BaseView {
 
         //allows for gradual change in health bar visual
         double damage = 0.0;
-        if (this.model.events.size() > 0 && this.model.events.get(0).damage > -1 && this.model.events.get(0).target == teamIndex)
+        if (this.model.events.size() > 0 && this.model.events.get(0).damage != 0 && this.model.events.get(0).target == teamIndex)
         {
-            damage = Math.min((this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].currentHP / 60.0), (this.model.events.get(0).damage / 60.0));
+            damage = Math.min((this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].currentHP / 50.0), (this.model.events.get(0).damage / 50.0))
+                * Math.max(0, 50 - this.model.actionCounter);
         }
 
+        int maxHP = this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].stats[Stat.HP];
+        double renderHP = Math.min(Math.max(this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].currentHP - damage, 0), maxHP);
+        
         //get health bar colour
         byte healthBarFillIndex = 0;
 
-        if((double)(this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].currentHP 
-            - (damage * (60 - this.model.actionCounter))) / this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].stats[Stat.HP] < 0.2)
+        if (Math.ceil(renderHP) / maxHP < 0.2)
         {
             healthBarFillIndex = 2;
         }
-        else if((double)(this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].currentHP 
-            - (damage * (60 - this.model.actionCounter))) / this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].stats[Stat.HP] < 0.5)
+        else if (Math.ceil(renderHP) / maxHP < 0.5)
         {
             healthBarFillIndex = 1;
         }
@@ -420,10 +415,20 @@ public class BattleView extends BaseView {
         g.drawImage(this.healthBarFill[healthBarFillIndex],
             x + (72 - 22 * teamIndex) * graphicsScaling,
             y + (25 - teamIndex) * graphicsScaling,
-            (int)Math.ceil(this.healthBarFill[0].getWidth(null) * 
-                ((this.model.team[teamIndex][model.currentPokemon[teamIndex]].currentHP - (damage * (60 - this.model.actionCounter))) * 48.0 / this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].stats[Stat.HP]) * graphicsScaling),
+            (int)Math.ceil(this.healthBarFill[0].getWidth(null) * renderHP * 48.0 / maxHP * graphicsScaling),
             this.healthBarFill[0].getHeight(null) * graphicsScaling,
             canvas);
+
+        if (teamIndex == 0)
+        {
+            //displays health of trainer pokemon
+            g.drawString(String.valueOf((int) Math.ceil(renderHP)),
+                (int)(width * (9.0 / 10.0)) - ((this.statusWindow[0].getWidth(null) - 88) * graphicsScaling) - g.getFontMetrics(font).stringWidth(String.valueOf((int) Math.ceil(renderHP))),
+                height / 2 + 38 * graphicsScaling);
+            g.drawString(String.valueOf(maxHP),
+                (int)(width * (9.0 / 10.0)) - ((this.statusWindow[0].getWidth(null) - 97) * graphicsScaling),
+                height / 2 + 38 * graphicsScaling);
+        }
     }
 
     private void renderPokemon(int teamIndex, Graphics g, JPanel canvas)
