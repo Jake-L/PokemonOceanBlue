@@ -131,7 +131,7 @@ move_id,name,type_id,power,accuracy,priority,damage_class_id,target_id,flinch_ch
 133,Amnesia,14,0,-1,0,1,7,0,100,0,0,-1
 134,Kinesis,14,0,80,0,1,10,0,100,0,0,-1
 135,Soft-Boiled,1,0,-1,0,1,7,0,0,0,-50,-1
-136,High Jump Kick,2,130,90,0,2,10,0,0,0,0,46
+136,Hi Jump Kick,2,130,90,0,2,10,0,0,0,0,46
 137,Glare,1,0,100,0,1,10,0,100,1,0,-1
 138,Dream Eater,14,100,100,0,3,10,0,0,0,-50,9
 139,Poison Gas,4,0,90,0,1,11,0,100,5,0,-1

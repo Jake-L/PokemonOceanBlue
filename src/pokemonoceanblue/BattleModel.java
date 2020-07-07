@@ -1110,9 +1110,10 @@ public class BattleModel extends BaseModel
             int attacker = this.events.get(0).attacker;
             int attackEventIndex = this.canAttack(attacker);
             this.effectivenessMessage(this.typeModifier[attacker], attacker);
-            if (attackEventIndex > -1 && this.events.get(attackEventIndex).move != null && 
-                ((!this.attackMissed[attacker]) || 
-                (this.events.get(attackEventIndex).move.moveEffect != null && this.events.get(attackEventIndex).move.moveEffect.effectId == 46)))
+            //check if attack will occur or if move is self-destruct, explosion, or hi jump kick before applying effects
+            if (attackEventIndex > -1 && this.events.get(attackEventIndex).move != null && (!this.attackMissed[attacker] ||
+                (this.events.get(attackEventIndex).move.moveEffect != null &&
+                (this.events.get(attackEventIndex).move.moveEffect.effectId == 46 || this.events.get(attackEventIndex).move.moveEffect.effectId == 8))))
             {
                 MoveModel move = this.events.get(attackEventIndex).move;
                 if (move.moveEffect != null && move.moveEffect.effectId > -1)
@@ -1208,9 +1209,7 @@ public class BattleModel extends BaseModel
                                 this.team[0][this.currentPokemon[0]].name + " wants to learn " + newMoves.get(i).name + ", however it already knows four moves.", 
                                 0, 0, newMoves.get(i)));
                         }
-                        
                     }
-
                     // flag that the pokemon leveled up and may evolve
                     this.evolveQueue[this.currentPokemon[0]] = true;
                 }
