@@ -135,7 +135,8 @@ public class PartyModel extends BaseModel
                 this.optionIndex = -1; 
             }
             // if in battle, return the chosen Pokemon if it isn't the currently active Pokemon
-            else if (this.battleActivePokemon != this.optionIndex && this.team.get(this.optionIndex).level > 0)
+            else if (this.battleActivePokemon != this.optionIndex && this.team.get(this.optionIndex).level > 0 &&
+                this.team.get(this.optionIndex).currentHP > 0)
             {
                 this.returnValue = this.optionIndex;
                 this.optionIndex = -1;
