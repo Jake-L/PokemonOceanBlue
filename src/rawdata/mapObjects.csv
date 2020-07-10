@@ -33,6 +33,7 @@ map_id,area_id,name,x,y,y_offset
 34,0,gymStatue,3,17,0
 34,0,ceruleanGymInterior,0,17,-17
 34,0,gymWall,0,2,0
+33,4,house7,15,16,0
 33,1,house7,50,40,0
 33,1,house7,49,21,0
 33,1,battleTent,48,29,0
