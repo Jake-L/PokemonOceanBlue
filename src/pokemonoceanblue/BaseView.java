@@ -390,18 +390,6 @@ abstract class BaseView {
 
     protected void renderSunny(Graphics g, JPanel canvas)
     {
-        int distance = 512;
-        float speed = 0.03f;
-        long input_x = (System.currentTimeMillis() / 8) % distance - (distance / 2);
-        g.drawImage(
-            sunnySprite[0],
-            width * 3 / 4 + (int)(Math.pow(speed * input_x, 2) * graphicsScaling),
-            (int)(Math.pow(speed * input_x, 2) * graphicsScaling),
-            sunnySprite[0].getWidth(null) * graphicsScaling,
-            sunnySprite[0].getHeight(null) * graphicsScaling,
-            canvas
-        );
-
         // tint the screen yellow
         g.setColor(new Color(1.0f, 1.0f, 0, 0.15f));
         g.fillRect(0, 0, width, height);
