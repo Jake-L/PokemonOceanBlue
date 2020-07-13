@@ -411,17 +411,17 @@ public class BattleModel extends BaseModel
             if (statusEffect > 3 && statusEffect < 8)
             {
                 BattleEvent event = new BattleEvent(this.team[i][this.currentPokemon[i]].name + effectMessages[this.team[i][this.currentPokemon[i]].statusEffect - 4],
-                    (int)Math.ceil(this.team[i][this.currentPokemon[i]].stats[0] / 8.0), i, i, null, i);
+                    (int)Math.ceil(this.team[i][this.currentPokemon[i]].stats[Stat.HP] / 8.0), i, i, null, i);
 
                 //badly poisoned
                 if (this.team[i][this.currentPokemon[i]].statusEffect == 6)
                 {
-                    event.damage = (int)Math.ceil((this.team[i][this.currentPokemon[i]].stats[0] * (1 + this.statusEffectCounter[i][this.currentPokemon[i]])) / 8.0);
+                    event.damage = (int)Math.ceil((this.team[i][this.currentPokemon[i]].stats[Stat.HP] * (1 + this.statusEffectCounter[i][this.currentPokemon[i]])) / 8.0);
                 }
                 //curse
                 else if (this.team[i][this.currentPokemon[i]].statusEffect == 7)
                 {
-                    event.damage = (int)Math.ceil(this.team[i][this.currentPokemon[i]].stats[0] / 4.0);
+                    event.damage = (int)Math.ceil(this.team[i][this.currentPokemon[i]].stats[Stat.HP] / 4.0);
                 }
                 this.events.add(event);
             }
@@ -467,15 +467,15 @@ public class BattleModel extends BaseModel
                 boolean isImmune = false;
                 for (int j = 0; j < pokemon.types.length; j++)
                 {
-                    if (pokemon.currentHP == 0 || (this.weather == 3 && (pokemon.types[j] == 9 || pokemon.types[j] == 6 || pokemon.types[j] == 5)) ||
-                        (this.weather == 4 && pokemon.types[j] == 15))
+                    if (pokemon.currentHP == 0 || (this.weather == 3 && (pokemon.types[j] == Type.STEEL || pokemon.types[j] == Type.ROCK || pokemon.types[j] == Type.GROUND)) ||
+                        (this.weather == 4 && pokemon.types[j] == Type.ICE))
                     {
                         isImmune = true;
                     }
                 }
                 if (!isImmune)
                 {
-                    this.events.add(new BattleEvent(pokemon.name + " is hurt by the " + effectMessages[this.weather + 1], (int)Math.ceil(pokemon.stats[0] / 16.0),
+                    this.events.add(new BattleEvent(pokemon.name + " is hurt by the " + effectMessages[this.weather + 1], (int)Math.ceil(pokemon.stats[Stat.HP] / 16.0),
                         i, i, null, i));
                 }
             }    
@@ -493,7 +493,7 @@ public class BattleModel extends BaseModel
         //moves that have power=0 use attackers max hp to calc healing/recoil
         if (move.power == 0)
         {
-            damage = (int)(this.team[attacker][this.currentPokemon[attacker]].stats[0] * (move.recoil / 100.0));
+            damage = (int)(this.team[attacker][this.currentPokemon[attacker]].stats[Stat.HP] * (move.recoil / 100.0));
             //morning sun, moonlight, synthesis heal for 2/3 hp when sun is shining 1/2 hp in clear weather 1/4 in other weather
             if (move.moveEffect != null && move.moveEffect.effectId == 141)
             {
@@ -623,12 +623,12 @@ public class BattleModel extends BaseModel
         //self destruct and explosion
         else if (effectId == 8)
         {
-            this.events.add(new BattleEvent(attackingPokemon.name + " used " + move.name + ".", attackingPokemon.stats[0], attacker, attacker, move, -1));
+            this.events.add(new BattleEvent(attackingPokemon.name + " used " + move.name + ".", attackingPokemon.stats[Stat.HP], attacker, attacker, move, -1));
         }
         //high-jump-kick
         else if (effectId == 46 && this.events.get(attackEventIndex).damage == 0)
         {
-            this.events.add(new BattleEvent(attackingPokemon.name + " kept going and crashed!", attackingPokemon.stats[0] / 2, attacker, attacker, null, -1));
+            this.events.add(new BattleEvent(attackingPokemon.name + " kept going and crashed!", attackingPokemon.stats[Stat.HP] / 2, attacker, attacker, null, -1));
         }
     }
 
@@ -657,7 +657,7 @@ public class BattleModel extends BaseModel
             {
                 event = new BattleEvent(defendingPokemon.name + " is trapped in a " + move.name + "!", attacker, (attacker + 1) % 2, null);
             }
-            else if (effectId == 85 && defendingPokemon.types[0] != 12 && defendingPokemon.types[defendingPokemon.types.length -1] != 12)
+            else if (effectId == 85 && defendingPokemon.types[0] != Type.GRASS && defendingPokemon.types[defendingPokemon.types.length -1] != Type.GRASS)
             {
                 event = new BattleEvent(defendingPokemon.name + " is seeded.", attacker, (attacker + 1) % 2, null);
             }
@@ -765,7 +765,7 @@ public class BattleModel extends BaseModel
                     {
                         otherModifiers *= 2.0f;
                     }
-                    else if (effectId == 222 && defendingPokemon.currentHP < Math.ceil(defendingPokemon.stats[0] / 2.0))
+                    else if (effectId == 222 && defendingPokemon.currentHP < Math.ceil(defendingPokemon.stats[Stat.HP] / 2.0))
                     {
                         otherModifiers *= 2.0f;
                     }
@@ -775,11 +775,11 @@ public class BattleModel extends BaseModel
                     }
                     else if (effectId == 238)
                     {
-                        movePower = 1 + 120 * defendingPokemon.currentHP / defendingPokemon.stats[0];
+                        movePower = 1 + 120 * defendingPokemon.currentHP / defendingPokemon.stats[Stat.HP];
                     }
                     else if (effectId == 294)
                     {
-                        int speedRatio = Math.min(attackingPokemon.stats[5] / defendingPokemon.stats[5], 4);
+                        int speedRatio = Math.min(attackingPokemon.stats[Stat.SPEED] / defendingPokemon.stats[Stat.SPEED], 4);
                         movePower = (speedRatio < 2 ? 60 : speedRatio * 40 - (speedRatio / 4) * 10);
                     }
                 }
@@ -1236,7 +1236,7 @@ public class BattleModel extends BaseModel
             {
                 // self-healing
                 this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP = 
-                    Math.min((this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].stats[0]), 
+                    Math.min((this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].stats[Stat.HP]), 
                     (this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP + 
                     Math.abs(this.events.get(0).damage)));
             }
@@ -1632,7 +1632,7 @@ public class BattleModel extends BaseModel
             if (moveEffect.effectId == 43)
             {
                 this.text = team[target][currentPokemon[target]].name + " is damaged by " + move.name + ".";
-                this.damage = (int)Math.ceil(team[target][currentPokemon[target]].stats[0] / 8.0);
+                this.damage = (int)Math.ceil(team[target][currentPokemon[target]].stats[Stat.HP] / 8.0);
                 this.recoil = 0;
                 this.effectTimingId = 0;
                 this.removalCondition = this.target;
@@ -1640,7 +1640,7 @@ public class BattleModel extends BaseModel
             else if (moveEffect.effectId == 85)
             {
                 this.text = team[target][currentPokemon[target]].name + "'s health was sapped.";
-                this.damage = (int)Math.ceil(team[target][currentPokemon[target]].stats[0] / 8.0);
+                this.damage = (int)Math.ceil(team[target][currentPokemon[target]].stats[Stat.HP] / 8.0);
                 this.recoil = this.damage * -1;
                 this.effectTimingId = 0;
                 this.removalCondition = this.target;
