@@ -309,6 +309,10 @@ map_id,area_id,name,x,y,y_offset
 31,0,glassDisplay1,1,7,0
 31,0,pokemartInterior,0,8,-9
 31,0,glassDisplay2,0,5,0
+30,0,house5,37,10,0
+30,0,house5,41,10,0
+30,0,pokemonCenter,46,10,0
+30,0,gym,30,19,0
 30,0,bigTree,60,39,0
 30,0,bigTree,60,37,0
 30,0,bigTree,60,35,0
