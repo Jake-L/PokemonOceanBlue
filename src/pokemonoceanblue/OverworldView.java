@@ -18,7 +18,7 @@ import java.util.Arrays;
 public class OverworldView extends BaseView {
 
     private OverworldModel model;
-    private Image[] tileSprite = new Image[100];
+    private Image[] tileSprite = new Image[105];
     private Map<String, Image> animatedTileSprite = new HashMap<String, Image>();
     private Map<String, Image> mapObjectSprite = new HashMap<String, Image>();
     private Map<String, Image> characterSprite = new HashMap<String, Image>();
