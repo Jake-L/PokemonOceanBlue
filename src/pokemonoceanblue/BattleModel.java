@@ -450,6 +450,10 @@ public class BattleModel extends BaseModel
                 //remove effects that have finished
                 if (effect.counter > effect.duration && effect.duration > -1)
                 {
+                    if (effect.effectId == 36 || effect.effectId == 66)
+                    {
+                        this.events.add(new BattleEvent(effect.text, effect.attacker, -1));
+                    }
                     this.multiTurnEffects.remove(i);
                 }
                 else
@@ -582,7 +586,7 @@ public class BattleModel extends BaseModel
             this.events.add(event);
         }
         //multiTurnEffects
-        else if (effectId == 43 || effectId == 85)
+        else if (effectId == 43 || effectId == 85 || effectId == 66 || effectId == 36)
         {
             addMultiTurnEffect(move, effectId, attacker);
         }
@@ -630,6 +634,26 @@ public class BattleModel extends BaseModel
         {
             this.events.add(new BattleEvent(attackingPokemon.name + " kept going and crashed!", attackingPokemon.stats[Stat.HP] / 2, attacker, attacker, null, -1));
         }
+        //brick break
+        else if (effectId == 187 && this.multiTurnEffects.size() > 0)
+        {
+            int i = 0;
+            while (i < this.multiTurnEffects.size())
+            {
+                if ((this.multiTurnEffects.get(i).effectId == 36 || this.multiTurnEffects.get(i).effectId == 66) &&
+                    this.multiTurnEffects.get(i).attacker == (attacker + 1) % 2)
+                {
+                    this.events.add(new BattleEvent(attackingPokemon.name + " broke through the " + (attacker == 0 ? "ally" : "opponent") + 
+                        (this.multiTurnEffects.get(i).effectId == 36 ? " reflect!" : " light screen!"),
+                        attacker, attacker));
+                    this.multiTurnEffects.remove(i);
+                }
+                else
+                {
+                    i++;
+                }
+            }
+        }
     }
 
     //checks if effect to be added is already in effect
@@ -660,6 +684,16 @@ public class BattleModel extends BaseModel
             else if (effectId == 85 && defendingPokemon.types[0] != Type.GRASS && defendingPokemon.types[defendingPokemon.types.length -1] != Type.GRASS)
             {
                 event = new BattleEvent(defendingPokemon.name + " is seeded.", attacker, (attacker + 1) % 2, null);
+            }
+            else if (effectId == 36)
+            {
+                event = new BattleEvent("Light screen made " + attackingPokemon.name + "'s team stronger against special moves.",
+                    attacker, attacker);
+            }
+            else if (effectId == 66)
+            {
+                event = new BattleEvent("Reflect made " + attackingPokemon.name + "'s team stronger against physical moves.",
+                    attacker, attacker);
             }
             else
             {
@@ -814,6 +848,19 @@ public class BattleModel extends BaseModel
             if ((this.weather == 2 || this.weather == 1) && (move.typeId == 10 || move.typeId == 11))
             {
                 otherModifiers *= ((this.weather == 2 && move.typeId == 10) || (this.weather == 1 && move.typeId == 11) ? 0.5 : 1.5);
+            }
+            //reflect or light screen
+            if (this.multiTurnEffects.size() > 0)
+            {
+                for (int i = 0; i < this.multiTurnEffects.size(); i++)
+                {
+                    if (!this.isCrit[attacker] && this.multiTurnEffects.get(i).attacker == defender &&
+                        ((this.multiTurnEffects.get(i).effectId == 36 && move.damageClassId == 3) ||
+                        (this.multiTurnEffects.get(i).effectId == 66 && move.damageClassId == 2)))
+                    {
+                        otherModifiers *= 0.5;
+                    }
+                }
             }
             return (int)Math.ceil((
                         (attackingPokemon.level * 2.0 / 5.0 + 2.0)
@@ -1608,8 +1655,8 @@ public class BattleModel extends BaseModel
         int attacker;
         int target;
         int duration;
-        int damage;
-        int recoil;
+        int damage = 0;
+        int recoil = 0;
         int counter = 0;
         //-1 if never end, 0 if end when player pokemon leaves field, 1 if end enemy pokemon leaves field, 2 if end when either leaves field
         int removalCondition;
@@ -1633,7 +1680,6 @@ public class BattleModel extends BaseModel
             {
                 this.text = team[target][currentPokemon[target]].name + " is damaged by " + move.name + ".";
                 this.damage = (int)Math.ceil(team[target][currentPokemon[target]].stats[Stat.HP] / 8.0);
-                this.recoil = 0;
                 this.effectTimingId = 0;
                 this.removalCondition = this.target;
             }
@@ -1644,6 +1690,12 @@ public class BattleModel extends BaseModel
                 this.recoil = this.damage * -1;
                 this.effectTimingId = 0;
                 this.removalCondition = this.target;
+            }
+            else if (moveEffect.effectId == 36 || moveEffect.effectId == 66)
+            {
+                this.text = move.name + " wore off.";
+                this.removalCondition = -1;
+                this.effectTimingId = 0;
             }
         }
     }
