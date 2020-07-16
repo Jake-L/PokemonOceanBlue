@@ -612,7 +612,8 @@ public class BattleModel extends BaseModel
             this.events.add(event);
         }
         //multiTurnEffects
-        else if (effectId == 43 || effectId == 85 || effectId == 66 || effectId == 36 || effectId == 125 || effectId == 47)
+        else if (effectId == 43 || effectId == 85 || effectId == 66 || effectId == 36 || effectId == 125 || effectId == 47 ||
+            effectId == 202 || effectId == 211 || effectId == 48)
         {
             addMultiTurnEffect(move, effectId, attacker);
         }
@@ -729,6 +730,18 @@ public class BattleModel extends BaseModel
             {
                 event = new BattleEvent(attackingPokemon.name + "'s team are immune to stat changes.", attacker, attacker);
             }
+            else if (effectId == 202)
+            {
+                event = new BattleEvent("Electricity's power was weakened.", attacker, attacker);
+            }
+            else if (effectId == 211)
+            {
+                event = new BattleEvent("Fire's power was weakened.", attacker, attacker);
+            }
+            else if (effectId == 48)
+            {
+                event = new BattleEvent(attackingPokemon.name + " is getting pumped up.", attacker, attacker);
+            }
             else
             {
                 event = new BattleEvent("But it failed.", attacker, attacker);
@@ -765,7 +778,7 @@ public class BattleModel extends BaseModel
         PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
         PokemonModel defendingPokemon = this.team[defender][this.currentPokemon[defender]];
         //percent chance of landing a critical hit
-        int critChance = 10;
+        int critChance = 1;
 
         //if enemy is fainted, only self-effect moves can be used
         if (defendingPokemon.currentHP == 0 && move.targetId != 7)
@@ -819,7 +832,7 @@ public class BattleModel extends BaseModel
                     }
                     if (effectId == 44)
                     {
-                        critChance += 10;
+                        critChance ++;
                     }
                     else if (effectId == 122)
                     {
@@ -861,6 +874,17 @@ public class BattleModel extends BaseModel
             {
                 return 0;
             }
+            //focus-energy
+            if (this.multiTurnEffects.size() > 0)
+            {
+                for (int i = 0; i < this.multiTurnEffects.size(); i++)
+                {
+                    if (this.multiTurnEffects.get(i).effectId == 48 && this.multiTurnEffects.get(i).attacker == attacker)
+                    {
+                        critChance += 2;
+                    }
+                }
+            }
             //one hit KO
             if (movePower == -1)
             {
@@ -873,7 +897,7 @@ public class BattleModel extends BaseModel
                 otherModifiers *= 1.5f;
             }
             //critical hit bonus
-            if (this.ranNum.nextInt(100 - critChance) == 0 && movePower > 0)
+            if (this.ranNum.nextInt(10 - critChance) == 0 && movePower > 0)
             {
                 otherModifiers *= 1.5f;
                 this.isCrit[attacker] = true;
@@ -883,7 +907,7 @@ public class BattleModel extends BaseModel
             {
                 otherModifiers *= ((this.weather == 2 && move.typeId == 10) || (this.weather == 1 && move.typeId == 11) ? 0.5 : 1.5);
             }
-            //reflect or light screen
+            //check for multiTurnEffects that apply a damage multiplier
             if (this.multiTurnEffects.size() > 0)
             {
                 for (int i = 0; i < this.multiTurnEffects.size(); i++)
@@ -891,6 +915,11 @@ public class BattleModel extends BaseModel
                     if (!this.isCrit[attacker] && this.multiTurnEffects.get(i).attacker == defender &&
                         ((this.multiTurnEffects.get(i).effectId == 36 && move.damageClassId == 3) ||
                         (this.multiTurnEffects.get(i).effectId == 66 && move.damageClassId == 2)))
+                    {
+                        otherModifiers *= 0.5;
+                    }
+                    else if ((move.typeId == Type.ELECTRIC && this.multiTurnEffects.get(i).effectId == 202) ||
+                        (move.typeId == Type.FIRE && this.multiTurnEffects.get(i).effectId == 211))
                     {
                         otherModifiers *= 0.5;
                     }
@@ -1175,6 +1204,22 @@ public class BattleModel extends BaseModel
             if (this.currentPokemon[attacker] != -1 && this.team[attacker][this.currentPokemon[attacker]].statusEffect > 6)
             {
                 this.team[attacker][this.currentPokemon[attacker]].statusEffect = 0;
+            }
+            //remove multiTurnEffects that are applied to switched pokemon
+            if (this.multiTurnEffects.size() > 0)
+            {
+                int i = 0;
+                while (i < this.multiTurnEffects.size())
+                {
+                    if (this.multiTurnEffects.get(i).removalCondition == attacker)
+                    {
+                        this.multiTurnEffects.remove(i);
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                }
             }
             this.currentPokemon[attacker] = this.events.get(0).newPokemonIndex;
             //reset stat changes on switched pokemon
@@ -1726,6 +1771,16 @@ public class BattleModel extends BaseModel
             {
                 this.text = move.name + " wore off.";
                 this.removalCondition = -1;
+                this.effectTimingId = 0;
+            }
+            else if (moveEffect.effectId == 202 || moveEffect.effectId == 211)
+            {
+                this.removalCondition = attacker;
+                this.effectTimingId = 0;
+            }
+            else if (moveEffect.effectId == 48)
+            {
+                this.removalCondition = attacker;
                 this.effectTimingId = 0;
             }
         }
