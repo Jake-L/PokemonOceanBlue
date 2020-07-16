@@ -354,7 +354,6 @@ public class BattleModel extends BaseModel
     private int canAttack(int attacker)
     {
         PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
-        BattleEvent event;
         int attackEventIndex = 0;
         //check if attacker can attack while being paralyzed, asleep, or frozen
         if (attackingPokemon.statusEffect > 0 && attackingPokemon.statusEffect < 4)
@@ -461,7 +460,7 @@ public class BattleModel extends BaseModel
                 //remove effects that have finished
                 if (effect.counter > effect.duration && effect.duration > -1)
                 {
-                    if (effect.effectId == 36 || effect.effectId == 66 || effect.effectId == 125)
+                    if (effect.effectId == 36 || effect.effectId == 66 || effect.effectId == 125 || effect.effectId == 47)
                     {
                         this.events.add(new BattleEvent(effect.text, effect.attacker, -1));
                     }
@@ -554,25 +553,41 @@ public class BattleModel extends BaseModel
                 BattleEvent event;
                 int statId = move.moveStatEffects[i].statId;
                 int statChange = move.moveStatEffects[i].statChange;
+                boolean willFail = false;
                 //when target id is 7 the move applies stat changes to the user, otherwise applied to foe
                 if (move.targetId == 7)
                 {
                     target = attacker;
                 }
-                //check if stat cannot be changed any further
-                if ((this.statChanges[target][statId] == 6 && statChange > 0) || (this.statChanges[target][statId] == -6 && statChange < 0))
+                //check if mist will prevent stat change
+                if (this.multiTurnEffects.size() > 0)
                 {
-                    event = new BattleEvent(this.team[target][this.currentPokemon[target]].name + "'s " + changedStat[statId] + " cannot be " +
-                        (this.statChanges[target][statId] < 0 ? "increased" : "decreased") + " any further.", target, target);
+                    for (int j = 0; j < this.multiTurnEffects.size(); j++)
+                    {
+                        if (this.multiTurnEffects.get(j).effectId == 47 && this.multiTurnEffects.get(j).attacker == target)
+                        {
+                            willFail = true;
+                            this.events.add(new BattleEvent("The mist prevented stat changes.", target, target));
+                        }
+                    }
                 }
-                else
+                if (!willFail)
                 {
-                    event = new BattleEvent(this.team[target][this.currentPokemon[target]].name + "'s " +
-                        changedStat[statId] + statChangeMessages[statChange + 2], target, target);
-                    //apply stat change with limits of |6|
-                    this.statChanges[target][statId] = (statChange / Math.abs(statChange)) * Math.min(6, Math.abs(statChange + this.statChanges[target][statId]));
+                    //check if stat cannot be changed any further
+                    if ((this.statChanges[target][statId] == 6 && statChange > 0) || (this.statChanges[target][statId] == -6 && statChange < 0))
+                    {
+                        event = new BattleEvent(this.team[target][this.currentPokemon[target]].name + "'s " + changedStat[statId] + " cannot be " +
+                            (this.statChanges[target][statId] < 0 ? "increased" : "decreased") + " any further.", target, target);
+                    }
+                    else
+                    {
+                        event = new BattleEvent(this.team[target][this.currentPokemon[target]].name + "'s " +
+                            changedStat[statId] + statChangeMessages[statChange + 2], target, target);
+                        //apply stat change with limits of |6|
+                        this.statChanges[target][statId] = (statChange / Math.abs(statChange)) * Math.min(6, Math.abs(statChange + this.statChanges[target][statId]));
+                    }
+                    this.events.add(event);
                 }
-                this.events.add(event);
             }
         }
     }
@@ -597,7 +612,7 @@ public class BattleModel extends BaseModel
             this.events.add(event);
         }
         //multiTurnEffects
-        else if (effectId == 43 || effectId == 85 || effectId == 66 || effectId == 36 || effectId == 125)
+        else if (effectId == 43 || effectId == 85 || effectId == 66 || effectId == 36 || effectId == 125 || effectId == 47)
         {
             addMultiTurnEffect(move, effectId, attacker);
         }
@@ -709,6 +724,10 @@ public class BattleModel extends BaseModel
             else if (effectId == 125)
             {
                 event = new BattleEvent(attackingPokemon.name + "'s team is protected from status conditions.", attacker, attacker);
+            }
+            else if (effectId == 47)
+            {
+                event = new BattleEvent(attackingPokemon.name + "'s team are immune to stat changes.", attacker, attacker);
             }
             else
             {
@@ -1703,7 +1722,7 @@ public class BattleModel extends BaseModel
                 this.effectTimingId = 0;
                 this.removalCondition = this.target;
             }
-            else if (moveEffect.effectId == 36 || moveEffect.effectId == 66 || moveEffect.effectId == 125)
+            else if (moveEffect.effectId == 36 || moveEffect.effectId == 66 || moveEffect.effectId == 125 || moveEffect.effectId == 47)
             {
                 this.text = move.name + " wore off.";
                 this.removalCondition = -1;
