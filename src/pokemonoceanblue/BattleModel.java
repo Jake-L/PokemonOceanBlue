@@ -460,7 +460,7 @@ public class BattleModel extends BaseModel
                 //remove effects that have finished
                 if (effect.counter > effect.duration && effect.duration > -1)
                 {
-                    if (effect.effectId == 36 || effect.effectId == 66 || effect.effectId == 125 || effect.effectId == 47)
+                    if (effect.effectId == 36 || effect.effectId == 66 || effect.effectId == 125 || effect.effectId == 47 || effect.effectId == 241)
                     {
                         this.events.add(new BattleEvent(effect.text, effect.attacker, -1));
                     }
@@ -613,7 +613,7 @@ public class BattleModel extends BaseModel
         }
         //multiTurnEffects
         else if (effectId == 43 || effectId == 85 || effectId == 66 || effectId == 36 || effectId == 125 || effectId == 47 ||
-            effectId == 202 || effectId == 211 || effectId == 48)
+            effectId == 202 || effectId == 211 || effectId == 48 || effectId == 241)
         {
             addMultiTurnEffect(move, effectId, attacker);
         }
@@ -741,6 +741,10 @@ public class BattleModel extends BaseModel
             else if (effectId == 48)
             {
                 event = new BattleEvent(attackingPokemon.name + " is getting pumped up.", attacker, attacker);
+            }
+            else if (effectId == 241)
+            {
+                event = new BattleEvent(attackingPokemon.name + " protected its team from critical hits.", attacker, attacker);
             }
             else
             {
@@ -874,12 +878,17 @@ public class BattleModel extends BaseModel
             {
                 return 0;
             }
-            //focus-energy
+            //focus-energy and lucky-chant
             if (this.multiTurnEffects.size() > 0)
             {
                 for (int i = 0; i < this.multiTurnEffects.size(); i++)
                 {
-                    if (this.multiTurnEffects.get(i).effectId == 48 && this.multiTurnEffects.get(i).attacker == attacker)
+                    if (this.multiTurnEffects.get(i).effectId == 241 && this.multiTurnEffects.get(i).target == attacker)
+                    {
+                        critChance = 0;
+                        break;
+                    }
+                    else if (this.multiTurnEffects.get(i).effectId == 48 && this.multiTurnEffects.get(i).attacker == attacker)
                     {
                         critChance += 2;
                     }
@@ -897,7 +906,7 @@ public class BattleModel extends BaseModel
                 otherModifiers *= 1.5f;
             }
             //critical hit bonus
-            if (this.ranNum.nextInt(10 - critChance) == 0 && movePower > 0)
+            if (critChance > 0 && this.ranNum.nextInt(10 - critChance) == 0 && movePower > 0)
             {
                 otherModifiers *= 1.5f;
                 this.isCrit[attacker] = true;
@@ -1767,18 +1776,13 @@ public class BattleModel extends BaseModel
                 this.effectTimingId = 0;
                 this.removalCondition = this.target;
             }
-            else if (moveEffect.effectId == 36 || moveEffect.effectId == 66 || moveEffect.effectId == 125 || moveEffect.effectId == 47)
+            else if (moveEffect.effectId == 36 || moveEffect.effectId == 66 || moveEffect.effectId == 125 || moveEffect.effectId == 47 || moveEffect.effectId == 241)
             {
                 this.text = move.name + " wore off.";
                 this.removalCondition = -1;
                 this.effectTimingId = 0;
             }
-            else if (moveEffect.effectId == 202 || moveEffect.effectId == 211)
-            {
-                this.removalCondition = attacker;
-                this.effectTimingId = 0;
-            }
-            else if (moveEffect.effectId == 48)
+            else if (moveEffect.effectId == 202 || moveEffect.effectId == 211 || moveEffect.effectId == 48)
             {
                 this.removalCondition = attacker;
                 this.effectTimingId = 0;
