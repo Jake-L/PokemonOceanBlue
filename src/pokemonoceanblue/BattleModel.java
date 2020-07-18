@@ -596,6 +596,7 @@ public class BattleModel extends BaseModel
     {
         int effectId = move.moveEffect.effectId;
         PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
+        PokemonModel defendingPokemon = this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]];
         //effects that change the weather
         if (effectId < 141 && effectId > 136)
         {
@@ -681,6 +682,15 @@ public class BattleModel extends BaseModel
                     i++;
                 }
             }
+        }
+        //pain-split
+        else if (effectId == 92)
+        {
+            int newCurrentHp = (attackingPokemon.currentHP + defendingPokemon.currentHP) / 2;
+            this.events.add(new BattleEvent(attackingPokemon.name + " and " + defendingPokemon.name + " shared their pain.", defendingPokemon.currentHP - newCurrentHp,
+                (attacker + 1) % 2, attacker, null, -1));
+            this.events.add(new BattleEvent(attackingPokemon.name + " and " + defendingPokemon.name + " shared their pain.", attackingPokemon.currentHP - newCurrentHp,
+                attacker, attacker, null, -1));
         }
     }
 
