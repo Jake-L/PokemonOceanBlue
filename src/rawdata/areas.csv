@@ -17,4 +17,5 @@ map_id,area_id,name,min_x,max_x,min_y,max_y,music_id,battle_background_id
 33,3,Route 24,0,13,35,55,3,1
 33,4,Route 9,78,999,40,999,3,0
 34,0,Cerulean City Gym,0,20,0,20,23,2
-42,0,Vermillion city,0,100,0,100,37,0
+42,0,Vermilion city,0,100,0,100,37,0
+43,0,Vermilion City Gym,0,13,0,13,23,6

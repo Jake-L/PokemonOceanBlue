@@ -19,6 +19,14 @@ map_id,area_id,name,x,y,y_offset
 1001,0,tournamentWall,0,3,-1
 1000,0,tournamentInterior,0,9,-6
 1000,0,tournamentSeats,0,2,-3
+43,0,generator,12,2,0
+43,0,generator,0,2,0
+43,0,gymStatue,9,11,0
+43,0,badge1,6,0,0
+43,0,doormat,5,13,-2
+43,0,gymPattern3,4,10,-8
+43,0,gymStatue,3,11,0
+43,0,gymWall,0,1,-2
 42,0,house10,42,29,0
 42,0,house8,31,38,0
 42,0,gymSign,12,37,0

@@ -41,7 +41,8 @@ map_id,map_template_id,overlay,comment
 39,1,0,"Cerulean bottom, second from right house"
 40,1,0,"Cerulean bottom, right house"
 41,1,0,Cerulean top right house
-42,42,1,Vermillion City
+42,42,1,Vermilion City
+43,43,0,Vermilion City Gym
 1000,1000,0,Cerulean tournament battle room
 1001,1001,0,Cerulean tournament waiting room
 1002,1002,0,Cerulean tournament entrance
