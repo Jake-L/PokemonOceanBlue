@@ -358,15 +358,17 @@ public class BattleModel extends BaseModel
         //check if attacker can attack while being paralyzed, asleep, or frozen
         if (attackingPokemon.statusEffect > 0 && attackingPokemon.statusEffect < 4)
         {
-            if (this.statusEffectCounter[attacker][this.currentPokemon[attacker]] > 0 &&
-                (attackingPokemon.statusEffect == 2 && this.statusEffectCounter[attacker][this.currentPokemon[attacker]] > 2) ||
-                (attackingPokemon.statusEffect == 3 && this.ranNum.nextInt(101) < 31))
+            //if status effect was not inflicted this turn then 30% chance to unfreeze or if pokemon has been asleep 3 turns, wake up
+            if ((this.statusEffectCounter[attacker][this.currentPokemon[attacker]] > 0 && attackingPokemon.statusEffect == 3 && this.ranNum.nextInt(101) < 31) ||
+                (attackingPokemon.statusEffect == 2 && this.statusEffectCounter[attacker][this.currentPokemon[attacker]] > 2))
             {
                 this.events.add(0, new BattleEvent(attackingPokemon.name + (attackingPokemon.statusEffect == 2 ? " woke up!" : " thawed out."),
                     0, attacker, attacker));
                 attackEventIndex = 1;
             }
-            else if (!(attackingPokemon.statusEffect == 1 && this.ranNum.nextInt(101) < 34))
+            //if paralysis prevents use of a move or snore allows user to attack while asleep
+            else if (!((attackingPokemon.statusEffect == 1 && this.ranNum.nextInt(101) < 51) || 
+                (this.events.get(0).move.moveEffect != null && this.events.get(0).move.moveEffect.effectId == 93 && attackingPokemon.statusEffect == 2)))
             {
                 this.typeModifier[attacker] = 1.0f;
                 this.unableToMove[attacker] = true;
@@ -702,6 +704,14 @@ public class BattleModel extends BaseModel
                 this.events.add(new BattleEvent("But it failed.", attacker, attacker));
             }
         }
+        //snore
+        else if (effectId == 93)
+        {
+            if (attackingPokemon.statusEffect != 2)
+            {
+                this.events.add(new BattleEvent("But it failed.", attacker, attacker));
+            }
+        }
     }
 
     //checks if effect to be added is already in effect
@@ -798,7 +808,7 @@ public class BattleModel extends BaseModel
         int attack_stat;
         int defense_stat;
         int movePower = move.power;
-        this.typeModifier[attacker] = 1;
+        this.typeModifier[attacker] = 1.0f;
         float otherModifiers = 1.0f;
         PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
         PokemonModel defendingPokemon = this.team[defender][this.currentPokemon[defender]];
@@ -888,9 +898,9 @@ public class BattleModel extends BaseModel
                         int speedRatio = Math.min(attackingPokemon.stats[Stat.SPEED] / defendingPokemon.stats[Stat.SPEED], 4);
                         movePower = (speedRatio < 2 ? 60 : speedRatio * 40 - (speedRatio / 4) * 10);
                     }
-                    else if (effectId == 9 && defendingPokemon.statusEffect != 2)
+                    else if ((effectId == 9 && defendingPokemon.statusEffect != 2) || (effectId == 93 && attackingPokemon.statusEffect != 2))
                     {
-                        this.typeModifier[attacker] = 1;
+                        this.typeModifier[attacker] = 1.0f;
                         return 0;
                     }
                 }
@@ -980,19 +990,13 @@ public class BattleModel extends BaseModel
      * @param effectiveness damage modifier
      * @param attacker the team using the attack
      */
-    private void effectivenessMessage(float effectiveness, int attacker)
+    private void effectivenessMessage(int attacker)
     {
         PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
         if (this.unableToMove[attacker] && attackingPokemon.statusEffect > 0 && attackingPokemon.statusEffect < 4)
         {
             String[] statusEffectMessages = {" is paralyzed and unable to move."," is fast asleep."," is frozen solid."};
-            this.events.add(new BattleEvent(
-                this.team[attacker][this.currentPokemon[attacker]].name + statusEffectMessages[this.team[attacker][this.currentPokemon[attacker]].statusEffect - 1], 
-                attacker, attacker));
-        }
-        else if (this.unableToMove[attacker] && this.willFlinch[attacker])
-        {
-            this.events.add(new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + " flinched.", attacker, attacker));
+            this.events.add(new BattleEvent(attackingPokemon.name + statusEffectMessages[attackingPokemon.statusEffect - 1], attacker, attacker));
         }
         else if (this.isOneHit[attacker])
         {
@@ -1006,15 +1010,15 @@ public class BattleModel extends BaseModel
         {
             this.events.add(new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + "'s attack missed!", attacker, attacker));
         }
-        else if (effectiveness > 1 && !this.isOneHit[attacker])
+        else if (this.typeModifier[attacker] > 1 && !this.isOneHit[attacker])
         {
             this.events.add(new BattleEvent("It's super effective!", attacker, attacker));
         }
-        else if (effectiveness == 0)
+        else if (this.typeModifier[attacker] == 0)
         {
             this.events.add(new BattleEvent("It doesn't affect " + this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]].name + "...", attacker, attacker));
         }
-        else if (effectiveness < 1 && !this.isOneHit[attacker])
+        else if (this.typeModifier[attacker] < 1 && !this.isOneHit[attacker])
         {
             this.events.add(new BattleEvent("It's not very effective...", attacker, attacker));
         }
@@ -1037,7 +1041,7 @@ public class BattleModel extends BaseModel
             while(rs.next()) 
             {
                 this.typeEffectiveness[rs.getInt(1)][rs.getInt(2)] = rs.getFloat(3);
-            }            
+            }
         }
         catch (SQLException e) 
         {
@@ -1270,7 +1274,7 @@ public class BattleModel extends BaseModel
         {
             int attacker = this.events.get(0).attacker;
             int attackEventIndex = this.canAttack(attacker);
-            this.effectivenessMessage(this.typeModifier[attacker], attacker);
+            this.effectivenessMessage(attacker);
             //check if attack will occur or if move is self-destruct, explosion, or hi jump kick before applying effects
             if (attackEventIndex > -1 && this.events.get(attackEventIndex).move != null && (!this.attackMissed[attacker] ||
                 (this.events.get(attackEventIndex).move.moveEffect != null &&
@@ -1473,6 +1477,7 @@ public class BattleModel extends BaseModel
             this.isOneHit = new boolean[2];
             this.willFlinch = new boolean[2];
             this.attackMissed = new boolean[2];
+            this.unableToMove = new boolean[2];
             if (!teamFainted(0) && this.team[0][this.currentPokemon[0]].currentHP == 0)
             {
                 this.battleOptions = null;
