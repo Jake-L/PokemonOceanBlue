@@ -530,9 +530,11 @@ public class BattleModel extends BaseModel
         {
             damage = (int)(Math.floor(this.events.get(0).damage * (move.recoil / 100.0)));
         }
-
-        this.events.add(new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + (move.recoil < 0 ? " healed itself." : " is hit with recoil."),
-            damage, attacker, attacker, null, attacker));
+        if (damage != 0)
+        {
+            this.events.add(new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + (move.recoil < 0 ? " healed itself." : " is hit with recoil."),
+                damage, attacker, attacker, null, attacker));
+        }
     }
 
     /** 
@@ -691,6 +693,14 @@ public class BattleModel extends BaseModel
                 (attacker + 1) % 2, attacker, null, -1));
             this.events.add(new BattleEvent(attackingPokemon.name + " and " + defendingPokemon.name + " shared their pain.", attackingPokemon.currentHP - newCurrentHp,
                 attacker, attacker, null, -1));
+        }
+        //dream-eater
+        else if (effectId == 9)
+        {
+            if (defendingPokemon.statusEffect != 2)
+            {
+                this.events.add(new BattleEvent("But it failed.", attacker, attacker));
+            }
         }
     }
 
@@ -877,6 +887,11 @@ public class BattleModel extends BaseModel
                     {
                         int speedRatio = Math.min(attackingPokemon.stats[Stat.SPEED] / defendingPokemon.stats[Stat.SPEED], 4);
                         movePower = (speedRatio < 2 ? 60 : speedRatio * 40 - (speedRatio / 4) * 10);
+                    }
+                    else if (effectId == 9 && defendingPokemon.statusEffect != 2)
+                    {
+                        this.typeModifier[attacker] = 1;
+                        return 0;
                     }
                 }
                 if (move.moveEffect.effectId == 41)
