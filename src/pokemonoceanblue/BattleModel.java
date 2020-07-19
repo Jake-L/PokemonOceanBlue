@@ -530,9 +530,11 @@ public class BattleModel extends BaseModel
         {
             damage = (int)(Math.floor(this.events.get(0).damage * (move.recoil / 100.0)));
         }
-
-        this.events.add(new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + (move.recoil < 0 ? " healed itself." : " is hit with recoil."),
-            damage, attacker, attacker, null, attacker));
+        if (damage != 0)
+        {
+            this.events.add(new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + (move.recoil < 0 ? " healed itself." : " is hit with recoil."),
+                damage, attacker, attacker, null, attacker));
+        }
     }
 
     /** 
@@ -596,6 +598,7 @@ public class BattleModel extends BaseModel
     {
         int effectId = move.moveEffect.effectId;
         PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
+        PokemonModel defendingPokemon = this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]];
         //effects that change the weather
         if (effectId < 141 && effectId > 136)
         {
@@ -630,7 +633,7 @@ public class BattleModel extends BaseModel
             this.statusEffect(attacker, (attacker + 1) % 2, move.effectChance, ailmentId + (ailmentId % 2) * 2 + 1);
         }
         //multiple hit moves
-        else if (effectId == 30 || effectId == 45)
+        else if (effectId == 30 || effectId == 45 || effectId == 105)
         {
             //duration is number of hits - 1 because first hit is done in update
             int duration = ranNum.nextInt(move.moveEffect.maxCounter - move.moveEffect.minCounter + 1) + move.moveEffect.minCounter - 1;
@@ -638,13 +641,14 @@ public class BattleModel extends BaseModel
             int remainingHp = this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]].currentHP - this.events.get(attackEventIndex).damage;
             for (int i = 0; i < duration; i++)
             {
-                if (remainingHp <= 0)
+                if (remainingHp <= 0 || this.attackMissed[attacker])
                 {
-                    duration = i;
+                    duration = i - (this.attackMissed[attacker] ? 1 : 0);
                     break;
                 }
+                //check if move is triple kick to add multipliers for consecutive hits
                 BattleEvent event = new BattleEvent(attackingPokemon.name + " used " + move.name + ".",
-                    damageCalc(move, attacker, (attacker + 1) % 2), (attacker + 1) % 2, attacker, move, attacker);
+                    damageCalc(move, attacker, (attacker + 1) % 2) * (effectId == 105 ? i + 1 : 1), (attacker + 1) % 2, attacker, move, attacker);
                 this.events.add(1 + attackEventIndex, event);
                 remainingHp -= event.damage;
             }
@@ -679,6 +683,23 @@ public class BattleModel extends BaseModel
                 {
                     i++;
                 }
+            }
+        }
+        //pain-split
+        else if (effectId == 92)
+        {
+            int newCurrentHp = (attackingPokemon.currentHP + defendingPokemon.currentHP) / 2;
+            this.events.add(new BattleEvent(attackingPokemon.name + " and " + defendingPokemon.name + " shared their pain.", defendingPokemon.currentHP - newCurrentHp,
+                (attacker + 1) % 2, attacker, null, -1));
+            this.events.add(new BattleEvent(attackingPokemon.name + " and " + defendingPokemon.name + " shared their pain.", attackingPokemon.currentHP - newCurrentHp,
+                attacker, attacker, null, -1));
+        }
+        //dream-eater
+        else if (effectId == 9)
+        {
+            if (defendingPokemon.statusEffect != 2)
+            {
+                this.events.add(new BattleEvent("But it failed.", attacker, attacker));
             }
         }
     }
@@ -866,6 +887,11 @@ public class BattleModel extends BaseModel
                     {
                         int speedRatio = Math.min(attackingPokemon.stats[Stat.SPEED] / defendingPokemon.stats[Stat.SPEED], 4);
                         movePower = (speedRatio < 2 ? 60 : speedRatio * 40 - (speedRatio / 4) * 10);
+                    }
+                    else if (effectId == 9 && defendingPokemon.statusEffect != 2)
+                    {
+                        this.typeModifier[attacker] = 1;
+                        return 0;
                     }
                 }
                 if (move.moveEffect.effectId == 41)
