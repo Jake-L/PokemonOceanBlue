@@ -43,6 +43,16 @@ map_id,map_template_id,overlay,comment
 41,1,0,Cerulean top right house
 42,42,1,Vermilion City
 43,43,0,Vermilion City Gym
+500,1,0,Vermilion top left house
+501,7,0,Vermilion Pokemon Center
+502,1,0,Vermiion house right of Pokemon center
+503,1,0,Vermilion top right house
+504,1,0,Vermilion bar
+505,1,0,Vermilion complex
+506,31,0,Vermilion pokemart
+507,1,0,Vermilion bottom right house
+508,1,0,Vermilion bottom house
+509,1,0,Vermilion house beside bar
 1000,1000,0,Cerulean tournament battle room
 1001,1001,0,Cerulean tournament waiting room
 1002,1002,0,Cerulean tournament entrance

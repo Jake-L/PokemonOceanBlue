@@ -402,7 +402,8 @@ public class DatabaseUtility
                 CREATE TABLE type_effectiveness(
                     src_type_id INT NOT NULL,
                     target_type_id INT NOT NULL,
-                    damage_factor FLOAT NOT NuLL)
+                    damage_factor FLOAT NOT NuLL,
+                    PRIMARY KEY (src_type_id, target_type_id))
                 """;
         runUpdate(query);
 
