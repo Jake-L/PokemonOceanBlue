@@ -718,6 +718,18 @@ public class BattleModel extends BaseModel
             this.events.add(new BattleEvent("All Pokemon's stat changes were erased.", attacker, attacker));
             this.statChanges = new int[2][8];
         }
+        //aromatherapy/heal-bell
+        else if (effectId == 103)
+        {
+            this.events.add(new BattleEvent(attackingPokemon.name + " cured its team's status conditions.", 0, attacker, attacker));
+            for (int i = 0; i < this.team[attacker].length; i++)
+            {
+                if (i != this.currentPokemon[attacker])
+                {
+                    this.team[attacker][i].statusEffect = 0;
+                }
+            }
+        }
     }
 
     //checks if effect to be added is already in effect
@@ -907,6 +919,10 @@ public class BattleModel extends BaseModel
                     {
                         int speedRatio = Math.min(attackingPokemon.stats[Stat.SPEED] / defendingPokemon.stats[Stat.SPEED], 4);
                         movePower = (speedRatio < 2 ? 60 : speedRatio * 40 - (speedRatio / 4) * 10);
+                    }
+                    else if (effectId == 220)
+                    {
+                        movePower = (int)Math.min(1 + 25.0 * defendingPokemon.stats[Stat.SPEED] / attackingPokemon.stats[Stat.SPEED], 150);
                     }
                     else if ((effectId == 9 && defendingPokemon.statusEffect != 2) || (effectId == 93 && attackingPokemon.statusEffect != 2))
                     {
