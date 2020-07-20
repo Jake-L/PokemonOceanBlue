@@ -452,7 +452,7 @@ public class BattleModel extends BaseModel
                     {
                         this.events.add(new BattleEvent(effect.text, effect.damage, effect.target, effect.attacker, null, effect.target));
                     }
-                    if (effect.recoil != 0)
+                    if (effect.recoil != 0 && this.team[effect.attacker][this.currentPokemon[effect.attacker]].currentHP < this.team[effect.attacker][this.currentPokemon[effect.attacker]].stats[Stat.HP])
                     {
                         this.events.add(new BattleEvent(effect.text, effect.recoil, effect.attacker, effect.attacker, null, effect.target));
                     }
@@ -618,7 +618,7 @@ public class BattleModel extends BaseModel
         }
         //multiTurnEffects
         else if (effectId == 43 || effectId == 85 || effectId == 66 || effectId == 36 || effectId == 125 || effectId == 47 ||
-            effectId == 202 || effectId == 211 || effectId == 48 || effectId == 241)
+            effectId == 202 || effectId == 211 || effectId == 48 || effectId == 241 || effectId == 252)
         {
             addMultiTurnEffect(move, effectId, attacker);
         }
@@ -712,6 +712,12 @@ public class BattleModel extends BaseModel
                 this.events.add(new BattleEvent("But it failed.", attacker, attacker));
             }
         }
+        //haze
+        else if (effectId == 26)
+        {
+            this.events.add(new BattleEvent("All Pokemon's stat changes were erased.", attacker, attacker));
+            this.statChanges = new int[2][8];
+        }
     }
 
     //checks if effect to be added is already in effect
@@ -776,6 +782,10 @@ public class BattleModel extends BaseModel
             else if (effectId == 241)
             {
                 event = new BattleEvent(attackingPokemon.name + " protected its team from critical hits.", attacker, attacker);
+            }
+            else if (effectId == 252)
+            {
+                event = new BattleEvent(attackingPokemon.name + " surrounded itself with a veil of water.", attacker, attacker);
             }
             else
             {
@@ -1815,6 +1825,13 @@ public class BattleModel extends BaseModel
             }
             else if (moveEffect.effectId == 202 || moveEffect.effectId == 211 || moveEffect.effectId == 48)
             {
+                this.removalCondition = attacker;
+                this.effectTimingId = 0;
+            }
+            else if (moveEffect.effectId == 252)
+            {
+                this.text = team[target][currentPokemon[target]].name + " is healed by " + move.name + ".";
+                this.recoil = (int)Math.floor(team[target][currentPokemon[target]].stats[Stat.HP] / -16.0);
                 this.removalCondition = attacker;
                 this.effectTimingId = 0;
             }
