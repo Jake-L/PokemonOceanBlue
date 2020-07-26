@@ -19,6 +19,12 @@ map_id,area_id,name,x,y,y_offset
 1001,0,tournamentWall,0,3,-1
 1000,0,tournamentInterior,0,9,-6
 1000,0,tournamentSeats,0,2,-3
+510,0,gymStatue,9,11,0
+510,0,badge4,6,0,0
+510,0,doormat,5,13,-2
+510,0,gymPattern4,4,10,-8
+510,0,gymStatue,3,11,0
+510,0,gymWall,0,1,-2
 506,0,storeDisplayLeft,10,7,0
 506,0,storeDisplayRight,8,7,0
 506,0,storeDisplayLeft,7,7,0
@@ -368,9 +374,9 @@ map_id,area_id,name,x,y,y_offset
 31,0,glassDisplay1,1,7,0
 31,0,pokemartInterior,0,8,-9
 31,0,glassDisplay2,0,5,0
-30,0,house5,37,10,0
-30,0,house5,41,10,0
-30,0,pokemonCenter,46,10,0
+30,0,house5,40,9,0
+30,0,house5,44,9,0
+30,0,pokemonCenter,49,9,0
 30,0,gym,30,19,0
 30,0,bigTree,60,39,0
 30,0,bigTree,60,37,0

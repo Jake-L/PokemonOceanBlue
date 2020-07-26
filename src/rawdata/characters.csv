@@ -60,6 +60,7 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 55,33,0,Guy Sensei,blackBelt,7,4,55,0,0,
 56,33,0,Young Ninja Lee,youngsterBoy,8,4,56,0,0,
 57,42,0,Musician Axl,guitarist,58,3,57,0,2,
+58,510,0,Gym Leader Erika,erika,6,3,58,0,2,102
 1000,1000,0,Youngster Jimmothy,youngsterBoy,12,6,1000,0,3,
 1001,1000,0,Youngster Jimmothy,youngsterBoy,12,6,1001,0,3,
 1002,1000,0,Youngster Jimmothy,youngsterBoy,12,6,1002,0,3,
