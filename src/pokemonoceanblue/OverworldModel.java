@@ -33,6 +33,7 @@ public class OverworldModel extends BaseModel {
     public InventoryModel inventoryModel;
     public DayCareModel dayCareModel;
     public byte weather;
+    private boolean battle = false;
     
     /** 
      * @param mapId unique identifier for the current map
@@ -317,6 +318,10 @@ public class OverworldModel extends BaseModel {
         {
             return false;
         }
+        else if (this.battle)
+        {
+            return false;
+        }
         else
         {
             return true;
@@ -334,6 +339,7 @@ public class OverworldModel extends BaseModel {
             // start a battle
             if (this.conversation.getBattleId() >= 0)
             {
+                this.battle = true;
                 this.app.createTrainerBattle(this.conversation.getBattleId());
                 this.conversation.setBattleStarted();
             }
@@ -505,11 +511,15 @@ public class OverworldModel extends BaseModel {
             || this.tiles[y][x] == 90)
         {
             int index = this.areaId * 1000 + this.tiles[y][x];
-            Random rand = new Random();
-            int n = rand.nextInt(this.wildPokemon.get(index).size() * 5);
-            if (n < this.wildPokemon.get(index).size())
+            if (this.wildPokemon.get(index) != null)
             {
-                this.app.createWildBattle(this.wildPokemon.get(index).get(n), 5);
+                Random rand = new Random();
+                int n = rand.nextInt(this.wildPokemon.get(index).size() * 5);
+                if (n < this.wildPokemon.get(index).size())
+                {
+                    this.battle = true;
+                    this.app.createWildBattle(this.wildPokemon.get(index).get(n), 5);
+                }
             }
         }
         // player is no longer surfing when they step onto solid land
@@ -901,6 +911,7 @@ public class OverworldModel extends BaseModel {
     public void battleComplete()
     {
         // restart music
+        this.battle = false;
         this.areaId = -1;
         this.checkArea(playerModel.getX(), playerModel.getY());
 
