@@ -159,7 +159,8 @@ public class App extends JFrame implements KeyListener
             //     ex.printStackTrace();
             //     this.setMap(1, 3, 3);
             // } 
-            this.setMap(0, 35, 12);
+            //this.setMap(43, 3, 9);
+            this.setMap(39, 1, 7);
         }
     }
 
@@ -170,11 +171,21 @@ public class App extends JFrame implements KeyListener
 
     public void createTrainerBattle(int battleId)
     {
-        battleModel = new BattleModel(partyModel.getTeamArray(), battleId, this, this.enemyScalingFactor, overworldModel.weather);
-        this.playSong(battleModel.musicId, true);
-        BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
-        viewManager.setView(battleView);
-        this.addModelQueue(battleModel);
+        if (battleId >= 2000)
+        {
+            // legendary encounters also start through conversations
+            int[] legendaryData = new DatabaseUtility().getLegendaryData(battleId);
+            this.createWildBattle(legendaryData[0], legendaryData[1]);
+        }
+        else
+        {
+            // actual trainer battles
+            battleModel = new BattleModel(partyModel.getTeamArray(), battleId, this, this.enemyScalingFactor, overworldModel.weather);
+            this.playSong(battleModel.musicId, true);
+            BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
+            viewManager.setView(battleView);
+            this.addModelQueue(battleModel);
+        }
     }
 
     public void createWildBattle(int pokemonId, int level)
@@ -191,7 +202,15 @@ public class App extends JFrame implements KeyListener
         Random rand = new Random();
         boolean shiny = rand.nextDouble() < this.pokedexModel.getShinyRate(pokemonId) ? true : false;
         PokemonModel[] team = new PokemonModel[1];
-        team[0] = new PokemonModel(pokemonId, level + Math.min(this.enemyScalingFactor, 50), shiny);
+        int levelScaling = 0;
+
+        // scale up trainer's Pokemon and wild Pokemon
+        // but not legendary encounters
+        if (level < 50)
+        {
+            levelScaling = Math.min(this.enemyScalingFactor, 50);
+        }
+        team[0] = new PokemonModel(pokemonId, level + levelScaling, shiny);
 
         // create the battle
         battleModel = new BattleModel(team, partyModel.getTeamArray(), this, overworldModel.weather);

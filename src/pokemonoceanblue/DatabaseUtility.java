@@ -921,4 +921,24 @@ public class DatabaseUtility
             System.out.println(ex.getMessage());
         }
     }
+
+    /**
+     * @param battleId the battle with the legendary
+     * @return an array with the pokemon id and level of the legendary
+     */
+    public int[] getLegendaryData(int battleId)
+    {
+        try 
+        {
+            String query = "SELECT pokemon_id, level FROM battle WHERE battle_id = " + battleId;
+            ResultSet rs = this.runQuery(query);
+            return new int[]{rs.getInt(1), rs.getInt(2)};
+        } 
+        catch (SQLException ex) 
+        {
+            System.out.println(ex.getMessage());
+        }
+
+        return new int[]{0,0};
+    }
 }
