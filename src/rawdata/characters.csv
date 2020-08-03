@@ -49,7 +49,7 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 40,36,0,,breederBoy,2,4,43,0,1,
 40,506,0,,breederBoy,2,4,43,0,1,
 41,25,0,,breederGirl,2,2,9998,0,2,
-41,37,0,Musician Rick Astley,rickastley,2,5,47,0,2,108
+41,509,0,Musician Rick Astley,rickastley,2,5,47,0,2,108
 42,34,0,Gym Leader Misty,misty,6,5,46,0,2,102
 45,1002,0,,aceBoy,4,4,45,0,2,
 50,26,0,,familyMan,7,5,50,0,3,
@@ -66,6 +66,10 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 61,30,0,,oldMan,35,19,61,0,0,
 62,42,0,,oldLady,18,37,62,0,0,
 63,44,0,Guitarist Chad,guitarist,15,13,63,0,3,
+64,507,0,,aceBoy,2,6,64,1,2,
+65,511,0,,businessMan,8,5,65,1,3,
+66,38,0,,businessMan,3,7,66,1,1,
+67,38,0,,lady,8,5,67,1,3,
 1000,1000,0,Youngster Jimmothy,youngsterBoy,12,6,1000,0,3,
 1001,1000,0,Youngster Jimmothy,youngsterBoy,12,6,1001,0,3,
 1002,1000,0,Youngster Jimmothy,youngsterBoy,12,6,1002,0,3,
