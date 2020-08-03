@@ -58,29 +58,29 @@ map_id,area_id,x,y,dest_map_id,dest_area_id,dest_x,dest_y,comment
 31,0,5,9,0,2,17,37,pokemart -> virdian city
 17,0,14,32,32,0,5,8,pewter city -> pokemart
 32,0,5,9,17,0,14,33,pokemart -> pewter city
-33,1,50,29,1002,0,4,7,Celulean city -> Cerulean tournament entrance
-33,1,30,11,34,0,6,17,Cerulean city -> Cerulean gym
-34,0,6,18,33,1,30,12,Cerulean gym -> Cerulean city
-33,1,20,11,35,0,5,9,Cerulean city -> Cerulean pokemon center
-35,0,5,10,33,1,20,12,Cerulean pokemon center -> Cerulean city
-33,1,39,11,36,0,5,8,Cerulean city -> Cerulean pokemart
-36,0,5,9,33,1,39,12,Cerulean pokemart -> Cerulean city
-33,1,8,21,26,0,3,8,Cerulean -> Cerulean top left house
-33,1,8,40,27,0,3,8,Cerulean -> Cerulean bottom left house
-33,1,14,40,28,0,3,8,"Cerulean -> Cerulean bottom, second from left house"
-33,1,24,40,29,0,3,8,"Cerulean -> Cerulean bottom, third from left house"
-33,1,36,40,38,0,3,8,"Cerulean -> Cerulean bottom, third from right house"
-33,1,42,40,39,0,3,8,"Cerulean -> Cerulean bottom, second from right house"
-33,1,52,40,40,0,3,8,"Cerulean -> Cerulean bottom, right house"
-33,1,51,21,41,0,3,8,Cerulean -> Cerulean top right house
-26,0,3,9,33,1,8,22,Cerulean top left house -> Cerulean
-27,0,3,9,33,1,8,41,Cerulean bottom left house -> Cerulean
-28,0,3,9,33,1,14,41,"Cerulean bottom, second from left house -> Cerulean"
-29,0,3,9,33,1,24,41,"Cerulean bottom, third from left house -> Cerulean"
-38,0,3,9,33,1,36,41,"Cerulean bottom, third from right house -> Cerulean"
-39,0,3,9,33,1,42,41,"Cerulean bottom, second from right house -> Cerulean"
-40,0,3,9,33,1,52,41,"Cerulean bottom, right house -> Cerulean"
-41,0,3,9,33,1,51,22,Cerulean top right house -> Cerulean
+33,1,28,20,1002,0,4,7,Cerulean city -> Cerulean tournament entrance
+33,1,28,10,34,0,6,17,Cerulean city -> Cerulean gym
+34,0,6,18,33,1,28,11,Cerulean gym -> Cerulean city
+33,1,18,10,35,0,5,9,Cerulean city -> Cerulean pokemon center
+35,0,5,10,33,1,18,11,Cerulean pokemon center -> Cerulean city
+33,1,38,10,36,0,5,8,Cerulean city -> Cerulean pokemart
+36,0,5,9,33,1,38,11,Cerulean pokemart -> Cerulean city
+33,1,8,20,26,0,3,8,Cerulean -> Cerulean top left house
+33,1,7,38,27,0,3,8,Cerulean -> Cerulean bottom left house
+33,1,13,38,28,0,3,8,"Cerulean -> Cerulean bottom, second from left house"
+33,1,22,38,29,0,3,8,"Cerulean -> Cerulean bottom, third from left house"
+33,1,33,38,38,0,3,8,"Cerulean -> Cerulean bottom, third from right house"
+33,1,39,38,39,0,3,8,"Cerulean -> Cerulean bottom, second from right house"
+33,1,48,38,40,0,3,8,"Cerulean -> Cerulean bottom, right house"
+33,1,47,20,41,0,3,8,Cerulean -> Cerulean top right house
+26,0,3,9,33,1,8,21,Cerulean top left house -> Cerulean
+27,0,3,9,33,1,7,39,Cerulean bottom left house -> Cerulean
+28,0,3,9,33,1,13,39,"Cerulean bottom, second from left house -> Cerulean"
+29,0,3,9,33,1,22,39,"Cerulean bottom, third from left house -> Cerulean"
+38,0,3,9,33,1,33,39,"Cerulean bottom, third from right house -> Cerulean"
+39,0,3,9,33,1,39,39,"Cerulean bottom, second from right house -> Cerulean"
+40,0,3,9,33,1,48,39,"Cerulean bottom, right house -> Cerulean"
+41,0,3,9,33,1,47,21,Cerulean top right house -> Cerulean
 42,0,16,37,43,0,6,12,Vermilion -> gym
 43,0,6,13,42,0,16,38,Vermilion gym -> Vermilion
 42,0,10,10,500,0,3,8,Vermilion -> top left house
@@ -106,7 +106,7 @@ map_id,area_id,x,y,dest_map_id,dest_area_id,dest_x,dest_y,comment
 30,0,33,19,510,0,6,12,Celadon -> gym
 510,0,6,13,30,0,33,20,Celadon gym -> Celadon
 1001,0,4,2,1000,0,5,9,Cerulean tournament waiting room -> battle room
-1002,0,4,8,33,1,50,30,Cerulean tournament entrance -> Cerulean city
+1002,0,4,8,33,1,28,21,Cerulean tournament entrance -> Cerulean city
 1002,0,4,2,1000,0,5,9,Cerulean tournament entrance -> battle room
 1101,0,4,2,1100,0,5,9,Celadon tournament waiting room -> battle room
 1102,0,4,8,33,1,50,30,Celadon tournament entrance -> Cerulean city
