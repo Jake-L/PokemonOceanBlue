@@ -218,4 +218,20 @@ public class PartyModel extends BaseModel
         this.optionMax = this.team.size() - 1;
         return returnPokemon;
     }
+
+    /**
+     * @return true if all the player's Pokemon have fainted
+     */
+    public boolean isDefeated()
+    {
+        for (PokemonModel pokemon : this.team)
+        {
+            if (pokemon.currentHP > 0)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

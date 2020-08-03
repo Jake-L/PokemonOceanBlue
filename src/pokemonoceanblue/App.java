@@ -510,6 +510,13 @@ public class App extends JFrame implements KeyListener
                 {
                     // create the new controller
                     this.openController();
+
+                    // heal Pokemon after respawning in their house
+                    // done here to their health bar doesn't get filled in the battle screen
+                    if (this.partyModel.isDefeated())
+                    {
+                        this.healTeam();
+                    }
                 }
 
                 // update the battle
@@ -521,9 +528,14 @@ public class App extends JFrame implements KeyListener
                         this.playSound(sound);
                     }
 
-                    if (this.battleModel.isComplete())
+                    if (this.battleModel.isComplete() && this.partyModel.isDefeated())
                     {
-                        this.overworldModel.battleComplete();
+                        // player is defeated, respawn in his house
+                        this.battleModel = null;
+                        this.setMap(1, 7, 4);
+                    }
+                    else if (this.battleModel.isComplete())
+                    {
                         if (this.battleModel.trainerSpriteName != null)
                         {
                             this.achievementsModel.setBattlesWon(this.battleModel.trainerSpriteName);
@@ -551,6 +563,7 @@ public class App extends JFrame implements KeyListener
                         this.checkEvolution(evolveQueue);
 
                         // return to overworld screen
+                        this.overworldModel.battleComplete();
                         this.exitCurrentView();
 
                         this.battleModel = null;
