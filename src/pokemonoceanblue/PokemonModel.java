@@ -28,11 +28,13 @@ public class PokemonModel
     int captureRate;
     int stepCounter;
     public int genderId;
+    public boolean raidBoss;
     
     /** 
      * Constructor
      * @param id the Pokemon's number from the national pokedex
      * @param level the Pokemon's current level
+     * @param shiny whether or not it's a shiny Pokemon
      */
     public PokemonModel(int id, int level, boolean shiny)
     {
@@ -52,7 +54,35 @@ public class PokemonModel
             this.stepCounter = 1500;
         }
 
+        // generate random IVs from 0 to 15
+        Random rand = new Random();
+        for (int i = 0; i < ivs.length; i++)
+        {
+            ivs[i] = rand.nextInt(16);
+        }
+
         this.loadStats();
+    }
+
+    /** 
+     * Constructor
+     * @param id the Pokemon's number from the national pokedex
+     * @param level the Pokemon's current level
+     * @param shiny whether or not it's a shiny Pokemon
+     * @param raidBoss whether or not the Pokemon is a raid boss battle
+     */
+    public PokemonModel(int id, int level, boolean shiny, boolean raidBoss)
+    {
+        this(id, level, shiny);
+        this.raidBoss = raidBoss;
+        if (this.raidBoss)
+        {
+            for (int i = 0; i < this.stats.length; i++)
+            {
+                this.stats[i] *= 2;
+            }
+            this.currentHP *= 2;
+        }        
     }
 
     /**
@@ -250,14 +280,9 @@ public class PokemonModel
     /** 
      * Read the Pokemon's stats, types, etc from a database
      */
-    private void loadStats()
+    public void loadStats()
     {
-        // generate random IVs from 0 to 15
-        Random rand = new Random();
-        for (int i = 0; i < ivs.length; i++)
-        {
-            ivs[i] = rand.nextInt(16);
-        }
+        this.raidBoss = false;
 
         try
         {

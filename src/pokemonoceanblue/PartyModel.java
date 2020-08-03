@@ -134,6 +134,13 @@ public class PartyModel extends BaseModel
                 this.returnValue = this.optionIndex;
                 this.optionIndex = -1; 
             }
+            // if in battle, and trying to select a dead Pokemon or egg, close the pop-up window and do not exit the party screen
+            else if (this.battleActivePokemon > -1 
+                && this.team.get(this.battleActivePokemon).currentHP == 0
+                && (this.team.get(this.optionIndex).level == 0 || this.team.get(this.optionIndex).currentHP == 0))
+            {
+                this.textOptions = null;
+            }
             // if in battle, return the chosen Pokemon if it isn't the currently active Pokemon
             else if (this.battleActivePokemon != this.optionIndex && this.team.get(this.optionIndex).level > 0 &&
                 this.team.get(this.optionIndex).currentHP > 0)
@@ -168,7 +175,9 @@ public class PartyModel extends BaseModel
         {
             this.isSummary = false;
         }
-        else
+        // do not exit the screen if in battle and your current Pokemon is dead
+        else if (this.battleActivePokemon == -1 
+            || this.team.get(this.battleActivePokemon).currentHP > 0)
         {
             this.returnValue = -1;
             this.optionIndex = -1;

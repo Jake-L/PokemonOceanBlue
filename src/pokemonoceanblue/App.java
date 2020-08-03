@@ -114,9 +114,9 @@ public class App extends JFrame implements KeyListener
         this.playSong(0, false);
 
         this.partyModel = new PartyModel();
-        this.partyModel.addPokemon(0, new PokemonModel(3, 30, false));
-        this.partyModel.addPokemon(0, new PokemonModel(4, 15, false));
-        this.partyModel.addPokemon(0, new PokemonModel(150, 6, false));
+        this.partyModel.addPokemon(0, new PokemonModel(3, 50, false));
+        this.partyModel.addPokemon(0, new PokemonModel(6, 50, false));
+        this.partyModel.addPokemon(0, new PokemonModel(9, 50, false));
         this.partyModel.team.get(0).moves[0] = new MoveModel(153);
         this.inventoryModel = new InventoryModel();
         this.pokedexModel = new PokedexModel();
@@ -160,7 +160,7 @@ public class App extends JFrame implements KeyListener
             //     this.setMap(1, 3, 3);
             // } 
             //this.setMap(43, 3, 9);
-            this.setMap(39, 1, 7);
+            this.setMap(39, 2, 6);
         }
     }
 
@@ -175,7 +175,7 @@ public class App extends JFrame implements KeyListener
         {
             // legendary encounters also start through conversations
             int[] legendaryData = new DatabaseUtility().getLegendaryData(battleId);
-            this.createWildBattle(legendaryData[0], legendaryData[1]);
+            this.createWildBattle(legendaryData[0], legendaryData[1], true);
         }
         else
         {
@@ -188,7 +188,7 @@ public class App extends JFrame implements KeyListener
         }
     }
 
-    public void createWildBattle(int pokemonId, int level)
+    public void createWildBattle(int pokemonId, int level, boolean raidBoss)
     {
         if (this.partyModel.team.size() == 0)
         {
@@ -210,7 +210,7 @@ public class App extends JFrame implements KeyListener
         {
             levelScaling = Math.min(this.enemyScalingFactor, 50);
         }
-        team[0] = new PokemonModel(pokemonId, level + levelScaling, shiny);
+        team[0] = new PokemonModel(pokemonId, level + levelScaling, shiny, raidBoss);
 
         // create the battle
         battleModel = new BattleModel(team, partyModel.getTeamArray(), this, overworldModel.weather);
@@ -431,6 +431,13 @@ public class App extends JFrame implements KeyListener
             // track that a new Pokemon was caught
             this.achievementsModel.setNewPokemonObtained(pokemon.base_pokemon_id);
         }
+
+        // lower the Pokemon's stats to normal if it was caught in a raid
+        if (pokemon.raidBoss)
+        {
+            pokemon.loadStats();
+        }
+
         NewPokemonModel newPokemonModel = new NewPokemonModel(pokemon, partyModel, pokemonStorageModel);
         this.newPokemonQueue.add(newPokemonModel);
         this.achievementsModel.setPokemonCaught(pokemon.shiny);

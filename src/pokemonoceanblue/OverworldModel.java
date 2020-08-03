@@ -518,7 +518,7 @@ public class OverworldModel extends BaseModel {
                 if (n < this.wildPokemon.get(index).size())
                 {
                     this.battle = true;
-                    this.app.createWildBattle(this.wildPokemon.get(index).get(n), 5);
+                    this.app.createWildBattle(this.wildPokemon.get(index).get(n), 5, false);
                 }
             }
         }

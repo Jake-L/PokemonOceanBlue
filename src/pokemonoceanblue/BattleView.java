@@ -221,17 +221,26 @@ public class BattleView extends BaseView {
         if (this.model.events.size() > 0 && this.model.events.get(0).itemId > -1)
         {
             int pokeballSpriteIndex = this.model.events.get(0).itemId;
+            double x = width * 0.6;
+            double y = height * 0.25;
+
+            if (this.model.actionCounter > 30)
+            {
+                x *= (1 - ((this.model.actionCounter - 30) / 30.0));
+                y += (height * 0.15) * (Math.pow(this.model.actionCounter - 40, 2) / 400.0);
+            }
+
             //renders a pokeball in place of enemy pokemon
             g.drawImage(this.pokeballSprite[pokeballSpriteIndex],
-                width / 2,
-                height / 2 - (this.pokeballSprite[pokeballSpriteIndex].getHeight(null) * graphicsScaling),
+                (int)x,
+                (int)y,
                 this.pokeballSprite[pokeballSpriteIndex].getWidth(null) * graphicsScaling,
                 this.pokeballSprite[pokeballSpriteIndex].getHeight(null) * graphicsScaling,
                 canvas);
         }
 
         // render enemy Pokemon
-        else if (this.model.currentPokemon[1] >= 0)
+        if (this.model.currentPokemon[1] >= 0)
         {
             if ((!this.model.isCaught && !this.hidePokemon[1])
                 || (this.model.events.size() > 0 && this.model.events.get(0).newPokemonIndex > -1))
@@ -347,6 +356,7 @@ public class BattleView extends BaseView {
     private void renderPokemonStatusWindow(int teamIndex, Graphics g, JPanel canvas)
     {
         Font font = new Font("Pokemon Fire Red", Font.PLAIN, 12 * graphicsScaling);    
+        g.setFont(font);
         int x = teamIndex == 0 ? width * 9 / 10 - (this.statusWindow[0].getWidth(null) * graphicsScaling): width / 10;
         int y = teamIndex == 0 ? height / 2 : height / 10;
 
@@ -363,6 +373,17 @@ public class BattleView extends BaseView {
             x + (106 - teamIndex * 20) * graphicsScaling,
             y + (19 - teamIndex) * graphicsScaling);
 
+        // displays EX beside the level if the pokemon is a raid boss
+        if (this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].raidBoss)
+        {
+            Font exFont = new Font("Pokemon Fire Red", Font.ITALIC, 12 * graphicsScaling);  
+            g.setFont(exFont);
+            g.drawString("EX",
+                x + (116 - teamIndex * 20) * graphicsScaling,
+                y + (19 - teamIndex) * graphicsScaling);
+            g.setFont(font);
+        }
+        
         //displays name of pokemon
         g.drawString(String.valueOf(this.model.team[teamIndex][this.model.currentPokemon[teamIndex]].name),
             x + (18 - teamIndex * 14 ) * graphicsScaling,
@@ -510,8 +531,21 @@ public class BattleView extends BaseView {
                 return this.model.actionCounter / 40.0f;
             }
         }
+        // shrink the enemy when throwing a Pokeball
+        else if (teamIndex == 1
+            && this.model.events.size() > 0 
+            && this.model.events.get(0).itemId > -1 
+            && this.model.actionCounter <= 20)
+        {
+            return this.model.actionCounter / 20.0f;
+        }
 
         return 1;
+    }
+
+    private Image getPokeballSprite()
+    {
+        return pokeballSprite[0];
     }
 
     //displays battle options in a text box
