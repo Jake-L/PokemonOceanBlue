@@ -323,10 +323,14 @@ public class DatabaseUtility
                     area_id INT NOT NULL,
                     x INT NOT NULL,
                     y INT NOT NULL,
+                    x_offset INT NOT NULL,
+                    y_offset INT NOT NULL,
                     dest_map_id INT NOT NULL,
                     dest_area_id INT NOT NULL,
                     dest_x INT NOT NULL,
                     dest_y INT NOT NULL,
+                    dest_x_offset INT NOT NULL,
+                    dest_y_offset INT NOT NULL,
                     FOREIGN KEY(map_id) REFERENCES map_template(map_id),
                     FOREIGN KEY(dest_map_id) REFERENCES map_template(map_id))
                 """;
@@ -337,13 +341,13 @@ public class DatabaseUtility
         query = """
                 INSERT INTO portal (
                     map_id, area_id, 
-                    x, y,
+                    x, y, x_offset, y_offset,
                     dest_map_id, dest_area_id,
-                    dest_x, dest_y)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    dest_x, dest_y, dest_x_offset, dest_y_offset)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
         
-        dataTypes = new String[] {"int", "int", "int", "int", "int", "int", "int", "int"};
+        dataTypes = new String[] {"int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

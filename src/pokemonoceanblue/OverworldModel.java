@@ -763,20 +763,43 @@ public class OverworldModel extends BaseModel {
             DatabaseUtility db = new DatabaseUtility();
 
             String query = """
-                SELECT p.x + IFNULL(a.min_x,0) as x,
-                p.y + IFNULL(a.min_y,0) as y,
+            SELECT 
+                p.x + IFNULL(a.min_x,0) AS x,
+                p.y + IFNULL(a.min_y,0) AS y,
                 p.dest_map_id,
-                p.dest_x + IFNULL(dest.min_x,0) as dest_x,
-                p.dest_y + IFNULL(dest.min_y,0) as dest_y
-                FROM portal p
-                LEFT JOIN area a
+                p.dest_x + IFNULL(dest.min_x,0) AS dest_x,
+                p.dest_y + IFNULL(dest.min_y,0) AS dest_y
+            FROM (
+                SELECT 
+                    map_id, 
+                    area_id,
+                    x, 
+                    y,
+                    dest_map_id, 
+                    dest_area_id,
+                    dest_x + dest_x_offset AS dest_x,
+                    dest_y + dest_y_offset AS dest_y
+                FROM portal 
+                UNION ALL
+                SELECT 
+                    dest_map_id AS map_id, 
+                    dest_area_id AS area_id, 
+                    dest_x AS x, 
+                    dest_y AS y,
+                    map_id AS dest_map_id, 
+                    area_id AS dest_area_id,
+                    x + x_offset AS dest_x,
+                    y + y_offset AS dest_y
+                FROM portal 
+            ) p
+            LEFT JOIN area a
                 ON a.area_id = p.area_id
                 AND a.map_id = p.map_id
-                LEFT JOIN area dest
+            LEFT JOIN area dest
                 ON dest.area_id = p.dest_area_id
                 AND dest.map_id = p.dest_map_id
-                WHERE p.map_id = 
-                """ + this.mapId;
+            WHERE p.map_id =
+            """ + this.mapId;
 
             ResultSet rs = db.runQuery(query);
 

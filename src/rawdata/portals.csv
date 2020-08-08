@@ -1,119 +1,65 @@
-map_id,area_id,x,y,dest_map_id,dest_area_id,dest_x,dest_y,comment
-0,0,9,8,1,0,3,8,red's house
-0,0,20,8,2,0,3,8,blue's house
-0,0,9,15,3,0,3,8,middle left house
-0,0,20,15,4,0,3,8,middle right house
-0,0,20,22,5,0,3,8,oak's lab
-0,0,11,22,6,0,6,12,bottom left house
-1,0,3,9,0,0,9,9,back to pallet town
-2,0,3,9,0,0,20,9,back to pallet town
-3,0,3,9,0,0,9,16,back to pallet town
-4,0,3,9,0,0,20,16,back to pallet town
-5,0,3,9,0,0,20,23,back to pallet town
-6,0,6,13,0,0,11,23,back to pallet town
-0,2,29,36,7,0,5,9,viridian pokemon center
-7,0,5,10,0,2,29,37,back to viridian city
-0,2,16,17,8,0,3,8,top left house
-8,0,3,9,0,2,16,18,back to viridian city
-0,2,26,17,9,0,3,8,top middle house
-9,0,3,9,0,2,26,18,back to viridian city
-0,2,33,17,10,0,3,8,top right house
-10,0,3,9,0,2,33,18,back to viridian city
-0,2,15,26,11,0,3,8,middle left house
-11,0,3,9,0,2,15,27,back to viridian city
-0,2,26,26,12,0,3,8,middle centre house
-12,0,3,9,0,2,26,27,back to viridian city
-0,2,33,26,13,0,3,8,middle right house
-13,0,3,9,0,2,33,27,back to viridian city
-0,2,22,3,15,0,4,12,viridian city route building
-0,2,21,3,15,0,4,12,viridian city route building
-15,0,4,13,0,2,22,4,viridian city
-15,0,4,0,14,0,20,46,viridian forest
-14,0,20,47,15,0,4,1,viridian city route building
-0,0,16,30,18,0,4,1,pallet -> pallet-route 21 building
-0,0,17,30,18,0,4,1,pallet -> pallet-route 21 building
-18,0,4,0,0,0,17,30,pallet-route 21 building -> pallet
-18,0,4,13,16,0,10,4,pallet-route 21 building -> route 21
-16,0,9,3,18,0,4,12,route 21 -> pallet-route 21 building
-16,0,10,3,18,0,4,12,route 21 -> pallet-route 21 building
-14,0,8,3,19,0,4,12,vforest -> vforest-pewter route building
-14,0,9,3,19,0,4,12,vforest -> vforest-pewter route building
-19,0,4,13,14,0,8,4,vforest-pewter route building -> vforest
-19,0,4,0,17,0,19,44,vforest-pewter route building -> pewter
-17,0,19,45,19,0,4,1,pewter -> vforest-pewter route building
-17,0,20,45,19,0,4,1,pewter -> vforest-pewter route building
-20,0,6,13,17,0,12,24,pewter gym -> pewter
-17,0,12,23,20,0,6,12,pewter -> pewter gym
-17,0,24,27,21,0,5,9,pewter -> pokemon center
-21,0,5,10,17,0,24,28,pokemon center -> pewter
-17,0,25,18,22,0,3,8,pewter -> north east house
-22,0,3,9,17,0,25,19,north east house -> pewter
-17,0,14,39,23,0,3,8,"pewter -> south west, second house from left"
-23,0,3,9,17,0,14,40,south west second house -> pewter
-17,0,8,39,24,0,3,8,"pewter -> south west, first house from left"
-24,0,3,9,17,0,8,40,south west second house -> pewter
-17,0,25,39,25,0,3,7,pewter -> day care
-25,0,3,8,17,0,25,40,day care -> pewter
-0,2,17,36,31,0,5,8,viridan city -> pokemart
-31,0,5,9,0,2,17,37,pokemart -> virdian city
-17,0,14,32,32,0,5,8,pewter city -> pokemart
-32,0,5,9,17,0,14,33,pokemart -> pewter city
-33,1,28,20,1002,0,4,7,Cerulean city -> Cerulean tournament entrance
-33,1,28,10,34,0,6,17,Cerulean city -> Cerulean gym
-34,0,6,18,33,1,28,11,Cerulean gym -> Cerulean city
-33,1,18,10,35,0,5,9,Cerulean city -> Cerulean pokemon center
-35,0,5,10,33,1,18,11,Cerulean pokemon center -> Cerulean city
-33,1,38,10,36,0,5,8,Cerulean city -> Cerulean pokemart
-36,0,5,9,33,1,38,11,Cerulean pokemart -> Cerulean city
-33,1,8,20,26,0,3,8,Cerulean -> Cerulean top left house
-33,1,7,38,27,0,3,8,Cerulean -> Cerulean bottom left house
-33,1,13,38,28,0,3,8,"Cerulean -> Cerulean bottom, second from left house"
-33,1,22,38,29,0,3,8,"Cerulean -> Cerulean bottom, third from left house"
-33,1,33,38,38,0,3,8,"Cerulean -> Cerulean bottom, third from right house"
-33,1,39,38,39,0,3,8,"Cerulean -> Cerulean bottom, second from right house"
-33,1,48,38,40,0,3,8,"Cerulean -> Cerulean bottom, right house"
-33,1,47,20,41,0,3,8,Cerulean -> Cerulean top right house
-26,0,3,9,33,1,8,21,Cerulean top left house -> Cerulean
-27,0,3,9,33,1,7,39,Cerulean bottom left house -> Cerulean
-28,0,3,9,33,1,13,39,"Cerulean bottom, second from left house -> Cerulean"
-29,0,3,9,33,1,22,39,"Cerulean bottom, third from left house -> Cerulean"
-38,0,3,9,33,1,33,39,"Cerulean bottom, third from right house -> Cerulean"
-39,0,3,9,33,1,39,39,"Cerulean bottom, second from right house -> Cerulean"
-40,0,3,9,33,1,48,39,"Cerulean bottom, right house -> Cerulean"
-41,0,3,9,33,1,47,21,Cerulean top right house -> Cerulean
-42,0,16,37,43,0,6,12,Vermilion -> gym
-43,0,6,13,42,0,16,38,Vermilion gym -> Vermilion
-42,0,10,10,500,0,3,8,Vermilion -> top left house
-500,0,3,9,42,0,10,11,top left house -> Vermilion
-42,0,16,10,501,0,5,9,Vermilion -> Pokemon center
-501,0,5,10,42,0,16,11,Pokemon center -> Vermilion
-42,0,20,10,502,0,3,8,Vermilion -> house right of pokemon center
-502,0,3,9,42,0,20,11,house right of pokemon center -> Vermilion
-42,0,27,10,503,0,3,8,Vermilion -> top right house
-503,0,3,9,42,0,27,11,top right house -> Vermilion
-42,0,11,26,504,0,3,8,Vermilion -> bar
-504,0,3,9,42,0,11,27,bar -> Vermilion
-42,0,39,13,505,0,3,8,Vemilion -> complex
-505,0,3,9,42,0,39,14,complex -> Vermilion
-42,0,34,13,506,0,5,8,Vermilion -> pokemart
-506,0,5,9,42,0,34,14,pokemart -> Vermilion
-42,0,43,28,507,0,3,8,Vermilion -> bottom right house
-507,0,3,9,42,0,43,29,bottom right house -> vermilion
-42,0,32,37,508,0,3,8,Vermilion -> bottom house
-508,0,3,9,42,0,32,38,bottom  house -> vermilion
-42,0,18,26,509,0,3,8,Vermilion -> house beside bar
-509,0,3,9,42,0,18,27,house beside bar -> vermilion
-30,0,33,19,510,0,6,12,Celadon -> gym
-510,0,6,13,30,0,33,20,Celadon gym -> Celadon
-1001,0,4,2,1000,0,5,9,Cerulean tournament waiting room -> battle room
-1002,0,4,8,33,1,28,21,Cerulean tournament entrance -> Cerulean city
-1002,0,4,2,1000,0,5,9,Cerulean tournament entrance -> battle room
-1101,0,4,2,1100,0,5,9,Celadon tournament waiting room -> battle room
-1102,0,4,8,33,1,50,30,Celadon tournament entrance -> Cerulean city
-1102,0,4,2,1000,0,5,9,Celadon tournament entrance -> battle room
-1201,0,4,2,1200,0,5,9,Cinnabar tournament waiting room -> battle room
-1202,0,4,8,33,1,50,30,Cinnabar tournament entrance -> Cerulean city
-1202,0,4,2,1000,0,5,9,Cinnabar tournament entrance -> battle room
-1301,0,4,2,1300,0,5,9,Pokemon League tournament waiting room -> battle room
-1302,0,4,8,33,1,50,30,Pokemon League tournament entrance -> Cerulean city
-1302,0,4,2,1000,0,5,9,Pokemon League tournament entrance -> battle room
+map_id,area_id,x,y,x_offset,y_offset,dest_map_id,dest_area_id,dest_x,dest_y,dest_x_offset,dest_y_offset,comment
+0,0,9,8,0,1,1,0,3,9,0,-1,red's house
+0,0,20,8,0,1,2,0,3,9,0,-1,blue's house
+0,0,9,15,0,1,3,0,3,9,0,-1,middle left house
+0,0,20,15,0,1,4,0,3,9,0,-1,middle right house
+0,0,20,22,0,1,5,0,3,9,0,-1,oak's lab
+0,0,11,22,0,1,6,0,6,13,0,-1,bottom left house
+0,2,29,36,0,1,7,0,5,10,0,-1,viridian pokemon center
+0,2,16,17,0,1,8,0,3,9,0,-1,top left house
+0,2,26,17,0,1,9,0,3,9,0,-1,top middle house
+0,2,33,17,0,1,10,0,3,9,0,-1,top right house
+0,2,15,26,0,1,11,0,3,9,0,-1,middle left house
+0,2,26,26,0,1,12,0,3,9,0,-1,middle centre house
+0,2,33,26,0,1,13,0,3,9,0,-1,middle right house
+0,2,22,3,0,1,15,0,4,13,0,-1,viridian city route building
+0,2,21,3,0,1,15,0,4,13,0,-1,viridian city route building
+15,0,4,0,0,1,14,0,20,48,0,-1,viridian forest
+0,0,16,30,0,-1,18,0,4,0,0,1,pallet -> pallet-route 21 building
+0,0,17,30,0,-1,18,0,4,0,0,1,pallet -> pallet-route 21 building
+16,0,9,3,0,1,18,0,4,13,0,-1,route 21 -> pallet-route 21 building
+16,0,10,3,0,1,18,0,4,13,0,-1,route 21 -> pallet-route 21 building
+14,0,8,3,0,1,19,0,4,13,0,-1,vforest -> vforest-pewter route building
+14,0,9,3,0,1,19,0,4,13,0,-1,vforest -> vforest-pewter route building
+17,0,19,45,0,-1,19,0,4,0,0,1,pewter -> vforest-pewter route building
+17,0,20,45,0,-1,19,0,4,0,0,1,pewter -> vforest-pewter route building
+17,0,12,23,0,1,20,0,6,13,0,-1,pewter -> pewter gym
+17,0,24,27,0,1,21,0,5,10,0,-1,pewter -> pokemon center
+17,0,25,18,0,1,22,0,3,9,0,-1,pewter -> north east house
+17,0,14,39,0,1,23,0,3,9,0,-1,"pewter -> south west, second house from left"
+17,0,8,39,0,1,24,0,3,9,0,-1,"pewter -> south west, first house from left"
+17,0,25,39,0,1,25,0,3,8,0,-1,pewter -> day care
+0,2,17,36,0,1,31,0,5,9,0,-1,viridan city -> pokemart
+17,0,14,32,0,1,32,0,5,9,0,-1,pewter city -> pokemart
+33,1,28,20,0,1,1002,0,4,8,0,-1,Cerulean city -> Cerulean tournament entrance
+33,1,28,10,0,1,34,0,6,18,0,-1,Cerulean city -> Cerulean gym
+33,1,18,10,0,1,35,0,5,10,0,-1,Cerulean city -> Cerulean pokemon center
+33,1,38,10,0,1,36,0,5,9,0,-1,Cerulean city -> Cerulean pokemart
+33,1,8,20,0,1,26,0,3,9,0,-1,Cerulean -> Cerulean top left house
+33,1,7,38,0,1,27,0,3,9,0,-1,Cerulean -> Cerulean bottom left house
+33,1,13,38,0,1,28,0,3,9,0,-1,"Cerulean -> Cerulean bottom, second from left house"
+33,1,22,38,0,1,29,0,3,9,0,-1,"Cerulean -> Cerulean bottom, third from left house"
+33,1,33,38,0,1,38,0,3,9,0,-1,"Cerulean -> Cerulean bottom, third from right house"
+33,1,39,38,0,1,39,0,3,9,0,-1,"Cerulean -> Cerulean bottom, second from right house"
+33,1,48,38,0,1,40,0,3,9,0,-1,"Cerulean -> Cerulean bottom, right house"
+33,1,47,20,0,1,41,0,3,9,0,-1,Cerulean -> Cerulean top right house
+42,0,16,37,0,1,43,0,6,13,0,-1,Vermilion -> gym
+42,0,10,10,0,1,500,0,3,9,0,-1,Vermilion -> top left house
+42,0,16,10,0,1,501,0,5,10,0,-1,Vermilion -> Pokemon center
+42,0,20,10,0,1,502,0,3,9,0,-1,Vermilion -> house right of pokemon center
+42,0,27,10,0,1,503,0,3,9,0,-1,Vermilion -> top right house
+42,0,11,26,0,1,504,0,3,9,0,-1,Vermilion -> bar
+42,0,39,13,0,1,505,0,3,9,0,-1,Vemilion -> complex
+42,0,34,13,0,1,506,0,5,9,0,-1,Vermilion -> pokemart
+42,0,43,28,0,1,507,0,3,9,0,-1,Vermilion -> bottom right house
+42,0,32,37,0,1,508,0,3,9,0,-1,Vermilion -> bottom house
+42,0,18,26,0,1,509,0,3,9,0,-1,Vermilion -> house beside bar
+30,0,33,19,0,1,510,0,6,13,0,-1,Celadon -> gym
+1001,0,4,2,0,1,1000,0,5,10,0,-1,Cerulean tournament waiting room -> battle room
+1002,0,4,2,0,1,1000,0,5,10,0,-1,Cerulean tournament entrance -> battle room
+1101,0,4,2,0,1,1100,0,5,10,0,-1,Celadon tournament waiting room -> battle room
+1102,0,4,2,0,1,1100,0,5,10,0,-1,Celadon tournament entrance -> battle room
+1201,0,4,2,0,1,1200,0,5,10,0,-1,Cinnabar tournament waiting room -> battle room
+1202,0,4,2,0,1,1200,0,5,10,0,-1,Cinnabar tournament entrance -> battle room
+1301,0,4,2,0,1,1300,0,5,10,0,-1,Pokemon League tournament waiting room -> battle room
+1302,0,4,2,0,1,1300,0,5,10,0,-1,Pokemon League tournament entrance -> battle room
