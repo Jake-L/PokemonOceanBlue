@@ -147,7 +147,10 @@ public class OverworldModel extends BaseModel {
                     // convert the string into a byte and insert into the array
                     for (var i = 0; i < data.length; i++)
                     {
-                        output[lineCounter][i] = Byte.parseByte(data[i]);
+                        if (!data[i].equals(""))
+                        {
+                            output[lineCounter][i] = Byte.parseByte(data[i]);
+                        }
                     }
                 }
                 else
