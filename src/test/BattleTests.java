@@ -200,7 +200,6 @@ public class BattleTests {
             updateBattleModel(battleModel, 20);
             battleModel.confirmSelection();
             // wait for all the battle text to process
-            updateBattleModel(battleModel, 100);
             updateBattleModel(battleModel, 500);
             //if enemy took damage, swords dance was not used. therefore confusion working as intended
             if (enemyTeam[0].currentHP != enemyTeam[0].stats[0])
@@ -235,10 +234,9 @@ public class BattleTests {
         // make sure first Pokemon is sent out
         assertEquals(0, battleModel.currentPokemon[1]);
         // choose "FIGHT"
-        updateBattleModel(battleModel, 20);
         battleModel.confirmSelection();
-        // choose "DISCHARGE"
         updateBattleModel(battleModel, 20);
+        // choose "DISCHARGE"
         battleModel.optionIndex = 2;
         battleModel.confirmSelection();
         // wait for all the battle text to process
@@ -294,7 +292,6 @@ public class BattleTests {
             updateBattleModel(battleModel, 20);
             battleModel.confirmSelection();
             // wait for all the battle text to process
-            updateBattleModel(battleModel, 100);
             updateBattleModel(battleModel, 500);
         }
         assertNotEquals((team[0].getStat(2, battleModel.statChanges[0][2])), team[0].stats[2]); 
@@ -327,11 +324,10 @@ public class BattleTests {
         assertEquals(0, battleModel.events.size());
         // choose "FIGHT"
         battleModel.confirmSelection();
-        // choose "spore"
         updateBattleModel(battleModel, 20);
+        // choose "spore"
         battleModel.confirmSelection();
         // wait for all the battle text to process
-        updateBattleModel(battleModel, 100);
         updateBattleModel(battleModel, 500);
         assertEquals(2, enemyTeam[0].statusEffect);
         // run until lvl 100 dies or wakes up
@@ -345,7 +341,6 @@ public class BattleTests {
             battleModel.optionIndex = 1;
             battleModel.confirmSelection();
             // wait for all the battle text to process
-            updateBattleModel(battleModel, 100);
             updateBattleModel(battleModel, 500);
             //check if lvl 100 woke up
             if(enemyTeam[0].statusEffect == 0)
@@ -384,7 +379,6 @@ public class BattleTests {
             updateBattleModel(battleModel, 20);
             battleModel.confirmSelection();
             // wait for all the battle text to process
-            updateBattleModel(battleModel, 100);
             updateBattleModel(battleModel, 500);
             if (previousHP == team[0].currentHP)
             {
@@ -426,7 +420,6 @@ public class BattleTests {
         updateBattleModel(battleModel, 20);
         battleModel.confirmSelection();
         // wait for all the battle text to process
-        updateBattleModel(battleModel, 100);
         updateBattleModel(battleModel, 500);
         assertEquals(6, enemyTeam[0].statusEffect);
         int firstTick = enemyTeam[0].stats[0] - enemyTeam[0].currentHP;
@@ -440,7 +433,6 @@ public class BattleTests {
         updateBattleModel(battleModel, 20);
         battleModel.confirmSelection();
         // wait for all the battle text to process
-        updateBattleModel(battleModel, 100);
         updateBattleModel(battleModel, 500);
         //check if more damage was dealt by second tick of toxic
         int secondTick = enemyTeam[0].stats[0] - enemyTeam[0].currentHP - firstTick;
@@ -484,6 +476,171 @@ public class BattleTests {
         battleModel.confirmSelection();
         //make sure party screen was not opened
         assertNotEquals(battleModel.battleOptions, null); 
+    }
+
+    /**
+     * Test that Snore and Dream Eater only work when a Pokemon is asleep
+     * Done by using spore (100 accuracy sleep inducer) on enemy
+     * uses level 20 bulbasaur against a level 1 bulbasaur
+     */
+    @Test
+    public void testSleepEffects() {
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(1, 20, false);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(1, 1, false);
+
+        // set both sides moves
+        enemyTeam[0].moves = new MoveModel[1];
+        enemyTeam[0].moves[0] = new MoveModel(173); // snore
+        team[0].moves = new MoveModel[2];
+        team[0].moves[0] = new MoveModel(147); // spore
+        team[0].moves[1] = new MoveModel(138); // dream eater
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+
+        // skip opening animations
+        updateBattleModel(battleModel, 500);
+        assertEquals(0, battleModel.events.size());
+
+        // first turn, check that Snore and Dream Eater does nothing when Pokemon is awake
+        // choose "FIGHT"
+        battleModel.confirmSelection();
+        // choose "Dream Eater"
+        updateBattleModel(battleModel, 20);
+        battleModel.optionIndex = 1;
+        battleModel.confirmSelection();
+        // wait for all the battle text to process
+        updateBattleModel(battleModel, 500);
+        // player should not have taken any damage
+        assertEquals(team[0].getStat(0, 0), team[0].currentHP);
+        // enemy should not have taken any damage
+        assertEquals(enemyTeam[0].getStat(0, 0), enemyTeam[0].currentHP);
+
+        // second turn, put enemy to sleep and check that Snore does damage
+        // choose "FIGHT"
+        battleModel.confirmSelection();
+        // choose "Spore"
+        updateBattleModel(battleModel, 20);
+        battleModel.optionIndex = 0;
+        battleModel.confirmSelection();
+        // wait for all the battle text to process
+        updateBattleModel(battleModel, 500);
+        // enemy should be asleep
+        assertEquals(2, enemyTeam[0].statusEffect);
+        // enemy should not have taken any damage
+        assertEquals(enemyTeam[0].getStat(0, 0), enemyTeam[0].currentHP);
+        // player should have taken damage from Snore
+        assertTrue(team[0].currentHP < team[0].getStat(0, 0));
+
+        // third turn, Dream Eater should do damage
+        battleModel.confirmSelection();
+        // choose "Dream Eater"
+        updateBattleModel(battleModel, 20);
+        battleModel.optionIndex = 1;
+        battleModel.confirmSelection();
+        // wait for all the battle text to process
+        updateBattleModel(battleModel, 500);
+        // enemy should have taken any damage
+        assertTrue(enemyTeam[0].currentHP < enemyTeam[0].getStat(0, 0));
+    }
+
+    /**
+     * Test that Heal Bell and Aromatherapy remove status effects from all allies
+     */
+    @Test
+    public void testStatusClearMoves() 
+    {
+        // heal bell and aromatherapy
+        int[] statusClearMoves = new int[]{215, 312};
+
+        for (int moveId : statusClearMoves)
+        {
+            PokemonModel[] team = new PokemonModel[2];
+            team[0] = new PokemonModel(1, 20, false);
+            team[1] = new PokemonModel(4, 20, false);
+            PokemonModel[] enemyTeam = new PokemonModel[1];
+            enemyTeam[0] = new PokemonModel(1, 1, false);
+
+            // set status effects on the Pokemon
+            // make sure the first Pokemon has an effect that stills allows attacking
+            team[0].statusEffect = (byte) 4;
+            team[1].statusEffect = (byte) 1;
+
+            // set both sides moves
+            enemyTeam[0].moves = new MoveModel[1];
+            enemyTeam[0].moves[0] = new MoveModel(10); // scratch
+            team[0].moves = new MoveModel[1];
+            team[0].moves[0] = new MoveModel(moveId); // heal bell
+            BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+
+            // skip opening animations
+            updateBattleModel(battleModel, 500);
+            assertEquals(0, battleModel.events.size());
+
+            // double check that the Pokemon still have status effects
+            assertEquals(4, team[0].statusEffect);
+            assertEquals(1, team[1].statusEffect);
+
+            // choose "FIGHT"
+            battleModel.confirmSelection();
+            updateBattleModel(battleModel, 20);
+            // choose "Heal Bell"
+            battleModel.optionIndex = 0;
+            battleModel.confirmSelection();
+            // wait for all the battle text to process
+            updateBattleModel(battleModel, 500);
+
+            // enemy should not have taken any damage
+            assertEquals(enemyTeam[0].getStat(0, 0), enemyTeam[0].currentHP);
+
+            // check that heal bell removed the status effects
+            assertEquals(0, team[0].statusEffect);
+            assertEquals(0, team[1].statusEffect);
+        }
+    }
+
+    /**
+     * Make sure Explosion and Self-Destruct damage the enemy and faints the user
+     */
+    @Test
+    public void testExplosion() 
+    {
+        // Explosion and Self-Destruct
+        int[] explosionMoves = new int[]{120, 153};
+
+        for (int moveId : explosionMoves)
+        {
+            PokemonModel[] team = new PokemonModel[1];
+            team[0] = new PokemonModel(1, 100, false);
+            PokemonModel[] enemyTeam = new PokemonModel[1];
+            enemyTeam[0] = new PokemonModel(1, 1, false);
+
+            // set both sides moves
+            enemyTeam[0].moves = new MoveModel[1];
+            enemyTeam[0].moves[0] = new MoveModel(10); // scratch
+            team[0].moves = new MoveModel[1];
+            team[0].moves[0] = new MoveModel(moveId); // explosion
+            BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+
+            // skip opening animations
+            updateBattleModel(battleModel, 500);
+            assertEquals(0, battleModel.events.size());
+
+            // choose "FIGHT"
+            battleModel.confirmSelection();
+            updateBattleModel(battleModel, 20);
+            // choose "Explosion"
+            battleModel.optionIndex = 0;
+            battleModel.confirmSelection();
+            // wait for all the battle text to process
+            updateBattleModel(battleModel, 500);
+
+            // enemy should have 0 HP remaining
+            assertEquals(0, enemyTeam[0].currentHP);
+
+            // player should have 0 HP remaining
+            assertEquals(0, team[0].currentHP);
+        }
     }
 
     /**

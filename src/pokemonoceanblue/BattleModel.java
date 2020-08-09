@@ -336,6 +336,7 @@ public class BattleModel extends BaseModel
                     {
                         willFail = true;
                         this.events.add(new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + " was protected by safeguard.", defender, defender));
+                        break;
                     }
                 }
             }
@@ -358,8 +359,9 @@ public class BattleModel extends BaseModel
         //check if attacker can attack while being paralyzed, asleep, or frozen
         if (attackingPokemon.statusEffect > 0 && attackingPokemon.statusEffect < 4)
         {
-            //if status effect was not inflicted this turn then 30% chance to unfreeze or if pokemon has been asleep 3 turns, wake up
+            // if status effect was not inflicted this turn then 30% chance to unfreeze
             if ((this.statusEffectCounter[attacker][this.currentPokemon[attacker]] > 0 && attackingPokemon.statusEffect == 3 && this.ranNum.nextInt(101) < 31) ||
+                // if pokemon has been asleep 3 turns, wake up
                 (attackingPokemon.statusEffect == 2 && this.statusEffectCounter[attacker][this.currentPokemon[attacker]] > 2))
             {
                 this.events.add(0, new BattleEvent(attackingPokemon.name + (attackingPokemon.statusEffect == 2 ? " woke up!" : " thawed out."),
@@ -392,6 +394,7 @@ public class BattleModel extends BaseModel
             }
             attackEventIndex = 1;
         }
+        // check if Pokemon flinched
         if (!this.unableToMove[attacker] && this.willFlinch[attacker])
         {
             this.typeModifier[attacker] = 1.0f;
@@ -581,7 +584,7 @@ public class BattleModel extends BaseModel
                     if ((this.statChanges[target][statId] == 6 && statChange > 0) || (this.statChanges[target][statId] == -6 && statChange < 0))
                     {
                         event = new BattleEvent(this.team[target][this.currentPokemon[target]].name + "'s " + changedStat[statId] + " cannot be " +
-                            (this.statChanges[target][statId] < 0 ? "increased" : "decreased") + " any further.", target, target);
+                            (this.statChanges[target][statId] < 0 ? "decreased" : "increased") + " any further.", target, target);
                     }
                     else
                     {
@@ -668,7 +671,7 @@ public class BattleModel extends BaseModel
             this.events.add(new BattleEvent(attackingPokemon.name + " kept going and crashed!", attackingPokemon.stats[Stat.HP] / 2, attacker, attacker, null, -1));
         }
         //brick break
-        else if (effectId == 187 && this.multiTurnEffects.size() > 0)
+        else if (effectId == 187)
         {
             int i = 0;
             while (i < this.multiTurnEffects.size())
