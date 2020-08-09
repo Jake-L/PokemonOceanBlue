@@ -240,7 +240,7 @@ public class App extends JFrame implements KeyListener
         }
 
         // create the overworld
-        if (mapId == 1000)
+        if (mapId == 1000 || mapId == 1100 || mapId == 1200 || mapId == 1300)
         {
             // use a special constructor when in a tournament
             if (this.tournamentModel == null)
@@ -454,7 +454,17 @@ public class App extends JFrame implements KeyListener
     {
         Random rand = new Random();
         boolean shiny = rand.nextDouble() < this.pokedexModel.getShinyRate(pokemonId) ? true : false;
-        this.addPokemon(new PokemonModel(pokemonId, pokemonLevel, shiny));
+        PokemonModel pokemon = new PokemonModel(pokemonId, pokemonLevel, shiny);
+
+        // silently add a Pokemon if it's an egg
+        if (pokemonLevel == 0)
+        {
+            this.addPokemonSilent(pokemon);
+        }
+        else
+        {
+            this.addPokemon(pokemon);
+        }
     }
 
     /**
@@ -609,6 +619,20 @@ public class App extends JFrame implements KeyListener
                             this.setMap(this.overworldModel.mapId + 2, 4, 5);
                             this.tournamentModel = null;
                             this.enemyScalingFactor += 1;
+
+                            // start the conversation where the player gets their prize
+                            if (this.overworldModel.mapId == 1002)
+                            {
+                                this.overworldModel.startConversation(82, Direction.UP, null);
+                            }
+                            else if (this.overworldModel.mapId == 1102)
+                            {
+                                this.overworldModel.startConversation(83, Direction.UP, null);
+                            }
+                            else if (this.overworldModel.mapId == 1202)
+                            {
+                                this.overworldModel.startConversation(84, Direction.UP, null);
+                            }
                         }
                         else
                         {

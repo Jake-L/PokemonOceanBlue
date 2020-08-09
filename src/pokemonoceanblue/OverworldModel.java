@@ -959,4 +959,22 @@ public class OverworldModel extends BaseModel {
 
         return this.battleBackgroundId;
     }
+
+    /**
+     * Immediately starts a conversation
+     * @param conversationId idenifier for the conversation
+     * @param direction the direction the player should be facing
+     * @param character the character the player is talking with, or null
+     */
+    public void startConversation(int conversationId, Direction direction, CharacterModel character)
+    {
+        // start the conversation
+        if (direction != null)
+        {
+            this.playerModel.setDirection(direction);
+        }
+        this.conversation = new ConversationModel(conversationId, this.playerModel, character, false);
+        this.checkConversationAction();
+        this.actionCounter = 15;
+    }
 }
