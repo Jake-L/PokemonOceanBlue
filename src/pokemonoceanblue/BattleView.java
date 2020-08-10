@@ -31,6 +31,7 @@ public class BattleView extends BaseView {
     private Image[] statusEffectImages = new Image[8];
     private boolean[] hidePokemon = new boolean[2];
     private Image[] partyBorder = new Image[9];
+    private Image[] shine = new Image[4];
     
     /** 
      * Constructor for the overworld view
@@ -172,6 +173,12 @@ public class BattleView extends BaseView {
         //loads background image
         ii = new ImageIcon(this.getClass().getResource("/battle/background" + battleBackgroundId + "" + Utils.getTimeOfDayId() + ".png"));
         this.background = ii.getImage();
+
+        for (int i = 0; i < this.shine.length; i++)
+        {
+            ii = new ImageIcon(this.getClass().getResource("/battle/shine" + i + ".png"));
+            this.shine[i]  = ii.getImage();
+        }
     }
 
     /** 
@@ -456,19 +463,20 @@ public class BattleView extends BaseView {
     {
         float pokemonScale = this.getPokemonScale(teamIndex);
         int pokemonFrame = this.getPokemonFrame(teamIndex);
+        int shinyAnimationCounter = this.getShinyAnimationCounter(teamIndex);
 
         // set x position
-        double x = width / 10 + this.backgroundBase[0].getWidth(null) * graphicsScaling / 2;
+        int x = width / 10 + this.backgroundBase[0].getWidth(null) * graphicsScaling / 2;
         if (teamIndex == 1)
         {
-            x = width * 0.6;
+            x = (int) (width * 0.6);
         }
 
         // set y position
-        double y = height * 0.75;
+        int y = (int) (height * 0.75);
         if (teamIndex == 1)
         {
-            y = height * 0.5;
+            y = height / 2 - (this.backgroundBase[1].getHeight(null) / 2) * graphicsScaling;
         }
 
         //renders players current pokemon
@@ -492,6 +500,23 @@ public class BattleView extends BaseView {
                 canvas);
 
             ((Graphics2D) g).setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+        }
+        // display the sparkles when a shiny Pokemon is sent out
+        else if (shinyAnimationCounter > 0)
+        {
+            int[] shineXOffset = new int[]{0, -10, -30};
+            int[] shineYOffset = new int[]{-40, -80, -50};
+
+            for (int i = 0; i < shineXOffset.length; i++)
+            {
+                g.drawImage(shine[(shinyAnimationCounter + i * 4) / 4 % 4], 
+                    x + (shineXOffset[i] + 20 * ((shinyAnimationCounter + i * 4) / 4 % 8 / 4)) * graphicsScaling, 
+                    y + (shineYOffset[i] + 30 * ((shinyAnimationCounter + i * 4) / 4 % 8 / 4)) * graphicsScaling, 
+                    shine[0].getWidth(null) * graphicsScaling, 
+                    shine[0].getHeight(null) * graphicsScaling, 
+                    canvas
+                );
+            }
         }
     }
 
@@ -541,6 +566,27 @@ public class BattleView extends BaseView {
         }
 
         return 1;
+    }
+
+    /**
+     * Determines the animation counter used for the sparkling animations
+     * when a shiny Pokemon is sent out
+     * @param teamIndex which team's Pokemon is being rendered
+     * @return the animation counter, between 0 and 60
+     */
+    private int getShinyAnimationCounter(int teamIndex)
+    {
+        // check if a Pokemon is being sent out
+        if (this.model.events.size() > 0 && this.model.events.get(0).newPokemonIndex > -1 && this.model.actionCounter < 60)
+        {
+            // check if it is shiny
+            if (this.model.events.get(0).attacker == teamIndex && this.model.team[teamIndex][this.model.events.get(0).newPokemonIndex].shiny)
+            {
+                return this.model.actionCounter;
+            }
+        }
+
+        return 0;
     }
 
     private Image getPokeballSprite()
