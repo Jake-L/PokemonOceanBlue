@@ -242,7 +242,8 @@ public class DatabaseUtility
                 CREATE TABLE map_template(
                     map_id INT PRIMARY KEY,
                     map_template_id INT NOT NULL,
-                    overlay INT NULL)
+                    overlay INT NULL,
+                    tiles_suffix VARCHAR(10) NULL)
                 """;
         runUpdate(query);
 
@@ -250,11 +251,11 @@ public class DatabaseUtility
         path = "/rawdata/mapTemplate.csv";
         query = """
                 INSERT INTO map_template (
-                    map_id, map_template_id, overlay)
-                VALUES (?, ?, ?)
+                    map_id, map_template_id, overlay, tiles_suffix)
+                VALUES (?, ?, ?, ?)
                 """;
         
-        dataTypes = new String[] {"int", "int", "int"};
+        dataTypes = new String[] {"int", "int", "int", "String"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

@@ -18,14 +18,14 @@ import java.util.Arrays;
 public class OverworldView extends BaseView {
 
     private OverworldModel model;
-    private Image[] tileSprite = new Image[109];
+    private Image[] tileSprite = new Image[128];
     private Map<String, Image> animatedTileSprite = new HashMap<String, Image>();
     private Map<String, Image> mapObjectSprite = new HashMap<String, Image>();
     private Map<String, Image> characterSprite = new HashMap<String, Image>();
     private int xOffset = -1;
     private int yOffset = -1;
-    private int[] ANIMATED_TILES = new int[]{0, 6, 7, 8, 67, 70, 88, 90};
-    private int[] ANIMATED_TILE_LENGTH = new int[]{8, 8, 8, 8, 5, 5, 4, 5};
+    private int[] ANIMATED_TILES = new int[]{0, 6, 7, 8, 90, 118, 121, 126};
+    private int[] ANIMATED_TILE_LENGTH = new int[]{8, 8, 8, 8, 5, 5, 5, 4};
     private Image mugshotBackgroundSprite;
     private Image mugshotCharacterSprite;
     private Image mugshotLightningSprite;
@@ -51,7 +51,7 @@ public class OverworldView extends BaseView {
             int animatedIndex = Arrays.binarySearch(ANIMATED_TILES, i);
             if (animatedIndex < 0)
             {
-                ImageIcon ii = new ImageIcon(this.getClass().getResource(String.format("/tiles/%s.png", i)));
+                ImageIcon ii = new ImageIcon(this.getClass().getResource(String.format("/tiles%s/%s.png", this.model.tilesSuffix, i)));
                 tileSprite[i] = ii.getImage();
             }
             else
@@ -59,7 +59,7 @@ public class OverworldView extends BaseView {
                 // load animated tile sprites
                 for (int j = 0; j < ANIMATED_TILE_LENGTH[animatedIndex]; j++)
                 {
-                    ImageIcon ii = new ImageIcon(this.getClass().getResource(String.format("/tiles/%s-%s.png", i, j)));
+                    ImageIcon ii = new ImageIcon(this.getClass().getResource(String.format("/tiles%s/%s-%s.png", this.model.tilesSuffix, i, j)));
                     animatedTileSprite.put(String.format("%s-%s", i, j), ii.getImage());
                 }
             }
@@ -187,8 +187,6 @@ public class OverworldView extends BaseView {
         Color colour = new Color(0, 0, 0, 255);
         g.setColor(colour);
         g.fillRect(0, 0, width, height);
-        
-        Image sprite;
 
         calcOffset(model.playerModel);
 
@@ -197,45 +195,20 @@ public class OverworldView extends BaseView {
         {
             for (int x = 0 + Math.max(xOffset / 16,0); x < Math.min(model.tiles[y].length, this.model.playerModel.getX() + width / (16 * graphicsScaling)); x++)
             {
-                int animatedIndex = Arrays.binarySearch(ANIMATED_TILES, Math.abs(this.model.tiles[y][x]));
-                if (animatedIndex >= 0)
-                {
-                    //load animated water sprite
-                    sprite = animatedTileSprite.get(String.format("%s-%s", 
-                        Math.abs(this.model.tiles[y][x]), 
-                        System.currentTimeMillis() 
-                            / (1280 / ANIMATED_TILE_LENGTH[animatedIndex]) 
-                            % ANIMATED_TILE_LENGTH[animatedIndex]));
-                }
-                else
-                {
-                    sprite = tileSprite[Math.abs(model.tiles[y][x])];
-                }
-                g.drawImage(sprite, 
-                            (x * 16 - xOffset) * graphicsScaling, 
-                            (y * 16 - yOffset) * graphicsScaling, 
-                            16 * graphicsScaling, 
-                            16 * graphicsScaling,
-                            canvas);
+                renderTile(g, canvas, Math.abs(this.model.tiles[y][x]), x, y);
             }
         }
 
-        // display overlap tiles
+        // display overlay tiles
         if (this.model.tilesOverlay != null)
         {
             for (int y = 0 + Math.max(yOffset / 16,0); y < Math.min(model.tilesOverlay.length, this.model.playerModel.getY() + height / (16 * graphicsScaling)); y++)
             {
                 for (int x = 0 + Math.max(xOffset / 16,0); x < Math.min(model.tilesOverlay[y].length, this.model.playerModel.getX() + width / (16 * graphicsScaling)); x++)
                 {
-                    if (this.model.tilesOverlay[y][x] > 0)
+                    if (this.model.tilesOverlay[y][x] != 0)
                     {
-                        sprite = tileSprite[model.tilesOverlay[y][x]];
-                        g.drawImage(sprite, 
-                                    (x * 16 - xOffset) * graphicsScaling, 
-                                    (y * 16 - yOffset) * graphicsScaling, 
-                                    16 * graphicsScaling, 
-                                    16 * graphicsScaling,
-                                    canvas);
+                        renderTile(g, canvas, Math.abs(this.model.tilesOverlay[y][x]), x, y);
                     }
                 }
             }
@@ -312,12 +285,14 @@ public class OverworldView extends BaseView {
         // display gym leader mugshot
         if (this.mugshotCharacterSprite != null)
         {
-            // use separate loops for brackground and lightnight because background moves faster
-            for (int i = -1; i < 2; i++)
+            long currentTime = System.currentTimeMillis();
+
+            // use separate loops for brackground and lightnighg because background moves faster
+            for (int i = -1; i <= Math.ceil(width * 1.0 / (this.mugshotBackgroundSprite.getWidth(null) * graphicsScaling)); i++)
             {
                 g.drawImage(
                     this.mugshotBackgroundSprite, 
-                    (int)(System.currentTimeMillis() % this.mugshotBackgroundSprite.getWidth(null) + i * this.mugshotBackgroundSprite.getWidth(null)) * graphicsScaling, 
+                    (int)(currentTime % this.mugshotBackgroundSprite.getWidth(null) + i * this.mugshotBackgroundSprite.getWidth(null)) * graphicsScaling, 
                     height / 2 - this.mugshotBackgroundSprite.getHeight(null) * graphicsScaling / 2, 
                     this.mugshotBackgroundSprite.getWidth(null) * graphicsScaling, 
                     this.mugshotBackgroundSprite.getHeight(null) * graphicsScaling,
@@ -325,13 +300,13 @@ public class OverworldView extends BaseView {
                 );
             }
 
-            int b = graphicsScaling * (int)((System.currentTimeMillis() / 3) % 256);
+            int b = (int)((currentTime / 3) % this.mugshotLightningSprite.getWidth(null));
 
-            for (int i = -1; i < 2; i++)
+            for (int i = -1; i <= Math.ceil(width * 1.0 / (this.mugshotLightningSprite.getWidth(null) * graphicsScaling)); i++)
             {
                 g.drawImage(
                     this.mugshotLightningSprite, 
-                    b + (i * this.mugshotLightningSprite.getWidth(null) * graphicsScaling), 
+                    (b + i * this.mugshotLightningSprite.getWidth(null)) * graphicsScaling, 
                     height / 2 - this.mugshotLightningSprite.getHeight(null) * graphicsScaling / 2, 
                     this.mugshotLightningSprite.getWidth(null) * graphicsScaling, 
                     this.mugshotLightningSprite.getHeight(null) * graphicsScaling,
@@ -370,6 +345,40 @@ public class OverworldView extends BaseView {
         {
             this.renderShop(g, canvas);
         }
+    }
+
+    /**
+     * Renders the givne tile at the given coordinates
+     * Uses ANIMATED_TILES constant to determine if the tile is animated or not
+     * @param g graphics object
+     * @param canvas JPanel to draw the images on
+     * @param tileId the id the for the tile to be rendered
+     * @param x x-coordinate of the tile
+     * @param y y-coordinate of the tile
+     */
+    private void renderTile(Graphics g, JPanel canvas, int tileId, int x, int y)
+    {
+        Image sprite;
+        int animatedIndex = Arrays.binarySearch(ANIMATED_TILES, tileId);
+        if (animatedIndex >= 0)
+        {
+            // get animated sprite
+            sprite = animatedTileSprite.get(String.format("%s-%s", 
+                tileId, 
+                System.currentTimeMillis() 
+                    / (1280 / ANIMATED_TILE_LENGTH[animatedIndex]) 
+                    % ANIMATED_TILE_LENGTH[animatedIndex]));
+        }
+        else
+        {
+            sprite = tileSprite[tileId];
+        }
+        g.drawImage(sprite, 
+                    (x * 16 - xOffset) * graphicsScaling, 
+                    (y * 16 - yOffset) * graphicsScaling, 
+                    16 * graphicsScaling, 
+                    16 * graphicsScaling,
+                    canvas);
     }
 
     /** 

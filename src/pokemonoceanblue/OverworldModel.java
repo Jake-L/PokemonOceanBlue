@@ -34,6 +34,7 @@ public class OverworldModel extends BaseModel {
     public DayCareModel dayCareModel;
     public byte weather;
     private boolean battle = false;
+    public String tilesSuffix;
     
     /** 
      * @param mapId unique identifier for the current map
@@ -105,7 +106,7 @@ public class OverworldModel extends BaseModel {
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            String query = "SELECT map_template_id, overlay FROM map_template WHERE map_id = " + this.mapId;
+            String query = "SELECT map_template_id, overlay, tiles_suffix FROM map_template WHERE map_id = " + this.mapId;
 
             ResultSet rs = db.runQuery(query);
 
@@ -116,6 +117,7 @@ public class OverworldModel extends BaseModel {
             {
                 tilesOverlay = readMapFileAux("map" + mapTemplateId + "overlay");
             }
+            this.tilesSuffix = rs.getString("tiles_suffix");
         }
         catch (SQLException e) 
         {
