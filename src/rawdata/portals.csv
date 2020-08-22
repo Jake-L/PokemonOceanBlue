@@ -31,18 +31,18 @@ map_id,area_id,x,y,x_offset,y_offset,dest_map_id,dest_area_id,dest_x,dest_y,dest
 17,0,25,39,0,1,25,0,3,8,0,-1,pewter -> day care
 0,2,17,36,0,1,31,0,5,9,0,-1,viridan city -> pokemart
 17,0,14,32,0,1,32,0,5,9,0,-1,pewter city -> pokemart
-33,1,28,20,0,1,1002,0,4,8,0,-1,Cerulean city -> Cerulean tournament entrance
-33,1,28,10,0,1,34,0,6,18,0,-1,Cerulean city -> Cerulean gym
-33,1,18,10,0,1,35,0,5,10,0,-1,Cerulean city -> Cerulean pokemon center
-33,1,38,10,0,1,36,0,5,9,0,-1,Cerulean city -> Cerulean pokemart
-33,1,8,20,0,1,26,0,3,9,0,-1,Cerulean -> Cerulean top left house
-33,1,7,38,0,1,27,0,3,9,0,-1,Cerulean -> Cerulean bottom left house
-33,1,13,38,0,1,28,0,3,9,0,-1,"Cerulean -> Cerulean bottom, second from left house"
-33,1,22,38,0,1,29,0,3,9,0,-1,"Cerulean -> Cerulean bottom, third from left house"
-33,1,33,38,0,1,38,0,3,9,0,-1,"Cerulean -> Cerulean bottom, third from right house"
-33,1,39,38,0,1,39,0,3,9,0,-1,"Cerulean -> Cerulean bottom, second from right house"
-33,1,48,38,0,1,40,0,3,9,0,-1,"Cerulean -> Cerulean bottom, right house"
-33,1,47,20,0,1,41,0,3,9,0,-1,Cerulean -> Cerulean top right house
+33,1,28,20,0,1,34,0,6,18,0,-1,Cerulean city -> Cerulean gym
+33,1,34,9,0,1,1002,0,4,8,0,-1,Cerulean city -> Cerulean tournament entrance
+33,1,7,20,0,1,35,0,5,10,0,-1,Cerulean city -> Cerulean pokemon center
+33,1,44,27,0,1,36,0,5,9,0,-1,Cerulean city -> Cerulean pokemart
+33,1,2,10,0,1,26,0,3,9,0,-1,Cerulean -> Cerulean top left house
+33,1,7,27,0,1,27,0,3,9,0,-1,Cerulean -> Cerulean bottom left house
+33,1,13,27,0,1,28,0,3,9,0,-1,"Cerulean -> Cerulean bottom, second from left house"
+33,1,21,27,0,1,29,0,3,9,0,-1,"Cerulean -> Cerulean bottom, third from left house"
+33,1,32,27,0,1,38,0,3,9,0,-1,"Cerulean -> Cerulean bottom, third from right house"
+33,1,38,27,0,1,39,0,3,9,0,-1,"Cerulean -> Cerulean bottom, second from right house"
+33,1,48,27,0,1,40,0,3,9,0,-1,"Cerulean -> Cerulean bottom, right house"
+33,1,22,10,0,1,41,0,3,9,0,-1,Cerulean -> Cerulean top right house
 42,0,16,37,0,1,43,0,6,13,0,-1,Vermilion -> gym
 42,0,10,10,0,1,500,0,3,9,0,-1,Vermilion -> top left house
 42,0,16,10,0,1,501,0,5,10,0,-1,Vermilion -> Pokemon center
