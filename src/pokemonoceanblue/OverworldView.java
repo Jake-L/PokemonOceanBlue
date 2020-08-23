@@ -22,6 +22,7 @@ public class OverworldView extends BaseView {
     private Map<String, Image> animatedTileSprite = new HashMap<String, Image>();
     private Map<String, Image> mapObjectSprite = new HashMap<String, Image>();
     private Map<String, Image> characterSprite = new HashMap<String, Image>();
+    private Map<String, Image> berrySprite = new HashMap<String, Image>();
     private int xOffset = -1;
     private int yOffset = -1;
     private int[] ANIMATED_TILES = new int[]{0, 6, 7, 8, 90, 118, 121, 126};
@@ -44,14 +45,17 @@ public class OverworldView extends BaseView {
     /** 
      * loads all the necessary sprites
      */
-    private void loadImage() {
+    private void loadImage() 
+    {
+        ImageIcon ii;
+
         // load tile sprites
         for (int i = 0; i < tileSprite.length; i++)
         {
             int animatedIndex = Arrays.binarySearch(ANIMATED_TILES, i);
             if (animatedIndex < 0)
             {
-                ImageIcon ii = new ImageIcon(this.getClass().getResource(String.format("/tiles%s/%s.png", this.model.tilesSuffix, i)));
+                ii = new ImageIcon(this.getClass().getResource(String.format("/tiles%s/%s.png", this.model.tilesSuffix, i)));
                 tileSprite[i] = ii.getImage();
             }
             else
@@ -59,7 +63,7 @@ public class OverworldView extends BaseView {
                 // load animated tile sprites
                 for (int j = 0; j < ANIMATED_TILE_LENGTH[animatedIndex]; j++)
                 {
-                    ImageIcon ii = new ImageIcon(this.getClass().getResource(String.format("/tiles%s/%s-%s.png", this.model.tilesSuffix, i, j)));
+                    ii = new ImageIcon(this.getClass().getResource(String.format("/tiles%s/%s-%s.png", this.model.tilesSuffix, i, j)));
                     animatedTileSprite.put(String.format("%s-%s", i, j), ii.getImage());
                 }
             }
@@ -68,11 +72,11 @@ public class OverworldView extends BaseView {
 
         for (int i = 0; i < this.model.mapObjects.size(); i++) 
         {
-            String spriteName = this.model.mapObjects.get(i).spriteName;
+            String spriteName = this.model.mapObjects.get(i).getSpriteName();
 
             if (this.mapObjectSprite.get(spriteName) == null)
             {
-                ImageIcon ii = new ImageIcon(this.getClass().getResource(String.format("/mapObjects/%s.png", spriteName)));
+                ii = new ImageIcon(this.getClass().getResource(String.format("/mapObjects/%s.png", spriteName)));
                 mapObjectSprite.put(spriteName, ii.getImage());
             }
         }
@@ -88,7 +92,7 @@ public class OverworldView extends BaseView {
             {
                 // walking sprites
                 formattedName = String.format("%s%s%s", spriteName, direction.toString(), i);
-                ImageIcon ii = new ImageIcon(this.getClass().getResource(String.format("/characters/%s.png", formattedName)));
+                ii = new ImageIcon(this.getClass().getResource(String.format("/characters/%s.png", formattedName)));
                 characterSprite.put(formattedName, ii.getImage());
 
                 // running sprites
@@ -102,7 +106,7 @@ public class OverworldView extends BaseView {
             {
                 // walking sprites
                 formattedName = String.format("%sSurf%s%s", spriteName, direction.toString(), i);
-                ImageIcon ii = new ImageIcon(this.getClass().getResource(String.format("/characters/%s.png", formattedName)));
+                ii = new ImageIcon(this.getClass().getResource(String.format("/characters/%s.png", formattedName)));
                 characterSprite.put(formattedName, ii.getImage());
             }
         }
@@ -121,7 +125,7 @@ public class OverworldView extends BaseView {
                     for (int i = 0; i < 4; i++)
                     {
                         formattedName = String.format("%sSurf%s%s", spriteName, direction.toString(), i);
-                        ImageIcon ii = new ImageIcon(this.getClass().getResource(String.format("/characters/%s.png", formattedName)));
+                        ii = new ImageIcon(this.getClass().getResource(String.format("/characters/%s.png", formattedName)));
                         characterSprite.put(formattedName, ii.getImage());
                     }
                 }
@@ -133,7 +137,7 @@ public class OverworldView extends BaseView {
                         for (int i = 0; i < 4; i++)
                         {
                             formattedName = String.format("%s%s%s", spriteName, direction.toString(), i);
-                            ImageIcon ii = new ImageIcon(this.getClass().getResource(String.format("/characters/%s.png", formattedName)));
+                            ii = new ImageIcon(this.getClass().getResource(String.format("/characters/%s.png", formattedName)));
                             characterSprite.put(formattedName, ii.getImage());
                         }
                     }
@@ -146,8 +150,29 @@ public class OverworldView extends BaseView {
             }
         }
 
+        // load generic berry sprites used by all berries
+        ii = new ImageIcon(this.getClass().getResource("/berries/generic_0.png"));
+        berrySprite.put("generic_0", ii.getImage());
+        ii = new ImageIcon(this.getClass().getResource("/berries/generic_1_0.png"));
+        berrySprite.put("generic_1_0", ii.getImage());
+        ii = new ImageIcon(this.getClass().getResource("/berries/generic_1_1.png"));
+        berrySprite.put("generic_1_1", ii.getImage());
+
+        // load berry sprites
+        for (int i = 121; i < 122; i++) 
+        {
+            for (int j = 2; j < 4; j++)
+            {
+                for (int k = 0; k < 2; k++)
+                {
+                    ii = new ImageIcon(this.getClass().getResource(String.format("/berries/%s_%s_%s.png", i, j, k)));
+                    berrySprite.put(String.format("%s_%s_%s", i, j, k), ii.getImage());
+                }
+            }
+        }
+
         // load mugshot sprites
-        ImageIcon ii = new ImageIcon(this.getClass().getResource("/mugshots/lightning.png"));
+        ii = new ImageIcon(this.getClass().getResource("/mugshots/lightning.png"));
         this.mugshotLightningSprite = ii.getImage();
 
         ii = new ImageIcon(this.getClass().getResource("/mugshots/vs.png"));
@@ -255,6 +280,18 @@ public class OverworldView extends BaseView {
         {
             this.renderCharacter(g, canvas, renderList.get(characterIndex));
             characterIndex++;
+        }
+
+        for (BerryModel berry : this.model.plantedBerries)
+        {
+            // render the mapObject
+            Image sprite = berrySprite.get(berry.getSpriteName());
+            g.drawImage(sprite, 
+                (berry.location.x * 16 - xOffset - 3) * graphicsScaling, // x refers to leftmost position
+                ((berry.location.y + 1) * 16 - sprite.getHeight(null) - yOffset) * graphicsScaling, 
+                sprite.getWidth(null) * graphicsScaling, 
+                sprite.getHeight(null) * graphicsScaling, 
+                canvas);
         }
 
         if (this.model.mapId == 14)
@@ -389,7 +426,7 @@ public class OverworldView extends BaseView {
     private void renderObject(Graphics g, JPanel canvas, SpriteModel object)
     {
         // render the mapObject
-        Image sprite = mapObjectSprite.get(object.spriteName);
+        Image sprite = mapObjectSprite.get(object.getSpriteName());
         g.drawImage(sprite, 
                     (object.x * 16 - xOffset) * graphicsScaling, // x refers to leftmost position
                     ((object.y + 1) * 16 - sprite.getHeight(null) - yOffset) * graphicsScaling, 

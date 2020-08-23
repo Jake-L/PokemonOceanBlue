@@ -56,6 +56,13 @@ public class ConversationModel
         this.loadEvents();
     }
 
+    public ConversationModel(String text, ItemModel item)
+    {
+        this.conversationId = -1;
+        this.counter = TEXT_LENGTH;
+        this.events.add(new ConversationEvent(text, item));
+    }
+
     /** 
      * Read the conversation data from a database
      */
@@ -337,6 +344,16 @@ public class ConversationModel
         return -1;
     }
 
+    public ItemModel getItem()
+    {
+        if (this.events.size() > 0 && this.counter == 1)
+        {
+            return this.events.get(0).item;
+        }
+
+        return null;
+    }
+
     public String getMugshotBackground()
     {
         if (this.events.size() > 0)
@@ -500,7 +517,7 @@ public class ConversationModel
         public int battleId = -1;
         public final boolean autoAdvance;
         public final boolean healTeam;
-        public int nextConversationEventId;
+        public int nextConversationEventId = -1;
         public final int newConversationId;
         public int giftPokemonId = -1;
         public int giftPokemonLevel = -1;
@@ -511,6 +528,7 @@ public class ConversationModel
         public int shopId;
         public boolean openParty = false;
         public int withdrawnPokemon = -1;
+        public ItemModel item;
 
         // variables for moving CPUs
         public int characterId;
@@ -618,6 +636,19 @@ public class ConversationModel
             this.text = text;
             this.nextConversationEventId = nextConversationEventId;
             this.withdrawnPokemon = withdrawnPokemon;
+
+            this.autoAdvance = false;
+            this.healTeam = false;
+            this.mugshotBackground = null;
+            this.mugshotCharacter = null;
+            this.newConversationId = -1;
+            this.characterId = -1;
+        }
+
+        public ConversationEvent(String text, ItemModel item)
+        {
+            this.text = text;
+            this.item = item;
 
             this.autoAdvance = false;
             this.healTeam = false;

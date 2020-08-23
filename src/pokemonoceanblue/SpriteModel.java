@@ -4,7 +4,7 @@ package pokemonoceanblue;
  * A class used for simple objects on the map that only require a sprite and x,y coordinates
  */
 public class SpriteModel {
-    public String spriteName;
+    private String spriteName;
     public int x;
     public int y;
     public int yAdjust;
@@ -20,5 +20,10 @@ public class SpriteModel {
         this.x = x;
         this.y = y;
         this.yAdjust = yAdjust;
+    }
+
+    public String getSpriteName()
+    {
+        return this.spriteName;
     }
 }

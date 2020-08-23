@@ -705,12 +705,24 @@ public class App extends JFrame implements KeyListener
                     if (this.currentController != null)
                     {
                         int returnValue = inventoryModel.getSelection();
-                        if (returnValue >= -1)
+                        if (returnValue > -1)
                         {
+                            // in battle, use the item and remove from inventory
                             if (this.battleModel != null)
                             {
                                 this.battleModel.setItem(returnValue);
+                                this.inventoryModel.removeItem(returnValue, 1);
                             }
+                            // in overworld, check if item can be used before removing from inventory
+                            else if (this.overworldModel.setItem(returnValue))
+                            {
+                                this.inventoryModel.removeItem(returnValue, 1);
+                            }
+                            // return to overworld or battle screen
+                            this.exitCurrentView();
+                        }
+                        else if (returnValue == -1)
+                        {
                             // return to overworld or battle screen
                             this.exitCurrentView();
                         }

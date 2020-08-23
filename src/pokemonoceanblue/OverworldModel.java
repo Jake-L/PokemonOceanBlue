@@ -19,6 +19,7 @@ public class OverworldModel extends BaseModel {
     public List<CharacterModel> cpuModel = new ArrayList<CharacterModel>();
     public CharacterModel playerModel;
     private List<PortalModel> portals = new ArrayList<PortalModel>();
+    public List<BerryModel> plantedBerries = new ArrayList<BerryModel>();
     public ConversationModel conversation;
     private App app;
     private Map<Integer, List<Integer>> wildPokemon = new HashMap<Integer, List<Integer>>();
@@ -255,12 +256,26 @@ public class OverworldModel extends BaseModel {
             {
                 this.app.addPokemon(this.conversation.getGiftPokemonId(), this.conversation.getGiftPokemonLevel());
             }
+            // get items 
+            else if (this.conversation.getItem() != null)
+            {
+                this.inventoryModel.addItem(this.conversation.getItem());
+            }
         }
         else
         {
             this.mugshotCharacter = null;
             this.mugshotBackground = null;
             this.removeCharacter = false;
+        }
+
+        // clear out any expired berries
+        for (int i = this.plantedBerries.size() - 1; i >= 0; i--)
+        {
+            if (this.plantedBerries.get(i).isExpired())
+            {
+                this.plantedBerries.remove(i);
+            }
         }
     }
 
@@ -427,6 +442,19 @@ public class OverworldModel extends BaseModel {
                     }
                     
                     this.actionCounter = 15;
+                    break;
+                }
+            }
+
+            // check for a berry ready to be harvested
+            for (int i = this.plantedBerries.size() - 1; i >= 0; i--)
+            {
+                if (this.plantedBerries.get(i).isHarvestable())
+                {
+                    // remove the plant and add the berries to the player's inventory
+                    ItemModel item = new ItemModel(this.plantedBerries.get(i).berryId, 3);
+                    this.conversation = new ConversationModel("Player harvested " + item.quantity + " " + item.name + " from the plant!", item);
+                    this.plantedBerries.remove(i);
                     break;
                 }
             }
@@ -978,5 +1006,23 @@ public class OverworldModel extends BaseModel {
         this.conversation = new ConversationModel(conversationId, this.playerModel, character, false);
         this.checkConversationAction();
         this.actionCounter = 15;
+    }
+
+    public boolean setItem(int itemId)
+    {
+        if (itemId >= 100)
+        {
+            LocationModel location = new LocationModel(this.playerModel.getX(), this.playerModel.getY(), this.mapId);
+            location.applyOffset(this.playerModel.getDirection());
+            this.plantedBerries.add(new BerryModel(location, itemId, System.currentTimeMillis()));
+            return true;
+        }
+        else
+        {
+            this.conversation = new ConversationModel("That item can't be used here!", null);
+            return false;
+        }
+
+        
     }
 }

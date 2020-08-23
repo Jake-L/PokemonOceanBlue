@@ -25,8 +25,8 @@ public class OverworldTests {
                 SpriteModel object1 = overworldModel.mapObjects.get(j);
                 SpriteModel object2 = overworldModel.mapObjects.get(j - 1);
                 assertTrue("MapObjects array not sorted", object1.y + object1.yAdjust >= object2.y + object2.yAdjust);
-                assertTrue(String.format("Identical MapObjects on map %s: %s, %s, %s", i, object1.spriteName, object1.x, object1.y),
-                    object1.x != object2.x || object1.y != object2.y || !object1.spriteName.equals(object2.spriteName));
+                assertTrue(String.format("Identical MapObjects on map %s: %s, %s, %s", i, object1.getSpriteName(), object1.x, object1.y),
+                    object1.x != object2.x || object1.y != object2.y || !object1.getSpriteName().equals(object2.getSpriteName()));
             }
         }
         

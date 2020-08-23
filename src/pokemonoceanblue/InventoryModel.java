@@ -69,7 +69,15 @@ public class InventoryModel extends BaseModel {
      */
     public void addItem(int itemId, int quantity)
     {
-        ItemModel newItem = new ItemModel(itemId, quantity);
+        this.addItem(new ItemModel(itemId, quantity));
+    }
+
+    /**
+     * Add an item to your iventory
+     * @param newItem the item to be added
+     */
+    public void addItem(ItemModel newItem)
+    {
         int categoryIndex = Math.min(newItem.categoryId, 2);
         
         for (ItemModel item : this.items[categoryIndex])
@@ -204,6 +212,5 @@ public class InventoryModel extends BaseModel {
     public void confirmSelection()
     {
         this.returnValue = this.items[this.bagIndex].get(this.optionIndex).itemId;
-        this.removeItem(this.returnValue, 1);
     }
 }
