@@ -42,9 +42,10 @@ map_id,map_template_id,overlay,tiles_suffix,comment
 40,1,0,,"Cerulean bottom, right house"
 41,1,0,,Cerulean top right house
 42,42,1,,Vermilion City
-43,43,0,,Vermilion City Gym
+43,43,0,3,Vermilion City Gym
 44,44,1,,Route 10
 45,45,1,2,Saffron city
+46,46,0,3,Saffron city TUNNEL
 500,1,0,,Vermilion top left house
 501,7,0,,Vermilion Pokemon Center
 502,1,0,,Vermiion house right of Pokemon center

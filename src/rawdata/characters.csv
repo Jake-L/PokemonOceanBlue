@@ -84,6 +84,8 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 79,1102,0,,aceBoy,4,4,79,0,2,
 80,1202,0,,aceBoy,4,4,80,0,2,
 81,1302,0,,aceBoy,4,4,81,0,2,
+85,42,0,Team Rocket Grunt,rocketGruntGirl,8,30,85,0,3,
+86,42,0,,lapras,6,30,86,0,1,
 1000,1000,0,Gym Leader Misty,misty,12,6,1301,0,3,
 1001,1000,0,Youngster Jimmothy,youngsterBoy,12,6,1001,0,3,
 1002,1000,0,Youngster Jimmothy,youngsterBoy,12,6,1002,0,3,

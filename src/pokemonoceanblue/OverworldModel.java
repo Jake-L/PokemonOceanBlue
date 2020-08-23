@@ -1010,10 +1010,11 @@ public class OverworldModel extends BaseModel {
 
     public boolean setItem(int itemId)
     {
-        if (itemId >= 100)
+        LocationModel location = new LocationModel(this.playerModel.getX(), this.playerModel.getY(), this.mapId);
+        location.applyOffset(this.playerModel.getDirection());
+
+        if (itemId >= 100 && locationCheck(location) && this.tiles[location.y][location.x] >= 105 && this.tiles[location.y][location.x] <= 107)
         {
-            LocationModel location = new LocationModel(this.playerModel.getX(), this.playerModel.getY(), this.mapId);
-            location.applyOffset(this.playerModel.getDirection());
             this.plantedBerries.add(new BerryModel(location, itemId, System.currentTimeMillis()));
             return true;
         }
@@ -1021,8 +1022,16 @@ public class OverworldModel extends BaseModel {
         {
             this.conversation = new ConversationModel("That item can't be used here!", null);
             return false;
-        }
+        } 
+    }
 
-        
+    public boolean locationCheck(LocationModel location)
+    {
+        return (
+            location.x > 0 
+            && location.y > 0
+            && location.y < this.tiles.length
+            && location.x < this.tiles[location.y].length
+        );
     }
 }
