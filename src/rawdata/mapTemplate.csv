@@ -67,6 +67,7 @@ map_id,map_template_id,overlay,tiles_suffix,comment
 518,518,0,,Celadon bottom second right house
 519,1,0,,Celadon bottom left house
 520,1,0,,Celadon bottom second left house
+521,521,0,3,Saffron gym
 1000,1000,0,,Cerulean tournament battle room
 1001,1001,0,,Cerulean tournament waiting room
 1002,1002,0,,Cerulean tournament entrance
