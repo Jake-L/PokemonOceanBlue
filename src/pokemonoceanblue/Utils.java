@@ -23,7 +23,7 @@ public class Utils
 
     /**
      * Converts a numerical direction into the Direction enum
-     * @param d an int correspond to a direction, ex. 0 means down
+     * @param d an int correspond to a direction, ex. 0 means up
      * @return an Direction enum value
      */
     public static Direction getDirection(int d)
@@ -37,6 +37,26 @@ public class Utils
             return Direction.RIGHT;
         }
         else if (d == 3)
+        {
+            return Direction.LEFT;
+        }
+        else
+        {
+            return Direction.DOWN;
+        }
+    }
+
+    public static Direction getDirection(int x, int y)
+    {
+        if (y == -1)
+        {
+            return Direction.UP;
+        }
+        else if (x == 1)
+        {
+            return Direction.RIGHT;
+        }
+        else if (x == -1)
         {
             return Direction.LEFT;
         }

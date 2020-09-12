@@ -119,6 +119,10 @@ public class OverworldModel extends BaseModel {
                 tilesOverlay = readMapFileAux("map" + mapTemplateId + "overlay");
             }
             this.tilesSuffix = rs.getString("tiles_suffix");
+            if (this.tilesSuffix.equals("0"))
+            {
+                this.tilesSuffix = "";
+            }
         }
         catch (SQLException e) 
         {
@@ -798,7 +802,9 @@ public class OverworldModel extends BaseModel {
                 p.y + IFNULL(a.min_y,0) AS y,
                 p.dest_map_id,
                 p.dest_x + IFNULL(dest.min_x,0) AS dest_x,
-                p.dest_y + IFNULL(dest.min_y,0) AS dest_y
+                p.dest_y + IFNULL(dest.min_y,0) AS dest_y,
+                p.x_offset,
+                p.y_offset
             FROM (
                 SELECT 
                     map_id, 
@@ -808,7 +814,9 @@ public class OverworldModel extends BaseModel {
                     dest_map_id, 
                     dest_area_id,
                     dest_x + dest_x_offset AS dest_x,
-                    dest_y + dest_y_offset AS dest_y
+                    dest_y + dest_y_offset AS dest_y,
+                    dest_x_offset AS x_offset,
+                    dest_y_offset AS y_offset
                 FROM portal 
                 UNION ALL
                 SELECT 
@@ -819,7 +827,9 @@ public class OverworldModel extends BaseModel {
                     map_id AS dest_map_id, 
                     area_id AS dest_area_id,
                     x + x_offset AS dest_x,
-                    y + y_offset AS dest_y
+                    y + y_offset AS dest_y,
+                    x_offset,
+                    y_offset
                 FROM portal 
             ) p
             LEFT JOIN area a
@@ -840,7 +850,8 @@ public class OverworldModel extends BaseModel {
                     rs.getInt("y"),
                     rs.getInt("dest_map_id"),
                     rs.getInt("dest_x"),
-                    rs.getInt("dest_y")
+                    rs.getInt("dest_y"),
+                    Utils.getDirection(rs.getInt("x_offset"), rs.getInt("y_offset"))
                 ));
             }            
         }

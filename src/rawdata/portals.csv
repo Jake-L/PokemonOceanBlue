@@ -67,6 +67,11 @@ map_id,area_id,x,y,x_offset,y_offset,dest_map_id,dest_area_id,dest_x,dest_y,dest
 30,0,33,27,0,1,519,0,3,9,0,-1,Celadon bottom left house
 30,0,29,27,0,1,520,0,3,9,0,-1,Celadon bottom second left house
 45,0,45,15,0,1,521,0,6,13,0,-1,Saffron -> gym
+45,0,27,21,1,0,46,0,17,1,-1,0,Saffron -> tunnel
+45,0,21,17,0,1,522,0,7,14,0,-1,Saffron -> paper company office
+522,0,13,2,-1,0,523,0,13,2,-1,0,Saffron paper company office L1 -> L2
+523,0,1,2,1,0,524,0,1,2,1,0,Saffron paper company office L2 -> L3
+45,0,39,15,0,1,525,0,5,14,0,-1,Saffron -> fighting gym
 1001,0,4,2,0,1,1000,0,5,10,0,-1,Cerulean tournament waiting room -> battle room
 1002,0,4,2,0,1,1000,0,5,10,0,-1,Cerulean tournament entrance -> battle room
 1101,0,4,2,0,1,1100,0,5,10,0,-1,Celadon tournament waiting room -> battle room
