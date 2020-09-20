@@ -71,7 +71,10 @@ map_id,map_template_id,overlay,tiles_suffix,comment
 522,522,0,3,Saffron city paper company L1
 523,523,0,3,Saffron city paper company L2
 524,524,0,3,Saffron city paper company L3
-525,525,0,0,Saffron fighting gym
+525,525,0,,Saffron fighting gym
+526,526,0,3,Pokemart head office L1
+527,523,0,3,Pokemart head office L2
+528,528,0,3,Pokemart head office L3
 1000,1000,0,,Cerulean tournament battle room
 1001,1001,0,,Cerulean tournament waiting room
 1002,1002,0,,Cerulean tournament entrance
