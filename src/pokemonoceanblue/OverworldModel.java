@@ -291,8 +291,7 @@ public class OverworldModel extends BaseModel {
     public boolean checkPosition(int x, int y, boolean surf)
     {
         // check if the map allows movement
-        if (y < 0 || y >= this.tiles.length
-            || x < 0 || x >= this.tiles[y].length
+        if (!this.locationCheck(x, y)
             || this.tiles[y][x] < 0
             || ((this.tiles[y][x] == 0 || this.tiles[y][x] == 1) && !surf))
         {
@@ -355,8 +354,12 @@ public class OverworldModel extends BaseModel {
     /** 
      * Enable to player to interact with other characters
      */
-    public void checkAction(int x, int y)
+    public void checkAction()
     {
+        // get the coordinates the player is interacting with
+        int x = Utils.applyXOffset(this.playerModel.getX(), this.playerModel.getDirection());
+        int y = Utils.applyYOffset(this.playerModel.getY(), this.playerModel.getDirection());
+        
         // if already in a conversation, check if it's time to move on to next dialog
         if (this.conversation != null)
         {
@@ -397,23 +400,8 @@ public class OverworldModel extends BaseModel {
                     }
                     else
                     {
-                        // make the CPU face the player
-                        if (cpu.getX() > this.playerModel.getX())
-                        {
-                            cpu.setDirection(Direction.LEFT);
-                        }
-                        else if (cpu.getX() < this.playerModel.getX())
-                        {
-                            cpu.setDirection(Direction.RIGHT);
-                        }
-                        else if (cpu.getY() > this.playerModel.getY())
-                        {
-                            cpu.setDirection(Direction.UP);
-                        }
-                        else if (cpu.getY() < this.playerModel.getY())
-                        {
-                            cpu.setDirection(Direction.DOWN);
-                        }
+                        // make the CPU facing the player
+                        cpu.setDirection(Utils.getDirection(this.playerModel.getX() - cpu.getX(), this.playerModel.getY() - cpu.getY()));
 
                         // start the conversation
                         this.conversation = new ConversationModel(cpu.conversationId, this.playerModel, cpu, false);
@@ -1021,12 +1009,12 @@ public class OverworldModel extends BaseModel {
 
     public boolean setItem(int itemId)
     {
-        LocationModel location = new LocationModel(this.playerModel.getX(), this.playerModel.getY(), this.mapId);
-        location.applyOffset(this.playerModel.getDirection());
+        int x = Utils.applyXOffset(this.playerModel.getX(), this.playerModel.getDirection());
+        int y = Utils.applyYOffset(this.playerModel.getY(), this.playerModel.getDirection());
 
-        if (itemId >= 100 && locationCheck(location) && this.tiles[location.y][location.x] >= 105 && this.tiles[location.y][location.x] <= 107)
+        if (itemId >= 100 && locationCheck(x, y) && this.tiles[y][x] >= 105 && this.tiles[y][x] <= 107)
         {
-            this.plantedBerries.add(new BerryModel(location, itemId, System.currentTimeMillis()));
+            this.plantedBerries.add(new BerryModel(x, y, itemId, System.currentTimeMillis()));
             return true;
         }
         else
@@ -1036,13 +1024,19 @@ public class OverworldModel extends BaseModel {
         } 
     }
 
-    public boolean locationCheck(LocationModel location)
+    /**
+     * Checks if the given x and y are a valid position on the map
+     * @param x x-coordinate to check
+     * @param y y-coordinate to check
+     * @return True if that is a valid map coordinate
+     */
+    public boolean locationCheck(int x, int y)
     {
         return (
-            location.x > 0 
-            && location.y > 0
-            && location.y < this.tiles.length
-            && location.x < this.tiles[location.y].length
+            x >= 0 
+            && y >= 0
+            && y < this.tiles.length
+            && x < this.tiles[y].length
         );
     }
 }

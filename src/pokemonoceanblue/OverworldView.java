@@ -287,8 +287,8 @@ public class OverworldView extends BaseView {
             // render the mapObject
             Image sprite = berrySprite.get(berry.getSpriteName());
             g.drawImage(sprite, 
-                (berry.location.x * 16 - xOffset - 3) * graphicsScaling, // x refers to leftmost position
-                ((berry.location.y + 1) * 16 - sprite.getHeight(null) - yOffset) * graphicsScaling, 
+                (berry.x * 16 - xOffset - 3) * graphicsScaling, // x refers to leftmost position
+                ((berry.y + 1) * 16 - sprite.getHeight(null) - yOffset) * graphicsScaling, 
                 sprite.getWidth(null) * graphicsScaling, 
                 sprite.getHeight(null) * graphicsScaling, 
                 canvas);

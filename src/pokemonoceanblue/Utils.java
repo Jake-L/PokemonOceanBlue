@@ -48,21 +48,65 @@ public class Utils
 
     public static Direction getDirection(int x, int y)
     {
-        if (y == -1)
+        if (y < 0)
         {
             return Direction.UP;
         }
-        else if (x == 1)
+        else if (x > 0)
         {
             return Direction.RIGHT;
         }
-        else if (x == -1)
+        else if (x < 0)
         {
             return Direction.LEFT;
         }
         else
         {
             return Direction.DOWN;
+        }
+    }
+
+    /**
+     * Move the x-coordinate one unit in the given direction
+     * @param x the initial x-coordinate
+     * @param d the direction to move in
+     * @return the shifted x-coordinate
+     */
+    public static int applyXOffset(int x, Direction d)
+    {
+        if (d == Direction.LEFT)
+        {
+            return x - 1;
+        }
+        else if (d == Direction.RIGHT)
+        {
+            return x + 1;
+        }
+        else
+        {
+            return x;
+        }
+    }
+
+    /**
+     * Move the y-coordinate one unit in the given direction
+     * @param y the initial y-coordinate
+     * @param d the direction to move in
+     * @return the shifted y-coordinate
+     */
+    public static int applyYOffset(int y, Direction d)
+    {
+        if (d == Direction.UP)
+        {
+            return y - 1;
+        }
+        else if (d == Direction.DOWN)
+        {
+            return y + 1;
+        }
+        else
+        {
+            return y;
         }
     }
 }
