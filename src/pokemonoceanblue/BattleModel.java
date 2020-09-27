@@ -89,15 +89,17 @@ public class BattleModel extends BaseModel
 
         if (this.isWild)
         {
-            event = new BattleEvent("A wild " + this.team[1][0].name + " appeared!", 0, true, 1, -1);
-            this.events.add(event);
+            event = new BattleEvent("A wild " + this.team[1][0].name + " appeared!", 1, -1);
         }
         else
         {
-            event = new BattleEvent(this.trainerName + " sent out " + this.team[1][0].name + ".", 0, true, 1, -1);
-            this.events.add(event);
+            event = new BattleEvent(this.trainerName + " sent out " + this.team[1][0].name + ".", 1, -1);
         }
-        event = new BattleEvent("Trainer sent out " + this.team[0][firstPokemon].name + ".", firstPokemon, true, 0, -1);
+        event.setNewPokemon(0);
+        this.events.add(event);
+
+        event = new BattleEvent("Trainer sent out " + this.team[0][firstPokemon].name + ".", 0, -1);
+        event.setNewPokemon(firstPokemon);
         this.events.add(event);
         this.actionCounter = 100;
         this.loadData();
@@ -219,16 +221,57 @@ public class BattleModel extends BaseModel
      */
     public void setItem(int itemId)
     {
+        BattleEvent event;
+
         if (itemId == -1)
         {
             this.loadBattleMenu();
         }
         else
         {
-            BattleEvent event = new BattleEvent("Trainer used a " + itemId + ".", itemId, false, 0, -1);
+            event = new BattleEvent("Trainer used a " + itemId + ".", 0, -1);
+            event.setItem(itemId);
             this.events.add(event);
-            this.actionCounter = 60;            
-            this.events.add(this.enemyAttackEvent());
+
+            event = new BattleEvent("Trainer used a " + itemId + ".", 1, -1);
+            event.setItem(itemId);
+            event.setNewPokemon(-1);
+            this.events.add(event);
+            this.actionCounter = 60;
+            
+            // find the probability of the Pokemon being captured
+            int pokemonCaptureRate = this.team[1][this.currentPokemon[1]].captureRate;
+            double captureChance = (pokemonCaptureRate / 2 - 1) 
+                + (pokemonCaptureRate / 2 + 1) 
+                * (1 - Math.sqrt(this.team[1][this.currentPokemon[1]].currentHP / (double)(this.team[1][this.currentPokemon[1]].stats[Stat.HP])));
+            
+            int shakeCount = 3;
+
+            // determine if the Pokemon should be captured
+            if (ranNum.nextInt(101) <= captureChance)
+            {
+                event = new BattleEvent("Trainer caught wild " + this.team[1][this.currentPokemon[1]].name + "!", 0, -1);
+                event.setItem(itemId);
+                this.events.add(event);
+                this.isCaught = true;
+            }
+            else
+            {
+                event = new BattleEvent("The wild " + this.team[1][this.currentPokemon[1]].name + " escaped!", 1, -1);
+                event.setNewPokemon(0);
+                this.events.add(2, event);
+                this.events.add(this.enemyAttackEvent());
+                shakeCount = ranNum.nextInt(3);
+            }
+
+            // add events for the Pokeball shaking animation
+            for (int i = 0; i < shakeCount; i++)
+            {
+                event = new BattleEvent("Trainer used a " + itemId + ".", 0, -1);
+                event.setItem(itemId);
+                event.setPokeballShake();
+                this.events.add(2, event);
+            }
         }
     }
 
@@ -243,9 +286,11 @@ public class BattleModel extends BaseModel
         }
         else if (this.team[0][this.currentPokemon[0]].currentHP > 0)
         {
-            BattleEvent event = new BattleEvent("Trainer withdrew " + this.team[0][Math.abs(this.currentPokemon[0])].name + ".", -1, true, 0, -1);
+            BattleEvent event = new BattleEvent("Trainer withdrew " + this.team[0][Math.abs(this.currentPokemon[0])].name + ".", 0, -1);
+            event.setNewPokemon(-1);
             this.events.add(event);
-            event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", pokemon, true, 0, -1);
+            event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", 0, -1);
+            event.setNewPokemon(pokemon);
             this.events.add(event);
             this.actionCounter = 60;
 
@@ -254,7 +299,8 @@ public class BattleModel extends BaseModel
         }
         else
         {
-            BattleEvent event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", pokemon, true, 0, -1);
+            BattleEvent event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", 0, -1);
+            event.setNewPokemon(pokemon);
             this.events.add(event);
             this.actionCounter = 100;
         }
@@ -270,14 +316,14 @@ public class BattleModel extends BaseModel
         // don't teach the new move
         if (newMoveIndex == -1)
         {
-            this.events.add(0, new BattleEvent(this.team[0][this.currentPokemon[0]].name + " did not learn " + newMove.name, 0, 0, null));
+            this.events.add(0, new BattleEvent(this.team[0][this.currentPokemon[0]].name + " did not learn " + newMove.name, 0, 0));
         }
         // teach the new move at newMoveIndex
         else
         {
             this.events.add(0, new BattleEvent(
                 this.team[0][this.currentPokemon[0]].name + " forgot how to use " + this.team[0][this.currentPokemon[0]].moves[newMoveIndex].name 
-                    + "and learned " + newMove.name + "!", 0, 0, null));
+                    + "and learned " + newMove.name + "!", 0, 0));
             this.team[0][this.currentPokemon[0]].moves[newMoveIndex] = newMove;
         }
         this.actionCounter = 60;
@@ -342,8 +388,14 @@ public class BattleModel extends BaseModel
             }
             if (ailmentId < 9 && !willFail)
             {
-                this.events.add(new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + statusEffectMessages[ailmentId - 1], 
-                    ailmentId, defender, defender));
+                // create the event to inflict the status effect
+                BattleEvent event = new BattleEvent(
+                    this.team[defender][this.currentPokemon[defender]].name + statusEffectMessages[ailmentId - 1], 
+                    attacker, 
+                    defender
+                );
+                event.setStatusEffect(ailmentId, defender);
+                this.events.add(event);
             }
         }
     }
@@ -364,8 +416,13 @@ public class BattleModel extends BaseModel
                 // if pokemon has been asleep 3 turns, wake up
                 (attackingPokemon.statusEffect == 2 && this.statusEffectCounter[attacker][this.currentPokemon[attacker]] > 2))
             {
-                this.events.add(0, new BattleEvent(attackingPokemon.name + (attackingPokemon.statusEffect == 2 ? " woke up!" : " thawed out."),
-                    0, attacker, attacker));
+                BattleEvent event = new BattleEvent(
+                    attackingPokemon.name + (attackingPokemon.statusEffect == 2 ? " woke up!" : " thawed out."),
+                    attacker,
+                    attacker
+                );
+                event.setStatusEffect(0, attacker);
+                this.events.add(0, event);
                 attackEventIndex = 1;
             }
             //if paralysis prevents use of a move or snore allows user to attack while asleep
@@ -383,7 +440,13 @@ public class BattleModel extends BaseModel
             //25% chance of snapping out of confusion
             if (this.statusEffectCounter[attacker][this.currentPokemon[attacker]] > 0 && this.ranNum.nextInt(101) < 26)
             {
-                this.events.add(0, new BattleEvent(attackingPokemon.name + " snapped out of confusion!", 0, attacker, attacker));
+                BattleEvent event = new BattleEvent(
+                    attackingPokemon.name + " snapped out of confusion!",
+                    attacker,
+                    attacker
+                );
+                event.setStatusEffect(0, attacker);
+                this.events.add(0, event);
             }
             else
             {
@@ -614,8 +677,14 @@ public class BattleModel extends BaseModel
             }
             else
             {
+                // create the event to start the weather
                 String[] weatherMessages = {"the sunlight to turn harsh.","rain to fall.","a sandstorm.","hail to fall."};
-                event = new BattleEvent(attackingPokemon.name + " caused " + weatherMessages[effectId - 137], attacker, attacker, (byte)(effectId - 136));
+                event = new BattleEvent(
+                    attackingPokemon.name + " caused " + weatherMessages[effectId - 137], 
+                    attacker, 
+                    attacker
+                );
+                event.setWeather((byte)(effectId - 136));
             }
             this.events.add(event);
         }
@@ -724,7 +793,13 @@ public class BattleModel extends BaseModel
         //aromatherapy/heal-bell
         else if (effectId == 103)
         {
-            this.events.add(new BattleEvent(attackingPokemon.name + " cured its team's status conditions.", 0, attacker, attacker));
+            BattleEvent event = new BattleEvent(
+                attackingPokemon.name + " cured its team's status conditions.",
+                attacker,
+                attacker
+            );
+            event.setStatusEffect(0, attacker);
+            this.events.add(event);
             for (int i = 0; i < this.team[attacker].length; i++)
             {
                 if (i != this.currentPokemon[attacker])
@@ -1173,6 +1248,8 @@ public class BattleModel extends BaseModel
     {
         if (this.team[damagedTeamIndex][this.currentPokemon[damagedTeamIndex]].currentHP == 0)
         {
+            BattleEvent event;
+
             //remove all events performed by or affecting the fainted pokemon
             boolean faintEventExists = false;
             int i = 0;
@@ -1206,7 +1283,10 @@ public class BattleModel extends BaseModel
             }
             if (!faintEventExists)
             {
-                this.events.add(new BattleEvent(this.team[damagedTeamIndex][this.currentPokemon[damagedTeamIndex]].name + " fainted.", -1, true, damagedTeamIndex, -1));
+                event = new BattleEvent(this.team[damagedTeamIndex][this.currentPokemon[damagedTeamIndex]].name + " fainted.", damagedTeamIndex, -1);
+                event.setNewPokemon(-1);
+                this.events.add(event);
+
                 if ((this.moveProcessed[0] || this.moveProcessed[1]) && (!this.moveProcessed[0] || !this.moveProcessed[1]))
                 {
                     this.endOfTurnEffects();
@@ -1220,11 +1300,15 @@ public class BattleModel extends BaseModel
                     this.team[0][this.currentPokemon[0]].updateHappiness(1);
                     this.team[0][this.currentPokemon[0]].updateIVs(this.team[1][this.currentPokemon[1]].ivGain);
                     int xp = xpCalc(this.team[1][this.currentPokemon[1]].level);
-                    this.events.add(new BattleEvent(this.team[0][this.currentPokemon[0]].name + " gained " + xp + " experience.", xp, 0, true));
+                    event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " gained " + xp + " experience.", 0, 0);
+                    event.setXP(xp);
+                    this.events.add(event);
                     //send out enemy's next pokemon if any remain
                     if (!teamFainted(1))
                     {
-                        this.events.add(new BattleEvent(this.trainerName + " sent out " + this.team[1][this.currentPokemon[1] + 1].name, this.currentPokemon[1] + 1, true, 1, -1));
+                        event = new BattleEvent(this.trainerName + " sent out " + this.team[1][this.currentPokemon[1] + 1].name, 1, -1);
+                        event.setNewPokemon(this.currentPokemon[1] + 1);
+                        this.events.add(event);
                     }
                 }
             }
@@ -1343,6 +1427,19 @@ public class BattleModel extends BaseModel
             this.attackEvent[1] = null;
             this.moveProcessed[attacker] = true;
         }
+        // shorter events for Pokeball throwing animations
+        else if (this.actionCounter == 60 && this.events.size() > 0 && this.events.get(0).itemId > 0)
+        {
+            if (this.events.get(0).pokeballShake)
+            {
+                this.actionCounter = 30;
+            }
+            else if (this.events.get(0).newPokemonIndex == -2)
+            {
+                this.actionCounter = 30;
+            }
+        }
+
         //determine the sound that will be played for current event if applicable
         if (this.actionCounter == 60 && this.events.size() > 0)
         {
@@ -1384,7 +1481,8 @@ public class BattleModel extends BaseModel
                     this.events.add(1, event);   
 
                     // add a new event that shows the progress bar moving with XP remaining after leveling up
-                    event = new BattleEvent("", xpGain + this.team[0][this.currentPokemon[0]].xp - xpMax, 0, true);
+                    event = new BattleEvent("", 0, 0);
+                    event.setXP(xpGain + this.team[0][this.currentPokemon[0]].xp - xpMax);
                     this.events.add(2, event);
 
                     // add events for any new moves that the Pokemon learned from leveling up
@@ -1394,14 +1492,16 @@ public class BattleModel extends BaseModel
                         // learn the move immediately if they have any open slots
                         if (this.team[0][this.currentPokemon[0]].addMove(newMoves.get(i)))
                         {
-                            this.events.add(2, new BattleEvent(this.team[0][this.currentPokemon[0]].name + " learned " + newMoves.get(i).name + "!", 0, 0, null));
+                            this.events.add(2, new BattleEvent(this.team[0][this.currentPokemon[0]].name + " learned " + newMoves.get(i).name + "!", 0, 0));
                         }
                         // otherwise the player will need to choose a move to replace
                         else
                         {
-                            this.events.add(2, new BattleEvent(
+                            event = new BattleEvent(
                                 this.team[0][this.currentPokemon[0]].name + " wants to learn " + newMoves.get(i).name + ", however it already knows four moves.", 
-                                0, 0, newMoves.get(i)));
+                                0, 0);
+                            event.setNewMove(newMoves.get(i));
+                            this.events.add(2, event);
                         }
                     }
                     // flag that the pokemon leveled up and may evolve
@@ -1433,35 +1533,6 @@ public class BattleModel extends BaseModel
                     Math.min((this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].stats[Stat.HP]), 
                     (this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].currentHP + 
                     Math.abs(this.events.get(0).damage)));
-            }
-            else if (this.events.get(0).itemId > -1)
-            {
-                int pokemonCaptureRate = this.team[1][this.currentPokemon[1]].captureRate;
-                // determine if the Pokemon should be captured
-                double captureChance = (pokemonCaptureRate / 2 - 1) 
-                    + (pokemonCaptureRate / 2 + 1) 
-                    * (1 - Math.sqrt(this.team[1][this.currentPokemon[1]].currentHP / (double)(this.team[1][this.currentPokemon[1]].stats[Stat.HP])));
-                if (ranNum.nextInt(101) <= captureChance)
-                {
-                    int i = 0;
-                    while (i < this.events.size())
-                    {
-                        if (this.events.get(i).attacker == 1)
-                        {
-                            this.events.remove(i);
-                        }
-                        else
-                        {
-                            i++;
-                        }
-                    }
-                    this.events.add(new BattleEvent("Trainer caught wild " + this.team[1][this.currentPokemon[1]].name + "!", 0, -1));
-                    this.isCaught = true;
-                }
-                else
-                {
-                    this.events.add(1, new BattleEvent("The wild " + this.team[1][this.currentPokemon[1]].name + " escaped!", 0, -1));
-                }
             }
             // open summary screen for player to chose which move to replace with the new move
             else if (this.events.get(0).newMove != null)
@@ -1701,6 +1772,7 @@ public class BattleModel extends BaseModel
         public int removalCondition;
         public MoveModel newMove;
         public byte newWeatherId = -1;
+        public boolean pokeballShake = false;
 
         /** 
          * Base Constructor
@@ -1713,18 +1785,6 @@ public class BattleModel extends BaseModel
             this.text = text;
             this.attacker = attacker;
             this.removalCondition = removalCondition;
-        }
-
-        /** 
-         * Constructor for status effects inflicted
-         * @param statusEffect the status effect that will be applied
-         * @param target the pokemon that will recieve the status effect
-         */
-        public BattleEvent(String text, int statusEffect, int target, int removalCondition)
-        {
-            this(text, target, removalCondition);
-            this.statusEffect = statusEffect;
-            this.target = target;
         }
 
         /** 
@@ -1742,54 +1802,67 @@ public class BattleModel extends BaseModel
         }
 
         /** 
-         * Constructor for xp gained by the players pokemon
+         * Setter for status effects inflicted
+         * @param statusEffect the status effect that will be applied
+         * @param target the pokemon that will recieve the status effect
+         */
+        public void setStatusEffect(int statusEffect, int target)
+        {
+            this.statusEffect = statusEffect;
+            this.target = target;
+        }
+
+        /** 
+         * Setter for xp gained by the players pokemon
          * @param xp the amount of xp earned
          */
-        public BattleEvent(String text, int xp, int attacker, boolean isXp)
+        public void setXP(int xp)
         {
-            this(text, attacker, attacker);
             this.xp = xp;
         }
 
         /** 
-         * Constructor for using an item or changing pokemon
-         * @param index is the index of the item or pokemon used
-         * @param isPokemon determines whether index refers to item or 
+         * Setter for using an item
+         * @param index is the index of the item used
          */
-        public BattleEvent(String text, int index, boolean isPokemon, int attacker, int removalCondition)
+        public void setItem(int index)
         {
-            this(text, attacker, removalCondition);
-            
-            if (!isPokemon)
-            {
-                this.itemId = index;
-            }
-
-            else
-            {
-                this.newPokemonIndex = index;
-            }
+            this.itemId = index;
         }
 
         /** 
-         * Constructor for learning new Moves
-         * @param target the pokemon learning the new move
+         * Setter for changing Pokemon
+         * @param index is the index of the new Pokemon being sent out
+         */
+        public void setNewPokemon(int index)
+        {
+            this.newPokemonIndex = index;
+        }
+
+        /** 
+         * Setter for learning new Moves
          * @param newMove the move the pokemon wants to learn
          */
-        public BattleEvent(String text, int target, int removalCondition, MoveModel newMove)
+        public void setNewMove(MoveModel newMove)
         {
-            this(text, target, removalCondition);
             this.newMove = newMove;
         }
 
         /**
-         * Constructor for changing the weather
+         * Setter for changing the weather
          * @param newWeatherId
          */
-        public BattleEvent(String text, int attacker, int removalCondition, byte newWeatherId)
+        public void setWeather(byte newWeatherId)
         {
-            this(text, attacker, removalCondition);
             this.newWeatherId = newWeatherId;
+        }
+
+        /**
+         * Setter for enabling the Pokeball shaking animation
+         */
+        public void setPokeballShake()
+        {
+            this.pokeballShake = true;
         }
     }
 
