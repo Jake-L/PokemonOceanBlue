@@ -75,6 +75,10 @@ map_id,map_template_id,overlay,tiles_suffix,comment
 526,526,0,3,Pokemart head office L1
 527,523,0,3,Pokemart head office L2
 528,528,0,3,Pokemart head office L3
+529,7,0,,Saffron Pokemon Center
+530,7,0,,Lavendar Pokemon Center
+531,7,0,,Fuschia Pokemon Center
+532,7,0,,Cinnabar Pokemon Center
 1000,1000,0,,Cerulean tournament battle room
 1001,1001,0,,Cerulean tournament waiting room
 1002,1002,0,,Cerulean tournament entrance

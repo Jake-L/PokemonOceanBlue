@@ -48,7 +48,7 @@ public class PartyView extends BaseView {
                 ii = new ImageIcon(this.getClass().getResource("/pokemonicons/" + pokemon.getSpriteId() + ".png"));
                 this.pokemonIconSprite.put(pokemon.getSpriteId(), ii.getImage());
 
-                ii = new ImageIcon(this.getClass().getResource("/pokemon/frame0/" + pokemon.getSpriteId() + ".png"));
+                ii = new ImageIcon(this.getClass().getResource("/pokemoncentered/frame0/" + pokemon.getSpriteId() + ".png"));
                 this.pokemonSprite.put(pokemon.getSpriteId(), ii.getImage());
             }
         }
