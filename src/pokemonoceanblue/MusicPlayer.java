@@ -57,6 +57,7 @@ public class MusicPlayer
         if (currentClip != null)
         {
             currentClip.stop();
+            currentClip.close();
         }
         try
         {

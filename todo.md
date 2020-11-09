@@ -1,16 +1,18 @@
 
 # To-Do
 ## Battles
-- [ ] Weather effects
+- [X] Weather effects
 - [ ] Unique move effects
-- [ ] Handle player running out of Pokemon
-- [ ] Scale enemy trainer's Pokemon
-- [ ] Add animation for catching wild Pokemon
-- [ ] Custom music for important trainers
+- [ ] Pokemon abilities
+- [X] Handle player running out of Pokemon
+- [X] Scale enemy trainer's Pokemon
+- [X] Add animation for catching wild Pokemon
+- [X] Custom music for important trainers
 - [ ] Better AI for enemy trainers
+- [ ] Improve hail animation
 
 ## Overworld
-- [ ] Add functional day care
+- [X] Add functional day care
 - [ ] Store safe locations for fly/respawn
 - [ ] Add tournaments
 
@@ -29,11 +31,13 @@
 
 ## Menus
 - [ ] Save inventory to database
+- [ ] Save achievements to database
 - [ ] Add quest tracker
 - [ ] Improve appearance of Pokemon summary screen
 - [ ] Show current HP, XP, and Happiness in summary screen
 
 ## Sprites
+- [ ] Fix Pokemon front sprites
 - [ ] Miror B overworld
 - [ ] Johto gym leaders overworld
 - [ ] Hoenn gym leaders overworld

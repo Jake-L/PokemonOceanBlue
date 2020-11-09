@@ -1,15 +1,13 @@
 package pokemonoceanblue;
 
 public class BerryModel extends SpriteModel {
-    int berryId;
+    final int berryId;
     long plantTime;
-    LocationModel location;
     long timePerPhase = 2000;
 
-    public BerryModel(LocationModel location, int berryId, long plantTime)
+    public BerryModel(int x, int y, int berryId, long plantTime)
     {
-        super("generic_0", location.x, location.y, 0);
-        this.location = location;
+        super("generic_0", x, y, 0);
         this.berryId = berryId;
         this.plantTime = plantTime;
     }

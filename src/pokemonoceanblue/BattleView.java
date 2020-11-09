@@ -25,7 +25,7 @@ public class BattleView extends BaseView {
     private Image background;
     private Image[] backgroundBase = new Image[2];
     private Image xp;
-    private Image[] pokeballSprite = new Image[4];
+    private Image[] pokeballSprite = new Image[15];
     private Image[][] pokemonIconSprites = new Image[2][];
     private Image trainerSprite;
     private Image[] statusEffectImages = new Image[8];
@@ -120,7 +120,7 @@ public class BattleView extends BaseView {
         //loads pokeball sprites
         for (int i = 0; i < this.pokeballSprite.length; i ++)
         {
-            ii = new ImageIcon(this.getClass().getResource("/inventory/" + i + ".png"));
+            ii = new ImageIcon(this.getClass().getResource("/battle/ball3_" + i + ".png"));
             this.pokeballSprite[i] = ii.getImage();
         }
 
@@ -228,28 +228,33 @@ public class BattleView extends BaseView {
         if (this.model.events.size() > 0 && this.model.events.get(0).itemId > -1)
         {
             int pokeballSpriteIndex = this.model.events.get(0).itemId;
-            double x = width * 0.6;
-            double y = height * 0.25;
+            int pokeballFrame = this.getPokeballFrame();
 
-            if (this.model.actionCounter > 30)
+            double x = width * 0.6 - this.pokeballSprite[pokeballFrame].getWidth(null) * graphicsScaling / 2;
+            double y = height / 2 - (this.backgroundBase[1].getHeight(null) / 2 + this.pokeballSprite[pokeballFrame].getHeight(null)) * graphicsScaling;
+
+            // throwing animation
+            if (this.model.events.get(0).newPokemonIndex == -2 
+                && !this.model.events.get(0).pokeballShake
+                && !this.model.events.get(0).text.contains(" caught wild "))
             {
-                x *= (1 - ((this.model.actionCounter - 30) / 30.0));
-                y += (height * 0.15) * (Math.pow(this.model.actionCounter - 40, 2) / 400.0);
+                x *= (1 - (this.model.actionCounter / 30.0));
+                y -= (height * 0.15) * (1 - Math.pow(this.model.actionCounter - 20, 2) / 400.0);
             }
 
             //renders a pokeball in place of enemy pokemon
-            g.drawImage(this.pokeballSprite[pokeballSpriteIndex],
+            g.drawImage(this.pokeballSprite[pokeballFrame],
                 (int)x,
                 (int)y,
-                this.pokeballSprite[pokeballSpriteIndex].getWidth(null) * graphicsScaling,
-                this.pokeballSprite[pokeballSpriteIndex].getHeight(null) * graphicsScaling,
+                this.pokeballSprite[pokeballFrame].getWidth(null) * graphicsScaling,
+                this.pokeballSprite[pokeballFrame].getHeight(null) * graphicsScaling,
                 canvas);
         }
 
         // render enemy Pokemon
         if (this.model.currentPokemon[1] >= 0)
         {
-            if ((!this.model.isCaught && !this.hidePokemon[1])
+            if (!this.hidePokemon[1]
                 || (this.model.events.size() > 0 && this.model.events.get(0).newPokemonIndex > -1))
             {
                 this.renderPokemon(1, g, canvas);
@@ -334,11 +339,11 @@ public class BattleView extends BaseView {
                 }
                 else
                 {
-                    g.drawImage(this.pokeballSprite[3],
+                    g.drawImage(this.pokeballSprite[8],
                         (int)(width - (this.pokemonIconSprites[j][i].getWidth(null) * graphicsScaling)),
-                        (int) (i * height * (0.75 / 6.0)), 
-                        this.pokemonIconSprites[j][i].getWidth(null) * graphicsScaling / 2,
-                        this.pokemonIconSprites[j][i].getHeight(null) * graphicsScaling / 2,
+                        (int) (i * height * (0.75 / 6.0)) - (7 * graphicsScaling), 
+                        this.pokeballSprite[8].getWidth(null) * graphicsScaling / 2,
+                        this.pokeballSprite[8].getHeight(null) * graphicsScaling / 2,
                         canvas);
                 }
             }
@@ -556,14 +561,6 @@ public class BattleView extends BaseView {
                 return this.model.actionCounter / 40.0f;
             }
         }
-        // shrink the enemy when throwing a Pokeball
-        else if (teamIndex == 1
-            && this.model.events.size() > 0 
-            && this.model.events.get(0).itemId > -1 
-            && this.model.actionCounter <= 20)
-        {
-            return this.model.actionCounter / 20.0f;
-        }
 
         return 1;
     }
@@ -589,9 +586,39 @@ public class BattleView extends BaseView {
         return 0;
     }
 
-    private Image getPokeballSprite()
+    /**
+     * Determines the frame of the pokeball throwing animation to display
+     * @return the index of the frame the be rendered
+     */
+    private int getPokeballFrame()
     {
-        return pokeballSprite[0];
+        if (this.model.events.size() > 0)
+        {
+            if (this.model.events.get(0).newPokemonIndex > -2)
+            {
+                return 9;
+            }
+            else if (this.model.events.get(0).pokeballShake)
+            {
+                if (this.model.actionCounter <= 15)
+                {
+                    return 11 + this.model.events.size() % 2;
+                }
+                else
+                {
+                    return 8;
+                }
+            }
+            else if (this.model.events.get(0).text.contains(" caught wild "))
+            {
+                return 14;
+            }
+            else
+            {
+                return 8 - this.model.actionCounter / 8;
+            }
+        }
+        return 8;
     }
 
     //displays battle options in a text box

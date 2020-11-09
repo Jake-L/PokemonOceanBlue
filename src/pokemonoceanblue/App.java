@@ -115,7 +115,7 @@ public class App extends JFrame implements KeyListener
 
         this.partyModel = new PartyModel();
         this.partyModel.addPokemon(0, new PokemonModel(3, 50, false));
-        this.partyModel.addPokemon(0, new PokemonModel(6, 50, true));
+        this.partyModel.addPokemon(0, new PokemonModel(4, 50, true));
         this.partyModel.addPokemon(0, new PokemonModel(9, 50, true));
         this.partyModel.team.get(0).moves[0] = new MoveModel(153);
         this.inventoryModel = new InventoryModel();
@@ -152,15 +152,14 @@ public class App extends JFrame implements KeyListener
 
             //     ResultSet rs = db.runQuery(query);
 
-            //     this.setMap(rs.getInt("map_id"), rs.getInt("x"), rs.getInt("y"));
+            //     this.setMap(rs.getInt("map_id"), rs.getInt("x"), rs.getInt("y"), Direction.DOWN);
             // }
             // catch (SQLException ex) 
             // {
             //     ex.printStackTrace();
             //     this.setMap(1, 3, 3);
             // } 
-            //this.setMap(43, 3, 9);
-            this.setMap(45, 25, 20);
+            this.setMap(45, 16, 48, Direction.DOWN);
         }
     }
 
@@ -225,19 +224,11 @@ public class App extends JFrame implements KeyListener
      * @param playerX x-coordinate to spawn player
      * @param playerY y-coordinate to spawn player
      */
-    public void setMap(int mapId, int playerX, int playerY)
+    public void setMap(int mapId, int playerX, int playerY, Direction direction)
     {
         // create the player
-        if (playerModel != null)
-        {
-            // if the player moved from another map, keep them facing the same direction as before
-            oldPlayerModel = playerModel;
-            playerModel = new CharacterModel("red", playerX, playerY, -1, -1, 0, oldPlayerModel.getDirection());
-        }
-        else
-        {
-            playerModel = new CharacterModel("red", playerX, playerY, -1, -1, 0, Direction.DOWN);
-        }
+        oldPlayerModel = playerModel;
+        playerModel = new CharacterModel("red", playerX, playerY, -1, -1, 0, direction);
 
         // create the overworld
         if (mapId == 1000 || mapId == 1100 || mapId == 1200 || mapId == 1300)
@@ -542,7 +533,7 @@ public class App extends JFrame implements KeyListener
                     {
                         // player is defeated, respawn in his house
                         this.battleModel = null;
-                        this.setMap(1, 7, 4);
+                        this.setMap(1, 7, 4, Direction.DOWN);
                     }
                     else if (this.battleModel.isComplete())
                     {
@@ -599,7 +590,7 @@ public class App extends JFrame implements KeyListener
                         if (portal != null)
                         {
                             // move to the new map
-                            setMap(portal.destMapId, portal.destX, portal.destY);
+                            setMap(portal.destMapId, portal.destX, portal.destY, portal.direction);
                         }
                     }
                     else if (newPokemonQueue.size() > 0 && overworldModel.conversation == null)
@@ -616,7 +607,7 @@ public class App extends JFrame implements KeyListener
                         if (this.tournamentModel.getCharacter() == null)
                         {
                             // player won tournament
-                            this.setMap(this.overworldModel.mapId + 2, 4, 5);
+                            this.setMap(this.overworldModel.mapId + 2, 4, 5, Direction.DOWN);
                             this.tournamentModel = null;
                             this.enemyScalingFactor += 1;
 
@@ -637,7 +628,7 @@ public class App extends JFrame implements KeyListener
                         else
                         {
                             // enter the waiting room before the next round
-                            this.setMap(this.overworldModel.mapId + 1, 7, 7);
+                            this.setMap(this.overworldModel.mapId + 1, 7, 7, Direction.DOWN);
                         }
                     }
                 }

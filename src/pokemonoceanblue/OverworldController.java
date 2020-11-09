@@ -48,7 +48,7 @@ public class OverworldController extends BaseController {
                     }
                     if (keysDown.contains(KeyEvent.VK_ENTER))
                     {
-                        this.callCheckAction();
+                        this.overworldModel.checkAction();
                     }
                     else if (keysDown.contains(KeyEvent.VK_UP))
                     {
@@ -66,55 +66,26 @@ public class OverworldController extends BaseController {
                     {
                         this.playerModel.setMovement(1, 0, movespeed);
                     }
+
                     this.model.update();
                 }
             }
-            else if (this.model.acceleration > 0)
+            else 
             {
-                // clear acceleration when player releases keys
-                this.model.acceleration = 0;
-                this.model.accelerationCounter = 0;
+                if (this.model.acceleration > 0)
+                {
+                    // clear acceleration when player releases keys
+                    this.model.acceleration = 0;
+                    this.model.accelerationCounter = 0;
+                }
+                
                 this.model.update();
             }
-            else
-            {
-                this.model.update();
-            }
+
         }
         else
         {
             this.model.update();
         }
-    }
-
-    /** 
-     * Check which position the player is trying to interact with
-     * Pass the check position to the overworld model
-     */
-    private void callCheckAction()
-    {
-        int checkX = this.playerModel.getX();
-        int checkY = this.playerModel.getY();
-
-        // get the coordinates the player is interacting with
-        if (this.playerModel.getDirection() == Direction.RIGHT)
-        {
-            checkX++;
-        }
-        else if (this.playerModel.getDirection() == Direction.LEFT)
-        {
-            checkX--;
-        }
-        else if (this.playerModel.getDirection() == Direction.UP)
-        {
-            checkY--;
-        }
-        else if (this.playerModel.getDirection() == Direction.DOWN)
-        {
-            checkY++;
-        }
-
-        // check if there is anything to interact with
-        this.overworldModel.checkAction(checkX, checkY);
     }
 }

@@ -39,7 +39,7 @@ public class PokedexView extends BaseView
      */
     private void loadImage() 
     {
-        ImageIcon ii = new ImageIcon(this.getClass().getResource("/pokemon/frame0/" + this.model.optionIndex + ".png"));
+        ImageIcon ii = new ImageIcon(this.getClass().getResource("/pokemoncentered/frame0/" + this.model.optionIndex + ".png"));
         this.pokemonSprite  = ii.getImage();
 
         for (int i = 0; i < pokemonIconSprite.length; i++)
@@ -101,7 +101,7 @@ public class PokedexView extends BaseView
         if (this.oldOptionIndex != this.model.optionIndex)
         {
             this.calcIndices();
-            ImageIcon ii = new ImageIcon(this.getClass().getResource("/pokemon/frame0/" + this.model.optionIndex + ".png"));
+            ImageIcon ii = new ImageIcon(this.getClass().getResource("/pokemoncentered/frame0/" + this.model.optionIndex + ".png"));
             this.pokemonSprite  = ii.getImage();
         }
 

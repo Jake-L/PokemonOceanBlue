@@ -119,6 +119,10 @@ public class OverworldModel extends BaseModel {
                 tilesOverlay = readMapFileAux("map" + mapTemplateId + "overlay");
             }
             this.tilesSuffix = rs.getString("tiles_suffix");
+            if (this.tilesSuffix.equals("0"))
+            {
+                this.tilesSuffix = "";
+            }
         }
         catch (SQLException e) 
         {
@@ -287,8 +291,7 @@ public class OverworldModel extends BaseModel {
     public boolean checkPosition(int x, int y, boolean surf)
     {
         // check if the map allows movement
-        if (y < 0 || y >= this.tiles.length
-            || x < 0 || x >= this.tiles[y].length
+        if (!this.locationCheck(x, y)
             || this.tiles[y][x] < 0
             || ((this.tiles[y][x] == 0 || this.tiles[y][x] == 1) && !surf))
         {
@@ -351,8 +354,12 @@ public class OverworldModel extends BaseModel {
     /** 
      * Enable to player to interact with other characters
      */
-    public void checkAction(int x, int y)
+    public void checkAction()
     {
+        // get the coordinates the player is interacting with
+        int x = Utils.applyXOffset(this.playerModel.getX(), this.playerModel.getDirection());
+        int y = Utils.applyYOffset(this.playerModel.getY(), this.playerModel.getDirection());
+        
         // if already in a conversation, check if it's time to move on to next dialog
         if (this.conversation != null)
         {
@@ -393,23 +400,8 @@ public class OverworldModel extends BaseModel {
                     }
                     else
                     {
-                        // make the CPU face the player
-                        if (cpu.getX() > this.playerModel.getX())
-                        {
-                            cpu.setDirection(Direction.LEFT);
-                        }
-                        else if (cpu.getX() < this.playerModel.getX())
-                        {
-                            cpu.setDirection(Direction.RIGHT);
-                        }
-                        else if (cpu.getY() > this.playerModel.getY())
-                        {
-                            cpu.setDirection(Direction.UP);
-                        }
-                        else if (cpu.getY() < this.playerModel.getY())
-                        {
-                            cpu.setDirection(Direction.DOWN);
-                        }
+                        // make the CPU facing the player
+                        cpu.setDirection(Utils.getDirection(this.playerModel.getX() - cpu.getX(), this.playerModel.getY() - cpu.getY()));
 
                         // start the conversation
                         this.conversation = new ConversationModel(cpu.conversationId, this.playerModel, cpu, false);
@@ -798,7 +790,9 @@ public class OverworldModel extends BaseModel {
                 p.y + IFNULL(a.min_y,0) AS y,
                 p.dest_map_id,
                 p.dest_x + IFNULL(dest.min_x,0) AS dest_x,
-                p.dest_y + IFNULL(dest.min_y,0) AS dest_y
+                p.dest_y + IFNULL(dest.min_y,0) AS dest_y,
+                p.x_offset,
+                p.y_offset
             FROM (
                 SELECT 
                     map_id, 
@@ -808,7 +802,9 @@ public class OverworldModel extends BaseModel {
                     dest_map_id, 
                     dest_area_id,
                     dest_x + dest_x_offset AS dest_x,
-                    dest_y + dest_y_offset AS dest_y
+                    dest_y + dest_y_offset AS dest_y,
+                    dest_x_offset AS x_offset,
+                    dest_y_offset AS y_offset
                 FROM portal 
                 UNION ALL
                 SELECT 
@@ -819,7 +815,9 @@ public class OverworldModel extends BaseModel {
                     map_id AS dest_map_id, 
                     area_id AS dest_area_id,
                     x + x_offset AS dest_x,
-                    y + y_offset AS dest_y
+                    y + y_offset AS dest_y,
+                    x_offset,
+                    y_offset
                 FROM portal 
             ) p
             LEFT JOIN area a
@@ -840,7 +838,8 @@ public class OverworldModel extends BaseModel {
                     rs.getInt("y"),
                     rs.getInt("dest_map_id"),
                     rs.getInt("dest_x"),
-                    rs.getInt("dest_y")
+                    rs.getInt("dest_y"),
+                    Utils.getDirection(rs.getInt("x_offset"), rs.getInt("y_offset"))
                 ));
             }            
         }
@@ -1010,19 +1009,34 @@ public class OverworldModel extends BaseModel {
 
     public boolean setItem(int itemId)
     {
-        if (itemId >= 100)
+        int x = Utils.applyXOffset(this.playerModel.getX(), this.playerModel.getDirection());
+        int y = Utils.applyYOffset(this.playerModel.getY(), this.playerModel.getDirection());
+
+        if (itemId >= 100 && locationCheck(x, y) && this.tiles[y][x] >= 105 && this.tiles[y][x] <= 107)
         {
-            LocationModel location = new LocationModel(this.playerModel.getX(), this.playerModel.getY(), this.mapId);
-            location.applyOffset(this.playerModel.getDirection());
-            this.plantedBerries.add(new BerryModel(location, itemId, System.currentTimeMillis()));
+            this.plantedBerries.add(new BerryModel(x, y, itemId, System.currentTimeMillis()));
             return true;
         }
         else
         {
             this.conversation = new ConversationModel("That item can't be used here!", null);
             return false;
-        }
+        } 
+    }
 
-        
+    /**
+     * Checks if the given x and y are a valid position on the map
+     * @param x x-coordinate to check
+     * @param y y-coordinate to check
+     * @return True if that is a valid map coordinate
+     */
+    public boolean locationCheck(int x, int y)
+    {
+        return (
+            x >= 0 
+            && y >= 0
+            && y < this.tiles.length
+            && x < this.tiles[y].length
+        );
     }
 }
