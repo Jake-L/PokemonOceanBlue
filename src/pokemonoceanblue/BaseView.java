@@ -23,6 +23,7 @@ abstract class BaseView {
     protected static Image[] itemSprite;
     protected Image progressBar;
     protected Image progressBarFill;
+    private Image moveBox;
 
     // sprites used by many subclasses
     protected static Image arrowSprite;
@@ -113,6 +114,8 @@ abstract class BaseView {
         this.progressBar = ii.getImage();
         ii = new ImageIcon(this.getClass().getResource("/menus/progressBarFill.png"));
         this.progressBarFill = ii.getImage();
+        ii = new ImageIcon(this.getClass().getResource("/menus/moveBox.png"));
+        this.moveBox = ii.getImage();
     }
 
     public BaseView(BaseModel model)
@@ -511,5 +514,57 @@ abstract class BaseView {
             (int)(this.progressBarFill.getWidth(null) * progress * 64.0 * graphicsScaling),
             this.progressBarFill.getHeight(null) * graphicsScaling,
             canvas);
+    }
+
+    /**
+     * Display one of the Pokemon's moves
+     * @param move the move to be displayed
+     * @param x left position of render area
+     * @param y top position of render area
+     * @param isHovered where the player is currently hovering this move
+     * @param g graphics object
+     * @param canvas JPanel object
+     */
+    protected void renderMove(MoveModel move, int x, int y, boolean isHovered, Graphics g, JPanel canvas)
+    {
+        g.drawImage(this.moveBox,
+            x,
+            y,
+            this.moveBox.getWidth(null) * graphicsScaling,
+            this.moveBox.getHeight(null) * graphicsScaling,
+            canvas);
+
+        g.drawImage(typeSprites[move.typeId],
+            x + 4 * graphicsScaling,
+            y + 4 * graphicsScaling,
+            typeSprites[0].getWidth(null) * graphicsScaling,
+            typeSprites[0].getHeight(null) * graphicsScaling,
+            canvas);
+
+        g.setFont(new Font("Pokemon Fire Red", Font.PLAIN, 16 * graphicsScaling));
+                
+        g.drawString(move.name,
+            x + 6 * graphicsScaling + typeSprites[0].getWidth(null) * graphicsScaling,
+            y + 15 * graphicsScaling);
+
+        g.setFont(new Font("Pokemon Fire Red", Font.PLAIN, 12 * graphicsScaling));
+
+        g.drawString("Dmg: " + move.power,
+            x + 4 * graphicsScaling,
+            y + 27 * graphicsScaling);
+
+        g.drawString("Acc: " + move.accuracy,
+            x + 72 * graphicsScaling,
+            y + 27 * graphicsScaling);
+
+        if (isHovered)
+        {
+            g.drawImage(arrowSprite,
+                x - 10 * graphicsScaling,
+                y,
+                arrowSprite.getWidth(null) * graphicsScaling,
+                arrowSprite.getHeight(null) * graphicsScaling,
+                canvas);
+        }
     }
 }
