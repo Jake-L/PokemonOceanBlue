@@ -21,6 +21,7 @@ public class PokedexView extends BaseView
     private Image pokemonSprite;
     private PokedexModel model;
     private Image background;
+    private Image pokemonBackground;
     private int oldOptionIndex;
     
     /** 
@@ -64,6 +65,9 @@ public class PokedexView extends BaseView
         ii = new ImageIcon(this.getClass().getResource("/menus/redBackground.png"));
         this.background = ii.getImage();
 
+        ii = new ImageIcon(this.getClass().getResource("/menus/pokedexPokemonBackground.png"));
+        this.pokemonBackground = ii.getImage();
+
         // converting all the images to greyscale takes about 2 seconds, so run it in a separate thread
         new Thread(() -> {
             for (int i = 0; i < pokemonIconSprite.length; i++)
@@ -93,9 +97,10 @@ public class PokedexView extends BaseView
 
         int iconHeight = this.pokemonIconSprite[0].getHeight(null) * graphicsScaling;
         int iconWidth = this.pokemonIconSprite[0].getWidth(null) * graphicsScaling;
+        int sideBarWidth = 100 * graphicsScaling;
 
         this.maxRenderRows = height / (iconHeight);
-        this.model.optionWidth = (width * 4 / 5) / (iconWidth);
+        this.model.optionWidth = (width - sideBarWidth) / (iconWidth);
         this.model.optionHeight = this.model.optionMax / this.model.optionWidth;
 
         if (this.oldOptionIndex != this.model.optionIndex)
@@ -123,7 +128,7 @@ public class PokedexView extends BaseView
                 {
                     g.drawImage(
                         this.pokemonIconSprite[this.minRenderIndex + (i * this.model.optionWidth) + j],
-                        width / 5 + j * iconWidth,
+                        sideBarWidth + j * iconWidth,
                         i * iconHeight,
                         iconWidth,
                         iconHeight,
@@ -136,22 +141,33 @@ public class PokedexView extends BaseView
         // draw a box showing the current selection
         g.drawImage(
             this.indexHighlight[(int)(System.currentTimeMillis() / 500 % 2)],
-            width / 5 + (this.model.optionIndex - this.minRenderIndex) % this.model.optionWidth * iconWidth - (graphicsScaling * 2),
+            sideBarWidth + (this.model.optionIndex - this.minRenderIndex) % this.model.optionWidth * iconWidth - (graphicsScaling * 2),
             (this.model.optionIndex - this.minRenderIndex) / this.model.optionWidth * iconHeight - (graphicsScaling * 2),
             this.indexHighlight[0].getWidth(null) * graphicsScaling,
             this.indexHighlight[0].getHeight(null) * graphicsScaling,
             canvas
         );
 
+        // display a bove around the Pokemon sprite
+        g.drawImage(
+            this.pokemonBackground,
+            2 * graphicsScaling,
+            20 * graphicsScaling,
+            this.pokemonBackground.getWidth(null) * graphicsScaling,
+            this.pokemonBackground.getHeight(null) * graphicsScaling,
+            canvas
+        );
+        
         // display the full sprite of the Pokemon being hovered
         g.drawImage(
             this.pokemonSprite,
-            2 * graphicsScaling,
-            20 * graphicsScaling,
+            10 * graphicsScaling,
+            28 * graphicsScaling,
             this.pokemonSprite.getWidth(null) * graphicsScaling,
             this.pokemonSprite.getHeight(null) * graphicsScaling,
             canvas
         );
+        
 
         // display the Pokemon's description
         this.displayText(
@@ -159,7 +175,7 @@ public class PokedexView extends BaseView
             fontSize,
             0, 
             height / 2, 
-            width / 5, 
+            sideBarWidth, 
             height * 4 / 5, 
             g, 
             canvas
