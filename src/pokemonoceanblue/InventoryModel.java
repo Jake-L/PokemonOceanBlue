@@ -78,6 +78,17 @@ public class InventoryModel extends BaseModel {
      */
     public void addItem(ItemModel newItem)
     {
+        if (newItem == null)
+        {
+            return;
+        }
+
+        if (newItem.itemId == 1000)
+        {
+            this.addMoney(newItem.quantity);
+            return;
+        }
+
         int categoryIndex = Math.min(newItem.categoryId, 2);
         
         for (ItemModel item : this.items[categoryIndex])

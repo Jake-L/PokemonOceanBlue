@@ -15,6 +15,9 @@ map_id,area_id,x,y,conversation_id,character_id,clear_conversation_id,auto_trigg
 14,0,17,13,31,-1,30,1,0,Team Rocket Viridian Forest
 14,0,17,12,34,-1,30,1,0,Team Rocket Viridian Forest
 14,0,16,12,30,33,30,1,0,Team Rocket Viridian Forest
+15,0,2,5,101,-1,-1,0,0,Viridian -> Viridan Forest route building officer
+18,0,2,5,104,-1,-1,0,0,Pallet -> Cinnabar route building officer
+19,0,2,5,103,-1,-1,0,0,Pewter -> Viridan Forest route building officer
 20,0,6,10,37,34,-1,1,0,Gym Leader Brock
 31,0,3,4,43,17,-1,0,0,Pokemart
 31,0,2,5,43,40,-1,0,0,Pokemart

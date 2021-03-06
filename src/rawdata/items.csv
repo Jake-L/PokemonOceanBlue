@@ -32,7 +32,7 @@
 30,Soda Pop,2,300,A fizzy soda drink. It restores the HP of one Pokémon by 60 points.
 31,Lemonade,2,400,A very sweet drink. It restores the HP of one Pokémon by 80 points.
 32,Moomoo Milk,2,600,Milk with a very high nutrition content. It restores the HP of one Pokémon by 100 points.
-33,Energy Powder,2,500,A very bitter medicine powder. It restores the HP of one Pokémon by 50 points.
+33,GioCorp Stock,16,0,Shares of the sinister GioCorp organization. Perhaps someone with enough of these could make a difference.
 34,Energy Root,2,1200,A very bitter root. It restores the HP of one Pokémon by 200 points.
 35,Heal Powder,2,300,A very bitter medicine powder. It heals all the status problems of a single Pokémon.
 36,Revival Herb,2,2800,A very bitter medicinal herb. It revives a fainted Pokémon$ fully restoring its HP.
@@ -291,3 +291,4 @@
 289,Reaper Cloth,10,2000,A cloth imbued with horrifyingly strong spiritual energy. It is loved by a certain Pokémon.
 290,Razor Claw,12,5000,An item to be held by a Pokémon. It is a sharply hooked claw that ups the holder's critical-hit ratio.
 291,Razor Fang,12,5000,An item to be held by a Pokémon. It may make foes and allies flinch when the holder inflicts damage.
+1000,Money,17,1,Money can be exchanged for goods and services.

@@ -542,6 +542,9 @@ public class App extends JFrame implements KeyListener
                             this.achievementsModel.setBattlesWon(this.battleModel.trainerSpriteName);
                         }
 
+                        // check if the player earned money or other reward
+                        this.inventoryModel.addItem(this.battleModel.getBattleReward());
+
                         // check if the player earned a badge
                         if (this.battleModel.badgeIndex > -1 
                             && !this.badges[this.battleModel.badgeIndex] 

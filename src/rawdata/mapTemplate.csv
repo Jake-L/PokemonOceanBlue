@@ -14,11 +14,11 @@ map_id,map_template_id,overlay,tiles_suffix,comment
 12,1,0,,
 13,1,0,,
 14,14,0,,viridian forest
-15,15,0,,
+15,15,0,3,
 16,16,1,,cinnabar island
 17,17,1,,pewter city
-18,15,0,,
-19,15,0,,
+18,15,0,3,
+19,15,0,3,
 20,20,0,,Pewter gym
 21,7,0,,Pewter pokemon center
 22,1,0,,

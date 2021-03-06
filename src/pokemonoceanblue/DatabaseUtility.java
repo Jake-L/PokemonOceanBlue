@@ -64,9 +64,9 @@ public class DatabaseUtility
         String[] table_list = {
             "player_pokemon", "player_location", "conversation_options",
             "evolution_methods",  "pokemon_moves", "pokemon_location", 
-            "conversation",  "type_effectiveness", "items", "battle",
+            "conversation",  "type_effectiveness", "items", "battle_reward",
             "portal", "map_object", "area", "character", "move_stat_effect",
-            "conversation_trigger", "achievements",
+            "conversation_trigger", "achievements", "battle",
             "player_pokedex",
             "moves",
             "map_template",
@@ -673,6 +673,28 @@ public class DatabaseUtility
 
         dataTypes = new String[] {"int", "String", "int", "int", "int", "int", 
             "String"};
+        loadTable(path, query, dataTypes);
+
+        //==================================================================================
+        // store the reward earned by the player for winning a battle
+        // each battle can only give a single reward
+        query = """
+                CREATE TABLE battle_reward (
+                    battle_id INT NOT NULL,
+                    item_id INT NOT NULL,
+                    quantity INT NOT NULL)
+                """;
+        runUpdate(query);
+
+        // fill battle table with data
+        path = "/rawdata/battle_reward.csv";
+        query = """
+                INSERT INTO battle_reward (
+                    battle_id, item_id, quantity) 
+                VALUES (?, ?, ?)
+                """;
+
+        dataTypes = new String[] {"int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         conn.setAutoCommit(true);

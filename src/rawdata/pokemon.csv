@@ -492,19 +492,18 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 491,Darkrai,17,0,70,90,90,135,90,125,3,2,491,It chases people and Pokemon from its territory by causing them to experience deep$ nightmarish slumbers.
 492,Shaymin,12,0,100,100,100,100,100,100,3,20,492,The blooming of Gracidea flowers confers the power of flight upon it. Feelings  of gratitude are the message it delivers.
 493,Arceus,1,0,120,120,120,120,120,120,0,2,493,According to the legends of Sinnoh$ this Pokemon emerged from an egg and shaped all there is in this world.
-494,Victini,14,10,100,100,100,100,100,100,3,2,494,When it shares the infinite energy it creates$ that being's entire body will be overflowing with power.
-570,Zorua,17,0,40,65,40,80,40,65,3,30,570,To protect themselves from danger$ they hide their true identities by transforming into people and Pokémon.
-571,Zoroark,17,0,60,105,60,120,60,105,3,20,571,Bonds between these Pokémon are very strong. It protects the safety of its pack by tricking its opponents.
-607,Litwick,8,10,50,30,55,65,55,20,3,75,607,
-608,Lampent,8,10,60,40,60,95,60,55,3,40,608,
-609,Chandelure,8,10,60,55,90,145,90,80,3,20,609,
-610,Axew,16,0,46,87,60,30,40,57,1,30,610,
-611,Fraxure,16,0,66,117,70,40,50,67,1,25,611,
-612,Haxorus,16,0,76,147,90,60,70,97,1,20,612,
-633,Deino,17,16,52,65,50,45,50,38,1,20,633,
-634,Zweilous,17,16,72,85,70,65,70,58,1,20,634,
-635,Hydreigon,17,16,92,105,90,125,90,98,3,20,635,
-700,Sylveon,18,0,95,65,65,110,130,60,4,20,700,It sends a soothing aura from its ribbonlike feelers to calm fights.
+494,Zorua,17,0,40,65,40,80,40,65,3,30,570,To protect themselves from danger$ they hide their true identities by transforming into people and Pokémon.
+495,Zoroark,17,0,60,105,60,120,60,105,3,20,571,Bonds between these Pokémon are very strong. It protects the safety of its pack by tricking its opponents.
+496,Litwick,8,10,50,30,55,65,55,20,3,75,607,
+497,Lampent,8,10,60,40,60,95,60,55,3,40,608,
+498,Chandelure,8,10,60,55,90,145,90,80,3,20,609,
+499,Axew,16,0,46,87,60,30,40,57,1,30,610,
+500,Fraxure,16,0,66,117,70,40,50,67,1,25,611,
+501,Haxorus,16,0,76,147,90,60,70,97,1,20,612,
+502,Deino,17,16,52,65,50,45,50,38,1,20,633,
+503,Zweilous,17,16,72,85,70,65,70,58,1,20,634,
+504,Hydreigon,17,16,92,105,90,125,90,98,3,20,635,
+505,Sylveon,18,0,95,65,65,110,130,60,4,20,700,It sends a soothing aura from its ribbonlike feelers to calm fights.
 10001,Deoxys,14,0,50,180,20,180,20,150,3,2,386,
 10002,Deoxys,14,0,50,70,160,70,160,90,4,2,386,
 10003,Deoxys,14,0,50,95,90,95,90,180,5,2,386,

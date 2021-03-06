@@ -40,6 +40,7 @@ public class BattleModel extends BaseModel
     public int musicId;
     public int badgeIndex = -1;
     public byte weather;
+    private ItemModel reward;
 
     /** 
      * Constructor
@@ -1208,6 +1209,7 @@ public class BattleModel extends BaseModel
                     this.team[0][i].statusEffect = 0;
                 }
             }
+
             return true;
         }
 
@@ -1309,6 +1311,20 @@ public class BattleModel extends BaseModel
                         event = new BattleEvent(this.trainerName + " sent out " + this.team[1][this.currentPokemon[1] + 1].name, 1, -1);
                         event.setNewPokemon(this.currentPokemon[1] + 1);
                         this.events.add(event);
+                    }
+                    // give the player a reward for winning the battle if all their Pokemon are defeated
+                    else if (this.reward != null)
+                    {
+                        if (this.reward.itemId == 1000)
+                        {
+                            this.events.add(new BattleEvent("Player received $" + this.reward.quantity + " for their victory", 0, 0));
+                        }
+                        else
+                        {
+                            this.events.add(new BattleEvent("Player received " + this.reward.quantity + " " + this.reward.name + " for their victory", 0, 0));
+                        }
+                        
+                        this.actionCounter = 60;
                     }
                 }
             }
@@ -1732,6 +1748,24 @@ public class BattleModel extends BaseModel
                     this.badgeIndex = 7;
                     break;
             }
+
+            // load the reward for defeating the trainer in battle
+            query = "SELECT item_id, quantity FROM battle_reward WHERE battle_id = " + battleId;
+            rs = db.runQuery(query);
+
+            // not all battles have a reward
+            if (rs.next()) 
+            {
+                int itemId = rs.getInt(1);
+                int quantity = rs.getInt(2);
+                
+                // money gets multiplied by the level of the their last pokemon
+                if (itemId == 1000)
+                {
+                    quantity *= team[1][team[1].length - 1].level;
+                }
+                this.reward = new ItemModel(itemId, quantity);
+            } 
         }
         catch (SQLException e) 
         {
@@ -1740,7 +1774,7 @@ public class BattleModel extends BaseModel
     }
 
     /**
-     * @return a boolean for each IPokemon on the team, true if the Pokemon levelup up
+     * @return a boolean for each Pokemon on the team, true if the Pokemon leveled up
      */
     public boolean[] getEvolveQueue()
     {
@@ -1756,6 +1790,11 @@ public class BattleModel extends BaseModel
         String sound = this.soundEffect;
         this.soundEffect = null;
         return sound;
+    }
+
+    public ItemModel getBattleReward()
+    {
+        return this.reward;
     }
 
     class BattleEvent

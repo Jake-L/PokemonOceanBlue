@@ -727,7 +727,7 @@ public class OverworldModel extends BaseModel {
                 ON a.area_id = mo.area_id 
                 AND a.map_id = mo.map_id 
                 WHERE mo.map_id = %s
-                ORDER BY mo.y + IFNULL(a.min_y,0) + IFNULL(mo.y_adjust,0) ASC
+                ORDER BY mo.y + IFNULL(a.min_y,0) + IFNULL(mo.y_adjust,0) ASC, mo.x ASC
                 """, this.mapId);
 
             ResultSet rs = db.runQuery(query);
