@@ -1414,7 +1414,7 @@ public class BattleModel extends BaseModel
                 {
                     this.moveEffect(move, attackEventIndex, attacker);
                 }
-                if (this.attackEvent[(attacker + 1) % 2] != null && ranNum.nextInt(101) <= move.flinchChance)
+                if (this.attackEvent[(attacker + 1) % 2] != null && move.flinchChance > 0 && ranNum.nextInt(101) <= move.flinchChance)
                 {
                     this.willFlinch[(attacker + 1) % 2] = true;
                 }

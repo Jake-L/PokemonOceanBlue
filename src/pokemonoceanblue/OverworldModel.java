@@ -58,7 +58,7 @@ public class OverworldModel extends BaseModel {
         this.checkArea(playerModel.getX(), playerModel.getY());
         this.checkAutoTriggers(playerModel.getX(), playerModel.getY());
 
-        if (this.tiles.length > 20 && this.mapId != 14)
+        if (this.tiles.length > 20 && this.mapId != 14 && this.mapId != 47)
         {
             // generate random weather when on a large map
             // since most large maps are outside
@@ -530,21 +530,15 @@ public class OverworldModel extends BaseModel {
         this.checkArea(x, y);
 
         // check for wild Pokemon encounters
-        if (this.tiles[y][x] == 0 
-            || this.tiles[y][x] == 1 
-            || this.tiles[y][x] == 5 
-            || this.tiles[y][x] == 90)
+        int index = this.areaId * 1000 + this.tiles[y][x];
+        if (this.wildPokemon.get(index) != null)
         {
-            int index = this.areaId * 1000 + this.tiles[y][x];
-            if (this.wildPokemon.get(index) != null)
+            Random rand = new Random();
+            int n = rand.nextInt(this.wildPokemon.get(index).size() * 5);
+            if (n < this.wildPokemon.get(index).size())
             {
-                Random rand = new Random();
-                int n = rand.nextInt(this.wildPokemon.get(index).size() * 5);
-                if (n < this.wildPokemon.get(index).size())
-                {
-                    this.battle = true;
-                    this.app.createWildBattle(this.wildPokemon.get(index).get(n), 5, false);
-                }
+                this.battle = true;
+                this.app.createWildBattle(this.wildPokemon.get(index).get(n), 5, false);
             }
         }
         // player is no longer surfing when they step onto solid land

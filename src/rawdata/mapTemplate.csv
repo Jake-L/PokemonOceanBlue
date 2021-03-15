@@ -46,6 +46,7 @@ map_id,map_template_id,overlay,tiles_suffix,comment
 44,44,1,,Route 10
 45,45,1,2,Saffron city
 46,46,0,3,Saffron city TUNNEL
+47,47,0,3,Power Plant
 500,1,0,,Vermilion top left house
 501,7,0,,Vermilion Pokemon Center
 502,1,0,,Vermiion house right of Pokemon center
