@@ -30,59 +30,39 @@ public class BattleTests {
         // run a few loops to make sure thunder wave lands
         for (int i = 0; i < 10; i++)
         {
-            assertEquals(0, battleModel.events.size());
-            // choose "FIGHT"
-            battleModel.confirmSelection();
             // choose "THUNDER WAVE"
-            updateBattleModel(battleModel, 20);
-            battleModel.optionIndex = 3;
-            battleModel.confirmSelection();
-            // wait for all the battle text to process
-            updateBattleModel(battleModel, 500);
+            chooseAttack(battleModel, 3);
         }
         assertEquals(1, enemyTeam[0].statusEffect); 
     }
     
     /**
-     * Test that one hit KO eventually kills
-     * Done by using fissure on an opponent with no possible damage (lvl 1 magikarp)
+     * Test that one hit KO is guaranteed to kill in one hit
+     * Done by having a level 100 use fissure on a level 100 Parasect, 
+     * which double resists ground type damage
      */
     @Test
     public void testOneHitKO() {
         PokemonModel[] team = new PokemonModel[1];
-        team[0] = new PokemonModel(340, 57, false);
+        team[0] = new PokemonModel(340, 100, false);
+        // give fissure with 100% accuracy
+        team[0].moves = new MoveModel[1];
+        team[0].moves[0] = new MoveModel(90);
+        team[0].moves[0].accuracy = -1;
+
         PokemonModel[] enemyTeam = new PokemonModel[1];
-        enemyTeam[0] = new PokemonModel(129, 1, false);
-        // make sure whiscash knows fissure
-        assertEquals("FISSURE", team[0].moves[0].name);
+        enemyTeam[0] = new PokemonModel(47, 100, false);
+        // give Parasect splash
+        enemyTeam[0].moves = new MoveModel[1];
+        enemyTeam[0].moves[0] = new MoveModel(150);
+
         BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
-        // skip opening animations
-        updateBattleModel(battleModel, 500);
-        // run until fissure lands
-        while (enemyTeam[0].currentHP != 0)
-        {
-            //make sure fissure hasnt landed yet
-            boolean attackMissed = true;
-            while (attackMissed && battleModel.events.size() != 0)
-            {
-                if (battleModel.getText() == "It's a one hit KO!")
-                {
-                    attackMissed = false;
-                    assertEquals(0, enemyTeam[0].currentHP);
-                }
-                else
-                {
-                    assertNotEquals(0, enemyTeam[0].currentHP);
-                }
-            }
-            // choose "FIGHT"
-            battleModel.confirmSelection();
-            // choose "FISSURE"
-            updateBattleModel(battleModel, 20);
-            battleModel.confirmSelection();
-            // wait for all the battle text to process
-            updateBattleModel(battleModel, 500);
-        }
+
+        // choose "fissure"
+        chooseAttack(battleModel, 0);
+
+        // make sure the level 100 died
+        assertEquals(0, enemyTeam[0].currentHP);
     }
 
     /**
@@ -98,19 +78,14 @@ public class BattleTests {
         // make sure rattata knows double edge
         assertEquals("DOUBLE-EDGE", team[0].moves[0].name);
         BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
-        // skip opening animations
-        updateBattleModel(battleModel, 500);
-        // run through a sequence of battle
-        assertEquals(0, battleModel.events.size());
-        // choose "FIGHT"
-        battleModel.confirmSelection();
+
         // choose "double edge"
-        updateBattleModel(battleModel, 20);
-        battleModel.confirmSelection();
-        // wait for all the battle text to process
-        updateBattleModel(battleModel, 500);
+        chooseAttack(battleModel, 0);
+
+        // check that the user and enemy both took damage
         assertNotEquals(team[0].stats[0], team[0].currentHP);
         assertNotEquals(0, team[0].currentHP);
+        assertNotEquals(enemyTeam[0].stats[0], enemyTeam[0].currentHP);
     }
 
     /**
@@ -127,17 +102,10 @@ public class BattleTests {
         assertEquals("TACKLE", team[0].moves[0].name);
         enemyTeam[0].moves[0] = new MoveModel(14);
         BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
-        // skip opening animations
-        updateBattleModel(battleModel, 500);
-        // run through a sequence of battle
-        assertEquals(0, battleModel.events.size());
-        // choose "FIGHT"
-        battleModel.confirmSelection();
+
         // choose "tackle"
-        updateBattleModel(battleModel, 20);
-        battleModel.confirmSelection();
-        // wait for all the battle text to process
-        updateBattleModel(battleModel, 500);
+        chooseAttack(battleModel, 0);
+
         assertEquals(enemyTeam[0].stats[0], enemyTeam[0].currentHP);
     }
 
@@ -154,17 +122,10 @@ public class BattleTests {
         // give crobat fakeout
         team[0].moves[0] = new MoveModel(252);
         BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
-        // skip opening animations
-        updateBattleModel(battleModel, 500);
-        // run through a sequence of battle
-        assertEquals(0, battleModel.events.size());
-        // choose "FIGHT"
-        battleModel.confirmSelection();
+
         // choose "fakeout"
-        updateBattleModel(battleModel, 20);
-        battleModel.confirmSelection();
-        // wait for all the battle text to process
-        updateBattleModel(battleModel, 500);
+        chooseAttack(battleModel, 0);
+
         assertEquals(team[0].stats[0], team[0].currentHP);
     }
 
@@ -193,14 +154,9 @@ public class BattleTests {
         int counter = 0;
         while(true)
         {
-            assertEquals(0, battleModel.events.size());
-            // choose "FIGHT"
-            battleModel.confirmSelection();
             // choose "SWORDS DANCE"
-            updateBattleModel(battleModel, 20);
-            battleModel.confirmSelection();
-            // wait for all the battle text to process
-            updateBattleModel(battleModel, 500);
+            chooseAttack(battleModel, 0);
+
             //if enemy took damage, swords dance was not used. therefore confusion working as intended
             if (enemyTeam[0].currentHP != enemyTeam[0].stats[0])
             {
@@ -233,15 +189,10 @@ public class BattleTests {
         updateBattleModel(battleModel, 500);
         // make sure first Pokemon is sent out
         assertEquals(0, battleModel.currentPokemon[1]);
-        // choose "FIGHT"
-        battleModel.confirmSelection();
-        updateBattleModel(battleModel, 20);
+
         // choose "DISCHARGE"
-        battleModel.optionIndex = 2;
-        battleModel.confirmSelection();
-        // wait for all the battle text to process
-        updateBattleModel(battleModel, 500);
-        assertEquals(0, battleModel.events.size());
+        chooseAttack(battleModel, 2);
+
         // now the second Pokemon should be sent out
         assertEquals(1, battleModel.currentPokemon[1]);
     }
@@ -285,14 +236,8 @@ public class BattleTests {
         // run a few loops to check that metapods defense changes
         for (int i = 0; i < 5; i++)
         {
-            assertEquals(0, battleModel.events.size());
-            // choose "FIGHT"
-            battleModel.confirmSelection();
             // choose "HARDEN"
-            updateBattleModel(battleModel, 20);
-            battleModel.confirmSelection();
-            // wait for all the battle text to process
-            updateBattleModel(battleModel, 500);
+            chooseAttack(battleModel, 0);
         }
         assertNotEquals((team[0].getStat(2, battleModel.statChanges[0][2])), team[0].stats[2]); 
         assertTrue(team[0].getStat(2, battleModel.statChanges[0][2]) > team[0].stats[2]);
@@ -318,30 +263,19 @@ public class BattleTests {
         team[0].moves[0] = new MoveModel(147);
         team[0].moves[1] = new MoveModel(33);
         BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
-        // skip opening animations
-        updateBattleModel(battleModel, 500);
-        //put lvl 100 asleep
-        assertEquals(0, battleModel.events.size());
-        // choose "FIGHT"
-        battleModel.confirmSelection();
-        updateBattleModel(battleModel, 20);
+
         // choose "spore"
-        battleModel.confirmSelection();
-        // wait for all the battle text to process
-        updateBattleModel(battleModel, 500);
+        chooseAttack(battleModel, 0);
+
+        // make sure the enemy Pokemon is sleeping
         assertEquals(2, enemyTeam[0].statusEffect);
+
         // run until lvl 100 dies or wakes up
         while (enemyTeam[0].currentHP > 0)
         {
-            assertEquals(0, battleModel.events.size());
-            // choose "FIGHT"
-            battleModel.confirmSelection();
             // choose "tackle"
-            updateBattleModel(battleModel, 20);
-            battleModel.optionIndex = 1;
-            battleModel.confirmSelection();
-            // wait for all the battle text to process
-            updateBattleModel(battleModel, 500);
+            chooseAttack(battleModel, 1);
+
             //check if lvl 100 woke up
             if(enemyTeam[0].statusEffect == 0)
             {
@@ -372,14 +306,10 @@ public class BattleTests {
         while (!attackMissed)
         {
             int previousHP = team[0].currentHP;
-            assertEquals(0, battleModel.events.size());
-            // choose "FIGHT"
-            battleModel.confirmSelection();
+
             // choose "DOUBLE TEAM"
-            updateBattleModel(battleModel, 20);
-            battleModel.confirmSelection();
-            // wait for all the battle text to process
-            updateBattleModel(battleModel, 500);
+            chooseAttack(battleModel, 0);
+
             if (previousHP == team[0].currentHP)
             {
                 attackMissed = true;
@@ -411,35 +341,48 @@ public class BattleTests {
         enemyTeam[0].moves = new MoveModel[1];
         enemyTeam[0].moves[0] = new MoveModel(150);
         BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
-        // skip opening animations
-        updateBattleModel(battleModel, 500);
-        assertEquals(0, battleModel.events.size());
-        // choose "FIGHT"
-        battleModel.confirmSelection();
+
         // choose "toxic"
-        updateBattleModel(battleModel, 20);
-        battleModel.confirmSelection();
-        // wait for all the battle text to process
-        updateBattleModel(battleModel, 500);
+        chooseAttack(battleModel, 0);
+
         assertEquals(6, enemyTeam[0].statusEffect);
         int firstTick = enemyTeam[0].stats[0] - enemyTeam[0].currentHP;
-        //get through next turn with splash
-        assertEquals(0, battleModel.events.size());
-        // choose "FIGHT"
-        battleModel.confirmSelection();
+
         // choose "splash"
-        updateBattleModel(battleModel, 20);
-        battleModel.optionIndex = 1;
-        updateBattleModel(battleModel, 20);
-        battleModel.confirmSelection();
-        // wait for all the battle text to process
-        updateBattleModel(battleModel, 500);
+        chooseAttack(battleModel, 1);
+
         //check if more damage was dealt by second tick of toxic
         int secondTick = enemyTeam[0].stats[0] - enemyTeam[0].currentHP - firstTick;
         if (firstTick >= secondTick)
         {
             fail();
         }
+    }
+
+    /**
+     * Test that certain types are immune to certain status effects
+     * Done by attempting to poison a steel type
+     */
+    @Test
+    public void testStatusImmunity() {
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(212, 100, false);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(212, 1, false);
+        // give one Steelix poison powder and the other splash
+        team[0].moves = new MoveModel[1];
+        team[0].moves[0] = new MoveModel(77);
+        team[0].moves[0].accuracy = -1;
+        enemyTeam[0].moves = new MoveModel[1];
+        enemyTeam[0].moves[0] = new MoveModel(150);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+
+        // choose "poison powder"
+        chooseAttack(battleModel, 0);
+
+        // query should be empty and Steelix should not be poisoned
+        assertEquals(0, battleModel.events.size());
+        assertEquals(0, enemyTeam[0].statusEffect);
     }
 
     /**
@@ -459,17 +402,11 @@ public class BattleTests {
         //give player bulbasaur splash for first turn
         team[0].moves[0] = new MoveModel(150);
         BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
-        // skip opening animations
-        updateBattleModel(battleModel, 500);
-        assertEquals(0, battleModel.events.size());
-        // choose "FIGHT"
-        battleModel.confirmSelection();
+
         // choose "splash"
-        updateBattleModel(battleModel, 20);
-        battleModel.confirmSelection();
-        // wait for all the battle text to process
-        updateBattleModel(battleModel, 600);
-        //try switching pokemon
+        chooseAttack(battleModel, 0);
+
+        // try switching pokemon
         assertEquals(0, battleModel.events.size());
         // choose "POKEMON"
         battleModel.optionIndex = 1;
@@ -498,33 +435,17 @@ public class BattleTests {
         team[0].moves[1] = new MoveModel(138); // dream eater
         BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
 
-        // skip opening animations
-        updateBattleModel(battleModel, 500);
-        assertEquals(0, battleModel.events.size());
-
         // first turn, check that Snore and Dream Eater does nothing when Pokemon is awake
-        // choose "FIGHT"
-        battleModel.confirmSelection();
         // choose "Dream Eater"
-        updateBattleModel(battleModel, 20);
-        battleModel.optionIndex = 1;
-        battleModel.confirmSelection();
-        // wait for all the battle text to process
-        updateBattleModel(battleModel, 500);
+        chooseAttack(battleModel, 1);
         // player should not have taken any damage
         assertEquals(team[0].getStat(0, 0), team[0].currentHP);
         // enemy should not have taken any damage
         assertEquals(enemyTeam[0].getStat(0, 0), enemyTeam[0].currentHP);
 
         // second turn, put enemy to sleep and check that Snore does damage
-        // choose "FIGHT"
-        battleModel.confirmSelection();
         // choose "Spore"
-        updateBattleModel(battleModel, 20);
-        battleModel.optionIndex = 0;
-        battleModel.confirmSelection();
-        // wait for all the battle text to process
-        updateBattleModel(battleModel, 500);
+        chooseAttack(battleModel, 0);
         // enemy should be asleep
         assertEquals(2, enemyTeam[0].statusEffect);
         // enemy should not have taken any damage
@@ -533,13 +454,8 @@ public class BattleTests {
         assertTrue(team[0].currentHP < team[0].getStat(0, 0));
 
         // third turn, Dream Eater should do damage
-        battleModel.confirmSelection();
         // choose "Dream Eater"
-        updateBattleModel(battleModel, 20);
-        battleModel.optionIndex = 1;
-        battleModel.confirmSelection();
-        // wait for all the battle text to process
-        updateBattleModel(battleModel, 500);
+        chooseAttack(battleModel, 1);
         // enemy should have taken any damage
         assertTrue(enemyTeam[0].currentHP < enemyTeam[0].getStat(0, 0));
     }
@@ -575,20 +491,13 @@ public class BattleTests {
 
             // skip opening animations
             updateBattleModel(battleModel, 500);
-            assertEquals(0, battleModel.events.size());
 
             // double check that the Pokemon still have status effects
             assertEquals(4, team[0].statusEffect);
             assertEquals(1, team[1].statusEffect);
 
-            // choose "FIGHT"
-            battleModel.confirmSelection();
-            updateBattleModel(battleModel, 20);
             // choose "Heal Bell"
-            battleModel.optionIndex = 0;
-            battleModel.confirmSelection();
-            // wait for all the battle text to process
-            updateBattleModel(battleModel, 500);
+            chooseAttack(battleModel, 0);
 
             // enemy should not have taken any damage
             assertEquals(enemyTeam[0].getStat(0, 0), enemyTeam[0].currentHP);
@@ -622,18 +531,8 @@ public class BattleTests {
             team[0].moves[0] = new MoveModel(moveId); // explosion
             BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
 
-            // skip opening animations
-            updateBattleModel(battleModel, 500);
-            assertEquals(0, battleModel.events.size());
-
-            // choose "FIGHT"
-            battleModel.confirmSelection();
-            updateBattleModel(battleModel, 20);
             // choose "Explosion"
-            battleModel.optionIndex = 0;
-            battleModel.confirmSelection();
-            // wait for all the battle text to process
-            updateBattleModel(battleModel, 500);
+            chooseAttack(battleModel, 0);
 
             // enemy should have 0 HP remaining
             assertEquals(0, enemyTeam[0].currentHP);
@@ -641,6 +540,25 @@ public class BattleTests {
             // player should have 0 HP remaining
             assertEquals(0, team[0].currentHP);
         }
+    }
+
+    private void chooseAttack(BattleModel battleModel, int optionIndex)
+    {
+        // skip opening animations
+        updateBattleModel(battleModel, 500);
+        assertEquals(0, battleModel.events.size());
+
+        // choose "FIGHT"
+        battleModel.confirmSelection();
+        updateBattleModel(battleModel, 20);
+
+        // choose a move
+        battleModel.optionIndex = optionIndex;
+        battleModel.confirmSelection();
+
+        // skip end of turn animations
+        updateBattleModel(battleModel, 500);
+        assertEquals(0, battleModel.events.size());
     }
 
     /**

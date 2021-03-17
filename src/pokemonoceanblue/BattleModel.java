@@ -371,7 +371,9 @@ public class BattleModel extends BaseModel
      */
     private void statusEffect(int attacker, int defender, int effectChance, int ailmentId)
     {
-        if (this.ranNum.nextInt(101) <= effectChance && this.team[defender][this.currentPokemon[defender]].statusEffect == 0)
+        PokemonModel pokemon = this.team[defender][this.currentPokemon[defender]];
+
+        if (this.ranNum.nextInt(101) <= effectChance && pokemon.statusEffect == 0)
         {
             boolean willFail = false;
             String[] statusEffectMessages = {" was paralyzed."," fell asleep."," was frozen solid."," was burned."," was poisoned."," was badly poisoned."," was cursed."," became confused."};
@@ -382,16 +384,31 @@ public class BattleModel extends BaseModel
                     if (this.multiTurnEffects.get(i).effectId == 125 && this.multiTurnEffects.get(i).attacker == defender && attacker != defender)
                     {
                         willFail = true;
-                        this.events.add(new BattleEvent(this.team[defender][this.currentPokemon[defender]].name + " was protected by safeguard.", defender, defender));
+                        this.events.add(new BattleEvent(pokemon.name + " was protected by safeguard.", defender, defender));
                         break;
                     }
+                }
+            }
+            // apply type immunity for status effects
+            for (int j = 0; j < pokemon.types.length; j++)
+            {
+                // STEEL and POISON types are immune to poisoning
+                if (((ailmentId == 5 || ailmentId == 6) && (pokemon.types[j] == Type.STEEL || pokemon.types[j] == Type.POISON)) 
+                    // FIRE types cannot be burned
+                    || (ailmentId == 4 && pokemon.types[j] == Type.FIRE)
+                    // ICE types cannot be frozen
+                    || (ailmentId == 3 && pokemon.types[j] == Type.ICE))
+                {
+                    willFail = true;
+                    // no message displayed when a pokemon is immune to the status effect
+                    break;
                 }
             }
             if (ailmentId < 9 && !willFail)
             {
                 // create the event to inflict the status effect
                 BattleEvent event = new BattleEvent(
-                    this.team[defender][this.currentPokemon[defender]].name + statusEffectMessages[ailmentId - 1], 
+                    pokemon.name + statusEffectMessages[ailmentId - 1], 
                     attacker, 
                     defender
                 );
