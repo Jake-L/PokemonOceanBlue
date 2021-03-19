@@ -11,7 +11,6 @@ public class ConversationModel
     private int counter = 0;
     protected List<ConversationEvent> events = new ArrayList<ConversationEvent>();
     private boolean approachPlayer;
-    private boolean battleStarted = false;
     
     /** 
      * Constructor
@@ -213,16 +212,11 @@ public class ConversationModel
      */
     public int getBattleId()
     {
-        if (this.events.size() > 0 && !this.battleStarted)
+        if (this.events.size() > 0)
         {
             return this.events.get(0).battleId;
         }
         return -1;
-    }
-
-    public void setBattleStarted()
-    {
-        this.battleStarted = true;
     }
 
     public void setBattleComplete()
@@ -392,7 +386,7 @@ public class ConversationModel
     }
 
     /**
-     * Remvoe characters and triggers, and update character's conversation
+     * Remove characters and triggers, and update character's conversation
      * @param characters a list of all the characters on the current map
      * @param triggers a list of conversation triggers on the current map
      * @return true if a character is being removed during this event
@@ -417,28 +411,27 @@ public class ConversationModel
                 }
             }
         }
-        if (this.events.size() > 0 && this.events.get(0).newConversationId == -2)
+        if (this.events.size() > 0 && this.events.get(0).newConversationId == -2 
+            // during conversations, remove characters during a fade to black
+            && ((this.events.get(0).battleId == -1 && this.counter == 8)
+                // after winning a battle, remove the character before displaying the overworld
+                || (this.events.get(0).battleId >= 0 && this.counter == 0)))
         {
-            if (this.counter == 8)
-            {
-                // update the character's conversation in the database
-                this.removeTriggers(triggers, this.conversationId);
-                this.setConversation(this.events.get(0).characterId, this.events.get(0).newConversationId);
-            }
+            // update the character's conversation in the database
+            this.removeTriggers(triggers, this.conversationId);
+            this.setConversation(this.events.get(0).characterId, this.events.get(0).newConversationId);
+
             for (int i = 0; i < characters.size(); i++)
             {
                 if (characters.get(i).characterId == this.events.get(0).characterId)
                 {
-                    if (this.counter == 8)
-                    {
-                        // remove the character from the map
-                        characters.remove(i);   
-                    }
-                                         
+                    // remove the character from the map
+                    characters.remove(i);  
+                    
                     // tell the overworld model to do a fade to black transition
                     // only do this after confirming the character is on the current map
-                    return true;                    
-                }
+                    return true;   
+                }                 
             }
         }
 

@@ -19,6 +19,11 @@ map_id,area_id,name,x,y,y_offset
 1001,0,tournamentWall,0,3,-1
 1000,0,tournamentInterior,0,9,-6
 1000,0,tournamentSeats,0,2,-3
+533,0,pottedTree,11,8,0
+533,0,table3,5,5,0
+533,0,doormat,2,9,-2
+533,0,pottedTree,0,8,0
+533,0,kitchensink,0,2,0
 529,0,pc,9,2,0
 529,0,pokemonCenterStation,2,3,0
 530,0,pc,9,2,0

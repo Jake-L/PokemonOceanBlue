@@ -34,7 +34,6 @@ public class OverworldModel extends BaseModel {
     public InventoryModel inventoryModel;
     public DayCareModel dayCareModel;
     public byte weather;
-    private boolean battle = false;
     public String tilesSuffix;
     
     /** 
@@ -193,7 +192,7 @@ public class OverworldModel extends BaseModel {
             // generate random movement
             if (cpuModel.get(i).getMovementCounter() < 0 && cpuModel.get(i).wanderRange > 0)
             {
-                int n = rand.nextInt(100);
+                int n = rand.nextInt(200);
                 int dx = 0;
                 int dy = 0;
 
@@ -219,9 +218,13 @@ public class OverworldModel extends BaseModel {
         // update the current conversation
         if (this.conversation != null)
         {
+            if (this.conversation.getBattleId() == -1)
+            {
+                this.removeCharacter = this.conversation.removeCharacter(this.cpuModel, this.conversationTrigger);
+            }
+            
             this.mugshotCharacter =  this.conversation.getMugshotCharacter();
             this.mugshotBackground =  this.conversation.getMugshotBackground();
-            this.removeCharacter = this.conversation.removeCharacter(this.cpuModel, this.conversationTrigger);
             this.conversation.update();
             int characterId = this.conversation.getMovementCharacterId();
 
@@ -337,11 +340,9 @@ public class OverworldModel extends BaseModel {
      */
     public boolean canMove(int characterId)
     {
-        if (this.conversation != null && this.conversation.getMovementCharacterId() != characterId)
-        {
-            return false;
-        }
-        else if (this.battle)
+        if (this.conversation != null 
+            && (this.conversation.getMovementCharacterId() != characterId
+                || this.conversation.getBattleId() >= 0))
         {
             return false;
         }
@@ -366,9 +367,7 @@ public class OverworldModel extends BaseModel {
             // start a battle
             if (this.conversation.getBattleId() >= 0)
             {
-                this.battle = true;
                 this.app.createTrainerBattle(this.conversation.getBattleId());
-                this.conversation.setBattleStarted();
             }
             else
             {
@@ -537,7 +536,6 @@ public class OverworldModel extends BaseModel {
             int n = rand.nextInt(this.wildPokemon.get(index).size() * 5);
             if (n < this.wildPokemon.get(index).size())
             {
-                this.battle = true;
                 this.app.createWildBattle(this.wildPokemon.get(index).get(n), 5, false);
             }
         }
@@ -960,12 +958,15 @@ public class OverworldModel extends BaseModel {
     public void battleComplete()
     {
         // restart music
-        this.battle = false;
         this.areaId = -1;
         this.checkArea(playerModel.getX(), playerModel.getY());
 
         if (this.conversation != null)
         {
+            // check if a character should disappear before reloading the overworld
+            // for example, legendaries that appear in the overworld should
+            // disappear after battling them
+            this.conversation.removeCharacter(this.cpuModel, this.conversationTrigger);
             this.conversation.setBattleComplete();
         }
     }

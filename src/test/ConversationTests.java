@@ -119,7 +119,6 @@ public class ConversationTests {
         // handle the battle
         updateConversation(conversationModel, 16);
         assertEquals(0, conversationModel.getBattleId());
-        conversationModel.setBattleStarted();
         conversationModel.setBattleComplete();
 
         // finish conversation
