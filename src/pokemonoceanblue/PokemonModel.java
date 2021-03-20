@@ -277,6 +277,79 @@ public class PokemonModel
         }
     }
 
+    /**
+     * Checks for Pokemon that automatically change forms based on weather, location, etc
+     * @param weatherId the current weather
+     * @param battleBackgroundId the environment of the current location
+     * @return true if the Pokemon's form changes
+     */
+    public boolean checkFormChange(byte weatherId, byte battleBackgroundId)
+    {
+        int newPokemonId = -1;
+
+        // change Castform based on the current weather
+        if (this.base_pokemon_id == 351)
+        {
+            switch (weatherId)
+            {
+                // sunny Castform
+                case 1:
+                    newPokemonId = 10013;
+                    break;
+                // rain Castform
+                case 2:
+                    newPokemonId = 10014;
+                    break;
+                // snowy Castform
+                case 4:
+                    newPokemonId = 10015;
+                    break;
+                default:
+                    newPokemonId = 351;
+                    break;
+            }
+        }
+
+        // change Burmy based on the environment of the current location
+        else if (this.base_pokemon_id == 412)
+        {
+            switch (battleBackgroundId)
+            {
+                case 0:
+                    newPokemonId = 412;
+                    break;
+                case 1:
+                    newPokemonId = 10016;
+                    break;
+                case 2:
+                    newPokemonId = 10016;
+                    break;
+                case 3:
+                    newPokemonId = 412;
+                    break;
+                case 4:
+                    newPokemonId = 10016;
+                    break;
+                case 5:
+                    newPokemonId = 10017;
+                    break;
+                case 6:
+                    newPokemonId = 10017;
+                    break;
+            }
+        }
+
+        if (newPokemonId > -1 && newPokemonId != this.pokemon_id)
+        {
+            this.evolve(newPokemonId);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     /** 
      * Read the Pokemon's stats, types, etc from a database
      */

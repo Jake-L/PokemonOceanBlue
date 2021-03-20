@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import pokemonoceanblue.PokedexModel;
 import pokemonoceanblue.PokemonModel;
+import pokemonoceanblue.Type;
 
 public class PokemonTests {
     @Test
@@ -66,5 +67,27 @@ public class PokemonTests {
         int previousIV = pokemonStrong.ivs[pokemonWeak.ivGain];
         pokemonStrong.updateIVs(pokemonWeak.ivGain);
         assertTrue(pokemonStrong.ivs[pokemonWeak.ivGain] > previousIV);
+    }
+
+    @Test
+    /**
+     * Check that Castform's type changes correctly based on the weather
+     */
+    public void testCastform() {
+        // default Castform type is NORMAL
+        PokemonModel pokemon = new PokemonModel(351, 100, false);
+        assertEquals(pokemon.types[0], Type.NORMAL);
+
+        // changes to FIRE in sunny weather
+        pokemon.checkFormChange((byte)1, (byte)0);
+        assertEquals(pokemon.types[0], Type.FIRE);
+
+        // changes to WATER in rainy weather
+        pokemon.checkFormChange((byte)2, (byte)0);
+        assertEquals(pokemon.types[0], Type.WATER);
+
+        // changes to ICE in snowy weather
+        pokemon.checkFormChange((byte)4, (byte)0);
+        assertEquals(pokemon.types[0], Type.ICE);
     }
 }

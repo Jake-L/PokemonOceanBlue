@@ -236,7 +236,7 @@ public class App extends JFrame implements KeyListener
             // use a special constructor when in a tournament
             if (this.tournamentModel == null)
             {
-                this.tournamentModel = new TournamentModel(0);
+                this.tournamentModel = new TournamentModel((mapId - 1000) / 100);
             }
 
             this.overworldModel = new OverworldModel(mapId, playerModel, this, this.tournamentModel);
@@ -252,6 +252,12 @@ public class App extends JFrame implements KeyListener
 
         OverworldView overworldView = new OverworldView(this.overworldModel);
         this.viewManager.setView(overworldView);
+
+        // check for Pokemon form changes
+        for (PokemonModel pokemon : this.partyModel.team)
+        {
+            pokemon.checkFormChange(this.overworldModel.weather, this.overworldModel.battleBackgroundId);
+        }
     }
 
     public void openInventory()

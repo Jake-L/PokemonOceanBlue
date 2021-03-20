@@ -380,10 +380,38 @@ public class BattleTests {
         // choose "poison powder"
         chooseAttack(battleModel, 0);
 
-        // query should be empty and Steelix should not be poisoned
+        // queue should be empty and Steelix should not be poisoned
         assertEquals(0, battleModel.events.size());
         assertEquals(0, enemyTeam[0].statusEffect);
     }
+
+    /**
+     * Test that Pokemon can faint from poisoning
+     * and that a battle will end properly afterwards
+     * Done by having a Rattata poison a rattata with 1 HP
+     */
+    @Test
+    public void testDeathByPoison() {
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(19, 100, false);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(19, 100, false);
+        enemyTeam[0].currentHP = 1;
+        // give one Rattata poison powder and the other splash
+        team[0].moves = new MoveModel[1];
+        team[0].moves[0] = new MoveModel(77);
+        team[0].moves[0].accuracy = -1;
+        enemyTeam[0].moves = new MoveModel[1];
+        enemyTeam[0].moves[0] = new MoveModel(150);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+
+        // choose "poison powder"
+        chooseAttack(battleModel, 0);
+
+        // enemy Rattata should be dead
+        assertEquals(0, enemyTeam[0].currentHP);
+    }
+
 
     /**
      * Test that certain moveEffects will prevent player from switching pokemon
@@ -545,7 +573,7 @@ public class BattleTests {
     private void chooseAttack(BattleModel battleModel, int optionIndex)
     {
         // skip opening animations
-        updateBattleModel(battleModel, 500);
+        updateBattleModel(battleModel, 503);
         assertEquals(0, battleModel.events.size());
 
         // choose "FIGHT"
@@ -557,7 +585,7 @@ public class BattleTests {
         battleModel.confirmSelection();
 
         // skip end of turn animations
-        updateBattleModel(battleModel, 500);
+        updateBattleModel(battleModel, 503);
         assertEquals(0, battleModel.events.size());
     }
 
