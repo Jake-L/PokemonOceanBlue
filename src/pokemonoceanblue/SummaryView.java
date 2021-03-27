@@ -15,8 +15,6 @@ public class SummaryView extends BaseView {
     private SummaryModel model;
     private Image[] pokemonSprites;
     private Image[] pokeballSprites;
-    private Image pokemonBackground;
-    private Image pokemonHeader;
     private Image[] summaryBox = new Image[2];
 
     public SummaryView(SummaryModel model)
@@ -39,11 +37,6 @@ public class SummaryView extends BaseView {
             this.pokeballSprites[i] = ii.getImage();
         }
 
-        ii = new ImageIcon(this.getClass().getResource("/menus/pokemonSummaryBackground.png"));
-        this.pokemonBackground = ii.getImage();
-        ii = new ImageIcon(this.getClass().getResource("/menus/pokemonSummaryHeader.png"));
-        this.pokemonHeader = ii.getImage();
-
         for (int i = 0; i < this.summaryBox.length; i++)
         {
             ii = new ImageIcon(this.getClass().getResource("/menus/pokemonSummaryBox" + (i+1) + ".png"));
@@ -63,56 +56,20 @@ public class SummaryView extends BaseView {
 
         int pokemonIndex = this.model.optionIndex;
 
-        // draw pokemon background
-        g.drawImage(this.pokemonBackground,
-            (4 + this.pokemonHeader.getWidth(null) / 2 - this.pokemonBackground.getWidth(null) / 2) * graphicsScaling,
-            height / 20 + this.pokemonHeader.getHeight(null) * graphicsScaling,
-            this.pokemonBackground.getWidth(null) * graphicsScaling,
-            this.pokemonBackground.getHeight(null) * graphicsScaling,
+        this.renderPokemonSidebar(this.model.pokemonList.get(pokemonIndex), 
+            this.pokemonSprites[pokemonIndex], 
+            1,
+            g, 
             canvas);
-        
-        //draws pokemon sprite
-        g.drawImage(this.pokemonSprites[pokemonIndex],
-            (4 + this.pokemonHeader.getWidth(null) / 2 - this.pokemonSprites[pokemonIndex].getWidth(null) / 2) * graphicsScaling,
-            height / 20 + (8 + this.pokemonHeader.getHeight(null)) * graphicsScaling,
-            this.pokemonSprites[pokemonIndex].getWidth(null) * graphicsScaling,
-            this.pokemonSprites[pokemonIndex].getHeight(null) * graphicsScaling,
-            canvas);
-
-        // display header to hold Pokemon's name and level
-        g.drawImage(this.pokemonHeader,
-            4 * graphicsScaling,
-            height / 20,
-            this.pokemonHeader.getWidth(null) * graphicsScaling,
-            this.pokemonHeader.getHeight(null) * graphicsScaling,
-            canvas);
-        
-        //displays pokemon name
-        g.drawString(this.model.pokemonList.get(pokemonIndex).getName(),
-            width / 10 - 20 * graphicsScaling,
-            height / 20 + 17 * graphicsScaling);
 
         // only show stats for Pokemon, not Eggs
         if (this.model.pokemonList.get(pokemonIndex).level > 0)
         {
             this.renderMetadata(
                 4 * graphicsScaling,
-                height / 20 + (this.pokemonHeader.getHeight(null) + this.pokemonBackground.getHeight(null)) * graphicsScaling,
+                height / 20 + (this.summaryHeader[0].getHeight(null) + this.pokemonBackground[0].getHeight(null)) * graphicsScaling,
                 g, canvas
             );
-
-            //displays pokemon level
-            g.drawString("Lv." + this.model.pokemonList.get(pokemonIndex).level,
-                width / 10 - 20 * graphicsScaling,
-                height / 20 + 32 * graphicsScaling);
-
-            // displays Pokemon gender
-            g.drawImage(genderIcons[this.model.pokemonList.get(pokemonIndex).genderId],
-                width / 10 + 40 * graphicsScaling,
-                height / 20 + 10 * graphicsScaling,
-                genderIcons[0].getWidth(null) * graphicsScaling,
-                genderIcons[0].getHeight(null) * graphicsScaling,
-                canvas);
 
             this.renderStats(width / 4, height / 16, g, canvas);
 
@@ -124,6 +81,7 @@ public class SummaryView extends BaseView {
                     width * 2 / 3, 
                     index * height / 6 + height / 8, 
                     this.model.hoverMoveIndex == index, 
+                    true, // show power and accuracy
                     g, 
                     canvas);
                 index++;
@@ -135,6 +93,7 @@ public class SummaryView extends BaseView {
                     width * 2 / 3, 
                     index * height / 6 + height / 8, 
                     this.model.hoverMoveIndex == index, 
+                    true, // show power and accuracy
                     g, 
                     canvas);
             }

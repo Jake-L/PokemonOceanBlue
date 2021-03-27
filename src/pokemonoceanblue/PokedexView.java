@@ -16,7 +16,7 @@ import java.awt.color.ColorSpace;
  */
 public class PokedexView extends BaseView 
 {
-    private BufferedImage[] pokemonIconSprite = new BufferedImage[494];
+    private BufferedImage[] pokemonIconSprite = new BufferedImage[506];
     private Image[] indexHighlight = new Image[2];
     private Image pokemonSprite;
     private PokedexModel model;
@@ -148,7 +148,7 @@ public class PokedexView extends BaseView
             canvas
         );
 
-        // display a bove around the Pokemon sprite
+        // display a box around the Pokemon sprite
         g.drawImage(
             this.pokemonBackground,
             2 * graphicsScaling,
@@ -167,20 +167,22 @@ public class PokedexView extends BaseView
             this.pokemonSprite.getHeight(null) * graphicsScaling,
             canvas
         );
-        
 
         // display the Pokemon's description
-        this.displayText(
-            this.model.pokemonDescription[this.model.optionIndex],
-            fontSize,
-            0, 
-            height / 2, 
-            sideBarWidth, 
-            height * 4 / 5, 
-            g, 
-            canvas
-        );
-
+        if (this.model.caughtPokemon[this.model.optionIndex] > 0)
+        {
+            this.displayText(
+                this.model.pokemonDescription[this.model.optionIndex],
+                fontSize,
+                0, 
+                height / 2, 
+                sideBarWidth, 
+                height * 4 / 5, 
+                g, 
+                canvas
+            );
+        }
+    
         // display the number of unique pokemon caught
         g.drawString(
             "Species Caught: " + String.valueOf(this.model.uniqueCaught),

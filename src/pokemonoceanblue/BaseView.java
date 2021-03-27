@@ -23,7 +23,10 @@ abstract class BaseView {
     protected static Image[] itemSprite;
     protected Image progressBar;
     protected Image progressBarFill;
-    private Image moveBox;
+    private Image[] moveBox = new Image[2];
+    protected Image[] pokemonBackground = new Image[2];
+    protected Image[] summaryHeader = new Image[2];
+    protected Image pokemonSideBar;
 
     // sprites used by many subclasses
     protected static Image arrowSprite;
@@ -58,6 +61,12 @@ abstract class BaseView {
             } 
 
             for (int i = 113; i < 134; i++)
+            {
+                ii = new ImageIcon(this.getClass().getResource("/inventory/" + i + ".png"));
+                itemSprite[i]  = ii.getImage();
+            } 
+
+            for (int i = 33; i < 34; i++)
             {
                 ii = new ImageIcon(this.getClass().getResource("/inventory/" + i + ".png"));
                 itemSprite[i]  = ii.getImage();
@@ -110,12 +119,26 @@ abstract class BaseView {
             sandstormSprite  = ii.getImage(); 
         }
 
+        for (int i = 0; i < this.moveBox.length; i++)
+        {
+            ii = new ImageIcon(this.getClass().getResource("/menus/moveBox" + i + ".png"));
+            this.moveBox[i] = ii.getImage();
+        }
+
         ii = new ImageIcon(this.getClass().getResource("/menus/progressBar.png"));
         this.progressBar = ii.getImage();
         ii = new ImageIcon(this.getClass().getResource("/menus/progressBarFill.png"));
         this.progressBarFill = ii.getImage();
-        ii = new ImageIcon(this.getClass().getResource("/menus/moveBox.png"));
-        this.moveBox = ii.getImage();
+        ii = new ImageIcon(this.getClass().getResource("/menus/pokemonSummarySideBox.png"));
+        this.pokemonSideBar = ii.getImage();
+
+        for (int i = 0; i < this.pokemonBackground.length; i++)
+        {
+            ii = new ImageIcon(this.getClass().getResource("/menus/pokemonBackground" + i + ".png"));
+            this.pokemonBackground[i] = ii.getImage();
+            ii = new ImageIcon(this.getClass().getResource("/menus/summaryHeader" + i + ".png"));
+            this.summaryHeader[i] = ii.getImage();
+        }        
     }
 
     public BaseView(BaseModel model)
@@ -518,6 +541,87 @@ abstract class BaseView {
 
     /**
      * Display one of the Pokemon's moves
+     * @param pokemon the Pokemon to be displayed
+     * @param sprite the Pokemon's front sprite
+     * @param style determines the sprites and position on the screen
+     * @param g graphics object
+     * @param canvas JPanel object
+     */
+    protected void renderPokemonSidebar(PokemonModel pokemon, Image sprite, int style, Graphics g, JPanel canvas)
+    {
+        int x;
+        int y = height / 20;
+
+        // render at right side of screen
+        if (style == 0)
+        {
+            x = width - (88 * graphicsScaling);
+        }
+        // render at left side of screen
+        else 
+        {
+            x = 4 * graphicsScaling;
+        }
+
+        // draw pokemon background
+        g.drawImage(this.pokemonSideBar,
+            x,
+            y + (this.summaryHeader[style].getHeight(null) + this.pokemonBackground[style].getHeight(null)) * graphicsScaling,
+            this.pokemonSideBar.getWidth(null) * graphicsScaling,
+            this.pokemonSideBar.getHeight(null) * graphicsScaling,
+            canvas);
+
+        // draw pokemon background
+        g.drawImage(this.pokemonBackground[style],
+            x + (this.summaryHeader[style].getWidth(null) / 2 - this.pokemonBackground[style].getWidth(null) / 2) * graphicsScaling,
+            y + this.summaryHeader[style].getHeight(null) * graphicsScaling,
+            this.pokemonBackground[style].getWidth(null) * graphicsScaling,
+            this.pokemonBackground[style].getHeight(null) * graphicsScaling,
+            canvas);
+        
+        // draws pokemon sprite
+        g.drawImage(sprite,
+            x + (this.summaryHeader[style].getWidth(null) / 2 - sprite.getWidth(null) / 2) * graphicsScaling,
+            y + (this.summaryHeader[style].getHeight(null) + (this.pokemonBackground[style].getHeight(null) - 80) / 2) * graphicsScaling,
+            sprite.getWidth(null) * graphicsScaling,
+            sprite.getHeight(null) * graphicsScaling,
+            canvas);
+
+        // display header to hold Pokemon's name and level
+        g.drawImage(this.summaryHeader[style],
+            x,
+            y,
+            this.summaryHeader[style].getWidth(null) * graphicsScaling,
+            this.summaryHeader[style].getHeight(null) * graphicsScaling,
+            canvas);
+
+        g.setFont(new Font("Pokemon Fire Red", Font.PLAIN, 16 * graphicsScaling));
+        
+        // displays pokemon name
+        g.drawString(pokemon.getName(),
+            x + 16 * graphicsScaling,
+            y + 17 * graphicsScaling);
+            
+        // only show stats for Pokemon, not Eggs
+        if (pokemon.level > 0)
+        {
+            //displays pokemon level
+            g.drawString("Lv." + pokemon.level,
+                x + 16 * graphicsScaling,
+                y + 32 * graphicsScaling);
+
+            // displays Pokemon gender
+            g.drawImage(genderIcons[pokemon.genderId],
+                x + 75 * graphicsScaling,
+                y + 9 * graphicsScaling,
+                genderIcons[0].getWidth(null) * graphicsScaling,
+                genderIcons[0].getHeight(null) * graphicsScaling,
+                canvas);
+        }
+    }
+
+    /**
+     * Display one of the Pokemon's moves
      * @param move the move to be displayed
      * @param x left position of render area
      * @param y top position of render area
@@ -525,13 +629,15 @@ abstract class BaseView {
      * @param g graphics object
      * @param canvas JPanel object
      */
-    protected void renderMove(MoveModel move, int x, int y, boolean isHovered, Graphics g, JPanel canvas)
+    protected void renderMove(MoveModel move, int x, int y, boolean isHovered, boolean detailed, Graphics g, JPanel canvas)
     {
-        g.drawImage(this.moveBox,
+        int moveBoxIndex = detailed ? 0 : 1;
+
+        g.drawImage(this.moveBox[moveBoxIndex],
             x,
             y,
-            this.moveBox.getWidth(null) * graphicsScaling,
-            this.moveBox.getHeight(null) * graphicsScaling,
+            this.moveBox[moveBoxIndex].getWidth(null) * graphicsScaling,
+            this.moveBox[moveBoxIndex].getHeight(null) * graphicsScaling,
             canvas);
 
         g.drawImage(typeSprites[move.typeId],
@@ -547,15 +653,18 @@ abstract class BaseView {
             x + 6 * graphicsScaling + typeSprites[0].getWidth(null) * graphicsScaling,
             y + 15 * graphicsScaling);
 
-        g.setFont(new Font("Pokemon Fire Red", Font.PLAIN, 12 * graphicsScaling));
+        if (detailed)
+        {
+            g.setFont(new Font("Pokemon Fire Red", Font.PLAIN, 12 * graphicsScaling));
 
-        g.drawString("Dmg: " + move.power,
-            x + 4 * graphicsScaling,
-            y + 27 * graphicsScaling);
+            g.drawString("DMG: " + move.power,
+                x + 4 * graphicsScaling,
+                y + 27 * graphicsScaling);
 
-        g.drawString("Acc: " + move.accuracy,
-            x + 72 * graphicsScaling,
-            y + 27 * graphicsScaling);
+            g.drawString("ACC: " + move.accuracy,
+                x + 72 * graphicsScaling,
+                y + 27 * graphicsScaling);
+        }
 
         if (isHovered)
         {

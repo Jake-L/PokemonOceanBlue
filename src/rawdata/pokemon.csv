@@ -476,7 +476,7 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 475,Gallade,14,2,68,125,65,65,115,80,1,20,475,Because it can sense what its foe is thinking$ its attacks burst out first$ fast$ and fierce.
 476,Probopass,6,9,60,55,145,75,150,40,4,25,476,It controls three units called Mini-Noses using magnetic force. With them$ it can attack the foe from three directions.
 477,Dusknoir,8,0,45,100,135,65,135,45,4,20,477,This feared Pokemon is said to travel to worlds unknown. Some even believe that it takes lost spirits along with it.
-478,Froslass,15,8,70,80,70,80,70,110,5,30,478,It freezes foes with an icy breath nearly -60 degrees Fahrenheit. What seems to be its body is actually hollow.
+478,Froslass,15,8,70,80,70,80,70,110,5,30,478,It freezes foes with an icy breath nearlyï¿½-60 degrees Fahrenheit. What seems to be its body is actually hollow.
 479,Rotom,13,8,50,50,77,95,77,91,3,20,479,Research continues on this Pokemon$ which could be the power source of a unique motor.
 480,Uxie,14,0,75,75,130,75,130,95,4,2,480,According to some sources$ this Pokemon provided people with the intelligence necessary to solve various problems.
 481,Mesprit,14,0,80,105,105,105,105,80,4,2,481,This Pokemon is said to have endowed the human heart with emotions$ such as sorrow and joy.
@@ -492,17 +492,17 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 491,Darkrai,17,0,70,90,90,135,90,125,3,2,491,It chases people and Pokemon from its territory by causing them to experience deep$ nightmarish slumbers.
 492,Shaymin,12,0,100,100,100,100,100,100,3,20,492,The blooming of Gracidea flowers confers the power of flight upon it. Feelings  of gratitude are the message it delivers.
 493,Arceus,1,0,120,120,120,120,120,120,0,2,493,According to the legends of Sinnoh$ this Pokemon emerged from an egg and shaped all there is in this world.
-494,Zorua,17,0,40,65,40,80,40,65,3,30,570,To protect themselves from danger$ they hide their true identities by transforming into people and Pokémon.
-495,Zoroark,17,0,60,105,60,120,60,105,3,20,571,Bonds between these Pokémon are very strong. It protects the safety of its pack by tricking its opponents.
-496,Litwick,8,10,50,30,55,65,55,20,3,75,607,
-497,Lampent,8,10,60,40,60,95,60,55,3,40,608,
-498,Chandelure,8,10,60,55,90,145,90,80,3,20,609,
-499,Axew,16,0,46,87,60,30,40,57,1,30,610,
-500,Fraxure,16,0,66,117,70,40,50,67,1,25,611,
-501,Haxorus,16,0,76,147,90,60,70,97,1,20,612,
-502,Deino,17,16,52,65,50,45,50,38,1,20,633,
-503,Zweilous,17,16,72,85,70,65,70,58,1,20,634,
-504,Hydreigon,17,16,92,105,90,125,90,98,3,20,635,
+494,Zorua,17,0,40,65,40,80,40,65,3,30,570,To protect themselves from danger$ they hide their true identities by transforming into people and Pokï¿½mon.
+495,Zoroark,17,0,60,105,60,120,60,105,3,20,571,Bonds between these Pokï¿½mon are very strong. It protects the safety of its pack by tricking its opponents.
+496,Litwick,8,10,50,30,55,65,55,20,3,75,607,Litwick shines a light that absorbs the life energy of people and Pokï¿½mon, which becomes the fuel that it burns.
+497,Lampent,8,10,60,40,60,95,60,55,3,40,608,The spirits it absorbs fuel its baleful fire. Once it finds someone whose death is near, it will trail quietly after them.
+498,Chandelure,8,10,60,55,90,145,90,80,3,20,609,The spirits burned up in its ominous flame lose their way and wander this world forever.
+499,Axew,16,0,46,87,60,30,40,57,1,30,610,Its large tusks have a tendency to break, but each time they grow back, they grow in harder and sturdier.
+500,Fraxure,16,0,66,117,70,40,50,67,1,25,611,Their tusks can shatter rocks. Territory battles between Fraxure can be intensely violent.
+501,Haxorus,16,0,76,147,90,60,70,97,1,20,612,They are kind but can be relentless when defending territory. They challenge foes with tusks that can cut steel.
+502,Deino,17,16,52,65,50,45,50,38,1,20,633,Lacking sight$ it's unaware of its surroundings$ so it bumps into things and eats anything that moves.
+503,Zweilous,17,16,72,85,70,65,70,58,1,20,634,After it has eaten up all the food in its territory$ it moves to another area. Its two heads do not get along.
+504,Hydreigon,17,16,92,105,90,125,90,98,3,20,635,This brutal Pokï¿½mon travels the skies on its six wings. They use all three heads to consume and destroy everything in its path!
 505,Sylveon,18,0,95,65,65,110,130,60,4,20,700,It sends a soothing aura from its ribbonlike feelers to calm fights.
 10001,Deoxys,14,0,50,180,20,180,20,150,3,2,386,
 10002,Deoxys,14,0,50,70,160,70,160,90,4,2,386,

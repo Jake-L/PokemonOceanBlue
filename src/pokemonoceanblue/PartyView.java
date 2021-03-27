@@ -103,11 +103,10 @@ public class PartyView extends BaseView {
         }
 
         // display the currently hovered Pokemon
-        g.drawImage(this.pokemonSprite.get(this.model.team.get(this.model.optionIndex).getSpriteId()),
-            (int)(width * (3.0 / 4.0)),
-            8 * graphicsScaling,
-            this.pokemonSprite.get(this.model.team.get(this.model.optionIndex).getSpriteId()).getWidth(null) * graphicsScaling,
-            this.pokemonSprite.get(this.model.team.get(this.model.optionIndex).getSpriteId()).getHeight(null) * graphicsScaling,
+        this.renderPokemonSidebar(this.model.team.get(this.model.optionIndex), 
+            this.pokemonSprite.get(this.model.team.get(this.model.optionIndex).getSpriteId()), 
+            0,
+            g, 
             canvas);
 
         // display the Pokemon's moves
@@ -115,8 +114,9 @@ public class PartyView extends BaseView {
         {
             this.renderMove(this.model.team.get(this.model.optionIndex).moves[j], 
                 width * 2 / 3 + 24 * graphicsScaling, 
-                (this.pokemonSprite.get(this.model.team.get(this.model.optionIndex).getSpriteId()).getHeight(null) + 8 + 40 * j) * graphicsScaling, 
-                false, 
+                height / 20 + (this.summaryHeader[1].getHeight(null) + this.pokemonBackground[1].getHeight(null) + 8 + 24 * j) * graphicsScaling, 
+                false, // no moves can be hovered at this screen
+                false, // don't show power or accuracy to save space
                 g, 
                 canvas);
         }

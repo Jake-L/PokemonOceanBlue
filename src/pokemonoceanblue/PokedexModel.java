@@ -4,8 +4,8 @@ import java.sql.*;
 
 public class PokedexModel extends BaseModel
 {
-    public int[] caughtPokemon = new int[494];
-    public String[] pokemonDescription = new String[494];
+    public int[] caughtPokemon = new int[506];
+    public String[] pokemonDescription = new String[506];
     public int uniqueCaught = 0;
 
     public PokedexModel()
@@ -58,7 +58,7 @@ public class PokedexModel extends BaseModel
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            String query = "SELECT pokemon_id, [description] FROM pokemon WHERE pokemon_id <= 493 ";
+            String query = "SELECT pokemon_id, [description] FROM pokemon WHERE pokemon_id <= 505 ";
 
             ResultSet rs = db.runQuery(query);
 

@@ -18,6 +18,7 @@ public class PokemonStorageView extends BaseView {
     private Image[] storageBorder = new Image[9];
     private Image[] partyBorder = new Image[9];
     private Image pokemonSprite;
+    private PokemonModel currentPokemon;
     private Image pokemonIconBorder;
     private PokemonStorageModel storageModel;
     private PartyModel partyModel;
@@ -121,12 +122,10 @@ public class PokemonStorageView extends BaseView {
         // display the full sprite of the Pokemon being hovered
         if (this.pokemonSprite != null)
         {
-            g.drawImage(
-                this.pokemonSprite,
-                width - (8 + this.pokemonSprite.getWidth(null)) * graphicsScaling,
-                height / 2 - this.pokemonSprite.getHeight(null) / 2 * graphicsScaling,
-                this.pokemonSprite.getWidth(null) * graphicsScaling,
-                this.pokemonSprite.getHeight(null) * graphicsScaling,
+            this.renderPokemonSidebar(this.currentPokemon, 
+                this.pokemonSprite, 
+                0,
+                g, 
                 canvas
             );
         }
@@ -168,7 +167,7 @@ public class PokemonStorageView extends BaseView {
             g.drawImage(
                 this.pokemonIconSprite.get(this.partyModel.team.get(i).getSpriteId()),
                 width / 12 - iconWidth / 2,
-                height / 20 + 9 * graphicsScaling + i * heightPerPokemon,
+                height / 20 + 10 * graphicsScaling + i * heightPerPokemon,
                 iconWidth,
                 iconHeight,
                 canvas
@@ -267,21 +266,25 @@ public class PokemonStorageView extends BaseView {
         if (this.storageModel.categoryIndex == 0 && this.partyModel.optionIndex < this.partyModel.team.size())
         {
             ImageIcon ii = new ImageIcon(this.getClass().getResource("/pokemoncentered/frame0/" + this.partyModel.team.get(this.partyModel.optionIndex).getSpriteId() + ".png"));
-            this.pokemonSprite  = ii.getImage();
+            this.pokemonSprite = ii.getImage();
+            this.currentPokemon = this.partyModel.team.get(this.partyModel.optionIndex);
         }
         else if (this.storageModel.categoryIndex == 1 && this.storageModel.optionIndex < this.storageModel.pokemonStorage.size())
         {
             ImageIcon ii = new ImageIcon(this.getClass().getResource("/pokemoncentered/frame0/" + this.storageModel.pokemonStorage.get(this.storageModel.optionIndex).getSpriteId() + ".png"));
             this.pokemonSprite  = ii.getImage();
+            this.currentPokemon = this.storageModel.pokemonStorage.get(this.storageModel.optionIndex);
         }
         else if (this.storageModel.currentPokemon != null)
         {
             ImageIcon ii = new ImageIcon(this.getClass().getResource("/pokemoncentered/frame0/" + this.storageModel.currentPokemon.getSpriteId() + ".png"));
             this.pokemonSprite  = ii.getImage();
+            this.currentPokemon = this.storageModel.currentPokemon;
         }
         else
         {
             this.pokemonSprite = null;
+            this.currentPokemon = null;
         }
     }
 }
