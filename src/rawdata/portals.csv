@@ -44,6 +44,8 @@ map_id,area_id,x,y,x_offset,y_offset,dest_map_id,dest_area_id,dest_x,dest_y,dest
 33,1,48,27,0,1,40,0,3,9,0,-1,"Cerulean -> Cerulean bottom, right house"
 33,1,22,10,0,1,41,0,3,9,0,-1,Cerulean -> Cerulean top right house
 42,0,16,37,0,1,43,0,6,13,0,-1,Vermilion -> gym
+44,0,8,45,0,1,47,0,4,38,0,-1,Route 10 -> Power Plant
+44,0,4,42,-1,0,47,0,0,10,1,0,Route 10 -> Power Plant side entrance
 42,0,10,10,0,1,500,0,3,9,0,-1,Vermilion -> top left house
 42,0,16,10,0,1,501,0,5,10,0,-1,Vermilion -> Pokemon center
 42,0,20,10,0,1,502,0,3,9,0,-1,Vermilion -> house right of pokemon center

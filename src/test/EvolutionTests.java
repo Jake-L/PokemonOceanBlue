@@ -13,13 +13,20 @@ public class EvolutionTests {
     public void testEvolveMapId() {
         EvolutionCheck evolutionCheck = new EvolutionCheck();
 
-        // max happiness Eevee on map 14 should evolve into Leafeon
+        // max happiness Eevee on map 14 (viridian forest) should evolve into Leafeon
         PokemonModel pokemon = new PokemonModel(133, 1, false);
         pokemon.updateHappiness(200);
         assertEquals(470, evolutionCheck.checkEvolution(pokemon, 14));
 
         // max happiness Eevee on a map other than map 14 should not evolve into Leafeon
         assertNotEquals(470, evolutionCheck.checkEvolution(pokemon, 0));
+
+        // Magneton should evolve into Magnezone on map 47 (power plant)
+        pokemon = new PokemonModel(82, 1, false);
+        assertEquals(462, evolutionCheck.checkEvolution(pokemon, 47));
+
+        // Magneton should not evolve on any other map
+        assertNotEquals(462, evolutionCheck.checkEvolution(pokemon, 0));
     }
 
     @Test
