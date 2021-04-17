@@ -48,6 +48,7 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 40,32,0,,breederBoy,2,4,43,0,1,
 40,36,0,,breederBoy,2,4,43,0,1,
 40,506,0,,breederBoy,2,4,43,0,1,
+40,534,0,,breederBoy,2,4,43,0,1,
 41,25,0,,breederGirl,2,2,9998,0,2,
 41,509,0,Musician Rick Astley,rickastley,2,5,47,0,2,108
 42,34,0,Gym Leader Misty,misty,6,5,46,0,2,102
@@ -116,6 +117,8 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 106,533,0,,oldMan,2,3,106,1,1,
 107,533,0,,oldLady,8,4,107,1,3,
 108,533,0,,rotomTv,5,2,108,0,2,
+110,48,0,,lass,17,10,110,1,1,
+111,48,0,,blackBelt,4,9,111,2,2,
 1000,1000,0,Gym Leader Misty,misty,12,6,1301,0,3,
 1001,1000,0,Youngster Jimmothy,youngsterBoy,12,6,1001,0,3,
 1002,1000,0,Youngster Jimmothy,youngsterBoy,12,6,1002,0,3,
@@ -262,7 +265,7 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 1350,1300,0,Champion Lance,lance,12,6,1350,0,2,
 1351,1300,0,Champion Steven,steven,12,6,1351,0,2,
 1352,1300,0,Champion Cynthia,cynthia,12,6,1352,0,2,
-1353,1300,0,placeholder,cynthia,12,6,1353,0,2,
+1353,1300,0,Gym Leader,skyla,12,6,1353,0,2,
 1354,1300,0,placeholder,cynthia,12,6,1354,0,2,
 1355,1300,0,placeholder,cynthia,12,6,1355,0,2,
 1356,1300,0,placeholder,cynthia,12,6,1356,0,2,

@@ -494,10 +494,10 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 493,Arceus,1,0,120,120,120,120,120,120,0,2,493,According to the legends of Sinnoh$ this Pokemon emerged from an egg and shaped all there is in this world.
 494,Zorua,17,0,40,65,40,80,40,65,3,30,570,To protect themselves from danger$ they hide their true identities by transforming into people and Pok�mon.
 495,Zoroark,17,0,60,105,60,120,60,105,3,20,571,Bonds between these Pok�mon are very strong. It protects the safety of its pack by tricking its opponents.
-496,Litwick,8,10,50,30,55,65,55,20,3,75,607,Litwick shines a light that absorbs the life energy of people and Pok�mon, which becomes the fuel that it burns.
-497,Lampent,8,10,60,40,60,95,60,55,3,40,608,The spirits it absorbs fuel its baleful fire. Once it finds someone whose death is near, it will trail quietly after them.
+496,Litwick,8,10,50,30,55,65,55,20,3,75,607,Litwick shines a light that absorbs the life energy of people and Pok�mon$ which becomes the fuel that it burns.
+497,Lampent,8,10,60,40,60,95,60,55,3,40,608,The spirits it absorbs fuel its baleful fire. Once it finds someone whose death is near$ it will trail quietly after them.
 498,Chandelure,8,10,60,55,90,145,90,80,3,20,609,The spirits burned up in its ominous flame lose their way and wander this world forever.
-499,Axew,16,0,46,87,60,30,40,57,1,30,610,Its large tusks have a tendency to break, but each time they grow back, they grow in harder and sturdier.
+499,Axew,16,0,46,87,60,30,40,57,1,30,610,Its large tusks have a tendency to break$ but each time they grow back$ they grow in harder and sturdier.
 500,Fraxure,16,0,66,117,70,40,50,67,1,25,611,Their tusks can shatter rocks. Territory battles between Fraxure can be intensely violent.
 501,Haxorus,16,0,76,147,90,60,70,97,1,20,612,They are kind but can be relentless when defending territory. They challenge foes with tusks that can cut steel.
 502,Deino,17,16,52,65,50,45,50,38,1,20,633,Lacking sight$ it's unaware of its surroundings$ so it bumps into things and eats anything that moves.
@@ -528,3 +528,9 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 10104,ninetales-alola,15,18,73,67,75,81,100,109,5,2,38,
 10114,exeggutor-alola,12,16,95,105,85,125,75,45,3,2,103,
 10115,Marowak,10,8,60,80,110,50,80,45,2,2,105,
+10116,Slowpoke,14,0,90,65,65,40,40,15,0,75,79,
+10117,Slowbro,14,4,95,100,95,100,70,30,2,30,80,
+10118,Slowking,14,4,95,65,80,110,110,30,4,30,199,
+10119,Gible,16,11,58,70,45,40,45,42,1,20,443,
+10120,Gabite,16,11,68,90,65,50,55,82,1,20,444,
+10121,Garchomp,16,11,108,130,95,80,85,102,1,20,445,
