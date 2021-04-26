@@ -2,6 +2,8 @@ package pokemonoceanblue;
 
 import java.sql.*;
 
+import pokemonoceanblue.MoveEffectModel;
+
 public class MoveModel 
 {
     public int moveId;
@@ -17,7 +19,7 @@ public class MoveModel
     public int ailmentId;
     public int recoil;
     public MoveStatEffect[] moveStatEffects;
-    public MoveEffect moveEffect;
+    public MoveEffectModel moveEffect;
     
     /** 
      * Constructor
@@ -77,15 +79,7 @@ public class MoveModel
             // get move effect
             if (effectId >= 0)
             {
-                query = "SELECT * FROM move_effect WHERE effect_id = " + effectId;
-                rs = db.runQuery(query);
-                this.moveEffect = new MoveEffect(
-                    effectId, 
-                    rs.getInt("target_type"), 
-                    rs.getInt("counter_min"),
-                    rs.getInt("counter_max"), 
-                    rs.getString("text")
-                );
+                this.moveEffect = new MoveEffectModel(effectId);
             }
         }
         catch (SQLException e) 
@@ -111,25 +105,6 @@ public class MoveModel
         {
             this.statId = statId;
             this.statChange = statChange;
-        }
-    }
-
-    class MoveEffect
-    {
-        public final int effectId;
-        public int targetId;
-        public int minCounter;
-        public int maxCounter;
-        public int counter;
-        public String text; 
-
-        public MoveEffect(int effectId, int targetId, int minCounter, int maxCounter, String text)
-        {
-            this.effectId = effectId;
-            this.targetId = targetId;
-            this.minCounter = minCounter;
-            this.maxCounter = maxCounter;
-            this.text = text;
         }
     }
 }
