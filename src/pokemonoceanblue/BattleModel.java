@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import pokemonoceanblue.MoveModel.MoveEffect;
+import pokemonoceanblue.MoveEffectModel;
 
 public class BattleModel extends BaseModel
 {
@@ -255,6 +255,7 @@ public class BattleModel extends BaseModel
                 event.setItem(itemId);
                 this.events.add(event);
                 this.isCaught = true;
+                this.team[1][this.currentPokemon[1]].pokeballId = itemId;
             }
             else
             {
@@ -1937,7 +1938,7 @@ public class BattleModel extends BaseModel
         //if 0 then effect occurs throughout duration, if 1 effect occurs at end of duration
         byte effectTimingId;
 
-        public MultiTurnEffect(MoveModel move, MoveEffect moveEffect, int attacker)
+        public MultiTurnEffect(MoveModel move, MoveEffectModel moveEffect, int attacker)
         {
             this.effectId = moveEffect.effectId;
             this.attacker = attacker;

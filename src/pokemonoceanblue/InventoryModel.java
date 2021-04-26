@@ -26,6 +26,8 @@ public class InventoryModel extends BaseModel {
         }
         this.addItem(1, 2);
         this.addItem(3, 5);
+        this.addItem(14, 2);
+        this.addItem(12, 5);
         this.addItem(113, 5);
         this.addItem(114, 5);
         this.addItem(116, 8);

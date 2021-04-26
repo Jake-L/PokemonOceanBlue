@@ -237,6 +237,7 @@ public class AchievementsModel extends BaseModel{
         public int rewardId;
         public int rewardQuantity;
         public String description;
+        public String icon;
         
         public AchievementDataModel(ResultSet rs) throws SQLException
         {
@@ -246,6 +247,7 @@ public class AchievementsModel extends BaseModel{
             this.rewardId = rs.getInt("reward_id");
             this.rewardQuantity = rs.getInt("reward_quantity");
             this.description = rs.getString("description");
+            this.icon = rs.getString("icon");
         }
     }
 }

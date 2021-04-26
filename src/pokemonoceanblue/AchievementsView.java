@@ -14,6 +14,7 @@ public class AchievementsView extends BaseView{
     private AchievementsModel model;
     private Image background;
     private Image[] achievementWindow = new Image[2];
+    private Image[] icons;
 
     public AchievementsView(AchievementsModel model)
     {
@@ -31,6 +32,17 @@ public class AchievementsView extends BaseView{
 
         ii = new ImageIcon(this.getClass().getResource("/menus/pokemonBackground.png"));
         this.background = ii.getImage();
+
+        this.icons = new Image[this.model.achievements.size()];
+        for (int i = 0; i < this.model.achievements.size(); i++)
+        {
+            String iconName = this.model.achievements.get(i).icon;
+            if (!iconName.equals(""))
+            {   
+                ii = new ImageIcon(this.getClass().getResource("/inventory/" + iconName + ".png"));
+                this.icons[i] = ii.getImage();
+            }
+        }
     }
 
     /** 
@@ -103,6 +115,16 @@ public class AchievementsView extends BaseView{
                         i * iconHeight + (i + 20) * graphicsScaling, 
                         this.model.achievements.get(achievementIndex).counter / this.model.achievements.get(achievementIndex).requiredValue,
                         g, canvas);
+
+                    if (this.icons[achievementIndex] != null)
+                    {
+                        g.drawImage(this.icons[achievementIndex],
+                        width / 5 + (j + 1) * iconWidth - (this.icons[achievementIndex].getWidth(null) * graphicsScaling),
+                        i * iconHeight + ((i + 4) * graphicsScaling),
+                        this.icons[achievementIndex].getWidth(null) * graphicsScaling,
+                        this.icons[achievementIndex].getHeight(null) * graphicsScaling,
+                        canvas);
+                    }
                 }
             }
         }

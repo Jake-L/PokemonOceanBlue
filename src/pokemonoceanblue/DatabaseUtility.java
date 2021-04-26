@@ -651,28 +651,33 @@ public class DatabaseUtility
 
         //==================================================================================
         // each achievements id, name, counter, required value, reward id, reward quantity, and description
-        query = "CREATE TABLE achievements("
-                + "achievement_id INT PRIMARY KEY, "
-                + "name VARCHAR(30) NOT NULL, "
-                + "counter INT NOT NULL, "
-                + "required_value INT NOT NULL, "
-                + "reward_id INT NULL, "
-                + "reward_quantity INT NULL, "
-                + "description VARCHAR(80) NOT NULL)";
+        query = """
+                CREATE TABLE achievements(
+                    achievement_id INT PRIMARY KEY, 
+                    name VARCHAR(30) NOT NULL, 
+                    counter INT NOT NULL, 
+                    required_value INT NOT NULL, 
+                    reward_id INT NULL, 
+                    reward_quantity INT NULL, 
+                    description VARCHAR(80) NOT NULL, 
+                    icon VARCHAR(20) NULL)
+                """;
         runUpdate(query);
 
         // fill achievements table with data
         path = "/rawdata/achievements.csv";
-        query = "INSERT INTO achievements ("
-                    + "achievement_id, name, "
-                    + "counter, "
-                    + "required_value, "
-                    + "reward_id, reward_quantity, "
-                    + "description)"
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        query = """
+                INSERT INTO achievements (
+                    achievement_id, name, 
+                    counter, 
+                    required_value, 
+                    reward_id, reward_quantity, 
+                    description, icon)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """;
 
         dataTypes = new String[] {"int", "String", "int", "int", "int", "int", 
-            "String"};
+            "String", "String"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

@@ -204,7 +204,7 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 203,Girafarig,1,14,70,80,65,90,65,85,3,25,203,Its tail has a small brain of its own. Beware! If you get close$ it may react to your scent by biting.
 204,Pineco,7,0,50,65,90,35,35,15,2,75,204,It likes to make its shell thicker by adding layers of tree bark. The additional weight doesn't bother it.
 205,Forretress,7,9,75,90,140,60,60,40,2,30,205,Its entire body is shielded by a steel-hard shell. What lurks inside this shell is a total mystery.
-206,Dunsparce,1,0,100,70,70,65,65,45,0,75,206,When spotted$ this Pokemon escapes backward by furiously boring into the ground with its tail.
+206,Dunsparce,1,0,110,80,70,55,65,35,0,75,206,When spotted$ this Pokemon escapes backward by furiously boring into the ground with its tail.
 207,Gligar,5,3,65,75,105,35,65,85,2,25,207,It flies straight at its target's face$ then clamps down on the startled victim to inject poison.
 208,Steelix,9,5,75,85,200,55,65,30,2,10,208,Its body has been compressed deep under the ground. As a result$ it is even harder than a diamond.
 209,Snubbull,18,0,60,80,50,40,40,30,1,75,209,Although it looks frightening$ it is actually kind and affectionate. It is very popular among women.
@@ -504,6 +504,7 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 503,Zweilous,17,16,72,85,70,65,70,58,1,20,634,After it has eaten up all the food in its territory$ it moves to another area. Its two heads do not get along.
 504,Hydreigon,17,16,92,105,90,125,90,98,3,20,635,This brutal Pok�mon travels the skies on its six wings. They use all three heads to consume and destroy everything in its path!
 505,Sylveon,18,0,95,65,65,110,130,60,4,20,700,It sends a soothing aura from its ribbonlike feelers to calm fights.
+506,Rambardo,6,17,97,165,60,65,50,58,1,20,506,
 10001,Deoxys,14,0,50,180,20,180,20,150,3,2,386,
 10002,Deoxys,14,0,50,70,160,70,160,90,4,2,386,
 10003,Deoxys,14,0,50,95,90,95,90,180,5,2,386,

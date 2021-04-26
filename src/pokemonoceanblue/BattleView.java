@@ -25,7 +25,7 @@ public class BattleView extends BaseView {
     private Image background;
     private Image[] backgroundBase = new Image[2];
     private Image xp;
-    private Image[] pokeballSprite = new Image[15];
+    private Image[][] pokeballSprite = new Image[15][15];
     private Image[][] pokemonIconSprites = new Image[2][];
     private Image trainerSprite;
     private Image[] statusEffectImages = new Image[8];
@@ -118,10 +118,14 @@ public class BattleView extends BaseView {
         }
 
         //loads pokeball sprites
-        for (int i = 0; i < this.pokeballSprite.length; i ++)
+        int[] pokeballIndex = new int[]{0, 1, 2, 3, 5, 11, 12, 14};
+        for (int i : pokeballIndex)
         {
-            ii = new ImageIcon(this.getClass().getResource("/battle/ball3_" + i + ".png"));
-            this.pokeballSprite[i] = ii.getImage();
+            for (int j = 0; j < this.pokeballSprite[i].length; j++)
+            {
+                ii = new ImageIcon(this.getClass().getResource("/battle/ball" + i + "_" + j + ".png"));
+                this.pokeballSprite[i][j] = ii.getImage();
+            }
         }
 
         //loads pokemon icons for both teams
@@ -230,8 +234,8 @@ public class BattleView extends BaseView {
             int pokeballSpriteIndex = this.model.events.get(0).itemId;
             int pokeballFrame = this.getPokeballFrame();
 
-            double x = width * 0.6 - this.pokeballSprite[pokeballFrame].getWidth(null) * graphicsScaling / 2;
-            double y = height / 2 - (this.backgroundBase[1].getHeight(null) / 2 + this.pokeballSprite[pokeballFrame].getHeight(null)) * graphicsScaling;
+            double x = width * 0.6 - this.pokeballSprite[pokeballSpriteIndex][pokeballFrame].getWidth(null) * graphicsScaling / 2;
+            double y = height / 2 - (this.backgroundBase[1].getHeight(null) / 2 + this.pokeballSprite[pokeballSpriteIndex][pokeballFrame].getHeight(null)) * graphicsScaling;
 
             // throwing animation
             if (this.model.events.get(0).newPokemonIndex == -2 
@@ -243,11 +247,11 @@ public class BattleView extends BaseView {
             }
 
             //renders a pokeball in place of enemy pokemon
-            g.drawImage(this.pokeballSprite[pokeballFrame],
+            g.drawImage(this.pokeballSprite[pokeballSpriteIndex][pokeballFrame],
                 (int)x,
                 (int)y,
-                this.pokeballSprite[pokeballFrame].getWidth(null) * graphicsScaling,
-                this.pokeballSprite[pokeballFrame].getHeight(null) * graphicsScaling,
+                this.pokeballSprite[pokeballSpriteIndex][pokeballFrame].getWidth(null) * graphicsScaling,
+                this.pokeballSprite[pokeballSpriteIndex][pokeballFrame].getHeight(null) * graphicsScaling,
                 canvas);
         }
 
@@ -339,11 +343,12 @@ public class BattleView extends BaseView {
                 }
                 else
                 {
-                    g.drawImage(this.pokeballSprite[8],
-                        (int)(width - (this.pokemonIconSprites[j][i].getWidth(null) * graphicsScaling)),
+                    int pokeballSpriteIndex = this.model.team[j][i].pokeballId;
+                    g.drawImage(this.pokeballSprite[pokeballSpriteIndex][8],
+                        (int)(width - (this.pokemonIconSprites[pokeballSpriteIndex][i].getWidth(null) * graphicsScaling)),
                         (int) (i * height * (0.75 / 6.0)) - (7 * graphicsScaling), 
-                        this.pokeballSprite[8].getWidth(null) * graphicsScaling / 2,
-                        this.pokeballSprite[8].getHeight(null) * graphicsScaling / 2,
+                        this.pokeballSprite[pokeballSpriteIndex][8].getWidth(null) * graphicsScaling / 2,
+                        this.pokeballSprite[pokeballSpriteIndex][8].getHeight(null) * graphicsScaling / 2,
                         canvas);
                 }
             }

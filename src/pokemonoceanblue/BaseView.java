@@ -54,22 +54,17 @@ abstract class BaseView {
             // load item sprites
             itemSprite = new Image[150];
 
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < itemSprite.length; i++)
             {
-                ii = new ImageIcon(this.getClass().getResource("/inventory/" + i + ".png"));
-                itemSprite[i]  = ii.getImage();
-            } 
-
-            for (int i = 113; i < 134; i++)
-            {
-                ii = new ImageIcon(this.getClass().getResource("/inventory/" + i + ".png"));
-                itemSprite[i]  = ii.getImage();
-            } 
-
-            for (int i = 33; i < 34; i++)
-            {
-                ii = new ImageIcon(this.getClass().getResource("/inventory/" + i + ".png"));
-                itemSprite[i]  = ii.getImage();
+                try
+                {
+                    ii = new ImageIcon(this.getClass().getResource("/inventory/" + i + ".png"));
+                    itemSprite[i]  = ii.getImage();
+                }
+                catch (Exception e)
+                {
+                    // until all items are added to the game, some sprites are missing
+                } 
             } 
 
             // load type sprites
