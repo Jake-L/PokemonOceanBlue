@@ -2,24 +2,29 @@ package pokemonoceanblue;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.util.List;
+
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import pokemonoceanblue.AchievementsModel.AchievementDataModel;
+import pokemonoceanblue.ObjectiveModel.ObjectiveTaskModel;
 
 import java.awt.Font;
 
 public class AchievementsView extends BaseView{
 
-    private AchievementsModel model;
+    private BaseModel model;
+    List<ObjectiveModel> achievements;
     private Image background;
     private Image[] achievementWindow = new Image[2];
     private Image[] icons;
 
-    public AchievementsView(AchievementsModel model)
+    public AchievementsView(BaseModel model, List<ObjectiveModel> achievements)
     {
         super(model);
         this.model = model;
+        this.achievements = achievements;
+        model.optionMax = achievements.size() - 1;
         loadImage();
     }
 
@@ -33,10 +38,10 @@ public class AchievementsView extends BaseView{
         ii = new ImageIcon(this.getClass().getResource("/menus/pokemonBackground.png"));
         this.background = ii.getImage();
 
-        this.icons = new Image[this.model.achievements.size()];
-        for (int i = 0; i < this.model.achievements.size(); i++)
+        this.icons = new Image[this.achievements.size()];
+        for (int i = 0; i < this.achievements.size(); i++)
         {
-            String iconName = this.model.achievements.get(i).icon;
+            String iconName = this.achievements.get(i).icon;
             if (!iconName.equals(""))
             {   
                 ii = new ImageIcon(this.getClass().getResource("/inventory/" + iconName + ".png"));
@@ -73,24 +78,31 @@ public class AchievementsView extends BaseView{
         this.displayTextbox(textDisplayBox, 0, height / 12, width / 5, height * 4 / 5, g, canvas);
 
         // display information for the currently hovered achievement
-        AchievementDataModel hoveredAchievement = this.model.achievements.get(this.model.optionIndex);
+        ObjectiveModel hoveredAchievement = this.achievements.get(this.model.optionIndex);
         g.drawString("Name: " + hoveredAchievement.name, 8 * graphicsScaling, height / 10 + 10 * graphicsScaling);
-        g.drawString("Progress: " + hoveredAchievement.counter + "/" + hoveredAchievement.requiredValue,
+        g.drawString("Progress: " + hoveredAchievement.getCounter() + "/" + hoveredAchievement.getRequired(),
              8 * graphicsScaling, height / 10 + 25 * graphicsScaling);
         this.renderProgressBar(8 * graphicsScaling, height / 10 + 35 * graphicsScaling,
-            hoveredAchievement.counter / hoveredAchievement.requiredValue, g, canvas);
+            Math.min(hoveredAchievement.getCounter() / hoveredAchievement.getRequired(), 1), g, canvas);
 
         // display achievement description
-        this.displayText(
-            hoveredAchievement.description, 
-            fontSize,
-            0, 
-            height / 10 + 55 * graphicsScaling, 
-            width / 5, 
-            height * 4 / 5, 
-            g, 
-            canvas
-        );
+        for (int i = 0; i < hoveredAchievement.tasks.size(); i++)
+        {
+            ObjectiveTaskModel task = hoveredAchievement.tasks.get(i);
+            if (task.counter < task.requiredValue)
+            {
+                this.displayText(
+                    task.description, 
+                    fontSize,
+                    0, 
+                    height / 10 + (55 + i * 10) * graphicsScaling, 
+                    width / 5, 
+                    height * 4 / 5, 
+                    g, 
+                    canvas
+                );
+            }
+        }
 
         int achievementIndex = 0;
         for (int i = 0; i < this.maxRenderRows; i++)
@@ -98,7 +110,7 @@ public class AchievementsView extends BaseView{
             for (int j = 0; j < this.model.optionWidth; j++)
             {
                 achievementIndex = this.minRenderIndex + (i * this.model.optionWidth) + j;
-                if (achievementIndex < this.model.achievements.size())
+                if (achievementIndex < this.achievements.size())
                 {
                     g.drawImage(this.achievementWindow[(achievementIndex == this.model.optionIndex ? 1 : 0)],
                         width / 5 + j * iconWidth + (j + 2) * graphicsScaling,
@@ -107,13 +119,13 @@ public class AchievementsView extends BaseView{
                         iconHeight,
                         canvas);
 
-                    g.drawString(this.model.achievements.get(achievementIndex).name,
+                    g.drawString(this.achievements.get(achievementIndex).name,
                         width / 5 + j * iconWidth + (j + 6) * graphicsScaling,
                         i * iconHeight + (16 + i) * graphicsScaling);
 
                     renderProgressBar(width / 5 + j * iconWidth + (j + 4) * graphicsScaling,
                         i * iconHeight + (i + 20) * graphicsScaling, 
-                        this.model.achievements.get(achievementIndex).counter / this.model.achievements.get(achievementIndex).requiredValue,
+                        this.achievements.get(achievementIndex).getCounter() / this.achievements.get(achievementIndex).getRequired(),
                         g, canvas);
 
                     if (this.icons[achievementIndex] != null)

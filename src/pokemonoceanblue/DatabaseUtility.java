@@ -67,7 +67,7 @@ public class DatabaseUtility
             "conversation",  "type_effectiveness", "items", "battle_reward",
             "portal", "map_object", "area", "character", "move_stat_effect",
             "conversation_trigger", "achievements", "battle",
-            "player_pokedex",
+            "player_pokedex", "objective_task", "objective", 
             "moves",
             "map_template",
             "move_effect", 
@@ -650,34 +650,56 @@ public class DatabaseUtility
         runUpdate(query);
 
         //==================================================================================
-        // each achievements id, name, counter, required value, reward id, reward quantity, and description
+        // each data for each achievement/quest
         query = """
-                CREATE TABLE achievements(
-                    achievement_id INT PRIMARY KEY, 
-                    name VARCHAR(30) NOT NULL, 
-                    counter INT NOT NULL, 
-                    required_value INT NOT NULL, 
-                    reward_id INT NULL, 
-                    reward_quantity INT NULL, 
-                    description VARCHAR(80) NOT NULL, 
+                CREATE TABLE objective (
+                    objective_id INT PRIMARY KEY,
+                    name VARCHAR(30) NOT NULL,
+                    description VARCHAR(80) NULL,
+                    reward_id INT NULL,
+                    reward_quantity INT NULL,
                     icon VARCHAR(20) NULL)
                 """;
         runUpdate(query);
 
-        // fill achievements table with data
-        path = "/rawdata/achievements.csv";
+        // fill objective table with data
+        path = "/rawdata/objective.csv";
         query = """
-                INSERT INTO achievements (
-                    achievement_id, name, 
-                    counter, 
-                    required_value, 
-                    reward_id, reward_quantity, 
-                    description, icon)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO objective (
+                    objective_id, name, description, 
+                    reward_id, reward_quantity, icon)
+                    VALUES (?, ?, ?, ?, ?, ?)
                 """;
 
-        dataTypes = new String[] {"int", "String", "int", "int", "int", "int", 
-            "String", "String"};
+        dataTypes = new String[] {"int", "String", "String", "int", "int", "String"};
+        loadTable(path, query, dataTypes);
+
+        //==================================================================================
+        // each data for each achievement/quest task
+        query = """
+                CREATE TABLE objective_task (
+                    objective_id INT, 
+                    task_id INT,
+                    objective_type VARCHAR(30) NOT NULL,
+                    counter INT NOT NULL, 
+                    required_value INT NOT NULL, 
+                    identifier VARCHAR(30) NOT NULL,
+                    description VARCHAR(80) NOT NULL)
+                """;
+        runUpdate(query);
+
+        // fill objective_task table with data
+        path = "/rawdata/objective_task.csv";
+        query = """
+                INSERT INTO objective_task (
+                    objective_id, task_id, 
+                    objective_type, counter, 
+                    required_value, identifier,
+                    description)
+                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                """;
+
+        dataTypes = new String[] {"int", "int", "String", "int", "int", "String", "String"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

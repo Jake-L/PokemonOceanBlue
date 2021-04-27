@@ -38,13 +38,14 @@ public class App extends JFrame implements KeyListener
     PokemonStorageController pokemonStorageController;
     SummaryModel summaryModel;
     MusicPlayer musicPlayer;
-    AchievementsModel achievementsModel;
+    BaseModel achievementsModel;
     DayCareModel dayCareModel;
     boolean[] badges = new boolean[8];
     int enemyScalingFactor = 0;
     TournamentModel tournamentModel;
     BaseController currentController;
 
+    List<ObjectiveModel> achievements = new ArrayList<ObjectiveModel>();
     List<NewPokemonModel> newPokemonQueue = new ArrayList<NewPokemonModel>();
     List<BaseModel> modelQueue = new ArrayList<BaseModel>();
 
@@ -115,15 +116,22 @@ public class App extends JFrame implements KeyListener
 
         this.partyModel = new PartyModel();
         this.partyModel.addPokemon(0, new PokemonModel(3, 50, false));
-        this.partyModel.addPokemon(0, new PokemonModel(4, 50, true));
         this.partyModel.addPokemon(0, new PokemonModel(9, 50, true));
-        this.partyModel.team.get(0).moves[0] = new MoveModel(153);
+        this.partyModel.addPokemon(0, new PokemonModel(6, 50, true));
+        this.partyModel.addPokemon(0, new PokemonModel(412, 50, false));
+        this.partyModel.addPokemon(0, new PokemonModel(351, 50, true));
+        this.partyModel.addPokemon(0, new PokemonModel(15, 50, false));
         this.inventoryModel = new InventoryModel();
         this.pokedexModel = new PokedexModel();
         this.pokemonStorageModel = new PokemonStorageModel();
-        this.achievementsModel = new AchievementsModel();
+        this.achievementsModel = new BaseModel();
         this.evolveCheck = new EvolutionCheck();
         this.dayCareModel = new DayCareModel();
+
+        for (int i = 0; i <= 73; i++)
+        {
+            this.achievements.add(new ObjectiveModel(i));
+        }
 
         this.update();
     }
@@ -159,7 +167,7 @@ public class App extends JFrame implements KeyListener
             //     ex.printStackTrace();
             //     this.setMap(1, 3, 3);
             // } 
-            this.setMap(45, 16, 48, Direction.DOWN);
+            this.setMap(48, 10, 10, Direction.DOWN);
         }
     }
 
@@ -311,7 +319,7 @@ public class App extends JFrame implements KeyListener
     public void openAchievements()
     {
         this.achievementsModel.initialize();
-        viewManager.setView(new AchievementsView(achievementsModel));
+        viewManager.setView(new AchievementsView(achievementsModel, this.achievements));
         this.addModelQueue(this.achievementsModel);
     }
 
@@ -391,7 +399,7 @@ public class App extends JFrame implements KeyListener
             if (pokemon.level == 0 && pokemon.stepCounter <= 0)
             {
                 newPokemonQueue.add(new NewPokemonModel(pokemon));
-                this.achievementsModel.setEggsHatched(pokemon.shiny);
+                this.achievements.forEach((obj) -> obj.incrementCounter("hatchEgg", 1));
             }
         }
 
@@ -412,7 +420,7 @@ public class App extends JFrame implements KeyListener
             Random rand = new Random();
             boolean shiny = rand.nextDouble() < this.pokedexModel.getShinyRate(newEggId) ? true : false;
             this.pokemonStorageModel.addPokemon(new PokemonModel(newEggId, 1, shiny));
-            this.achievementsModel.setEggsHatched(shiny);
+            this.achievements.forEach((obj) -> obj.incrementCounter("hatchEgg", 1));
         }
     }
 
@@ -426,7 +434,7 @@ public class App extends JFrame implements KeyListener
         if (this.pokedexModel.setCaught(pokemon.base_pokemon_id))
         {
             // track that a new Pokemon was caught
-            this.achievementsModel.setNewPokemonObtained(pokemon.base_pokemon_id);
+            this.achievements.forEach((obj) -> obj.setNewPokemonCaught(pokemon.base_pokemon_id));
         }
 
         // lower the Pokemon's stats to normal if it was caught in a raid
@@ -437,7 +445,7 @@ public class App extends JFrame implements KeyListener
 
         NewPokemonModel newPokemonModel = new NewPokemonModel(pokemon, partyModel, pokemonStorageModel);
         this.newPokemonQueue.add(newPokemonModel);
-        this.achievementsModel.setPokemonCaught(pokemon.shiny);
+        this.achievements.forEach((obj) -> obj.setPokemonCaught(pokemon));
     }
 
     /**
@@ -545,7 +553,7 @@ public class App extends JFrame implements KeyListener
                     {
                         if (this.battleModel.trainerSpriteName != null)
                         {
-                            this.achievementsModel.setBattlesWon(this.battleModel.trainerSpriteName);
+                            this.achievements.forEach((obj) -> obj.incrementCounter("battleWin", 1, this.battleModel.trainerSpriteName));
                         }
 
                         // check if the player earned money or other reward
@@ -811,7 +819,7 @@ public class App extends JFrame implements KeyListener
                     // add the evolution to a queue
                     NewPokemonModel newPokemonModel = new NewPokemonModel(partyModel.team.get(i), partyModel, evolvedPokemonId, i);
                     this.newPokemonQueue.add(newPokemonModel);
-                    this.achievementsModel.setPokemonEvolved(false);
+                    this.achievements.forEach((obj) -> obj.incrementCounter("evolve", 1));
                 }
             }
         }
