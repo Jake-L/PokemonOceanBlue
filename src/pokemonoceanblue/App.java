@@ -114,10 +114,10 @@ public class App extends JFrame implements KeyListener
         this.playSong(0, false);
 
         this.partyModel = new PartyModel();
-        this.partyModel.addPokemon(0, new PokemonModel(3, 50, false));
-        this.partyModel.addPokemon(0, new PokemonModel(4, 50, true));
+        this.partyModel.addPokemon(0, new PokemonModel(3, 10, false));
+        this.partyModel.addPokemon(0, new PokemonModel(4, 6, true));
         this.partyModel.addPokemon(0, new PokemonModel(9, 50, true));
-        this.partyModel.team.get(0).moves[0] = new MoveModel(153);
+        this.partyModel.team.get(0).moves[0] = new MoveModel(171);
         this.inventoryModel = new InventoryModel();
         this.pokedexModel = new PokedexModel();
         this.pokemonStorageModel = new PokemonStorageModel();
@@ -159,7 +159,7 @@ public class App extends JFrame implements KeyListener
             //     ex.printStackTrace();
             //     this.setMap(1, 3, 3);
             // } 
-            this.setMap(45, 16, 48, Direction.DOWN);
+            this.setMap(33, 16, 15, Direction.DOWN);
         }
     }
 

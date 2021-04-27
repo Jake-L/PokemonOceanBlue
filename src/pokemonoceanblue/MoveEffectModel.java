@@ -8,8 +8,8 @@ public class MoveEffectModel {
     public int targetId;
     public int minCounter;
     public int maxCounter;
-    public int counter;
-    public String text; 
+    public int removalCondition;
+    public String text;
 
     public MoveEffectModel(int effectId)
     {
@@ -23,6 +23,7 @@ public class MoveEffectModel {
             ResultSet rs = db.runQuery(query);
 
             this.targetId = rs.getInt("target_type");
+            this.removalCondition = rs.getInt("removal_condition");
             this.minCounter = rs.getInt("counter_min");
             this.maxCounter = rs.getInt("counter_max");
             this.text = rs.getString("text");
