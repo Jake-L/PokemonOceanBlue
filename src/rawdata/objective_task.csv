@@ -1,0 +1,88 @@
+Achievement ID,Task ID,Objective Type,Counter,Required Value,Identifier,Description
+0,0,catchCount,0,10,,Catch 10 Pokemon
+1,0,catchCount,0,50,,Catch 50 Pokemon
+2,0,catchCount,0,100,,Catch 100 Pokemon
+3,0,catchCount,0,250,,Catch 250 Pokemon
+4,0,catchCount,0,500,,Catch 500 Pokemon
+5,0,catchCount,0,1000,,Catch 1000 Pokemon
+6,0,catchSpecific,0,1,144,Catch Articuno
+6,1,catchSpecific,0,1,145,Catch Zapdos
+6,2,catchSpecific,0,1,146,Catch Moltres
+7,0,catchSpecific,0,1,150,Catch Mewtwo
+8,0,catchSpecific,0,1,151,Catch Mew
+9,0,catchSpecific,0,1,249,Obtain a legendary Pokemon that is not native to Kanto
+10,0,daycare,0,1,,Leave a Pokemon in the daycare
+11,0,daycareEgg,0,1,,Obtain an egg from the Pokemon Daycare
+12,0,hatchEgg,0,1,,Hatch an egg
+13,0,hatchEgg,0,10,,Hatch 10 eggs
+14,0,hatchEgg,0,50,,Hatch 50 eggs
+15,0,hatchEgg,0,100,,Hatch 100 eggs
+16,0,level,0,10,,Raise a Pokemon to level 10
+17,0,level,0,50,,Raise a Pokemon to level 50
+18,0,level,0,100,,Raise a Pokemon to level 100
+19,0,evolve,0,10,,Evolve 10 Pokemon
+20,0,evolve,0,50,,Evolve 50 Pokemon
+21,0,evolve,0,100,,Evolve 100 Pokemon
+22,0,evolveStone,0,1,,Evolve a Pokemon using an evolution stone
+23,0,catchSpecific,0,1,3,Catch Venusaur
+23,1,catchSpecific,0,1,6,Catch Charizard
+23,2,catchSpecific,0,1,9,Catch Blastoise
+23,3,catchSpecific,0,1,154,Catch Meganium
+23,4,catchSpecific,0,1,157,Catch Typhlosion
+23,5,catchSpecific,0,1,160,Catch Feraligatr
+23,6,catchSpecific,0,1,254,Catch Sceptile
+23,7,catchSpecific,0,1,257,Catch Blaziken
+23,8,catchSpecific,0,1,260,Catch Swampert
+23,9,catchSpecific,0,1,389,Catch Torterra
+23,10,catchSpecific,0,1,392,Catch Infernape
+23,11,catchSpecific,0,1,395,Catch Empoleon
+24,0,happiness,0,1,,Achieve max happiness with one of your Pokemon
+25,0,shiny,0,1,,Obtain a shiny Pokemon
+26,0,pokedexKanto,0,151,,Complete the Kanto Pokedex
+27,0,pokedexJohto,0,100,,Complete the Johto Pokedex
+28,0,pokedexHoenn,0,135,,Complete the Hoenn Pokedex
+29,0,pokedexSinnoh,0,107,,Complete the Sinnoh Pokedex
+30,0,pokedex,0,493,,Complete all four regional Pokedex
+31,0,moveTutor,0,1,,Learn a move from a move tutor
+32,0,moveSuper,0,1,,Use a super effective move in battle
+33,0,moveSuper,0,50,,Use 50 super effective moves in battle
+34,0,moveSuper,0,100,,Use 100 super effective moves in battle
+35,0,moveSuper,0,250,,Use 250 super effective moves in battle
+36,0,moveSuper,0,500,,Use 500 super effective moves in battle
+37,0,moveStab,0,1,,Use a move with Same Type Attack Bonus in battle
+38,0,moveStab,0,50,,Use 50 moves with Same Type Attack Bonus in battle
+39,0,moveStab,0,100,,Use 100 moves with Same Type Attack Bonus in battle
+40,0,moveStab,0,250,,Use 250 moves with Same Type Attack Bonus in battle
+41,0,moveStab,0,500,,Use 500 moves with Same Type Attack Bonus in battle
+42,0,moveStab,0,1000,,Use 1000 moves with Same Type Attack Bonus in battle
+43,0,battleWin,0,10,,Win 10 Pokemon battles
+44,0,battleWin,0,50,,Win 50 Pokemon battles
+45,0,battleWin,0,100,,Win 100 Pokemon battles
+46,0,battleWin,0,250,,Win 250 Pokemon battles
+47,0,battleWin,0,500,,Win 500 Pokemon battles
+48,0,badges,0,8,,Collect all 8 Kanto gym badges by defeating gym leaders in battle.
+49,0,battleWin,0,30,,Win all battles on the S.S. Anne
+50,0,conversation,0,1,,Win the Cerulean City Pokemon Tournament
+51,0,conversation,0,1,,Win the Vermillion City Pokemon Tournament
+52,0,conversation,0,1,,Win the Celadon City Pokemon Tournament
+53,0,conversation,0,1,,Win the Kanto Pokemon League.
+54,0,conversation,0,20,,Win in 20 Pokemon tournaments
+55,0,battleWin,0,5,gary,Defeat Rival Gary in battle 5 times
+56,0,battleWin,0,1,rocketGrunt,Defeat a Team Rocket Grunt in battle
+57,0,battleWin,0,20,rocketGrunt,Defeat 20 Team Rocket Grunts in battle
+58,0,battleWin,0,50,rocketGrunt,Defeat 50 Team Rocket Grunts in battle
+59,0,battleWin,0,1,giovanni,Defeat Giovanni in battle
+60,0,battleWin,0,1,lance,Defeat Kanto Champion Lance in a battle
+61,0,battleWin,0,1,steven,Defeat Hoenn Champion Steven in a battle
+62,0,battleWin,0,1,wallace,Defeat Hoenn Champion Wallace in a battle
+63,0,battleWin,0,1,cynthia,Defeat Sinnoh Champion Cynthia in a battle
+64,0,battleWin,0,1,oak,Defeat Professor Oak in battle
+65,0,battleWin,0,1,mirorB,Defeat Miror B in battle
+66,0,berryHarvest,0,1,,Harvest a berry
+67,0,berryHarvest,0,10,,Harvest 10 berries
+68,0,berryHarvest,0,50,,Harvest 50 berries
+69,0,berryHarvest,0,100,,Harvest 100 berries
+70,0,berryHarvest,0,250,,Harvest 250 berries
+71,0,berryHarvest,0,500,,Harvest 500 berries
+72,0,spendMoney,0,1000000,,Spend 1 million currency
+73,0,quests,0,100,,Complete 100 Quests
