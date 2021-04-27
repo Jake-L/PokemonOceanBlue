@@ -4,6 +4,13 @@ import java.util.Calendar;
 
 public class Utils 
 {
+    // list of legendary pokemon that can only be caught once and cannot be shiny
+    public static int[] LEGENDARY_POKEMON = new int[] {
+        144, 145, 146, 150, 151, 243, 244, 245, 249, 250, 251,
+        377, 378, 379, 380, 381, 382, 383, 384, 385, 386,
+        480, 481, 482, 483, 484, 485, 486, 487, 488, 490, 491, 492, 493
+    };
+
     /**
      * Returns the id of the current time of day
      * @return 0 for day time, 1 for night time
