@@ -335,8 +335,8 @@ public class BattleView extends BaseView {
                 if (j == 0 || this.model.isSeen[i])
                 {
                     g.drawImage(this.pokemonIconSprites[j][i],
-                        (int)((width - (this.pokemonIconSprites[j][i].getWidth(null) * graphicsScaling)) * j - (8 * graphicsScaling) * Math.pow(-1 , j + 1)),
-                        (int) (i * height * (0.75 / 6.0)), 
+                        (int)(width * 0.05 + width * 0.9 * j - (this.pokemonIconSprites[j][i].getWidth(null) * graphicsScaling / 2)),
+                        (int)(i * height * (0.75 / 6.0)), 
                         this.pokemonIconSprites[j][i].getWidth(null) * graphicsScaling,
                         this.pokemonIconSprites[j][i].getHeight(null) * graphicsScaling,
                         canvas);
@@ -345,10 +345,10 @@ public class BattleView extends BaseView {
                 {
                     int pokeballSpriteIndex = this.model.team[j][i].pokeballId;
                     g.drawImage(this.pokeballSprite[pokeballSpriteIndex][8],
-                        (int)(width - (this.pokemonIconSprites[pokeballSpriteIndex][i].getWidth(null) * graphicsScaling)),
-                        (int) (i * height * (0.75 / 6.0)) - (7 * graphicsScaling), 
-                        this.pokeballSprite[pokeballSpriteIndex][8].getWidth(null) * graphicsScaling / 2,
-                        this.pokeballSprite[pokeballSpriteIndex][8].getHeight(null) * graphicsScaling / 2,
+                        (int)(width * 0.95 - (this.pokeballSprite[pokeballSpriteIndex][8].getWidth(null) * graphicsScaling / 2)),
+                        (int)(i * height * (0.75 / 6.0)), 
+                        this.pokeballSprite[pokeballSpriteIndex][8].getWidth(null) * graphicsScaling,
+                        this.pokeballSprite[pokeballSpriteIndex][8].getHeight(null) * graphicsScaling,
                         canvas);
                 }
             }

@@ -20,4 +20,10 @@ public class DummyApp extends App
     {
 
     }
+
+    @Override
+    public void openInventory()
+    {
+
+    }
 }

@@ -2,6 +2,8 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -392,6 +394,8 @@ public class BattleTests {
      */
     @Test
     public void testDeathByPoison() {
+        // passes when user's pokemon attacks first
+        // fails when enemy's pokemon attacks first
         PokemonModel[] team = new PokemonModel[1];
         team[0] = new PokemonModel(19, 100, false);
         PokemonModel[] enemyTeam = new PokemonModel[1];
@@ -568,6 +572,38 @@ public class BattleTests {
             // player should have 0 HP remaining
             assertEquals(0, team[0].currentHP);
         }
+    }
+
+    /**
+     * Tests that Pokemon can be caught
+     */
+    @Test
+    public void testCatchPokemon() 
+    {
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(1, 100, false);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(10, 1, false);
+        enemyTeam[0].currentHP = 1;
+        BattleModel battleModel = new BattleModel(enemyTeam, team, new DummyApp(), (byte)0);
+
+        // skip opening animations
+        updateBattleModel(battleModel, 503);
+        assertEquals(0, battleModel.events.size());
+
+        // choose "POKEBALLS"
+        battleModel.optionIndex = 2;
+        battleModel.confirmSelection();
+        assertNull(battleModel.battleOptions);
+
+        // choose a pokeball
+        battleModel.setItem(3);
+
+        // skip end of turn animations
+        updateBattleModel(battleModel, 503);
+        assertEquals(0, battleModel.events.size());
+        assertEquals(enemyTeam[0], battleModel.getNewPokemon());
+        assertEquals(1, battleModel.getNewPokemon().currentHP);
     }
 
     private void chooseAttack(BattleModel battleModel, int optionIndex)
