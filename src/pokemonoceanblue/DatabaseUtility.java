@@ -124,7 +124,7 @@ public class DatabaseUtility
         loadTable(path, query, dataTypes);
 
         //==================================================================================
-        // stats that are increased or decreased by using a move
+        // unique effects caused when specific moves are used
         query = """
                 CREATE TABLE move_effect (
                     effect_id INT PRIMARY KEY,
@@ -132,19 +132,20 @@ public class DatabaseUtility
                     removal_condition INT NOT NULL,
                     counter_min INT NOT NULL,
                     counter_max INT NOT NULL,
+                    effect_timing_id INT NOT NULL,
                     text VARCHAR(100) NULL)
                 """;
         runUpdate(query);
 
-        // fill move_stat_effect table with data
+        // fill move_effect table with data
         path = "/rawdata/moveEffect.csv";
         query = """
                 INSERT INTO move_effect (
-                    effect_id, target_type, removal_condition, counter_min, counter_max, text)
-                VALUES (?, ?, ?, ?, ?, ?)
+                    effect_id, target_type, removal_condition, counter_min, counter_max, effect_timing_id, text)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
                 """;
 
-        dataTypes = new String[] {"int", "int", "int", "int", "int", "String"};
+        dataTypes = new String[] {"int", "int", "int", "int", "int", "int", "String"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

@@ -9,6 +9,7 @@ public class MoveEffectModel {
     public int minCounter;
     public int maxCounter;
     public int removalCondition;
+    public int effectTimingId;
     public String text;
 
     public MoveEffectModel(int effectId)
@@ -26,6 +27,7 @@ public class MoveEffectModel {
             this.removalCondition = rs.getInt("removal_condition");
             this.minCounter = rs.getInt("counter_min");
             this.maxCounter = rs.getInt("counter_max");
+            this.effectTimingId = rs.getInt("effect_timing_id");
             this.text = rs.getString("text");
         }
         catch (SQLException e) 

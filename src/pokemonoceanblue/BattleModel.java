@@ -32,12 +32,11 @@ public class BattleModel extends BaseModel
     public int[][] statChanges = new int[2][8];
     public boolean[] willFlinch = new boolean[2];
     private boolean[] moveProcessed = new boolean[2];
-    private boolean isPlayerDefeated;
     public int musicId;
     public int badgeIndex = -1;
     public byte weather;
     private ItemModel reward;
-    private TurnEffectManager turnEffectManager = new TurnEffectManager(); //TODO: change currentPokemon to be pokemonModels??
+    private TurnEffectManager turnEffectManager = new TurnEffectManager(); //TODO: change currentPokemon to be pokemonModels?
 
     /** 
      * Constructor
@@ -551,10 +550,8 @@ public class BattleModel extends BaseModel
             }
             this.events.add(event);
         }
-        //multiTurnEffects
-        // TODO: add is multi turn effect column to move effect db
-        else if (effectId == 43 || effectId == 85 || effectId == 66 || effectId == 36 || effectId == 125 || effectId == 47 ||
-            effectId == 202 || effectId == 211 || effectId == 48 || effectId == 241 || effectId == 252)
+        // multiTurnEffects
+        else if (move.moveEffect.minCounter != 0 || move.moveEffect.maxCounter != 0)
         {
             turnEffectManager.addMultiTurnEffect(move, effectId, attacker, this.team, this.currentPokemon, this.events);
         }
@@ -1355,11 +1352,21 @@ public class BattleModel extends BaseModel
             }
 
             //check if player should blackout
-            if (teamFainted(0) && !this.isPlayerDefeated)
+            if (teamFainted(0))
             {
-                this.events.add(new BattleEvent("Player was defeated by " + (this.isWild ? "the wild " + this.team[1][0].name : trainerName) + "!", 0, -1));
-                this.events.add(new BattleEvent("Player blacked out!", 0, -1));
-                this.isPlayerDefeated = true;
+                boolean eventExists = false;
+                for (int i = this.events.size() - 1; i >= 0; i--)
+                {//TODO: could battlemodel benefit from goto control flow statement
+                    if (this.events.get(i).text.equals("Player blacked out!"))
+                    {
+                        eventExists = true;
+                    }
+                }
+                if (!eventExists)
+                {
+                    this.events.add(new BattleEvent("Player was defeated by " + (this.isWild ? "the wild " + this.team[1][0].name : trainerName) + "!", 0, -1));
+                    this.events.add(new BattleEvent("Player blacked out!", 0, -1));
+                }
             }
             this.events.remove(0);
 

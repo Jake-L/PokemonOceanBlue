@@ -252,13 +252,14 @@ public class TurnEffectManager
         // -1 if never end, 0 if end when player pokemon leaves field, 1 if end enemy pokemon leaves field, 2 if end when either leaves field
         int removalCondition;
         // if 0 then effect occurs throughout duration, if 1 effect occurs at end of duration
-        byte effectTimingId;
+        int effectTimingId;
 
         public MultiTurnEffect(MoveModel move, MoveEffectModel moveEffect, int attacker, PokemonModel team[][], int[] currentPokemon)
         {
             this.effectId = moveEffect.effectId;
             this.attacker = attacker;
             this.target = (moveEffect.targetId + attacker) % 2;
+            this.effectTimingId = moveEffect.effectTimingId;
             if (moveEffect.removalCondition == -1 || moveEffect.removalCondition == 2)
             {
                 this.removalCondition = moveEffect.removalCondition;
@@ -279,29 +280,21 @@ public class TurnEffectManager
             {
                 this.text = team[target][currentPokemon[target]].name + " is damaged by " + move.name + ".";
                 this.damage = (int)Math.ceil(team[target][currentPokemon[target]].stats[Stat.HP] / 8.0);
-                this.effectTimingId = 0;
             }
             else if (moveEffect.effectId == 85)
             {
                 this.text = team[target][currentPokemon[target]].name + "'s health was sapped.";
                 this.damage = (int)Math.ceil(team[target][currentPokemon[target]].stats[Stat.HP] / 8.0);
                 this.recoil = this.damage * -1;
-                this.effectTimingId = 0;
             }
-            else if (moveEffect.effectId == 36 || moveEffect.effectId == 66 || moveEffect.effectId == 125 || moveEffect.effectId == 47 || moveEffect.effectId == 241)
+            else if (moveEffect.effectId == 36 || moveEffect.effectId == 47 || moveEffect.effectId == 66 || moveEffect.effectId == 125 || moveEffect.effectId == 241)
             {
                 this.text = move.name + " wore off.";
-                this.effectTimingId = 0;
-            }
-            else if (moveEffect.effectId == 202 || moveEffect.effectId == 211 || moveEffect.effectId == 48)
-            {
-                this.effectTimingId = 0;
             }
             else if (moveEffect.effectId == 252)
             {
                 this.text = team[target][currentPokemon[target]].name + " is healed by " + move.name + ".";
                 this.recoil = (int)Math.floor(team[target][currentPokemon[target]].stats[Stat.HP] / -16.0);
-                this.effectTimingId = 0;
             }
         }
     }
