@@ -150,6 +150,19 @@ public class TurnEffectManager
         //check for status effect end of turn effects
         for (int i = 0; i < 2; i++)
         {
+            boolean isFainted = false;
+            for (int j = 0; j < events.size(); j++)
+            {
+                // we dont apply end of turn effects to fainted pokemon
+                if (events.get(j).newPokemonIndex == -1 && team[i][currentPokemon[i]].currentHP == 0)
+                {
+                    isFainted = true;
+                }
+            }
+            if (isFainted)
+            {
+                continue;
+            }
             byte statusEffect = team[i][currentPokemon[i]].statusEffect;
             if (statusEffect > StatusEffect.FROZEN && statusEffect < StatusEffect.CONFUSION)
             {

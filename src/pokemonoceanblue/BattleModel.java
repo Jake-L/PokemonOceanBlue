@@ -36,7 +36,8 @@ public class BattleModel extends BaseModel
     public int badgeIndex = -1;
     public byte weather;
     private ItemModel reward;
-    private TurnEffectManager turnEffectManager = new TurnEffectManager(); //TODO: change currentPokemon to be pokemonModels?
+    private TurnEffectManager turnEffectManager = new TurnEffectManager();
+    private BattleOperationsManager battleOperationsManager = new BattleOperationsManager();
 
     /** 
      * Constructor
@@ -153,44 +154,16 @@ public class BattleModel extends BaseModel
 
                     default:
                         
-                        int firstAttacker;
                         this.battleOptions = null;
                         this.attackEvent[0] = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " used " + this.team[0][this.currentPokemon[0]].moves[this.optionIndex].name + ".",
                             1, 1, 0, this.team[0][this.currentPokemon[0]].moves[optionIndex], 0);
                         this.actionCounter = 60;
                         int enemyMoveIndex = ranNum.nextInt(this.team[1][this.currentPokemon[1]].moves.length);
                         this.attackEvent[1] = enemyAttackEvent(enemyMoveIndex);
-                        
-                        if (this.team[0][this.currentPokemon[0]].moves[this.optionIndex].priority > this.team[1][this.currentPokemon[1]].moves[enemyMoveIndex].priority)
-                        {
-                            firstAttacker = 0;
-                        }
-                        else if (this.team[0][this.currentPokemon[0]].moves[this.optionIndex].priority < this.team[1][this.currentPokemon[1]].moves[enemyMoveIndex].priority)
-                        {
-                            firstAttacker = 1;
-                        }
-                        else if (this.team[0][this.currentPokemon[0]].statusEffect != StatusEffect.PARALYSIS &&
-                                 this.team[1][this.currentPokemon[1]].statusEffect == StatusEffect.PARALYSIS)
-                        {
-                            firstAttacker = 0;
-                        }
-                        else if (this.team[1][this.currentPokemon[1]].statusEffect != StatusEffect.PARALYSIS &&
-                                 this.team[0][this.currentPokemon[0]].statusEffect == StatusEffect.PARALYSIS)
-                        {
-                            firstAttacker = 1;
-                        }
-                        else if (this.team[0][this.currentPokemon[0]].getStat(Stat.SPEED, this.statChanges[0][Stat.SPEED]) < this.team[1][this.currentPokemon[1]].getStat(Stat.SPEED, this.statChanges[1][Stat.SPEED]))
-                        {
-                            firstAttacker = 1;
-                        }
-                        else if (this.team[0][this.currentPokemon[0]].getStat(Stat.SPEED, this.statChanges[0][Stat.SPEED]) > this.team[1][this.currentPokemon[1]].getStat(Stat.SPEED, this.statChanges[1][Stat.SPEED]))
-                        {
-                            firstAttacker = 0;
-                        }
-                        else 
-                        {
-                            firstAttacker = ranNum.nextInt(2);
-                        }
+                        int firstAttacker = battleOperationsManager.determineFirstAttacker(this.team[0][this.currentPokemon[0]], this.team[1][this.currentPokemon[1]],
+                                                                                           this.optionIndex, enemyMoveIndex, 
+                                                                                           this.team[0][this.currentPokemon[0]].getStat(Stat.SPEED, this.statChanges[0][Stat.SPEED]),
+                                                                                           this.team[1][this.currentPokemon[1]].getStat(Stat.SPEED, this.statChanges[1][Stat.SPEED]));
                         this.events.add(this.attackEvent[firstAttacker]);
                 }
             }
@@ -275,7 +248,8 @@ public class BattleModel extends BaseModel
             event.setNewPokemon(pokemon);
             this.events.add(event);
             this.actionCounter = 60;
-
+            // this is the players turn
+            this.moveProcessed[0] = true;
             // let the enemy attack after player switches
             this.events.add(this.enemyAttackEvent(ranNum.nextInt(this.team[1][this.currentPokemon[1]].moves.length)));
         }
@@ -283,8 +257,10 @@ public class BattleModel extends BaseModel
         {
             BattleEvent event = new BattleEvent("Trainer sent out " + this.team[0][pokemon].name + ".", 0, -1);
             event.setNewPokemon(pokemon);
-            this.events.add(event);
+            this.events.add(0, event);
             this.actionCounter = 100;
+            // the player lost their turn due to pokemon fainting, or moveProcessed already was true
+            this.moveProcessed[0] = true;
         }
     }
 
@@ -313,6 +289,7 @@ public class BattleModel extends BaseModel
 
     /**
      * @return enemyAttackEvent is the battle event that stores the enemy attack
+     * @param enemyMoveIndex is the index of the move the enemy will use
      */
     private BattleEvent enemyAttackEvent(int enemyMoveIndex)
     {
@@ -409,7 +386,7 @@ public class BattleModel extends BaseModel
         }
         // check if Pokemon flinched
         if (!this.unableToMove[attacker] && this.willFlinch[attacker])
-        {//TODO: can we make flinch more like a move effect? there are move effects w/ similar behavior (eg. protect)
+        {//TODO: make flinch more like a move effect, can check for it by checking the other sides last move
             this.typeModifier[attacker] = 1.0f;
             this.unableToMove[attacker] = true;
             this.events.remove(attackEventIndex);
@@ -1016,15 +993,14 @@ public class BattleModel extends BaseModel
         {
             BattleEvent event;
 
-            //remove all events performed by or affecting the fainted pokemon
+            // remove all events performed by or affecting the fainted pokemon
             boolean faintEventExists = false;
-            int i = 0;
+            int i = 1;
             while (i < this.events.size())
             {
                 if (this.events.get(i).newPokemonIndex == -1 && this.events.get(i).attacker == damagedTeamIndex)
                 {
                     faintEventExists = true;
-                    break;
                 }
                 if (this.events.get(i).removalCondition == damagedTeamIndex)
                 {
@@ -1208,10 +1184,6 @@ public class BattleModel extends BaseModel
             {
                 this.events.add(this.attackEvent[(attacker + 1) % 2]);
             }
-            else
-            {
-                turnEffectManager.endOfTurnEffects(this.team, this.currentPokemon, this.events, this.weather);
-            }
             this.attackEvent[0] = null;
             this.attackEvent[1] = null;
             this.moveProcessed[attacker] = true;
@@ -1356,7 +1328,7 @@ public class BattleModel extends BaseModel
             {
                 boolean eventExists = false;
                 for (int i = this.events.size() - 1; i >= 0; i--)
-                {//TODO: could battlemodel benefit from goto control flow statement
+                {
                     if (this.events.get(i).text.equals("Player blacked out!"))
                     {
                         eventExists = true;
@@ -1388,6 +1360,14 @@ public class BattleModel extends BaseModel
         //player sends out new pokemon to replace fainted one or battle returns to battle menu
         else if (this.battleOptions == null && this.actionCounter == 0)
         {
+            if (this.moveProcessed[0] || this.moveProcessed[1])
+            {
+                turnEffectManager.endOfTurnEffects(this.team, this.currentPokemon, this.events, this.weather);
+            }
+            if (this.events.size() > 0)
+            {
+                this.actionCounter = 60;
+            }
             this.moveProcessed = new boolean[2];
             this.isCrit = new boolean[2];
             this.isOneHit = new boolean[2];
@@ -1400,7 +1380,7 @@ public class BattleModel extends BaseModel
                 this.optionMax = 0;
                 this.app.openParty(this.currentPokemon[0], true);
             }
-            else
+            else if (this.events.size() == 0)
             {
                 //reset all attack related variables at the end of a turn and load the battle menu
                 this.loadBattleMenu();
