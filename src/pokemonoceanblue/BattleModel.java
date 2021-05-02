@@ -30,7 +30,6 @@ public class BattleModel extends BaseModel
     private BattleEvent attackEvent[] = new BattleEvent[2];
     private String soundEffect;
     public int[][] statChanges = new int[2][8];
-    public boolean[] willFlinch = new boolean[2];
     private boolean[] moveProcessed = new boolean[2];
     public int musicId;
     public int badgeIndex = -1;
@@ -199,7 +198,7 @@ public class BattleModel extends BaseModel
             int shakeCount = 3;
 
             // determine if the Pokemon should be captured
-            if (ranNum.nextInt(101) <= captureChance)
+            if (ranNum.nextInt(100) + 1 <= captureChance)
             {
                 event = new BattleEvent("Trainer caught wild " + this.team[1][this.currentPokemon[1]].name + "!", 0, -1);
                 event.setItem(itemId);
@@ -382,12 +381,16 @@ public class BattleModel extends BaseModel
             attackEventIndex = 1;
         }
         // check if Pokemon flinched
-        if (!this.unableToMove[attacker] && this.willFlinch[attacker])
+        if (!this.unableToMove[attacker])
         {//TODO: make flinch more like a move effect, can check for it by checking the other sides last move
-            this.typeModifier[attacker] = 1.0f;
-            this.unableToMove[attacker] = true;
-            this.events.remove(attackEventIndex);
-            this.events.add(attackEventIndex, new BattleEvent(attackingPokemon.name + " flinched!", attacker, attacker));
+            if (this.moveProcessed[(attacker + 1) % 2] && this.attackEvent[(attacker + 1) % 2] != null && this.attackEvent[(attacker + 1) % 2].move != null && 
+                this.ranNum.nextInt(100) + 1 <= this.attackEvent[(attacker + 1) % 2].move.flinchChance)
+            {
+                this.typeModifier[attacker] = 1.0f;
+                this.unableToMove[attacker] = true;
+                this.events.remove(attackEventIndex);
+                this.events.add(attackEventIndex, new BattleEvent(attackingPokemon.name + " flinched!", attacker, attacker));
+            }
         }
         if (!this.unableToMove[attacker])
         {
@@ -448,7 +451,7 @@ public class BattleModel extends BaseModel
      */
     private void statChanges(int attacker, MoveModel move)
     {
-        if (ranNum.nextInt(101) <= move.effectChance)
+        if (ranNum.nextInt(100) + 1 <= move.effectChance)
         {
             String[] statChangeMessages = {" fell sharply.", " fell.", "", " rose.", " rose sharply."};
             String[] changedStat = {"", " attack", " defense", " special attack", " special defense", " speed", " accuracy", " evasiveness"};
@@ -694,7 +697,7 @@ public class BattleModel extends BaseModel
             defense_stat = Stat.SPECIAL_DEFENSE;
         }
 
-        else if (move.accuracy == -1 || this.ranNum.nextInt(101) <= this.getAccuracy(attacker, move.accuracy))
+        else if (move.accuracy == -1 || this.ranNum.nextInt(100) + 1 <= this.getAccuracy(attacker, move.accuracy))
         {
             return 0;
         }
@@ -705,7 +708,7 @@ public class BattleModel extends BaseModel
             return 0;
         }
         //check if attack does not miss
-        if (move.accuracy == -1 || this.ranNum.nextInt(101) <= this.getAccuracy(attacker, move.accuracy))
+        if (move.accuracy == -1 || this.ranNum.nextInt(100) + 1 <= this.getAccuracy(attacker, move.accuracy))
         {
             for (int i = 0; i < defendingPokemon.types.length; i++)
             {
@@ -1159,10 +1162,6 @@ public class BattleModel extends BaseModel
                 {
                     this.moveEffect(move, attackEventIndex, attacker);
                 }
-                if (this.attackEvent[(attacker + 1) % 2] != null && move.flinchChance > 0 && ranNum.nextInt(101) <= move.flinchChance)
-                {
-                    this.willFlinch[(attacker + 1) % 2] = true;
-                }
                 if (move.recoil != 0)
                 {
                     this.recoil(attacker, move);
@@ -1177,12 +1176,16 @@ public class BattleModel extends BaseModel
                     this.statChanges(attacker, move);
                 }
             }
-            if (this.attackEvent[(attacker + 1) % 2] != null)
+            if (!this.moveProcessed[(attacker + 1) % 2])
             {
                 this.events.add(this.attackEvent[(attacker + 1) % 2]);
             }
-            this.attackEvent[0] = null;
-            this.attackEvent[1] = null;
+            else
+            {
+                // both attacks and their effects have been handled
+                this.attackEvent[0] = null;
+                this.attackEvent[1] = null;
+            }
             this.moveProcessed[attacker] = true;
         }
         // shorter events for Pokeball throwing animations
@@ -1368,7 +1371,6 @@ public class BattleModel extends BaseModel
             this.moveProcessed = new boolean[2];
             this.isCrit = new boolean[2];
             this.isOneHit = new boolean[2];
-            this.willFlinch = new boolean[2];
             this.attackMissed = new boolean[2];
             this.unableToMove = new boolean[2];
             if (!teamFainted(0) && this.team[0][this.currentPokemon[0]].currentHP == 0)

@@ -359,7 +359,7 @@ public class BattleView extends BaseView {
             this.displayTextbox(this.textDisplayBox, 0, height * 3 / 4, width, height / 4, g, canvas);
             this.displayTextOptions(g, canvas);
         }
-        else if (this.model.getText() != null)
+        else if (this.model.getText() != null && this.model.actionCounter > 6 || (this.model.events.size() > 1 && this.model.events.get(0).text.equals(this.model.events.get(1).text)))
         {
             this.displayText(this.model.getText(), g, canvas);
         }
