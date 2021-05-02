@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import java.util.Arrays;
+import java.util.Calendar;
 
 /** 
  * Renders the overworld
@@ -294,13 +295,38 @@ public class OverworldView extends BaseView {
                 canvas);
         }
 
+        this.renderWeather(this.model.weather, g, canvas);
+
         if (this.model.mapId == 14)
         {
             // make Viridian forest appear darker
-            this.renderDarkness(g, canvas);
+            this.renderDarkness(51, g, canvas);
         }
         else
         {
+            // make screen darker at night
+            if (Utils.getTimeOfDayId() == 1)
+            {
+                int hour =  Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+                
+                if (hour <= 5 || hour >= 20)
+                {
+                    this.renderDarkness(150, g, canvas);
+                }
+                else
+                {
+                    // fade darkness from 7pm to 8pm and 6am to 7am
+                    int minute =  Calendar.getInstance().get(Calendar.MINUTE);
+                    if (hour == 6)
+                    {
+                        this.renderDarkness((int)(150 - minute * 2.5), g, canvas);
+                    }
+                    else
+                    {
+                        this.renderDarkness((int)(minute * 2.5), g, canvas);
+                    } 
+                }
+            }
             this.renderWeather(this.model.weather, g, canvas);
         }
 
@@ -618,9 +644,9 @@ public class OverworldView extends BaseView {
     /**
      * Display a black rectangle over the screen at 20% opacity to make it look darker
      */
-    private void renderDarkness(Graphics g, JPanel canvas)
+    private void renderDarkness(int alpha, Graphics g, JPanel canvas)
     {
-        Color colour = new Color(0, 0, 0, 51);
+        Color colour = new Color(0, 0, 0, alpha);
         g.setColor(colour);
         g.fillRect(0, 0, width, height);
     }

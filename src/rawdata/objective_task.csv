@@ -62,9 +62,9 @@ Achievement ID,Task ID,Objective Type,Counter,Required Value,Identifier,Descript
 47,0,battleWin,0,500,,Win 500 Pokemon battles
 48,0,badges,0,8,,Collect all 8 Kanto gym badges by defeating gym leaders in battle.
 49,0,battleWin,0,30,,Win all battles on the S.S. Anne
-50,0,conversation,0,1,,Win the Cerulean City Pokemon Tournament
-51,0,conversation,0,1,,Win the Vermillion City Pokemon Tournament
-52,0,conversation,0,1,,Win the Celadon City Pokemon Tournament
+50,0,conversation,0,1,82,Win the Cerulean City Pokemon Tournament
+51,0,conversation,0,1,83,Win the Vermillion City Pokemon Tournament
+52,0,conversation,0,1,84,Win the Celadon City Pokemon Tournament
 53,0,conversation,0,1,,Win the Kanto Pokemon League.
 54,0,conversation,0,20,,Win in 20 Pokemon tournaments
 55,0,battleWin,0,5,gary,Defeat Rival Gary in battle 5 times
@@ -86,3 +86,4 @@ Achievement ID,Task ID,Objective Type,Counter,Required Value,Identifier,Descript
 71,0,berryHarvest,0,500,,Harvest 500 berries
 72,0,spendMoney,0,1000000,,Spend 1 million currency
 73,0,quests,0,100,,Complete 100 Quests
+1000,0,conversation,0,1,0,Talk to Professor Oak to get your first Pokemon

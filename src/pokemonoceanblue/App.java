@@ -39,6 +39,7 @@ public class App extends JFrame implements KeyListener
     SummaryModel summaryModel;
     MusicPlayer musicPlayer;
     BaseModel achievementsModel;
+    BaseModel questsModel;
     DayCareModel dayCareModel;
     boolean[] badges = new boolean[8];
     int enemyScalingFactor = 0;
@@ -46,6 +47,7 @@ public class App extends JFrame implements KeyListener
     BaseController currentController;
 
     List<ObjectiveModel> achievements = new ArrayList<ObjectiveModel>();
+    List<ObjectiveModel> quests = new ArrayList<ObjectiveModel>();
     List<NewPokemonModel> newPokemonQueue = new ArrayList<NewPokemonModel>();
     List<BaseModel> modelQueue = new ArrayList<BaseModel>();
 
@@ -125,6 +127,7 @@ public class App extends JFrame implements KeyListener
         this.pokedexModel = new PokedexModel();
         this.pokemonStorageModel = new PokemonStorageModel();
         this.achievementsModel = new BaseModel();
+        this.questsModel = new BaseModel();
         this.evolveCheck = new EvolutionCheck();
         this.dayCareModel = new DayCareModel();
 
@@ -167,7 +170,7 @@ public class App extends JFrame implements KeyListener
             //     ex.printStackTrace();
             //     this.setMap(1, 3, 3);
             // } 
-            this.setMap(20, 5, 5, Direction.DOWN);
+            this.setMap(0, 9, 86, Direction.DOWN);
         }
     }
 
@@ -321,6 +324,13 @@ public class App extends JFrame implements KeyListener
         this.achievementsModel.initialize();
         viewManager.setView(new AchievementsView(achievementsModel, this.achievements));
         this.addModelQueue(this.achievementsModel);
+    }
+
+    public void openQuests()
+    {
+        this.questsModel.initialize();
+        viewManager.setView(new QuestView(questsModel, this.quests));
+        this.addModelQueue(this.questsModel);
     }
 
     public void openController()
@@ -648,6 +658,20 @@ public class App extends JFrame implements KeyListener
                             this.setMap(this.overworldModel.mapId + 1, 7, 7, Direction.DOWN);
                         }
                     }
+
+                    // update quest progress for completing conversations
+                    if (this.overworldModel.completeConversation >= 0)
+                    {
+                        this.quests.forEach((obj) -> obj.incrementCounter("conversation", 1, String.valueOf(this.overworldModel.completeConversation)));
+                        this.overworldModel.completeConversation = -1;
+                    }
+
+                    // add new quests
+                    if (this.overworldModel.questId > 0)
+                    {
+                        this.quests.add(new ObjectiveModel(this.overworldModel.questId));
+                        this.overworldModel.questId = -1;
+                    }
                 }
                 else if (viewManager.getCurrentView().equals("PartyView"))
                 {
@@ -738,6 +762,7 @@ public class App extends JFrame implements KeyListener
                 }
                 else if (viewManager.getCurrentView().equals("PokedexView")
                     || viewManager.getCurrentView().equals("AchievementsView")
+                    || viewManager.getCurrentView().equals("QuestView")
                     || viewManager.getCurrentView().equals("NewPokemonView"))
                 {
                     if (this.currentController != null)

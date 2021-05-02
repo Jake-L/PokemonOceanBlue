@@ -11,7 +11,7 @@ import pokemonoceanblue.ObjectiveModel.ObjectiveTaskModel;
 
 import java.awt.Font;
 
-public class AchievementsView extends BaseView{
+public class AchievementsView extends BaseView {
 
     private BaseModel model;
     List<ObjectiveModel> achievements;
@@ -51,7 +51,7 @@ public class AchievementsView extends BaseView{
     }
 
     /** 
-     * renders the pokedex screen graphics
+     * renders the achievements screen graphics
      * @param g graphics object
      * @param canvas JPanel to draw the images on
      */

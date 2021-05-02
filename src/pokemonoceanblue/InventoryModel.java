@@ -42,9 +42,7 @@ public class InventoryModel extends BaseModel {
         this.addItem(133, 8);
         this.addItem(113, 8);
         this.addItem(116, 8);
-
-        this.optionWidth = 1;
-
+        
         this.initialize();
     }
 

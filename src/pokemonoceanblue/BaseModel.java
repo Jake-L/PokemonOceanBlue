@@ -6,7 +6,7 @@ public class BaseModel {
     public int returnValue;
     public int optionMin = 0;
     public int optionMax;
-    public int optionWidth;
+    public int optionWidth = 1;
     public int optionHeight;
     public final int ACTION_DELAY = 7;
     public int acceleration = -1;

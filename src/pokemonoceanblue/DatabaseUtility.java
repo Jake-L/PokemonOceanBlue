@@ -61,7 +61,7 @@ public class DatabaseUtility
         String path;
 
         // remove all the existing tables first
-        String[] table_list = {
+        String[] tableList = {
             "player_pokemon", "player_location", "conversation_options",
             "evolution_methods",  "pokemon_moves", "pokemon_location", 
             "conversation",  "type_effectiveness", "items", "battle_reward",
@@ -74,7 +74,7 @@ public class DatabaseUtility
             "pokemon",
         };
 
-        for (String t : table_list)
+        for (String t : tableList)
         {
             query = "DROP TABLE IF EXISTS " + t;
             runUpdate(query);
@@ -443,7 +443,8 @@ public class DatabaseUtility
                     mugshot_character VARCHAR(20) NULL,
                     mugshot_background VARCHAR(20) NULL,
                     music_id INT NULL DEFAULT -1,
-                    shop_id INT NULL)
+                    shop_id INT NULL,
+                    quest_id INT NULL)
                 """;
         runUpdate(query);
 
@@ -457,12 +458,12 @@ public class DatabaseUtility
                     gift_pokemon_id, gift_pokemon_level,
                     new_conversation_id,
                     mugshot_character, mugshot_background, music_id,
-                    shop_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    shop_id, quest_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int", 
-            "int", "int", "int", "int", "String", "String", "int", "int"};
+            "int", "int", "int", "int", "String", "String", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

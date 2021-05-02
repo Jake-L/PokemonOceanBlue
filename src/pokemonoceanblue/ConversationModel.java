@@ -501,6 +501,17 @@ public class ConversationModel
         return -1;
     }
 
+    public int getQuestId()
+    {
+        if (this.events.size() > 0)
+        {
+            int questId = this.events.get(0).questId;
+            this.events.get(0).questId = -1;
+            return questId;
+        }
+        return -1;
+    }
+
     class ConversationEvent
     {
         public int conversationEventId;
@@ -522,6 +533,7 @@ public class ConversationModel
         public boolean openParty = false;
         public int withdrawnPokemon = -1;
         public ItemModel item;
+        public int questId;
 
         // variables for moving CPUs
         public int characterId;
@@ -598,6 +610,7 @@ public class ConversationModel
 
             this.musicId = rs.getInt("music_id");
             this.shopId = rs.getInt("shop_id");
+            this.questId = rs.getInt("quest_id");
         }
 
         /**

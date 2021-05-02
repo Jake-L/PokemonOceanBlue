@@ -35,6 +35,8 @@ public class OverworldModel extends BaseModel {
     public DayCareModel dayCareModel;
     public byte weather;
     public String tilesSuffix;
+    public int completeConversation = -1;
+    public int questId;
     
     /** 
      * @param mapId unique identifier for the current map
@@ -61,7 +63,7 @@ public class OverworldModel extends BaseModel {
         {
             // generate random weather when on a large map
             // since most large maps are outside
-            this.weather = (byte)(new Random().nextInt(5));
+            //this.weather = (byte)(new Random().nextInt(5));
         }
     }
 
@@ -231,6 +233,7 @@ public class OverworldModel extends BaseModel {
             // delete the conversation if it is over
             if (this.conversation.isComplete())
             {
+                this.completeConversation = this.conversation.conversationId;
                 this.conversation = null;
                 this.actionCounter = 15;
             }
@@ -457,6 +460,9 @@ public class OverworldModel extends BaseModel {
      */
     private void checkConversationAction()
     {
+        // add a new quest if one is available
+        this.questId = this.conversation.getQuestId();
+
         // show text options
         if (this.conversation.getOptions() != null)
         {
@@ -580,7 +586,6 @@ public class OverworldModel extends BaseModel {
             this.optionIndex = 0;
             this.optionHeight = 0;
             this.optionMax = 0;
-            this.optionWidth = 0;
             this.acceleration = -1;
             this.conversation.nextEvent();
         }
@@ -593,7 +598,7 @@ public class OverworldModel extends BaseModel {
         // open the menu
         else if (this.conversation == null)
         {
-            this.textOptions = new String[]{"Pokedex", "Pokemon", "Bag", "Achievements", "Save"};
+            this.textOptions = new String[]{"Pokedex", "Pokemon", "Bag", "Quests", "Achievements", "Save"};
             this.textOptionIndex = 0;
         }
     }
@@ -616,6 +621,11 @@ public class OverworldModel extends BaseModel {
                 this.openMenu();
                 this.checkConversationAction();
             }
+        }
+        else if (this.textOptions[this.textOptionIndex] == "Quests")
+        {
+            app.openQuests();
+            this.openMenu();
         }
         else if (this.textOptions[this.textOptionIndex] == "Achievements")
         {
