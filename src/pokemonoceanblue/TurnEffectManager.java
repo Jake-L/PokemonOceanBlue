@@ -34,21 +34,19 @@ public class TurnEffectManager
                     }
                 }
             }
+
             // apply type immunity for status effects
-            for (int j = 0; j < defendingPokemon.types.length; j++)
+            // certain types are immune to certain status effects
+            if (((ailmentId == StatusEffect.POISON || ailmentId == StatusEffect.BADLY_POISON) && (Type.typeIncludes(Type.STEEL, defendingPokemon.types) || Type.typeIncludes(Type.POISON, defendingPokemon.types))) 
+                // FIRE types cannot be burned
+                || (ailmentId == StatusEffect.BURN && Type.typeIncludes(Type.FIRE, defendingPokemon.types))
+                // ICE types cannot be frozen
+                || (ailmentId == StatusEffect.FROZEN && Type.typeIncludes(Type.ICE, defendingPokemon.types)))
             {
-                // certain types are immune to certain status effects
-                if (((ailmentId == StatusEffect.POISON || ailmentId == StatusEffect.BADLY_POISON) && (defendingPokemon.types[j] == Type.STEEL || defendingPokemon.types[j] == Type.POISON)) 
-                    // FIRE types cannot be burned
-                    || (ailmentId == StatusEffect.BURN && defendingPokemon.types[j] == Type.FIRE)
-                    // ICE types cannot be frozen
-                    || (ailmentId == StatusEffect.FROZEN && defendingPokemon.types[j] == Type.ICE))
-                {
-                    willFail = true;
-                    // no message displayed when a pokemon is immune to the status effect
-                    break;
-                }
+                // no message displayed when a pokemon is immune to the status effect
+                willFail = true;
             }
+
             if (ailmentId < 9 && !willFail)
             {
                 // create the event to inflict the status effect
@@ -90,7 +88,7 @@ public class TurnEffectManager
             {
                 event = new BattleEvent(defendingPokemon.name + " is trapped in a " + move.name + "!", attacker, (attacker + 1) % 2);
             }
-            else if (effectId == 85 && defendingPokemon.types[0] != Type.GRASS && defendingPokemon.types[defendingPokemon.types.length -1] != Type.GRASS)
+            else if (effectId == 85 && !Type.typeIncludes(Type.GRASS, defendingPokemon.types))
             {
                 event = new BattleEvent(defendingPokemon.name + " is seeded.", attacker, (attacker + 1) % 2);
             }
@@ -235,14 +233,14 @@ public class TurnEffectManager
             {
                 PokemonModel pokemon = team[i][currentPokemon[i]];
                 boolean isImmune = false;
-                for (int j = 0; j < pokemon.types.length; j++)
+
+                if (pokemon.currentHP == 0 
+                    || (weather == 3 && (Type.typeIncludes(Type.STEEL, pokemon.types) || Type.typeIncludes(Type.ROCK, pokemon.types) || Type.typeIncludes(Type.GROUND, pokemon.types))) 
+                    || (weather == 4 && Type.typeIncludes(Type.ICE, pokemon.types)))
                 {
-                    if (pokemon.currentHP == 0 || (weather == 3 && (pokemon.types[j] == Type.STEEL || pokemon.types[j] == Type.ROCK || pokemon.types[j] == Type.GROUND)) ||
-                        (weather == 4 && pokemon.types[j] == Type.ICE))
-                    {
-                        isImmune = true;
-                    }
+                    isImmune = true;
                 }
+
                 if (!isImmune)
                 {
                     events.add(new BattleEvent(pokemon.name + " is hurt by the " + effectMessages[weather + 1], (int)Math.ceil(pokemon.stats[Stat.HP] / 16.0),

@@ -365,8 +365,8 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 364,Sealeo,15,11,90,60,70,75,70,45,0,50,364,It has a very sensitive nose. It touches new things with its nose to examine them.
 365,Walrein,15,11,110,80,90,95,90,65,0,20,365,It shatters drift ice with its strong tusks. Its thick layer of blubber repels enemy attacks.
 366,Clamperl,11,0,35,64,85,74,55,32,2,100,366,When it evolves$ it makes a mysterious pearl that amplifies psychic powers when it's held.
-367,Huntail,11,0,55,104,105,94,75,52,2,25,367,It lives deep in the pitch-dark sea. It attracts prey by moving its tail in mimicry of a small animal.
-368,Gorebyss,11,0,55,84,105,114,75,52,3,25,368,Its pink body becomes more vivid with the rise of water temperatures in the springtime.
+367,Huntail,11,17,55,104,105,94,75,52,2,25,367,It lives deep in the pitch-dark sea. It attracts prey by moving its tail in mimicry of a small animal.
+368,Gorebyss,11,18,55,84,105,114,75,52,3,25,368,Its pink body becomes more vivid with the rise of water temperatures in the springtime.
 369,Relicanth,11,6,100,90,130,45,65,55,2,10,369,Discovered by chance during deep-sea explorations$ it has not changed since ancient times.
 370,Luvdisc,11,0,43,30,55,40,65,97,5,90,370,Its heart-shaped body makes it popular. In some places$ you would give a LUVDISC to someone you love.
 371,Bagon,16,0,45,75,60,40,30,50,1,20,371,Its well-developed neck muscles and ironlike head can smash boulders into pieces.

@@ -194,10 +194,7 @@ public class BattleModel extends BaseModel
             this.actionCounter = 60;
             
             // find the probability of the Pokemon being captured
-            int pokemonCaptureRate = this.team[1][this.currentPokemon[1]].captureRate;
-            double captureChance = (pokemonCaptureRate / 2 - 1) 
-                + (pokemonCaptureRate / 2 + 1) 
-                * (1 - Math.sqrt(this.team[1][this.currentPokemon[1]].currentHP / (double)(this.team[1][this.currentPokemon[1]].stats[Stat.HP])));
+            double captureChance = battleOperationsManager.captureChanceCalc(this.team[1][this.currentPokemon[1]], itemId);
             
             int shakeCount = 3;
 
@@ -1380,7 +1377,7 @@ public class BattleModel extends BaseModel
                 this.optionMax = 0;
                 this.app.openParty(this.currentPokemon[0], true);
             }
-            else if (this.events.size() == 0)
+            else if (this.events.size() == 0 && !this.isCaught)
             {
                 //reset all attack related variables at the end of a turn and load the battle menu
                 this.loadBattleMenu();

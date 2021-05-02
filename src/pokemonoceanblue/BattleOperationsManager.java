@@ -39,4 +39,57 @@ public class BattleOperationsManager {
         }
         return firstAttacker;
     }
+
+    /**
+     * Calculate the probability of the wild Pokemon being captured
+     * @param pokemon
+     * @param itemId
+     * @return
+     */
+    public double captureChanceCalc(PokemonModel pokemon, int itemId)
+    {
+        // find the probability of the Pokemon being captured
+        int pokemonCaptureRate = pokemon.captureRate;
+        double pokeballModifier = 1.0;
+        double statusModifier = 1.0;
+
+        // master ball has 100% capture chance
+        if (itemId == 0)
+        {
+            pokeballModifier = 999;
+        }
+        // ultra ball has 2x catch chance
+        else if (itemId == 1)
+        {
+            pokeballModifier = 2;
+        }
+        // great ball has 1.5x catch chance
+        else if (itemId == 2)
+        {
+            pokeballModifier = 1.5;
+        }
+        // net ball more effective on bug and water types
+        else if (itemId == 5 
+            && (Type.typeIncludes(Type.BUG, pokemon.types) 
+                || Type.typeIncludes(Type.WATER, pokemon.types)))
+        {
+            pokeballModifier = 2;
+        }
+
+        // sleep and freeze give 2x capture chance
+        if (pokemon.statusEffect == StatusEffect.SLEEP || pokemon.statusEffect == StatusEffect.FROZEN)
+        {
+            statusModifier = 2;
+        }
+        // any other status effect gives 1.5x capture chance
+        else if (pokemon.statusEffect != StatusEffect.UNAFFLICTED)
+        {
+            statusModifier = 1.5;
+        }
+
+        double captureChance = pokemonCaptureRate * pokeballModifier * statusModifier
+            - pokemon.level * pokemon.currentHP / (double)(pokemon.stats[Stat.HP]);
+
+        return captureChance;
+    }
 }

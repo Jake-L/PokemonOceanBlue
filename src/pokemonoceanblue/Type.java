@@ -30,7 +30,6 @@ public class Type {
     */ 
     private static float[][] loadTypeChart()
     {
-        System.out.println("loading type chart");
         float[][] typeChart = new float[19][19];
         try
         {
@@ -51,5 +50,24 @@ public class Type {
             e.printStackTrace();
         }
         return typeChart;
+    }
+
+    /**
+     * Checks if a given type is contained in a list of types
+     * @param checkType 
+     * @param typeList
+     * @return true if checkType exists in typeList
+     */
+    public static boolean typeIncludes(int checkType, int[] typeList)
+    {
+        for (int type : typeList)
+        {
+            if (checkType == type)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

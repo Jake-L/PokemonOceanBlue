@@ -596,11 +596,12 @@ public class BattleTests {
         battleModel.confirmSelection();
         assertNull(battleModel.battleOptions);
 
-        // choose a pokeball
-        battleModel.setItem(3);
+        // choose a great ball for 100% catch chance on a caterpie
+        battleModel.setItem(2);
 
         // skip end of turn animations
         updateBattleModel(battleModel, 503);
+        assertTrue(battleModel.isComplete());
         assertEquals(0, battleModel.events.size());
         assertEquals(enemyTeam[0], battleModel.getNewPokemon());
         assertEquals(1, battleModel.getNewPokemon().currentHP);
