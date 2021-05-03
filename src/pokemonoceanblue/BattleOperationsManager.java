@@ -86,9 +86,9 @@ public class BattleOperationsManager {
         {
             statusModifier = 1.5;
         }
-
+        
         double captureChance = pokemonCaptureRate * pokeballModifier * statusModifier
-            - pokemon.level * pokemon.currentHP / (double)(pokemon.stats[Stat.HP]);
+            - (pokemon.level / 10) * pokemon.currentHP / (double)(pokemon.stats[Stat.HP]);
 
         return captureChance;
     }
