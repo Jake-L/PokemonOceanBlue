@@ -18,7 +18,6 @@ public class BattleModel extends BaseModel
     private App app;
     private float[] typeModifier = new float[2];
     public boolean isCaught;
-    public boolean isWild;
     private boolean[] attackMissed = new boolean[2];
     private boolean[] isCrit = new boolean[2];
     public String trainerName;
@@ -33,7 +32,7 @@ public class BattleModel extends BaseModel
     private boolean[] moveProcessed = new boolean[2];
     public int musicId;
     public int badgeIndex = -1;
-    public byte weather;
+    public int weather;
     private ItemModel reward;
     private TurnEffectManager turnEffectManager = new TurnEffectManager();
     private BattleOperationsManager battleOperationsManager = new BattleOperationsManager();
@@ -43,22 +42,20 @@ public class BattleModel extends BaseModel
      * @param opponentTeam the opposing trainers pokemon team
      * @param playerTeam the players pokemon team
      */
-    public BattleModel(PokemonModel[] opponentTeam, PokemonModel[] playerTeam, App app, byte weather)
+    public BattleModel(PokemonModel[] opponentTeam, PokemonModel[] playerTeam, App app, int weather)
     {
         this.team[0] = playerTeam;
         this.team[1] = opponentTeam;
         this.app = app;
-        this.isWild = true;
         this.initializeBattle();
         this.weather = weather;
     }
 
-    public BattleModel(PokemonModel[] playerTeam, int battleId, App app, int enemyScalingFactor, byte weather)
+    public BattleModel(PokemonModel[] playerTeam, int battleId, App app, int enemyScalingFactor, int weather)
     {
         this.team[0] = playerTeam;
         this.loadTeam(battleId, enemyScalingFactor);
         this.app = app;
-        this.isWild = false;
         this.initializeBattle();
         this.weather = weather;
     }
@@ -82,7 +79,7 @@ public class BattleModel extends BaseModel
             firstPokemon++;
         }
 
-        if (this.isWild)
+        if (this.trainerName == null)
         {
             event = new BattleEvent("A wild " + this.team[1][0].name + " appeared!", 1, -1);
         }
@@ -116,12 +113,10 @@ public class BattleModel extends BaseModel
                     case "FIGHT":
                         
                         this.battleOptions = new String[this.team[0][this.currentPokemon[0]].moves.length];
-                
                         for (int i = 0; i < this.team[0][this.currentPokemon[0]].moves.length; i++)
                         {
                             this.battleOptions[i] = String.valueOf(this.team[0][this.currentPokemon[0]].moves[i].name);
-                        } 
-
+                        }
                         this.optionMax = this.battleOptions.length - 1;
                         break;
 
@@ -382,7 +377,7 @@ public class BattleModel extends BaseModel
         }
         // check if Pokemon flinched
         if (!this.unableToMove[attacker])
-        {//TODO: make flinch more like a move effect, can check for it by checking the other sides last move
+        {
             if (this.moveProcessed[(attacker + 1) % 2] && this.attackEvent[(attacker + 1) % 2] != null && this.attackEvent[(attacker + 1) % 2].move != null && 
                 this.ranNum.nextInt(100) + 1 <= this.attackEvent[(attacker + 1) % 2].move.flinchChance)
             {
@@ -523,7 +518,7 @@ public class BattleModel extends BaseModel
                     attacker, 
                     attacker
                 );
-                event.setWeather((byte)(effectId - 136));
+                event.setWeather(effectId - 136);
             }
             this.events.add(event);
         }
@@ -648,17 +643,6 @@ public class BattleModel extends BaseModel
             }
         }
     }
-
-    private int getAccuracy(int attacker, int moveAccuracy)
-    {
-        int defender = (attacker + 1) % 2;
-        if (this.statChanges[attacker][6] == 0 && this.statChanges[defender][7] == 0)
-        {
-            return moveAccuracy;
-        }
-        return (int)(moveAccuracy * (2.0 / (Math.abs(this.statChanges[attacker][6]) + 2)) / 
-            (statChanges[defender][7] > 0 ? (Math.abs(statChanges[defender][7]) + 2) / 2.0 : 2.0 / (Math.abs(statChanges[defender][7]) + 2)));
-    }
     
     /** 
      * @param move the current move of the attacker
@@ -684,31 +668,27 @@ public class BattleModel extends BaseModel
             this.attackMissed[attacker] = true;
             return 0;
         }
-
         if (move.damageClassId == 2)
         {
             attack_stat = Stat.ATTACK;
             defense_stat = Stat.DEFENSE;
         }
-
         else if (move.damageClassId == 3)
         {
             attack_stat = Stat.SPECIAL_ATTACK;
             defense_stat = Stat.SPECIAL_DEFENSE;
         }
-
-        else if (move.accuracy == -1 || this.ranNum.nextInt(100) + 1 <= this.getAccuracy(attacker, move.accuracy))
+        else if (move.accuracy == -1 || this.ranNum.nextInt(100) + 1 <= battleOperationsManager.getAccuracy(attacker, move.accuracy, this.statChanges))
         {
             return 0;
         }
-
         else
         {
             this.attackMissed[attacker] = true;
             return 0;
         }
         //check if attack does not miss
-        if (move.accuracy == -1 || this.ranNum.nextInt(100) + 1 <= this.getAccuracy(attacker, move.accuracy))
+        if (move.accuracy == -1 || this.ranNum.nextInt(100) + 1 <= battleOperationsManager.getAccuracy(attacker, move.accuracy, this.statChanges))
         {
             for (int i = 0; i < defendingPokemon.types.length; i++)
             {
@@ -902,7 +882,7 @@ public class BattleModel extends BaseModel
     {
         if (this.events.size() == 0)
         {
-            if (this.isWild)
+            if (this.trainerName == null)
             {
                 this.battleOptions = new String[3];
                 this.battleOptions[2] = "POKEBALLS";
@@ -940,7 +920,7 @@ public class BattleModel extends BaseModel
             return false;
         }
 
-        if (teamFainted(0) || teamFainted(1) || this.isCaught)
+        if (battleOperationsManager.teamFainted(this.team[0]) || battleOperationsManager.teamFainted(this.team[1]) || this.isCaught)
         {
             //remove confusion/curse
             for (int i = 0; i < this.team[0].length; i++)
@@ -974,7 +954,7 @@ public class BattleModel extends BaseModel
 
     public PokemonModel getNewPokemon()
     {
-        if (this.isComplete() && this.isWild && this.isCaught)
+        if (this.isComplete() && this.trainerName == null && this.isCaught)
         {
             return this.team[1][0];
         }
@@ -1046,7 +1026,7 @@ public class BattleModel extends BaseModel
                     event.setXP(xp);
                     this.events.add(event);
                     //send out enemy's next pokemon if any remain
-                    if (!teamFainted(1))
+                    if (!battleOperationsManager.teamFainted(this.team[1]))
                     {
                         event = new BattleEvent(this.trainerName + " sent out " + this.team[1][this.currentPokemon[1] + 1].name, 1, -1);
                         event.setNewPokemon(this.currentPokemon[1] + 1);
@@ -1071,30 +1051,6 @@ public class BattleModel extends BaseModel
         }
     }
 
-    /**
-     * Determines if all the Pokemon have fainted in one team
-     * @param teamIndex 0 for player's team, 1 for enemy's team
-     * @return true if all of the Pokemon in that team have fainted
-     */
-    private boolean teamFainted(int teamIndex)
-    {
-        int faintedPokemon = 0;
-
-        for (int i = 0; i < this.team[teamIndex].length; i++)
-        {
-            if (this.team[teamIndex][i].currentHP == 0)
-            {
-                faintedPokemon++;
-            }
-
-            if (faintedPokemon == this.team[teamIndex].length)
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     private int xpCalc(int enemyLevel)
     {
         return (int) Math.pow(enemyLevel, 2) * 2;
@@ -1102,7 +1058,7 @@ public class BattleModel extends BaseModel
 
     @Override
     public void update()
-    {
+    {//TODO: Move all code except actionCounter decrement out of update and an if to check if actionCounter is 0
         // switch the current Pokemon
         // do this at the start of counter to show the switching animation
         if (this.actionCounter == 100 && this.events.get(0).newPokemonIndex > -1)
@@ -1220,12 +1176,10 @@ public class BattleModel extends BaseModel
                 this.soundEffect = String.valueOf(this.team[this.events.get(0).attacker][this.events.get(0).newPokemonIndex].pokemon_id);
             }
         }
-
         if (this.actionCounter > 0)
         {
             this.actionCounter--;
         }
-
         // logic that happen at the end of an event
         else if (this.events.size() > 0)
         {
@@ -1322,9 +1276,8 @@ public class BattleModel extends BaseModel
             {
                 this.weather = this.events.get(0).newWeatherId;
             }
-
             //check if player should blackout
-            if (teamFainted(0))
+            if (battleOperationsManager.teamFainted(this.team[0]))
             {
                 boolean eventExists = false;
                 for (int i = this.events.size() - 1; i >= 0; i--)
@@ -1336,12 +1289,11 @@ public class BattleModel extends BaseModel
                 }
                 if (!eventExists)
                 {
-                    this.events.add(new BattleEvent("Player was defeated by " + (this.isWild ? "the wild " + this.team[1][0].name : trainerName) + "!", 0, -1));
+                    this.events.add(new BattleEvent("Player was defeated by " + (this.trainerName == null ? "the wild " + this.team[1][0].name : trainerName) + "!", 0, -1));
                     this.events.add(new BattleEvent("Player blacked out!", 0, -1));
                 }
             }
             this.events.remove(0);
-
             if (this.events.size() > 0)
             {
                 // use a larger counter when sending in Pokemon
@@ -1356,7 +1308,6 @@ public class BattleModel extends BaseModel
                 }
             }
         }
-
         //player sends out new pokemon to replace fainted one or battle returns to battle menu
         else if (this.battleOptions == null && this.actionCounter == 0)
         {
@@ -1373,7 +1324,7 @@ public class BattleModel extends BaseModel
             this.isOneHit = new boolean[2];
             this.attackMissed = new boolean[2];
             this.unableToMove = new boolean[2];
-            if (!teamFainted(0) && this.team[0][this.currentPokemon[0]].currentHP == 0)
+            if (!battleOperationsManager.teamFainted(this.team[0]) && this.team[0][this.currentPokemon[0]].currentHP == 0)
             {
                 this.battleOptions = null;
                 this.optionMax = 0;
@@ -1381,7 +1332,6 @@ public class BattleModel extends BaseModel
             }
             else if (this.events.size() == 0 && !this.isCaught)
             {
-                //reset all attack related variables at the end of a turn and load the battle menu
                 this.loadBattleMenu();
             }
         }

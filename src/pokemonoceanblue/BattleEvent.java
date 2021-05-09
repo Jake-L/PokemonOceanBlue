@@ -13,7 +13,7 @@ public class BattleEvent
     public MoveModel move;
     public int removalCondition;
     public MoveModel newMove;
-    public byte newWeatherId = -1;
+    public int newWeatherId = -1;
     public boolean pokeballShake = false;
 
     /** 
@@ -94,7 +94,7 @@ public class BattleEvent
      * Setter for changing the weather
      * @param newWeatherId
      */
-    public void setWeather(byte newWeatherId)
+    public void setWeather(int newWeatherId)
     {
         this.newWeatherId = newWeatherId;
     }

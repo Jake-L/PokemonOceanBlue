@@ -142,7 +142,7 @@ public class TurnEffectManager
     /** 
      * checks if either pokemon should suffer an end of turn effect
      */
-    public void endOfTurnEffects(PokemonModel team[][], int currentPokemon[], List<BattleEvent> events, byte weather)
+    public void endOfTurnEffects(PokemonModel team[][], int currentPokemon[], List<BattleEvent> events, int weather)
     {
         String[] effectMessages = {" is hurt by burn."," is hurt by poison."," is badly hurt by poison."," is hurt by the curse.","sandstorm.","hail."};
         //check for status effect end of turn effects
