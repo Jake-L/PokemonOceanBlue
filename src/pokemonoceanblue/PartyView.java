@@ -17,7 +17,7 @@ public class PartyView extends BaseView {
     private PartyModel model;
     private Image[] pokemonWindows = new Image[5];
     private Image hpBar;
-    private Image[] faintedPokemonWindows = new Image[3];
+    private Image[] faintedPokemonWindows = new Image[5];
     private Image background;
     private Image[] statusEffectImages = new Image[8];
     private Map<String, Image> pokemonIconSprite = new HashMap<String, Image>();
@@ -168,11 +168,15 @@ public class PartyView extends BaseView {
      */
     private void renderPokemonWindow(PokemonModel pokemon, int renderIndex, int x, int y, Graphics g, JPanel canvas)
     {
-        Image windowImage = this.faintedPokemonWindows[renderIndex];
-
-        if (renderIndex == 3 || pokemon.currentHP > 0)
+        Image windowImage;
+        
+        if (pokemon.currentHP > 0)
         {
             windowImage = this.pokemonWindows[renderIndex];
+        }
+        else
+        {
+            windowImage = this.faintedPokemonWindows[renderIndex];
         }
 
         g.drawImage(windowImage,
