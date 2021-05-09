@@ -44,17 +44,6 @@ public class PokemonModel
         this.shiny = shiny;
         this.genderId = new Random().nextInt(2);
 
-        if (level > 0)
-        {
-            this.stepCounter = 500;
-            this.xp = (int) Math.pow(level, 3);
-            this.loadMoves();
-        }
-        else
-        {
-            this.stepCounter = 1500;
-        }
-
         // generate random IVs from 0 to 15
         Random rand = new Random();
         for (int i = 0; i < ivs.length; i++)
@@ -63,6 +52,17 @@ public class PokemonModel
         }
 
         this.loadStats();
+
+        if (level > 0)
+        {
+            this.stepCounter = 500;
+            this.xp = this.calcXP(0);
+            this.loadMoves();
+        }
+        else
+        {
+            this.stepCounter = 1500;
+        }
     }
 
     /** 
