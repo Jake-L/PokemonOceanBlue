@@ -5,6 +5,39 @@ import java.util.Random;
 public class BattleOperationsManager {
     Random ranNum = new Random();
 
+    public int getAccuracy(int attacker, int moveAccuracy, int[][] statChanges)
+    {
+        int defender = (attacker + 1) % 2;
+        if (statChanges[attacker][6] == 0 && statChanges[defender][7] == 0)
+        {
+            return moveAccuracy;
+        }
+        return (int)(moveAccuracy * (2.0 / (Math.abs(statChanges[attacker][6]) + 2)) / 
+            (statChanges[defender][7] > 0 ? (Math.abs(statChanges[defender][7]) + 2) / 2.0 : 2.0 / (Math.abs(statChanges[defender][7]) + 2)));
+    }
+
+    /**
+     * Determines if all the Pokemon in team have fainted
+     * @param team the team that is being looked at (player team or enemy team)
+     * @return true if all of the Pokemon in team have fainted
+     */
+    public boolean teamFainted(PokemonModel[] team)
+    {
+        int faintedPokemon = 0;
+        for (int i = 0; i < team.length; i++)
+        {
+            if (team[i].currentHP == 0)
+            {
+                faintedPokemon++;
+            }
+            if (faintedPokemon == team.length)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public int determineFirstAttacker(PokemonModel playerPokemon, PokemonModel enemyPokemon, int playerMoveIndex, int enemyMoveIndex,
                                       int playerSpeed, int enemySpeed)
     {
