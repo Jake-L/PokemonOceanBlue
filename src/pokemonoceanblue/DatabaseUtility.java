@@ -101,7 +101,8 @@ public class DatabaseUtility
                     iv_gain INT NOT NULL,
                     capture_rate INT NOT NULL,
                     base_pokemon_id INT NOT NULL,
-                    [description] VARCHAR(130) NULL)
+                    [description] VARCHAR(130) NULL,
+                    level_modifier FLOAT NOT NULL)
                 """;
         runUpdate(query);
 
@@ -115,12 +116,12 @@ public class DatabaseUtility
                     defense, special_attack,
                     special_defense, speed,
                     iv_gain, capture_rate,
-                    base_pokemon_id, [description])
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    base_pokemon_id, [description], level_modifier)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         dataTypes = new String[] {"int", "String", "int", "int", "int", "int", 
-            "int", "int", "int", "int", "int", "int", "int", "String"};
+            "int", "int", "int", "int", "int", "int", "int", "String", "float"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

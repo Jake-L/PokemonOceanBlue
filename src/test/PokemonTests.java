@@ -90,4 +90,34 @@ public class PokemonTests {
         pokemon.checkFormChange((byte)4, (byte)0);
         assertEquals(pokemon.types[0], Type.ICE);
     }
+
+    @Test
+    /**
+     * Check that different Pokemon need different amounts of XP
+     * to reach level 100
+     */
+    public void testLevelModifier() {
+        // mewtwo should need 1,250,000 xp to reach level 100
+        // and 1,212,574 xp to reach level 99
+        PokemonModel pokemon = new PokemonModel(150, 0, false);
+        pokemon.addXP(1212873);
+        assertEquals(98, pokemon.level);
+        pokemon.addXP(1);
+        assertEquals(99, pokemon.level);
+        pokemon.addXP(1000000);
+        assertEquals(100, pokemon.level);
+
+        // test the above conditions using calcXP instead
+        pokemon = new PokemonModel(150, 99, false);
+        assertEquals(1212874, pokemon.calcXP(0));
+        assertEquals(1250000, pokemon.calcXP(1));
+
+        // smeargle should need 500,000 xp to reach level 100
+        pokemon = new PokemonModel(235, 100, false);
+        assertEquals(500000, pokemon.calcXP(0));
+
+        // bulbasaur should need 1,050,000 xp to reach level 100
+        pokemon = new PokemonModel(1, 100, false);
+        assertEquals(1050000, pokemon.calcXP(0));
+    }
 }

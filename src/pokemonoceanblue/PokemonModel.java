@@ -10,8 +10,9 @@ public class PokemonModel
     public int pokemon_id;
     public int base_pokemon_id;
     String name;
-    int xp;
+    public int xp;
     public int level;
+    public double levelModifier;
     public byte statusEffect = 0;
 
     public int[] types;
@@ -127,9 +128,40 @@ public class PokemonModel
     /** 
      * Recalculates a Pokemon's level based off it's current experience
      */
-    private void calcLevel()
+    private int calcLevel()
     {
-        this.level = (int) Math.floor(Math.cbrt(xp));
+        int level = 0;
+        level = (int) Math.floor(Math.cbrt(this.xp * (1 / this.levelModifier)));
+
+        // if the pokemon has any xp at all, it cannot be level 0
+        if (xp > 0)
+        {
+            level = Math.max(level, 1);
+        }
+
+        // can't exceed level 100
+        level = Math.min(level, 100);
+
+        return level;
+    }
+
+    /**
+     * Calculates the minimum amount of XP needed for a specific level
+     * @param levelOffset the amount to offset the Pokemon's level by
+     * @return the minimum amount of XP needed 
+     */
+    public int calcXP(int levelOffset)
+    {
+        int level = this.level + levelOffset;
+
+        if (level > 100)
+        {
+            return 1000000000;
+        }
+        else
+        {
+            return (int)Math.ceil(Math.pow(level, 3.0) * this.levelModifier);
+        }
     }
 
     /**
@@ -141,7 +173,7 @@ public class PokemonModel
     {
         int oldLevel = this.level;
         this.xp += xp;
-        this.calcLevel();
+        this.level = this.calcLevel();
         
         if (oldLevel < this.level)
         {
@@ -369,6 +401,7 @@ public class PokemonModel
             this.name = rs.getString("name").toUpperCase();
             this.ivGain = rs.getInt("iv_gain");
             this.captureRate = rs.getInt("capture_rate");
+            this.levelModifier = rs.getDouble("level_modifier");
 
             // check if the Pokemon has one type or two
             if (rs.getInt("type2") == 0)

@@ -288,8 +288,8 @@ public class BattleView extends BaseView {
             this.renderPokemonStatusWindow(0, g, canvas);
 
             //renders player xp bar fill
-            int xpMin = (int) Math.pow(this.model.team[0][this.model.currentPokemon[0]].level, 3.0);
-            int xpMax = (int) Math.pow(this.model.team[0][this.model.currentPokemon[0]].level + 1, 3.0);
+            int xpMin = this.model.team[0][this.model.currentPokemon[0]].calcXP(0);
+            int xpMax = this.model.team[0][this.model.currentPokemon[0]].calcXP(1);
             int xpCurrent = this.model.team[0][this.model.currentPokemon[0]].xp;
 
             if (this.model.events.size() > 0)

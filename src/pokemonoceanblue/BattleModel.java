@@ -1140,7 +1140,7 @@ public class BattleModel extends BaseModel
             if (this.team[attacker][this.currentPokemon[attacker]].statusEffect > 0)
             {
                 // add a multi turn effect for the new status effect
-                MoveEffectModel moveEffect = new MoveEffectModel(this.events.get(0).statusEffect);
+                MoveEffectModel moveEffect = new MoveEffectModel(this.team[attacker][this.currentPokemon[attacker]].statusEffect);
                 MultiTurnEffect effect = turnEffectManager.new MultiTurnEffect(null, moveEffect, this.events.get(0).target, this.team, this.currentPokemon);
                 turnEffectManager.multiTurnEffects.add(effect);
             }
@@ -1231,48 +1231,7 @@ public class BattleModel extends BaseModel
         {
             if (this.events.get(0).xp > 0)
             {
-                int xpGain = this.events.get(0).xp;
-                int xpMax = (int) Math.pow(this.team[0][this.currentPokemon[0]].level + 1, 3.0);
-                List<MoveModel> newMoves;
-            
-                // check if the pokemon levels up from the xp gain
-                if (this.team[0][this.currentPokemon[0]].xp + xpGain >= xpMax)
-                {
-                    BattleEvent event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " reached level " + (this.team[0][this.currentPokemon[0]].level + 1) + "!", 0, 0);
-                    this.events.add(1, event);   
-
-                    // add a new event that shows the progress bar moving with XP remaining after leveling up
-                    event = new BattleEvent("", 0, 0);
-                    event.setXP(xpGain + this.team[0][this.currentPokemon[0]].xp - xpMax);
-                    this.events.add(2, event);
-
-                    // add events for any new moves that the Pokemon learned from leveling up
-                    newMoves = this.team[0][this.currentPokemon[0]].addXP(xpMax - this.team[0][this.currentPokemon[0]].xp);
-                    for (int i = 0; i < newMoves.size(); i++)
-                    {
-                        // learn the move immediately if they have any open slots
-                        if (this.team[0][this.currentPokemon[0]].addMove(newMoves.get(i)))
-                        {
-                            this.events.add(2, new BattleEvent(this.team[0][this.currentPokemon[0]].name + " learned " + newMoves.get(i).name + "!", 0, 0));
-                        }
-                        // otherwise the player will need to choose a move to replace
-                        else
-                        {
-                            event = new BattleEvent(
-                                this.team[0][this.currentPokemon[0]].name + " wants to learn " + newMoves.get(i).name + ", however it already knows four moves.", 
-                                0, 0);
-                            event.setNewMove(newMoves.get(i));
-                            this.events.add(2, event);
-                        }
-                    }
-                    // flag that the pokemon leveled up and may evolve
-                    this.evolveQueue[this.currentPokemon[0]] = true;
-                }
-                else
-                {
-                    // add the remianing XP that isn't enough to level up
-                    this.team[0][this.currentPokemon[0]].addXP(this.events.get(0).xp);
-                }
+                this.addXPGainEvents();
             }
             else if (this.events.get(0).statusEffect > -1)
             {
@@ -1384,6 +1343,56 @@ public class BattleModel extends BaseModel
                 //reset all attack related variables at the end of a turn and load the battle menu
                 this.loadBattleMenu();
             }
+        }
+    }
+
+    /**
+     * Add events for awarding a Pokemon XP
+     * and add events for learning new moves if necessary
+     */
+    private void addXPGainEvents()
+    {
+        int xpGain = this.events.get(0).xp;
+        int xpMax = this.team[0][this.currentPokemon[0]].calcXP(1);
+        List<MoveModel> newMoves;
+    
+        // check if the pokemon levels up from the xp gain
+        if (this.team[0][this.currentPokemon[0]].xp + xpGain >= xpMax)
+        {
+            BattleEvent event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " reached level " + (this.team[0][this.currentPokemon[0]].level + 1) + "!", 0, 0);
+            this.events.add(1, event);   
+
+            // add a new event that shows the progress bar moving with XP remaining after leveling up
+            event = new BattleEvent("", 0, 0);
+            event.setXP(xpGain + this.team[0][this.currentPokemon[0]].xp - xpMax);
+            this.events.add(2, event);
+
+            // add events for any new moves that the Pokemon learned from leveling up
+            newMoves = this.team[0][this.currentPokemon[0]].addXP(xpMax - this.team[0][this.currentPokemon[0]].xp);
+            for (int i = 0; i < newMoves.size(); i++)
+            {
+                // learn the move immediately if they have any open slots
+                if (this.team[0][this.currentPokemon[0]].addMove(newMoves.get(i)))
+                {
+                    this.events.add(2, new BattleEvent(this.team[0][this.currentPokemon[0]].name + " learned " + newMoves.get(i).name + "!", 0, 0));
+                }
+                // otherwise the player will need to choose a move to replace
+                else
+                {
+                    event = new BattleEvent(
+                        this.team[0][this.currentPokemon[0]].name + " wants to learn " + newMoves.get(i).name + ", however it already knows four moves.", 
+                        0, 0);
+                    event.setNewMove(newMoves.get(i));
+                    this.events.add(2, event);
+                }
+            }
+            // flag that the pokemon leveled up and may evolve
+            this.evolveQueue[this.currentPokemon[0]] = true;
+        }
+        else
+        {
+            // add the remianing XP that isn't enough to level up
+            this.team[0][this.currentPokemon[0]].addXP(this.events.get(0).xp);
         }
     }
 
