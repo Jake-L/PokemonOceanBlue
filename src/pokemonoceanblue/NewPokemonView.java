@@ -3,6 +3,7 @@ package pokemonoceanblue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Color;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
@@ -78,7 +79,7 @@ public class NewPokemonView extends BaseView {
             {
                 // load a copy of the Pokemon's sprite recoloured white
                 this.pokemonBufferedSprite[i] = ImageIO.read(this.getClass().getResource("/pokemon/frame0/" + id + ".png"));   
-                this.pokemonBufferedSprite[i] = this.colorImage(this.pokemonBufferedSprite[i], 255, 255, 255);
+                this.pokemonBufferedSprite[i] = this.colorImage(this.pokemonBufferedSprite[i], Color.WHITE.getRGB());
             }
             catch (IOException e)
             {

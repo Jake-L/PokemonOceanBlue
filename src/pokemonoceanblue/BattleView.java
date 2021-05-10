@@ -80,7 +80,7 @@ public class BattleView extends BaseView {
             {
                 // load a copy of the Pokemon's sprite recoloured white
                 this.pokemonBufferedSprite[0][i] = ImageIO.read(this.getClass().getResource("/pokemonback/frame0/" + this.model.team[0][i].getSpriteId() + ".png"));   
-                this.pokemonBufferedSprite[0][i] = this.colorImage(this.pokemonBufferedSprite[0][i], 255, 255, 255);
+                this.pokemonBufferedSprite[0][i] = this.colorImage(this.pokemonBufferedSprite[0][i], Color.WHITE.getRGB());
             }
             catch (IOException e)
             {
@@ -102,7 +102,7 @@ public class BattleView extends BaseView {
             {
                 // load a copy of the Pokemon's sprite recoloured white
                 this.pokemonBufferedSprite[1][i] = ImageIO.read(this.getClass().getResource("/pokemon/frame0/" + this.model.team[1][i].getSpriteId() + ".png"));   
-                this.pokemonBufferedSprite[1][i] = this.colorImage(this.pokemonBufferedSprite[1][i], 255, 255, 255);
+                this.pokemonBufferedSprite[1][i] = this.colorImage(this.pokemonBufferedSprite[1][i], Color.WHITE.getRGB());
             }
             catch (IOException e)
             {
