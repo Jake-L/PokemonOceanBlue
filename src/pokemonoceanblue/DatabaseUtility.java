@@ -363,6 +363,8 @@ public class DatabaseUtility
                     area_id INT NOT NULL,
                     pokemon_id INT NOT NULL,
                     tile_id INT NOT NULL,
+                    rarity INT NOT NULL,
+                    time_of_day INT NULL,
                     FOREIGN KEY(map_id) REFERENCES map_template(map_id),
                     FOREIGN KEY(pokemon_id) REFERENCES pokemon(pokemon_id))
                 """;
@@ -372,14 +374,12 @@ public class DatabaseUtility
         path = "/rawdata/pokemonLocation.csv";
         query = """
                 INSERT INTO pokemon_location (
-                    map_id, 
-                    area_id,
-                    pokemon_id,
-                    tile_id)
-                VALUES (?, ?, ?, ?)
+                    map_id, area_id, pokemon_id,
+                    tile_id, rarity, time_of_day)
+                VALUES (?, ?, ?, ?, ?, ?)
                 """;
         
-        dataTypes = new String[] {"int", "int", "int", "int"};
+        dataTypes = new String[] {"int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

@@ -8,8 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.HashMap;
-import java.util.Map;
 
 public class OverworldModel extends BaseModel {
     public int mapId;
@@ -22,7 +20,7 @@ public class OverworldModel extends BaseModel {
     public List<BerryModel> plantedBerries = new ArrayList<BerryModel>();
     public ConversationModel conversation;
     private App app;
-    private Map<Integer, List<Integer>> wildPokemon = new HashMap<Integer, List<Integer>>();
+    private WildPokemonModel wildPokemon;
     private List<ConversationTriggerModel> conversationTrigger = new ArrayList<ConversationTriggerModel>();
     private int areaId = -1;
     private List<AreaModel> areas = new ArrayList<AreaModel>();
@@ -50,8 +48,8 @@ public class OverworldModel extends BaseModel {
         this.dayCareModel = dayCareModel;
         
         this.readMapFile();
-        this.loadWildPokemon();
         this.loadMapObjects();
+        this.wildPokemon = new WildPokemonModel(this.mapId);
         this.loadPortals();
         this.loadCharacters();
         this.loadConversationTriggers();
@@ -535,16 +533,16 @@ public class OverworldModel extends BaseModel {
         this.checkArea(x, y);
 
         // check for wild Pokemon encounters
-        int index = this.areaId * 1000 + this.tiles[y][x];
-        if (this.wildPokemon.get(index) != null)
+        Random rand = new Random();
+        if (rand.nextInt(5) == 1)
         {
-            Random rand = new Random();
-            int n = rand.nextInt(this.wildPokemon.get(index).size() * 5);
-            if (n < this.wildPokemon.get(index).size())
+            int pokemonId = this.wildPokemon.getPokemonId(this.areaId, this.tiles[y][x]);
+            if (pokemonId > -1)
             {
-                this.app.createWildBattle(this.wildPokemon.get(index).get(n), 5, false);
+                this.app.createWildBattle(pokemonId, 5, false);
             }
         }
+
         // player is no longer surfing when they step onto solid land
         if (this.tiles[y][x] > 1)
         {
@@ -679,35 +677,6 @@ public class OverworldModel extends BaseModel {
     public void exitScreen()
     {
         this.openMenu();
-    }
-
-    /** 
-     * load a list of wild pokemon that can appear on the current map
-     */
-    private void loadWildPokemon()
-    {
-        try
-        {
-            DatabaseUtility db = new DatabaseUtility();
-
-            String query = "SELECT area_id, tile_id, pokemon_id FROM pokemon_location WHERE map_id = " + this.mapId;
-
-            ResultSet rs = db.runQuery(query);
-
-            while(rs.next()) 
-            {
-                int indexId = rs.getInt("area_id") * 1000 + rs.getInt("tile_id");
-                if (this.wildPokemon.get(indexId) == null)
-                {
-                    this.wildPokemon.put(indexId, new ArrayList<Integer>());
-                }
-                this.wildPokemon.get(indexId).add(rs.getInt("pokemon_id"));
-            }            
-        }
-        catch (SQLException e) 
-        {
-            e.printStackTrace();
-        }  
     }
 
     /** 
