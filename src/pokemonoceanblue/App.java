@@ -170,7 +170,7 @@ public class App extends JFrame implements KeyListener
             //     ex.printStackTrace();
             //     this.setMap(1, 3, 3);
             // } 
-            this.setMap(0, 9, 86, Direction.DOWN);
+            this.setMap(49, 12, 1, Direction.DOWN);
         }
     }
 
