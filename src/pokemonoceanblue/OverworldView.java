@@ -20,6 +20,7 @@ public class OverworldView extends BaseView {
 
     private OverworldModel model;
     private Image[] tileSprite = new Image[128];
+    private Image[] overlayTileSprite = new Image[128];
     private Map<String, Image> animatedTileSprite = new HashMap<String, Image>();
     private Map<String, Image> mapObjectSprite = new HashMap<String, Image>();
     private Map<String, Image> characterSprite = new HashMap<String, Image>();
@@ -68,7 +69,14 @@ public class OverworldView extends BaseView {
                     animatedTileSprite.put(String.format("%s-%s", i, j), ii.getImage());
                 }
             }
-            
+            // load overlay tiles
+            // TODO: fill in gaps with images in tilesOverlay folder and add animated tiles functionality in overlay
+            // TODO: add rocks (land and sea) to overlay, since rocks have moving water beneath and above ground rocks can be on dif terrain
+            if ((i >= 40 && i <= 65 && i != 44 && i != 57) || (i >= 92 && i <= 103))
+            {
+                ii = new ImageIcon(this.getClass().getResource(String.format("/tilesOverlay/%s.png", i)));
+                overlayTileSprite[i] = ii.getImage();
+            }
         }
 
         for (int i = 0; i < this.model.mapObjects.size(); i++) 
@@ -221,7 +229,7 @@ public class OverworldView extends BaseView {
         {
             for (int x = 0 + Math.max(xOffset / 16,0); x < Math.min(model.tiles[y].length, this.model.playerModel.getX() + width / (16 * graphicsScaling)); x++)
             {
-                renderTile(g, canvas, Math.abs(this.model.tiles[y][x]), x, y);
+                renderTile(g, canvas, Math.abs(this.model.tiles[y][x]), x, y, false);
             }
         }
 
@@ -234,7 +242,7 @@ public class OverworldView extends BaseView {
                 {
                     if (this.model.tilesOverlay[y][x] != 0)
                     {
-                        renderTile(g, canvas, Math.abs(this.model.tilesOverlay[y][x]), x, y);
+                        renderTile(g, canvas, Math.abs(this.model.tilesOverlay[y][x]), x, y, true);
                     }
                 }
             }
@@ -418,12 +426,17 @@ public class OverworldView extends BaseView {
      * @param tileId the id the for the tile to be rendered
      * @param x x-coordinate of the tile
      * @param y y-coordinate of the tile
+     * @param isOverlay whether the tile to be rendered is apart of the overlay
      */
-    private void renderTile(Graphics g, JPanel canvas, int tileId, int x, int y)
+    private void renderTile(Graphics g, JPanel canvas, int tileId, int x, int y, boolean isOverlay)
     {
         Image sprite;
         int animatedIndex = Arrays.binarySearch(ANIMATED_TILES, tileId);
-        if (animatedIndex >= 0)
+        if (isOverlay)
+        {
+            sprite = overlayTileSprite[tileId];
+        }
+        else if (animatedIndex >= 0)
         {
             // get animated sprite
             sprite = animatedTileSprite.get(String.format("%s-%s", 
