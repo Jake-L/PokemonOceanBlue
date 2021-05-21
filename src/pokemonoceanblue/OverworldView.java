@@ -72,7 +72,7 @@ public class OverworldView extends BaseView {
             // load overlay tiles
             // TODO: fill in gaps with images in tilesOverlay folder and add animated tiles functionality in overlay
             // TODO: add rocks (land and sea) to overlay, since rocks have moving water beneath and above ground rocks can be on dif terrain
-            if ((i >= 40 && i <= 65 && i != 44 && i != 57) || (i >= 92 && i <= 103))
+            if ((i >= 40 && i <= 65 && i != 44 && i != 57) || (i >= 92 && i <= 104) || (i >= 1 && i <= 8))
             {
                 ii = new ImageIcon(this.getClass().getResource(String.format("/tilesOverlay/%s.png", i)));
                 overlayTileSprite[i] = ii.getImage();
@@ -240,7 +240,7 @@ public class OverworldView extends BaseView {
             {
                 for (int x = 0 + Math.max(xOffset / 16,0); x < Math.min(model.tilesOverlay[y].length, this.model.playerModel.getX() + width / (16 * graphicsScaling)); x++)
                 {
-                    if (this.model.tilesOverlay[y][x] != 0)
+                    if (this.model.tilesOverlay[y][x] > 0)
                     {
                         renderTile(g, canvas, Math.abs(this.model.tilesOverlay[y][x]), x, y, true);
                     }
@@ -301,6 +301,21 @@ public class OverworldView extends BaseView {
                 sprite.getWidth(null) * graphicsScaling, 
                 sprite.getHeight(null) * graphicsScaling, 
                 canvas);
+        }
+
+        // display overlay tiles
+        if (this.model.tilesOverlay != null)
+        {
+            for (int y = 0 + Math.max(yOffset / 16,0); y < Math.min(model.tilesOverlay.length, this.model.playerModel.getY() + height / (16 * graphicsScaling)); y++)
+            {
+                for (int x = 0 + Math.max(xOffset / 16,0); x < Math.min(model.tilesOverlay[y].length, this.model.playerModel.getX() + width / (16 * graphicsScaling)); x++)
+                {
+                    if (this.model.tilesOverlay[y][x] < 0)
+                    {
+                        renderTile(g, canvas, Math.abs(this.model.tilesOverlay[y][x]), x, y, true);
+                    }
+                }
+            }
         }
 
         this.renderWeather(this.model.weather, g, canvas);
