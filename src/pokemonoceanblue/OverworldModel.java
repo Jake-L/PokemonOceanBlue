@@ -35,6 +35,7 @@ public class OverworldModel extends BaseModel {
     public String tilesSuffix;
     public int completeConversation = -1;
     public int questId;
+    public NotificationModel notification;
     
     /** 
      * @param mapId unique identifier for the current map
@@ -285,6 +286,16 @@ public class OverworldModel extends BaseModel {
                 this.plantedBerries.remove(i);
             }
         }
+
+        // update notification
+        if (this.notification != null)
+        {
+            this.notification.update();
+            if (this.notification.isComplete())
+            {
+                this.notification = null;
+            }
+        }
     }
 
     /** 
@@ -507,6 +518,12 @@ public class OverworldModel extends BaseModel {
                     this.areaId = area.areaId;
                     this.battleBackgroundId = area.battleBackgroundId;
                     this.app.playSong(area.musicId, false);
+
+                    if (area.name != null)
+                    {
+                        this.notification = new NotificationModel(area.name, 1);
+                    }
+                    
                     break;
                 }
             }
@@ -539,7 +556,7 @@ public class OverworldModel extends BaseModel {
             int pokemonId = this.wildPokemon.getPokemonId(this.areaId, this.tiles[y][x]);
             if (pokemonId > -1)
             {
-                this.app.createWildBattle(pokemonId, 5, false);
+                this.app.createWildBattle(pokemonId, 2 + rand.nextInt(4), false);
             }
         }
 

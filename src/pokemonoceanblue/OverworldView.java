@@ -34,6 +34,7 @@ public class OverworldView extends BaseView {
     private Image mugshotLightningSprite;
     private Image mugshotVsSprite;
     private Image[] inventoryBorder = new Image[9];
+    private Image[] notificationBorder = new Image[9];
     
     /** 
      * Constructor for the overworld view
@@ -192,6 +193,9 @@ public class OverworldView extends BaseView {
         {
             ii = new ImageIcon(this.getClass().getResource("/inventory/border" + i + ".png"));
             inventoryBorder[i]  = ii.getImage();
+
+            ii = new ImageIcon(this.getClass().getResource("/menus/notificationBorder" + i + ".png"));
+            notificationBorder[i]  = ii.getImage();
         }
     }
 
@@ -431,6 +435,30 @@ public class OverworldView extends BaseView {
         {
             this.renderShop(g, canvas);
         }
+
+        // display notifications
+        if (this.model.notification != null)
+        {
+            int fontSize = Math.max(16, height / 10);
+            Font font = new Font("Pokemon Fire Red", Font.PLAIN, fontSize);      
+            g.setFont(font);
+            int textWidth = g.getFontMetrics(font).stringWidth(this.model.notification.text);
+
+            this.displayTextbox(
+                notificationBorder, 
+                0, 
+                (-50 + this.model.notification.getYOffset()) * graphicsScaling, 
+                textWidth + 32 * graphicsScaling,
+                32 * graphicsScaling, 
+                g, canvas
+            );
+
+            g.drawString(
+                this.model.notification.text, 
+                8 * graphicsScaling, 
+                (-50 + this.model.notification.getYOffset() * graphicsScaling) - fontSize * 2 / 3
+            );
+        }
     }
 
     /**
@@ -595,7 +623,7 @@ public class OverworldView extends BaseView {
             this.xOffset = this.calcOffsetAux(player.getRenderX(), player.getDx(), width, model.tiles[player.getY()].length);
         }
         // shift the x offset while the player moves
-        else if (player.getMovementCounter() >= 0)
+        else if (player.getMovementCounter() >= 0 && player.getDx() != 0)
         {
             int newXOffset = this.calcOffsetAux(player.getRenderX(), player.getDx(), width, model.tiles[player.getY()].length);
 
@@ -614,7 +642,7 @@ public class OverworldView extends BaseView {
             this.yOffset = this.calcOffsetAux(player.getRenderY(), player.getDy(), height, columnHeight(player.getX()));
         }
         // shift the y offset while the player moves
-        else if (player.getMovementCounter() >= 0)
+        else if (player.getMovementCounter() >= 0 && player.getDy() != 0)
         {
             int newYOffset = this.calcOffsetAux(player.getRenderY(), player.getDy(), height, columnHeight(player.getX()));
 

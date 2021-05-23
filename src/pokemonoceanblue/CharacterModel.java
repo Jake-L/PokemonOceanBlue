@@ -147,6 +147,8 @@ public class CharacterModel {
             // toggle animation offset between 0 and 1
             animationOffset = Math.abs(animationOffset - 1);
 
+            Direction oldDirection = this.direction;
+
             // set the players direction, even if they aren't able to move
             if (dx > 0)
             {
@@ -165,8 +167,15 @@ public class CharacterModel {
                 this.direction = Direction.DOWN;
             }
 
+            // if the player quickly taps a direction key, they can change direction without moving
+            if (this.spriteName == "red" && oldDirection != this.direction)
+            {
+                this.movementCounter = 2;
+                return;
+            }
+
             // animate the player walking, even if they can't move
-            this.movementCounter = 16;
+            this.movementCounter = 16;            
 
             // check if the space they want to move into is open
             // check x direction
