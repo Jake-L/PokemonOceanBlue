@@ -36,6 +36,7 @@ public class BattleModel extends BaseModel
     private ItemModel reward;
     private TurnEffectManager turnEffectManager = new TurnEffectManager();
     private BattleOperationsManager battleOperationsManager = new BattleOperationsManager();
+    public boolean reloadSprites = false;
 
     /** 
      * Constructor
@@ -505,7 +506,8 @@ public class BattleModel extends BaseModel
         if (effectId < 141 && effectId > 136)
         {
             BattleEvent event;
-            if (this.weather == effectId - 136 || (effectId == 137 && Utils.getTimeOfDayId() == 1))
+            // changing the weather fails if the same weather already exists
+            if (this.weather == effectId - 136)
             {
                 event = new BattleEvent("But it failed.", attacker, attacker);
             }
@@ -1230,10 +1232,19 @@ public class BattleModel extends BaseModel
             {
                 this.app.openSummaryNewMove(this.currentPokemon[0], this.events.get(0).newMove);
             }
-            //change weather
+            // change weather
             else if (this.events.get(0).newWeatherId > -1)
             {
                 this.weather = this.events.get(0).newWeatherId;
+                // check if any Pokemon changed forms from the weather change
+                for (int i = 0; i < this.team.length; i++)
+                {
+                    if (this.team[i][this.currentPokemon[i]].checkFormChange((byte)this.weather, (byte)-1))
+                    {
+                        this.events.add(1, new BattleEvent(this.team[i][this.currentPokemon[i]].name + " transformed!", i, i));
+                        this.reloadSprites = true;
+                    }
+                }
             }
             //check if player should blackout
             if (battleOperationsManager.teamFainted(this.team[0]))

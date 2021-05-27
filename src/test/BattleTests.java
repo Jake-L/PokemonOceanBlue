@@ -12,6 +12,7 @@ import org.junit.Test;
 import pokemonoceanblue.BattleModel;
 import pokemonoceanblue.MoveModel;
 import pokemonoceanblue.PokemonModel;
+import pokemonoceanblue.Type;
 
 public class BattleTests {
     /**
@@ -605,6 +606,35 @@ public class BattleTests {
         assertEquals(0, battleModel.events.size());
         assertEquals(enemyTeam[0], battleModel.getNewPokemon());
         assertEquals(1, battleModel.getNewPokemon().currentHP);
+    }
+
+    @Test
+    /**
+     * Check that Castform's type changes correctly based on the weather
+     */
+    public void testCastform() {
+        // default Castform type is NORMAL
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(351, 100, false);
+        team[0].moves[0] = new MoveModel(240);
+        team[0].moves[1] = new MoveModel(241);
+        team[0].moves[2] = new MoveModel(258);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(10, 1, false);
+        assertEquals(team[0].types[0], Type.NORMAL);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, new DummyApp(), 0);
+
+        // changes to FIRE after using Sunny Day
+        this.chooseAttack(battleModel, 1);
+        assertEquals(team[0].types[0], Type.FIRE);
+
+        // changes to WATER after using Rain Dance
+        this.chooseAttack(battleModel, 0);
+        assertEquals(team[0].types[0], Type.WATER);
+
+        // changes to ICE after using Hail
+        this.chooseAttack(battleModel, 2);
+        assertEquals(team[0].types[0], Type.ICE);
     }
 
     private void chooseAttack(BattleModel battleModel, int optionIndex)

@@ -54,61 +54,11 @@ public class BattleView extends BaseView {
     private void loadImage(byte battleBackgroundId) 
     {
         ImageIcon ii;
-        String shinyPrefix;
-        this.pokemonSprite[0] = new Image[model.team[0].length][2];
-        this.pokemonSprite[1] = new Image[model.team[1].length][2];
-        this.pokemonBufferedSprite[0] = new BufferedImage[model.team[0].length];
-        this.pokemonBufferedSprite[1] = new BufferedImage[model.team[1].length];
 
-        //load players pokemon back sprites
-        for (int i = 0; i < pokemonSprite[0].length; i++)
-        {
-            if (this.model.team[0][i].level == 0)
-            {
-                // don't load battle sprites for eggs
-                continue;
-            }
-
-            for (int j = 0; j < 2; j++)
-            {
-                shinyPrefix = model.team[0][i].shiny ? "shiny" : "";
-                ii = new ImageIcon(this.getClass().getResource("/pokemonback/" + shinyPrefix + "frame" + j + "/" + this.model.team[0][i].getSpriteId() + ".png"));
-                pokemonSprite[0][i][j]  = ii.getImage();
-            }
-
-            try
-            {
-                // load a copy of the Pokemon's sprite recoloured white
-                this.pokemonBufferedSprite[0][i] = ImageIO.read(this.getClass().getResource("/pokemonback/frame0/" + this.model.team[0][i].getSpriteId() + ".png"));   
-                this.pokemonBufferedSprite[0][i] = this.colorImage(this.pokemonBufferedSprite[0][i], Color.WHITE.getRGB());
-            }
-            catch (IOException e)
-            {
-                System.out.println("Error loading src/pokemon/frame0/" + this.model.team[0][i].getSpriteId() + ".png");
-            }
-        }
-
-        //load opponents pokemon front sprites
-        for (int i = 0; i < pokemonSprite[1].length; i++)
-        {
-            for (int j = 0; j < 2; j++)
-            {
-                shinyPrefix = model.team[1][i].shiny ? "shiny" : "";
-                ii = new ImageIcon(this.getClass().getResource("/pokemon/" + shinyPrefix + "frame" + j + "/" + model.team[1][i].getSpriteId() + ".png"));
-                this.pokemonSprite[1][i][j]  = ii.getImage();
-            }
-
-            try
-            {
-                // load a copy of the Pokemon's sprite recoloured white
-                this.pokemonBufferedSprite[1][i] = ImageIO.read(this.getClass().getResource("/pokemon/frame0/" + this.model.team[1][i].getSpriteId() + ".png"));   
-                this.pokemonBufferedSprite[1][i] = this.colorImage(this.pokemonBufferedSprite[1][i], Color.WHITE.getRGB());
-            }
-            catch (IOException e)
-            {
-                System.out.println("Error loading src/pokemon/frame0/" + this.model.team[1][i].getSpriteId() + ".png");
-            }
-        }
+        // load player's pokemon back sprites
+        this.loadPokemonImage(0);
+        // load opponent's pokemon front sprites
+        this.loadPokemonImage(1);
 
         //loads health bar fill images
         for (int i = 0; i < 3; i++)
@@ -125,17 +75,6 @@ public class BattleView extends BaseView {
             {
                 ii = new ImageIcon(this.getClass().getResource("/battle/ball" + i + "_" + j + ".png"));
                 this.pokeballSprite[i][j] = ii.getImage();
-            }
-        }
-
-        //loads pokemon icons for both teams
-        for (int i = 0; i < this.pokemonIconSprites.length; i++)
-        {
-            this.pokemonIconSprites[i] = new Image[this.model.team[i].length];
-            for (int j = 0; j < this.pokemonIconSprites[i].length; j++)
-            {
-                ii = new ImageIcon(this.getClass().getResource("/pokemonicons/" + this.model.team[i][j].getSpriteId() + ".png"));
-                this.pokemonIconSprites[i][j] = ii.getImage();
             }
         }
 
@@ -185,6 +124,51 @@ public class BattleView extends BaseView {
         }
     }
 
+    private void loadPokemonImage(int teamId)
+    {
+        ImageIcon ii;
+        String shinyPrefix;
+        String[] folderName = new String[] {"pokemonback", "pokemon"};
+        this.pokemonSprite[teamId] = new Image[model.team[teamId].length][2];
+        this.pokemonBufferedSprite[teamId] = new BufferedImage[model.team[teamId].length];
+
+        // load pokemon sprites
+        for (int i = 0; i < pokemonSprite[teamId].length; i++)
+        {
+            if (this.model.team[teamId][i].level == 0)
+            {
+                // don't load battle sprites for eggs
+                continue;
+            }
+
+            for (int j = 0; j < 2; j++)
+            {
+                shinyPrefix = model.team[teamId][i].shiny ? "shiny" : "";
+                ii = new ImageIcon(this.getClass().getResource("/" + folderName[teamId] + "/" + shinyPrefix + "frame" + j + "/" + this.model.team[teamId][i].getSpriteId() + ".png"));
+                pokemonSprite[teamId][i][j]  = ii.getImage();
+            }
+
+            try
+            {
+                // load a copy of the Pokemon's sprite recoloured white
+                this.pokemonBufferedSprite[teamId][i] = ImageIO.read(this.getClass().getResource("/" + folderName[teamId] + "/frame0/" + this.model.team[teamId][i].getSpriteId() + ".png"));   
+                this.pokemonBufferedSprite[teamId][i] = this.colorImage(this.pokemonBufferedSprite[teamId][i], Color.WHITE.getRGB());
+            }
+            catch (IOException e)
+            {
+                System.out.println("Error loading src/" + folderName[teamId] + "/frame0/" + this.model.team[teamId][i].getSpriteId() + ".png");
+            }
+
+            // loads pokemon icons for both teams
+            this.pokemonIconSprites[teamId] = new Image[this.model.team[teamId].length];
+            for (int j = 0; j < this.pokemonIconSprites[teamId].length; j++)
+            {
+                ii = new ImageIcon(this.getClass().getResource("/pokemonicons/" + this.model.team[teamId][j].getSpriteId() + ".png"));
+                this.pokemonIconSprites[teamId][j] = ii.getImage();
+            }
+        }
+    }
+
     /** 
      * renders the battle screen graphics
      * @param g graphics object
@@ -195,6 +179,14 @@ public class BattleView extends BaseView {
     { 
         Font font = new Font("Pokemon Fire Red", Font.PLAIN, 12 * graphicsScaling);      
         g.setFont(font);
+
+        // reload sprites when weather changes, in case a pokemon changed forms
+        if (this.model.reloadSprites)
+        {
+            this.loadPokemonImage(0);
+            this.loadPokemonImage(1);
+            this.model.reloadSprites = false;
+        }
 
         //renders background
         g.drawImage(this.background,

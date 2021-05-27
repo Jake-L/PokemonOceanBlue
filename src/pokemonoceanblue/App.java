@@ -590,6 +590,12 @@ public class App extends JFrame implements KeyListener
 
                         this.checkEvolution(evolveQueue);
 
+                        // check for Pokemon form changes
+                        for (PokemonModel pokemon : this.partyModel.team)
+                        {
+                            pokemon.checkFormChange(this.overworldModel.weather, this.overworldModel.battleBackgroundId);
+                        }
+
                         // return to overworld screen
                         this.overworldModel.battleComplete();
                         this.exitCurrentView();
