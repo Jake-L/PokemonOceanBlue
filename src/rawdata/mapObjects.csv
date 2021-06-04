@@ -655,6 +655,7 @@ map_id,area_id,name,x,y,y_offset
 33,1,house7,11,27,0
 33,1,house7,5,27,0
 33,1,house11,12,21,0
+33,2,house12,89,46,0
 32,0,storeDisplayLeft,10,7,0
 32,0,storeDisplayRight,8,7,0
 32,0,storeDisplayLeft,7,7,0
