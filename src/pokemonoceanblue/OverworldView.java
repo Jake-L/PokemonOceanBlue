@@ -73,7 +73,7 @@ public class OverworldView extends BaseView {
             // load overlay tiles
             // TODO: fill in gaps with images in tilesOverlay folder and add animated tiles functionality in overlay
             // TODO: add rocks (land and sea) to overlay, since rocks have moving water beneath and above ground rocks can be on dif terrain
-            if ((i >= 40 && i <= 65 && i != 44 && i != 57) || (i >= 92 && i <= 104) || (i >= 1 && i <= 8))
+            if ((i >= 40 && i <= 65 && i != 44 && i != 57) || (i >= 85 && i <= 104) || (i >= 1 && i <= 8))
             {
                 ii = new ImageIcon(this.getClass().getResource(String.format("/tilesOverlay/%s.png", i)));
                 overlayTileSprite[i] = ii.getImage();
