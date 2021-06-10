@@ -637,6 +637,12 @@ public class BattleTests {
         assertEquals(team[0].types[0], Type.ICE);
     }
 
+    /**
+     * Helper function to skip start of turn animations, choose an attack,
+     * and then skip end of turn animations and make sure no events remain
+     * @param battleModel
+     * @param optionIndex index of the attack to use
+     */
     private void chooseAttack(BattleModel battleModel, int optionIndex)
     {
         // skip opening animations

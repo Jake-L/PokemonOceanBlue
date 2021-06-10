@@ -1,5 +1,6 @@
 package pokemonoceanblue;
 
+import java.sql.Timestamp;
 import java.util.Calendar;
 
 public class Utils 
@@ -26,6 +27,30 @@ public class Utils
         {
             return 0;
         }
+    }
+
+    /**
+     * Returns true if the two dates refer to the same day
+     */
+    public static boolean isDifferentDay(Timestamp c, Timestamp t)
+    {
+        if (c == null || t == null)
+        {
+            return true;
+        }
+
+        Calendar calCurrent = Calendar.getInstance();
+        calCurrent.setTime(c);
+        Calendar calCheck = Calendar.getInstance();
+        calCheck.setTime(t);
+
+        if (calCurrent.get(Calendar.YEAR) != calCheck.get(Calendar.YEAR)
+            || calCurrent.get(Calendar.DAY_OF_YEAR) != calCurrent.get(Calendar.DAY_OF_YEAR))
+        {
+            return true;
+        } 
+
+        return false;
     }
 
     /**

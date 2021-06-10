@@ -11,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -69,6 +70,8 @@ public class App extends JFrame implements KeyListener
         // this code should be uncommented when testing database changes
         DatabaseUtility db = new DatabaseUtility();
         db.prepareDatabase();
+
+        loadDailyQuests();
 
         // load custom font
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -280,6 +283,7 @@ public class App extends JFrame implements KeyListener
 
     public void openParty(int currentPokemon, boolean returnSelection)
     {
+        loadDailyQuests();
         this.partyModel.initialize(currentPokemon, returnSelection);
         viewManager.setView(new PartyView(partyModel));
         if (!this.modelQueue.get(0).getClass().getSimpleName().equals("PartyModel"))
@@ -885,5 +889,84 @@ public class App extends JFrame implements KeyListener
     public void playSong(int musicId, boolean skipTransition)
     {
         musicPlayer.setSong(musicId, skipTransition);
+    }
+
+    /**
+     * Checks if new daily quests should be loaded
+     * and then selects the daily quests at random
+     */
+    private void loadDailyQuests()
+    {
+        try
+        { 
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+            DatabaseUtility db = new DatabaseUtility();
+            boolean[] reload = new boolean[2];
+
+            String query = """ 
+            SELECT objective_group_id, frequency, last_reset
+            FROM objective_group
+            """;
+
+            ResultSet rs = db.runQuery(query);
+
+            // check all of the objective groups to see if they should be loaded
+            while (rs.next())
+            {
+                int objectiveGroupId = rs.getInt("objective_group_id");
+                int frequency = rs.getInt("frequency");
+                Timestamp lastReset = rs.getTimestamp("last_reset");
+
+                if (frequency == 1)
+                {
+                    // if a daily quest hasn't been loaded since yesterday
+                    // pick a new daily quest
+                    if (Utils.isDifferentDay(timestamp, lastReset))
+                    {
+                        reload[objectiveGroupId] = true;
+                    }
+                }
+            }
+
+            for (int i = 0; i < reload.length; i++)
+            {
+                query = """ 
+                UPDATE objective_group
+                SET last_reset = datetime('now', 'localtime')
+                WHERE objective_group_id = 
+                """ + i;
+                db.runUpdate(query);
+            }
+
+            // pick all the quests available in the group, and give one to the player
+            for (int i = 0; i < reload.length; i++)
+            {
+                if (reload[i] == true)
+                {
+                    List<Integer> objectiveList = new ArrayList<Integer>();
+
+                    query = """ 
+                    SELECT objective_id
+                    FROM objective
+                    WHERE objective_group_id = 
+                    """ + i;
+    
+                    rs = db.runQuery(query);
+    
+                    while (rs.next())
+                    {
+                        objectiveList.add(rs.getInt("objective_id"));
+                    }
+    
+                    // add a random quest
+                    Random rand = new Random();
+                    this.quests.add(new ObjectiveModel(objectiveList.get(rand.nextInt(objectiveList.size()))));
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

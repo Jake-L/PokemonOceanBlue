@@ -168,9 +168,9 @@ public class CharacterModel {
             }
 
             // if the player quickly taps a direction key, they can change direction without moving
-            if (this.spriteName == "red" && oldDirection != this.direction)
+            if (this.spriteName == "red" && oldDirection != this.direction && movementSpeed <= 1)
             {
-                this.movementCounter = 2;
+                this.movementCounter = 3;
                 return;
             }
 

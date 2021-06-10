@@ -8,7 +8,9 @@ import java.util.List;
 public class ObjectiveModel {
 
     public List<ObjectiveTaskModel> tasks = new ArrayList<ObjectiveTaskModel>();
-    public int objectiveId;
+    public final int objectiveId;
+    public int objectiveGroupId;
+    public int rewardPokemonId;
     public ItemModel reward;
     public String name;
     public String description;    
@@ -26,9 +28,11 @@ public class ObjectiveModel {
 
             ResultSet rs = db.runQuery(query);
 
+            this.objectiveGroupId = rs.getInt("objective_group_id");
             this.name = rs.getString("name");
             this.description = rs.getString("description");
             this.icon = rs.getString("icon");
+            this.rewardPokemonId = rs.getInt("reward_pokemon_id");
 
             if (rs.getInt("reward_id") > -1)
             {

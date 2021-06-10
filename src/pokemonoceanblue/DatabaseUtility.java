@@ -4,6 +4,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.List;
+import java.util.Properties;
+
+import org.sqlite.SQLiteConfig;
+import org.sqlite.SQLiteConfig.Pragma;
 
 public class DatabaseUtility 
 {    
@@ -22,8 +26,12 @@ public class DatabaseUtility
             {
                 this.url =  "jdbc:sqlite::resource:" + this.getClass().getResource("/database/pokemon.db");
                 
+                SQLiteConfig sqLiteConfig = new SQLiteConfig();
+                Properties properties = sqLiteConfig.toProperties();
+                properties.setProperty(Pragma.DATE_STRING_FORMAT.pragmaName, "yyyy-MM-dd HH:mm:ss");
+
                 // create a connection to the database
-                conn = DriverManager.getConnection(this.url);
+                conn = DriverManager.getConnection(this.url, properties);
 
                 conn.createStatement().execute("PRAGMA foreign_keys = ON");
                 
@@ -67,7 +75,7 @@ public class DatabaseUtility
             "conversation",  "type_effectiveness", "items", "battle_reward",
             "portal", "map_object", "area", "character", "move_stat_effect",
             "conversation_trigger", "achievements", "battle",
-            "player_pokedex", "objective_task", "objective", 
+            "player_pokedex", "objective_group", "objective_task", "objective", 
             "moves",
             "map_template",
             "move_effect", 
@@ -492,17 +500,17 @@ public class DatabaseUtility
         //==================================================================================
         // triggers to start conversations
         query = """
-                CREATE TABLE conversation_trigger(
-                map_id INT NOT NULL,
-                area_id INT NOT NULL,
-                x INT NOT NULL,
-                y INT NOT NULL,
-                conversation_id INT NOT NULL,
-                character_id INT NOT NULL,
-                clear_conversation_id INT NOT NULL,
-                auto_trigger INT NOT NULL,
-                approach_player INT NOT NULL,
-                FOREIGN KEY(map_id) REFERENCES map_template(map_id))
+                CREATE TABLE conversation_trigger (
+                    map_id INT NOT NULL,
+                    area_id INT NOT NULL,
+                    x INT NOT NULL,
+                    y INT NOT NULL,
+                    conversation_id INT NOT NULL,
+                    character_id INT NOT NULL,
+                    clear_conversation_id INT NOT NULL,
+                    auto_trigger INT NOT NULL,
+                    approach_player INT NOT NULL,
+                    FOREIGN KEY(map_id) REFERENCES map_template(map_id))
                 """;
         runUpdate(query);
 
@@ -654,14 +662,37 @@ public class DatabaseUtility
         runUpdate(query);
 
         //==================================================================================
+        // store data for recurring objectives
+        query = """
+                CREATE TABLE objective_group (
+                    objective_group_id INT PRIMARY KEY,
+                    frequency INT NULL,
+                    last_reset DATETIME NULL)
+                """;
+        runUpdate(query);
+
+        // fill objective_group table with data
+        path = "/rawdata/objective_group.csv";
+        query = """
+                INSERT INTO objective_group (
+                    objective_group_id, frequency, last_reset)
+                    VALUES (?, ?, ?)
+                """;
+
+        dataTypes = new String[] {"int", "int", "Datetime"};
+        loadTable(path, query, dataTypes);
+
+        //==================================================================================
         // each data for each achievement/quest
         query = """
                 CREATE TABLE objective (
                     objective_id INT PRIMARY KEY,
+                    objective_group_id INT NOT NULL,
                     name VARCHAR(30) NOT NULL,
                     description VARCHAR(80) NULL,
                     reward_id INT NULL,
                     reward_quantity INT NULL,
+                    reward_pokemon_id INT NULL,
                     icon VARCHAR(20) NULL)
                 """;
         runUpdate(query);
@@ -670,12 +701,12 @@ public class DatabaseUtility
         path = "/rawdata/objective.csv";
         query = """
                 INSERT INTO objective (
-                    objective_id, name, description, 
-                    reward_id, reward_quantity, icon)
-                    VALUES (?, ?, ?, ?, ?, ?)
+                    objective_id, objective_group_id, name, description, 
+                    reward_id, reward_quantity, reward_pokemon_id, icon)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
-        dataTypes = new String[] {"int", "String", "String", "int", "int", "String"};
+        dataTypes = new String[] {"int", "int", "String", "String", "int", "int", "int", "String"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================
@@ -787,6 +818,11 @@ public class DatabaseUtility
                         {
                             statement.setFloat(i+1, Float.parseFloat(data[i]));
                         }   
+                    }
+                    else if (dataTypes[i] == "Datetime")
+                    {
+                        // never need to load dates from csv files
+                        statement.setTimestamp(i+1, null);
                     }
                 }  
 
