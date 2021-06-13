@@ -379,7 +379,21 @@ public class OverworldModel extends BaseModel {
             // start a battle
             if (this.conversation.getBattleId() >= 0)
             {
-                this.app.createTrainerBattle(this.conversation.getBattleId());
+                // rock smash
+                if (this.conversation.getBattleId() == 999)
+                {
+                    // start an encounter with a rock type
+                    int pokemonId = this.wildPokemon.getPokemonId(this.areaId, 999);
+                    if (pokemonId > -1)
+                    {
+                        Random rand = new Random();
+                        this.app.createWildBattle(pokemonId, 2 + rand.nextInt(4), false);
+                    }
+                }
+                else
+                {
+                    this.app.createTrainerBattle(this.conversation.getBattleId());
+                }
             }
             else
             {
@@ -433,6 +447,7 @@ public class OverworldModel extends BaseModel {
                     {
                         app.openPokemonStorage();
                     }
+                    // talk to day care lady
                     else if (current.conversationId == 9998)
                     {
                         this.conversation = new DayCareConversationModel(this.dayCareModel);
@@ -857,7 +872,7 @@ public class OverworldModel extends BaseModel {
                 LEFT JOIN area a
                 ON a.area_id = c.area_id
                 AND a.map_id = c.map_id
-                WHERE COALESCE(c.conversation_id, 0) < 1000 
+                WHERE (COALESCE(c.conversation_id, 0) < 1000 OR COALESCE(c.conversation_id, 0) > 1999)
                 AND c.map_id = 
                 """ + this.mapId;
 

@@ -314,6 +314,7 @@ conversation_id,conversation_event_id,text,battle_id,heal_team,character_id,move
 110,1,The trees have all died and it seems nothing can grow here anymore.,,,,,,,,,,,,,,
 111,0,At night I can hear the cries of fallen Pokemon$ demanding vengeance.,,,,,,1,,,,,,,,
 111,1,I will avenge them. I will make Team Rocket pay.,,,,,,,,,,,,,,
+999,0,The rock was destroyed!,999,,,,,,,,-2,,,,,
 1001,0,1001,1001,,,,,1,,,,,,,,
 1001,1,I still have a lot to learn,,,,,,,,,,,,,,
 1002,1,1002,1002,,,,,,,,,,,,,

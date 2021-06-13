@@ -50,7 +50,7 @@ public class WildPokemonModel {
      * @param tileId
      * @return
      */
-    public int getPokemonId(int areaId, byte tileId)
+    public int getPokemonId(int areaId, int tileId)
     {
         int index = areaId * 1000 + tileId;
         int maxCounter = 0;
