@@ -88,7 +88,7 @@ public class PokemonModel
 
     /**
      * Read the Pokemon's information from a SQL ResultSet
-     * @param rs ResultSet contianing the Pokemon's data
+     * @param rs ResultSet containing the Pokemon's data
      * @throws SQLException
      */
     public PokemonModel(ResultSet rs) throws SQLException
@@ -172,6 +172,7 @@ public class PokemonModel
     public List<MoveModel> addXP(int xp)
     {
         int oldLevel = this.level;
+        int missingHP = this.stats[0] - this.currentHP;
         this.xp += xp;
         this.level = this.calcLevel();
         
@@ -187,6 +188,9 @@ public class PokemonModel
             // otherwise, check for any new moves that can be learned by leveling up
             else
             {
+                // deduct any HP that was missing before leveling up
+                this.currentHP -= missingHP;
+
                 return this.checkNewMoves(oldLevel);
             }
         }
@@ -417,7 +421,15 @@ public class PokemonModel
             this.types[0] = rs.getInt("type1");
             
             // set the Pokemon's stats
-            this.stats[Stat.HP] = (int)Math.floor(2.0 * rs.getInt("hp") * this.level / 100) + this.level + 10;
+            if (rs.getInt("hp") > 1)
+            {
+                this.stats[Stat.HP] = (int)Math.floor(2.0 * rs.getInt("hp") * this.level / 100) + this.level + 10;
+            }
+            else
+            {
+                // Shedinja has base HP stat value of 1 for a constant 1 HP
+                this.stats[Stat.HP] = 1;
+            }
             this.currentHP = this.stats[Stat.HP];
 
             String[] stats = {"hp", "attack","defense","special_attack","special_defense","speed"};

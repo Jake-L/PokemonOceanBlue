@@ -1175,7 +1175,7 @@ public class BattleModel extends BaseModel
             }
             else if (this.events.get(0).newPokemonIndex > -1)
             {
-                this.soundEffect = String.valueOf(this.team[this.events.get(0).attacker][this.events.get(0).newPokemonIndex].pokemon_id);
+                this.soundEffect = String.valueOf(this.team[this.events.get(0).attacker][this.events.get(0).newPokemonIndex].base_pokemon_id);
             }
         }
         if (this.actionCounter > 0)

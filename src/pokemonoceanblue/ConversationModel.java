@@ -22,7 +22,10 @@ public class ConversationModel
         this.conversationId = conversationId;
         this.counter = TEXT_LENGTH;
         this.approachPlayer = approachPlayer;
-        this.initialCharacterId = cpu.characterId;
+        if (cpu != null)
+        {
+            this.initialCharacterId = cpu.characterId;
+        }
 
         // move trainer to approach the player at the start of the conversation
         if (this.approachPlayer)

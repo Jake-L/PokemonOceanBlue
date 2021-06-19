@@ -1,5 +1,6 @@
 package test;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
@@ -41,5 +42,42 @@ public class BattleOperationsManagerTests {
         // pokemon.statusEffect = StatusEffect.SLEEP;
         // assertTrue(battleOperationsManager.captureChanceCalc(pokemon, 3) > 3.9);
         // assertTrue(battleOperationsManager.captureChanceCalc(pokemon, 3) < 4);
+    }
+
+    @Test
+    /**
+     * Checks that teams are correctly identified as all fainted or not
+     */
+    public void testTeamFainted() {
+        BattleOperationsManager battleOperationsManager = new BattleOperationsManager();
+        PokemonModel[] team;
+        
+        // team just includes one full health Pokemon
+        team = new PokemonModel[1];
+        team[0] = new PokemonModel(1, 1, false);
+        assertFalse(battleOperationsManager.teamFainted(team));
+
+        // team just includes one fainted Pokemon
+        team[0].currentHP = 0;
+        assertTrue(battleOperationsManager.teamFainted(team));
+
+        // team includes five fainted Pokemon and one full health Pokemon
+        team = new PokemonModel[6];
+        team[0] = new PokemonModel(1, 1, false);
+        team[0].currentHP = 0;
+        team[1] = new PokemonModel(1, 1, false);
+        team[1].currentHP = 0;
+        team[2] = new PokemonModel(1, 1, false);
+        team[2].currentHP = 0;
+        team[3] = new PokemonModel(1, 1, false);
+        team[3].currentHP = 0;
+        team[4] = new PokemonModel(1, 1, false);
+        team[4].currentHP = 0;
+        team[5] = new PokemonModel(1, 1, false);
+        assertFalse(battleOperationsManager.teamFainted(team));
+
+        // team includes six fainted Pokemon
+        team[5].currentHP = 0;
+        assertTrue(battleOperationsManager.teamFainted(team));
     }
 }
