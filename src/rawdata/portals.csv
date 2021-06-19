@@ -19,6 +19,7 @@ map_id,area_id,x,y,x_offset,y_offset,dest_map_id,dest_area_id,dest_x,dest_y,dest
 0,0,17,30,0,-1,18,0,4,0,0,1,pallet -> pallet-route 21 building
 16,0,9,3,0,1,18,0,4,12,0,-1,route 21 -> pallet-route 21 building
 16,0,10,3,0,1,18,0,4,12,0,-1,route 21 -> pallet-route 21 building
+16,0,23,80,0,1,535,0,7,13,0,-1,cinnabar -> cinnabar gym
 14,0,8,3,0,1,19,0,4,12,0,-1,vforest -> vforest-pewter route building
 14,0,9,3,0,1,19,0,4,12,0,-1,vforest -> vforest-pewter route building
 17,0,19,45,0,-1,19,0,4,0,0,1,pewter -> vforest-pewter route building
