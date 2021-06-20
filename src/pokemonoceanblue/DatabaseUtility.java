@@ -282,6 +282,8 @@ public class DatabaseUtility
                     max_y INT NOT NULL,
                     music_id INT NOT NULL,
                     battle_background_id INT NOT NULL,
+                    safe_x INT NULL,
+                    safe_y INT NULL,
                     FOREIGN KEY(map_id) REFERENCES map_template(map_id))
                 """;
         runUpdate(query);
@@ -293,11 +295,12 @@ public class DatabaseUtility
                     map_id, area_id, name, 
                     min_x, max_x,
                     min_y, max_y,
-                    music_id, battle_background_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    music_id, battle_background_id,
+                    safe_x, safe_y)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
         
-        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int", "int"};
+        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

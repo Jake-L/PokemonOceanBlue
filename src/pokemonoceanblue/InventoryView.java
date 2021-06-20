@@ -52,7 +52,7 @@ public class InventoryView extends BaseView {
     }
 
     /** 
-     * renders the party screen graphics
+     * renders the inventory screen graphics
      * @param g graphics object
      * @param canvas JPanel to draw the images on
      */

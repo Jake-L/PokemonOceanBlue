@@ -46,6 +46,7 @@ public class App extends JFrame implements KeyListener
     int enemyScalingFactor = 0;
     TournamentModel tournamentModel;
     BaseController currentController;
+    MapModel mapModel;
 
     List<ObjectiveModel> achievements = new ArrayList<ObjectiveModel>();
     List<ObjectiveModel> quests = new ArrayList<ObjectiveModel>();
@@ -133,6 +134,7 @@ public class App extends JFrame implements KeyListener
         this.questsModel = new BaseModel();
         this.evolveCheck = new EvolutionCheck();
         this.dayCareModel = new DayCareModel();
+        this.mapModel = new MapModel(true, -1);
 
         for (int i = 0; i <= 73; i++)
         {
@@ -541,7 +543,7 @@ public class App extends JFrame implements KeyListener
                     this.openController();
 
                     // heal Pokemon after respawning in their house
-                    // done here to their health bar doesn't get filled in the battle screen
+                    // done here so their health bar doesn't get filled in the battle screen
                     if (this.partyModel.isDefeated())
                     {
                         this.healTeam();
@@ -693,6 +695,14 @@ public class App extends JFrame implements KeyListener
                             this.openSummary(returnValue, partyModel.team);
                         }
 
+                        else if (partyModel.openMap)
+                        {
+                            partyModel.openMap = false;
+                            this.mapModel = new MapModel(true, -1);
+                            viewManager.setView(new MapView(this.mapModel));
+                            this.addModelQueue(this.mapModel);
+                        }
+
                         else if (returnValue >= -1)
                         {
                             if (this.battleModel != null)
@@ -770,6 +780,17 @@ public class App extends JFrame implements KeyListener
                         }
                     }
                 }
+                else if (viewManager.getCurrentView().equals("MapView"))
+                {
+                    if (this.currentController != null)
+                    {
+                        int returnValue = mapModel.getSelection();
+                        if (returnValue > -1 && mapModel.destX > -1)
+                        {
+                            setMap(mapModel.getMapId(), mapModel.destX, mapModel.destY, Direction.DOWN);
+                        }
+                    }
+                }
                 else if (viewManager.getCurrentView().equals("PokedexView")
                     || viewManager.getCurrentView().equals("AchievementsView")
                     || viewManager.getCurrentView().equals("QuestView")
@@ -787,16 +808,17 @@ public class App extends JFrame implements KeyListener
                 {
                     if (this.currentController != null)
                     {
-                        if (pokemonStorageModel.getSelection() > -1)
+                        int returnValue = pokemonStorageModel.getSelection();
+                        if (returnValue > -1)
                         {
                             // open the summary for the current selected Pokemon
                             if (this.pokemonStorageModel.categoryIndex == 0)
                             {
-                                this.openSummary(pokemonStorageModel.getSelection(), partyModel.team);
+                                this.openSummary(returnValue, partyModel.team);
                             }
                             else
                             {
-                                this.openSummary(pokemonStorageModel.getSelection(), pokemonStorageModel.pokemonStorage);
+                                this.openSummary(returnValue, pokemonStorageModel.pokemonStorage);
                             }
                         }
 

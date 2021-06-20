@@ -159,7 +159,9 @@ public class BaseModel {
      */
     public int getSelection()
     {
-        return this.returnValue;
+        int prevReturnValue = this.returnValue;
+        this.returnValue = -2;
+        return prevReturnValue;
     }
 
     /**
