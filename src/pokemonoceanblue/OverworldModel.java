@@ -565,13 +565,25 @@ public class OverworldModel extends BaseModel {
         this.checkArea(x, y);
 
         // check for wild Pokemon encounters
-        Random rand = new Random();
-        if (rand.nextInt(5) == 1)
+        boolean canEncounterWildPkmn = true;
+        for (int i = 0; i < inventoryModel.items[InventoryModel.KEY_ITEMS].size(); i++) 
         {
-            int pokemonId = this.wildPokemon.getPokemonId(this.areaId, this.tiles[y][x]);
-            if (pokemonId > -1)
+            if (inventoryModel.items[InventoryModel.KEY_ITEMS].get(i).itemId == 188 && inventoryModel.items[InventoryModel.KEY_ITEMS].get(i).enabled)
             {
-                this.app.createWildBattle(pokemonId, 2 + rand.nextInt(4), false);
+                canEncounterWildPkmn = false;
+                break;
+            }
+        }
+        if (canEncounterWildPkmn)
+        {
+            Random rand = new Random();
+            if (rand.nextInt(5) == 1)
+            {
+                int pokemonId = this.wildPokemon.getPokemonId(this.areaId, this.tiles[y][x]);
+                if (pokemonId > -1)
+                {
+                    this.app.createWildBattle(pokemonId, 2 + rand.nextInt(4), false);
+                }
             }
         }
 

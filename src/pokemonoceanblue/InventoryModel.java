@@ -12,6 +12,10 @@ public class InventoryModel extends BaseModel {
     public List<ItemModel>[] items; 
     public int bagIndex;
     private int money = 5001;
+
+    public static final int POKEBALLS = 0;
+    public static final int BERRIES = 1;
+    public static final int KEY_ITEMS = 2;
     
     /** 
      * Constructor
@@ -42,6 +46,10 @@ public class InventoryModel extends BaseModel {
         this.addItem(133, 8);
         this.addItem(113, 8);
         this.addItem(116, 8);
+        // add and enable cleanse tag
+        ItemModel item = new ItemModel(188, 1);
+        item.enabled = true;
+        this.addItem(item);
         
         this.initialize();
     }

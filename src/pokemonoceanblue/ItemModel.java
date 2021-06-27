@@ -11,6 +11,7 @@ class ItemModel
     public int categoryId;
     public int cost;
     public String description;
+    public boolean enabled;
 
     public ItemModel(int itemId, int quantity)
     {
