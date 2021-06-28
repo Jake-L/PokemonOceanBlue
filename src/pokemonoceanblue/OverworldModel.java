@@ -407,9 +407,39 @@ public class OverworldModel extends BaseModel {
             && (tiles[y][x] == 0 || tiles[y][x] == 1) 
             && this.playerModel.getMovementCounter() <= 0)
         {
-            this.playerModel.surf = true;
-            this.playerModel.setMovement(x - this.playerModel.getX(), y - this.playerModel.getY(), 1);
-            this.actionCounter = 15;
+            boolean canSurf = false;
+            for (int i = 0; i < inventoryModel.items[InventoryModel.KEY_ITEMS].size(); i++) 
+            {
+                if (inventoryModel.getQuantity(37) > 0)
+                {
+                    canSurf = true;
+                    break;
+                }
+            }
+            if (!canSurf)
+            {
+                for (int i = 0; i < app.partyModel.team.size(); i++) 
+                {
+                    for (int j = 0; j < app.partyModel.team.get(i).types.length; j++)
+                    {
+                        if (app.partyModel.team.get(i).types[j] == Type.WATER || app.partyModel.team.get(i).types[j] == Type.ICE)
+                        {
+                            canSurf = true;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (canSurf)
+            {
+                this.playerModel.surf = true;
+                this.playerModel.setMovement(x - this.playerModel.getX(), y - this.playerModel.getY(), 1);
+                this.actionCounter = 15;
+            }
+            else
+            {
+                this.conversation = new ConversationModel("You can't surf without a water pokemon, ice pokemon, or Boogie Board", null);
+            }
         }
         // otherwise check for a cpu to interact with
         else
@@ -1025,7 +1055,7 @@ public class OverworldModel extends BaseModel {
         this.actionCounter = 15;
     }
 
-    public boolean setItem(int itemId)
+    public boolean setItem(int itemId) //TODO: open map to fly when hang glider is used
     {
         int x = Utils.applyXOffset(this.playerModel.getX(), this.playerModel.getDirection());
         int y = Utils.applyYOffset(this.playerModel.getY(), this.playerModel.getDirection());
@@ -1034,6 +1064,27 @@ public class OverworldModel extends BaseModel {
         {
             this.plantedBerries.add(new BerryModel(x, y, itemId, System.currentTimeMillis()));
             return true;
+        }
+        // activate/deactivate cleanse tag
+        else if (itemId == 188)
+        {
+            for (int i = 0; i < inventoryModel.items[InventoryModel.KEY_ITEMS].size(); i++)
+            {
+                if (inventoryModel.items[InventoryModel.KEY_ITEMS].get(i).itemId == 188)
+                {
+                    inventoryModel.items[InventoryModel.KEY_ITEMS].get(i).enabled = !inventoryModel.items[InventoryModel.KEY_ITEMS].get(i).enabled;
+                    if (inventoryModel.items[InventoryModel.KEY_ITEMS].get(i).enabled)
+                    {
+                        this.conversation = new ConversationModel("Wild Pokemon will not appear.", null);
+                    }
+                    else
+                    {
+                        this.conversation = new ConversationModel("Wild Pokemon will appear.", null);
+                    }
+                    return false;
+                }
+            }
+            return false;
         }
         else
         {
