@@ -46,6 +46,7 @@ public class InventoryModel extends BaseModel {
         this.addItem(133, 8);
         this.addItem(113, 8);
         this.addItem(116, 8);
+        this.addItem(38, 1);
         // add and enable cleanse tag
         ItemModel item = new ItemModel(188, 1);
         item.enabled = true;

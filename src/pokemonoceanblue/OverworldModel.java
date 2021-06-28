@@ -408,25 +408,18 @@ public class OverworldModel extends BaseModel {
             && this.playerModel.getMovementCounter() <= 0)
         {
             boolean canSurf = false;
-            for (int i = 0; i < inventoryModel.items[InventoryModel.KEY_ITEMS].size(); i++) 
+            if (inventoryModel.getQuantity(37) > 0)
             {
-                if (inventoryModel.getQuantity(37) > 0)
-                {
-                    canSurf = true;
-                    break;
-                }
+                canSurf = true;
             }
-            if (!canSurf)
+            else
             {
                 for (int i = 0; i < app.partyModel.team.size(); i++) 
                 {
-                    for (int j = 0; j < app.partyModel.team.get(i).types.length; j++)
+                    if (Type.typeIncludes(Type.WATER, app.partyModel.team.get(i).types) || Type.typeIncludes(Type.ICE, app.partyModel.team.get(i).types))
                     {
-                        if (app.partyModel.team.get(i).types[j] == Type.WATER || app.partyModel.team.get(i).types[j] == Type.ICE)
-                        {
-                            canSurf = true;
-                            break;
-                        }
+                        canSurf = true;
+                        break;
                     }
                 }
             }
@@ -670,7 +663,7 @@ public class OverworldModel extends BaseModel {
         // open the menu
         else if (this.conversation == null)
         {
-            this.textOptions = new String[]{"Pokedex", "Pokemon", "Bag", "Quests", "Achievements", "Save"};
+            this.textOptions = new String[]{"Pokedex", "Pokemon", "Bag", "Map", "Quests", "Achievements", "Save"};
             this.textOptionIndex = 0;
         }
     }
@@ -717,6 +710,11 @@ public class OverworldModel extends BaseModel {
         else if (this.textOptions[this.textOptionIndex] == "Bag")
         {
             app.openInventory();
+            this.openMenu();
+        }
+        else if (this.textOptions[this.textOptionIndex] == "Map")
+        {
+            app.openMap();
             this.openMenu();
         }
         else if (this.textOptions[this.textOptionIndex] == "Save")
@@ -1055,7 +1053,7 @@ public class OverworldModel extends BaseModel {
         this.actionCounter = 15;
     }
 
-    public boolean setItem(int itemId) //TODO: open map to fly when hang glider is used
+    public boolean setItem(int itemId)
     {
         int x = Utils.applyXOffset(this.playerModel.getX(), this.playerModel.getDirection());
         int y = Utils.applyYOffset(this.playerModel.getY(), this.playerModel.getDirection());

@@ -283,6 +283,30 @@ public class App extends JFrame implements KeyListener
         this.addModelQueue(this.inventoryModel);
     }
 
+    public void openMap()
+    {
+        boolean canFly = false;
+        if (inventoryModel.getQuantity(38) > 0)
+        {
+            canFly = true;
+        }
+        if (!canFly)
+        {
+            for (int i = 0; i < partyModel.team.size(); i++)
+            {
+                if (pokemonoceanblue.Type.typeIncludes(pokemonoceanblue.Type.FLYING, partyModel.team.get(i).types) || 
+                    pokemonoceanblue.Type.typeIncludes(pokemonoceanblue.Type.DRAGON, partyModel.team.get(i).types))
+                {
+                    canFly = true;
+                    break;
+                }
+            }
+        }
+        this.mapModel = new MapModel(canFly, -1);
+        viewManager.setView(new MapView(this.mapModel));
+        this.addModelQueue(this.mapModel);
+    }
+
     public void openParty(int currentPokemon, boolean returnSelection)
     {
         loadDailyQuests();
@@ -698,9 +722,7 @@ public class App extends JFrame implements KeyListener
                         else if (partyModel.openMap)
                         {
                             partyModel.openMap = false;
-                            this.mapModel = new MapModel(true, -1);
-                            viewManager.setView(new MapView(this.mapModel));
-                            this.addModelQueue(this.mapModel);
+                            this.openMap();
                         }
 
                         else if (returnValue >= -1)
