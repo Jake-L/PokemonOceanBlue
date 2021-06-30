@@ -91,3 +91,10 @@ map_id,area_id,x,y,x_offset,y_offset,dest_map_id,dest_area_id,dest_x,dest_y,dest
 1202,0,4,2,0,1,1200,0,5,10,0,-1,Cinnabar tournament entrance -> battle room
 1301,0,4,2,0,1,1300,0,5,10,0,-1,Pokemon League tournament waiting room -> battle room
 1302,0,4,2,0,1,1300,0,5,10,0,-1,Pokemon League tournament entrance -> battle room
+48,0,18,6,0,1,537,0,9,19,0,-1,Lavender Town -> Lavender Tower L1
+537,0,17,8,-1,0,538,0,17,10,-1,0,Lavender Tower L1 -> Lavender Tower L2
+538,0,1,10,1,0,539,0,1,10,1,0,Lavender Tower L2 -> Lavender Tower L3
+539,0,17,10,-1,0,540,0,17,10,-1,0,Lavender Tower L3 -> Lavender Tower L4
+540,0,1,10,1,0,541,0,1,10,1,0,Lavender Tower L4 -> Lavender Tower L5
+541,0,17,10,-1,0,542,0,17,10,-1,0,Lavender Tower L5 -> Lavender Tower L6
+542,0,8,16,1,0,543,0,8,16,1,0,Lavender Tower L6 -> Lavender Tower L7
