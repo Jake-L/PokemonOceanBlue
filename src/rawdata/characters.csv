@@ -58,8 +58,8 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 52,26,0,,youngsterGirl,1,3,52,1,2,
 53,26,0,,childBoy,5,7,53,2,3,
 54,43,0,Gym Leader Lt. Surge,surge,6,3,54,0,2,102
-55,33,0,Guy Sensei,blackBelt,7,4,55,0,0,
-56,33,0,Young Ninja Lee,youngsterBoy,8,4,56,0,0,
+55,33,0,Guy Sensei,blackBelt,2,11,55,0,1,
+56,33,0,Rock Lee,youngsterBoy,2,10,56,0,1,
 57,42,0,Musician Axl,guitarist,58,3,57,0,2,
 58,510,0,Gym Leader Erika,erika,6,3,58,0,2,102
 59,39,0,Aunt May,oldLady,4,5,59,1,3,

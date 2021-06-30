@@ -34,16 +34,18 @@ map_id,area_id,x,y,x_offset,y_offset,dest_map_id,dest_area_id,dest_x,dest_y,dest
 17,0,14,32,0,1,32,0,5,9,0,-1,pewter city -> pokemart
 33,1,28,20,0,1,34,0,6,18,0,-1,Cerulean city -> Cerulean gym
 33,1,34,9,0,1,1002,0,4,8,0,-1,Cerulean city -> Cerulean tournament entrance
-33,1,7,20,0,1,35,0,5,10,0,-1,Cerulean city -> Cerulean pokemon center
+33,1,14,20,0,1,35,0,5,10,0,-1,Cerulean city -> Cerulean pokemon center
 33,1,44,27,0,1,36,0,5,9,0,-1,Cerulean city -> Cerulean pokemart
-33,1,2,10,0,1,26,0,3,9,0,-1,Cerulean -> Cerulean top left house
+33,1,3,9,0,1,26,0,3,9,0,-1,Cerulean -> Cerulean top left house
 33,1,7,27,0,1,27,0,3,9,0,-1,Cerulean -> Cerulean bottom left house
 33,1,13,27,0,1,28,0,3,9,0,-1,"Cerulean -> Cerulean bottom, second from left house"
 33,1,21,27,0,1,29,0,3,9,0,-1,"Cerulean -> Cerulean bottom, third from left house"
 33,1,32,27,0,1,38,0,3,9,0,-1,"Cerulean -> Cerulean bottom, third from right house"
 33,1,38,27,0,1,39,0,3,9,0,-1,"Cerulean -> Cerulean bottom, second from right house"
 33,1,48,27,0,1,40,0,3,9,0,-1,"Cerulean -> Cerulean bottom, right house"
-33,1,22,10,0,1,41,0,3,9,0,-1,Cerulean -> Cerulean top right house
+33,1,22,9,0,1,41,0,3,9,0,-1,Cerulean -> Cerulean top right house
+33,1,8,20,0,1,536,0,5,11,0,-1,Cerulean -> Bike Shop
+33,1,9,20,0,1,536,0,5,11,0,-1,Cerulean -> Bike Shop
 42,0,16,37,0,1,43,0,6,13,0,-1,Vermilion -> gym
 44,0,8,45,0,1,47,0,4,38,0,-1,Route 10 -> Power Plant
 44,0,4,42,-1,0,47,0,0,10,1,0,Route 10 -> Power Plant side entrance
