@@ -637,6 +637,30 @@ public class BattleTests {
         assertEquals(team[0].types[0], Type.ICE);
     }
 
+    @Test
+    /**
+     * Test that ground type moves don't damage Pokemon with the ability Levitate
+     */
+    public void testLevitate() {
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(1, 100, false);
+        // use Earthquake since it has 100% accuracy
+        team[0].moves[0] = new MoveModel(89);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(94, 1, false);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);        
+
+        // Gengar should have levitate ability
+        assertEquals("LEVITATE", enemyTeam[0].ability.name);
+
+        // choose "Earthquake"
+        assertEquals("EARTHQUAKE", team[0].moves[0].name);
+        chooseAttack(battleModel, 0);
+        
+        // enemy should not have taken any damage
+        assertEquals(enemyTeam[0].getStat(0, 0), enemyTeam[0].currentHP);
+    }
+
     /**
      * Helper function to skip start of turn animations, choose an attack,
      * and then skip end of turn animations and make sure no events remain

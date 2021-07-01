@@ -70,7 +70,7 @@ public class DatabaseUtility
 
         // remove all the existing tables first
         String[] tableList = {
-            "player_pokemon", "player_location", "conversation_options",
+            "player_pokemon", "player_location", "conversation_options", "ability",
             "evolution_methods",  "pokemon_moves", "pokemon_location", 
             "conversation",  "type_effectiveness", "items", "battle_reward",
             "portal", "map_object", "area", "character", "move_stat_effect",
@@ -110,7 +110,8 @@ public class DatabaseUtility
                     capture_rate INT NOT NULL,
                     base_pokemon_id INT NOT NULL,
                     [description] VARCHAR(130) NULL,
-                    level_modifier FLOAT NOT NULL)
+                    level_modifier FLOAT NOT NULL,
+                    ability_id INT NOT NULL)
                 """;
         runUpdate(query);
 
@@ -124,12 +125,12 @@ public class DatabaseUtility
                     defense, special_attack,
                     special_defense, speed,
                     iv_gain, capture_rate,
-                    base_pokemon_id, [description], level_modifier)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    base_pokemon_id, [description], level_modifier, ability_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         dataTypes = new String[] {"int", "String", "int", "int", "int", "int", 
-            "int", "int", "int", "int", "int", "int", "int", "String", "float"};
+            "int", "int", "int", "int", "int", "int", "int", "String", "float", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================
@@ -213,6 +214,29 @@ public class DatabaseUtility
                 """;
        
         dataTypes = new String[] {"int", "int", "int"};
+        loadTable(path, query, dataTypes);
+
+        
+        //==================================================================================
+        // names and descriptions of abilities
+        query = """
+                CREATE TABLE ability (
+                    ability_id INT PRIMARY KEY,
+                    name VARCHAR(30) NOT NULL,
+                    description VARCHAR(255) NOT NULL,
+                    effect_id INT NOT NULL)
+                """;
+        runUpdate(query);
+
+        // fill ability table with data
+        path = "/rawdata/ability.csv";
+        query = """
+                INSERT INTO ability (
+                    ability_id, name, description, effect_id)
+                VALUES (?, ?, ?, ?)
+                """;
+
+        dataTypes = new String[] {"int", "String", "String", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

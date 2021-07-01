@@ -288,7 +288,7 @@ abstract class BaseView {
 
         List<String> renderText = new ArrayList<String>();
         renderText.add("");
-        String[] splitText = text.replace("$",",").split(" ");
+        String[] splitText = text.replace("$",",").replace("#",",").split(" ");
         int index = 0;
         int line = 0;
 

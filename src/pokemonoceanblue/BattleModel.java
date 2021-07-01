@@ -762,6 +762,13 @@ public class BattleModel extends BaseModel
                     return (int)Math.ceil(defendingPokemon.currentHP / 2.0);
                 }
             }
+            // check for abilities that grant immunity to certain types
+            if (move.typeId == Type.GROUND 
+                && defendingPokemon.ability != null
+                && defendingPokemon.ability.abilityId == 26)
+            {
+                this.typeModifier[attacker] = 0.0f;
+            }
             //move doesn't affect opponent
             if (this.typeModifier[attacker] == 0)
             {

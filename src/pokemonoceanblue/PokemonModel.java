@@ -30,6 +30,7 @@ public class PokemonModel
     int stepCounter;
     public int genderId;
     public boolean raidBoss;
+    public AbilityModel ability;
     
     /** 
      * Constructor
@@ -437,6 +438,12 @@ public class PokemonModel
             for (int i = 1; i < stats.length; i++)
             {
                 this.stats[i] = (int)Math.floor((2.0 * rs.getInt(stats[i]) + this.ivs[i]) * this.level / 100) + 5;
+            }
+            
+            int abilityId = rs.getInt("ability_id");
+            if (abilityId > -1)
+            {
+                this.ability = new AbilityModel(abilityId);
             }
         }
         catch (SQLException e) 
