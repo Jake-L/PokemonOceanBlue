@@ -1067,7 +1067,7 @@ public class BattleModel extends BaseModel
 
     @Override
     public void update()
-    {//TODO: Move all code except actionCounter decrement out of update and an if to check if actionCounter is 0
+    {
         // switch the current Pokemon
         // do this at the start of counter to show the switching animation
         if (this.actionCounter == 100 && this.events.get(0).newPokemonIndex > -1)

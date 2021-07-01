@@ -55,6 +55,12 @@ public class OverworldView extends BaseView {
         // load tile sprites
         for (int i = 0; i < tileSprite.length; i++)
         {
+            // load overlay tiles
+            if ((i >= 40 && i <= 65) || (i >= 85 && i <= 104) || (i >= 1 && i <= 8) || (i >= 117 && i <= 125 && i != 118 && i != 121))
+            {
+                ii = new ImageIcon(this.getClass().getResource(String.format("/tilesOverlay/%s.png", i)));
+                overlayTileSprite[i] = ii.getImage();
+            }
             int animatedIndex = Arrays.binarySearch(ANIMATED_TILES, i);
             if (animatedIndex < 0)
             {
@@ -69,14 +75,6 @@ public class OverworldView extends BaseView {
                     ii = new ImageIcon(this.getClass().getResource(String.format("/tiles%s/%s-%s.png", this.model.tilesSuffix, i, j)));
                     animatedTileSprite.put(String.format("%s-%s", i, j), ii.getImage());
                 }
-            }
-            // load overlay tiles
-            // TODO: fill in gaps with images in tilesOverlay folder and add animated tiles functionality in overlay
-            // TODO: add rocks (land and sea) to overlay, since rocks have moving water beneath and above ground rocks can be on dif terrain
-            if ((i >= 40 && i <= 65 && i != 44 && i != 57) || (i >= 85 && i <= 104) || (i >= 1 && i <= 8))
-            {
-                ii = new ImageIcon(this.getClass().getResource(String.format("/tilesOverlay/%s.png", i)));
-                overlayTileSprite[i] = ii.getImage();
             }
         }
 
@@ -475,7 +473,7 @@ public class OverworldView extends BaseView {
     {
         Image sprite;
         int animatedIndex = Arrays.binarySearch(ANIMATED_TILES, tileId);
-        if (isOverlay)
+        if (isOverlay && tileId != 121 && tileId != 118)
         {
             sprite = overlayTileSprite[tileId];
         }

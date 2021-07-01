@@ -59,7 +59,15 @@ public class MapView extends BaseView
             this.mapCursor[0].getHeight(null) * graphicsScaling, 
             canvas);
 
-        this.displayText(this.model.areaName, g, canvas);
+        if (this.model.isFly)
+        {
+            this.displayText("Press 'ENTER' to fly to " + 
+                (this.model.areaName == null || this.model.areaName.equals("") ? "your hovered location" : this.model.areaName) + ".", g, canvas);
+        }
+        else
+        {
+            this.displayText("To fly to a new location, add a flying or dragon type Pokemon to your party or buy a Hang Glider.", g, canvas);
+        }
     }
 
 
