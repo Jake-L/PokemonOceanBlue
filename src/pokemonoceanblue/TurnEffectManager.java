@@ -34,6 +34,22 @@ public class TurnEffectManager
                     }
                 }
             }
+            
+            if (defendingPokemon.ability != null
+                // check if Pokemon cannot sleep due to insomnia
+                && ((ailmentId == StatusEffect.SLEEP && defendingPokemon.ability.name.equals("INSOMNIA"))
+                    // check if a Pokemon cannot sleep due to vital spirit
+                    || (ailmentId == StatusEffect.SLEEP && defendingPokemon.ability.name.equals("VITAL SPIRIT"))
+                    // check if Pokemon cannot be poisoned due to immunity
+                    || (ailmentId == StatusEffect.POISON && defendingPokemon.ability.name.equals("IMMUNITY"))
+                    // check if Pokemon cannot be paralyzed due to limber
+                    || (ailmentId == StatusEffect.PARALYSIS && defendingPokemon.ability.name.equals("LIMBER"))
+                    // check if Pokemon cannot be confused due to own tempo
+                    || (ailmentId == StatusEffect.CONFUSION && defendingPokemon.ability.name.equals("OWN TEMPO"))))
+            {
+                willFail = true;
+                events.add(new BattleEvent(defendingPokemon.ability.battleText.replace("{defender}", defendingPokemon.name), defender, defender));
+            }
 
             // apply type immunity for status effects
             // certain types are immune to certain status effects

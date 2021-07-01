@@ -7,6 +7,7 @@ public class AbilityModel
     public int abilityId;
     public String name;
     public String description;
+    public String battleText;
     
     /** 
      * Constructor
@@ -36,6 +37,7 @@ public class AbilityModel
             this.name = rs.getString("name").toUpperCase();
             this.description = rs.getString("description");
             int effectId = rs.getInt("effect_id");
+            this.battleText = rs.getString("battle_text");
 
             // // get number of stat effects
             // query = "SELECT COUNT(*) FROM move_stat_effect WHERE move_id = " + this.moveId;

@@ -12,12 +12,12 @@ import org.junit.Test;
 import pokemonoceanblue.BattleModel;
 import pokemonoceanblue.MoveModel;
 import pokemonoceanblue.PokemonModel;
+import pokemonoceanblue.StatusEffect;
 import pokemonoceanblue.Type;
 
 public class BattleTests {
     /**
      * Test that status effects get applied
-     * Done by using thunder wave 10 times, since it has 90% accuracy
      */
     @Test
     public void testParalyze() {
@@ -25,18 +25,15 @@ public class BattleTests {
         team[0] = new PokemonModel(25, 21, false);
         PokemonModel[] enemyTeam = new PokemonModel[1];
         enemyTeam[0] = new PokemonModel(1, 1, false);
-        // make sure Pikachu knows thunder wave
+        // make sure Pikachu knows thunder wave and give it infinite accuracy
         assertEquals("THUNDER WAVE", team[0].moves[3].name);
+        team[0].moves[3].accuracy = -1;
         BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
-        // run a few loops to make sure thunder wave lands
-        for (int i = 0; i < 10; i++)
-        {
-            // choose "THUNDER WAVE"
-            chooseAttack(battleModel, 3);
-        }
-        assertEquals(1, enemyTeam[0].statusEffect); 
+        // choose "THUNDER WAVE"
+        chooseAttack(battleModel, 3);
+        assertEquals(StatusEffect.PARALYSIS, enemyTeam[0].statusEffect); 
     }
     
     /**
@@ -659,6 +656,31 @@ public class BattleTests {
         
         // enemy should not have taken any damage
         assertEquals(enemyTeam[0].getStat(0, 0), enemyTeam[0].currentHP);
+    }
+
+    /**
+     * Make sure Pokemon with the ability limber cannot be paralyzed
+     */
+    @Test
+    public void testLimber() {
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(25, 21, false);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(106, 1, false);
+        
+        // make sure Pikachu knows thunder wave and give it infinite accuracy
+        assertEquals("THUNDER WAVE", team[0].moves[3].name);
+        team[0].moves[3].accuracy = -1;
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
+
+        // skip opening animations
+        updateBattleModel(battleModel, 500);
+
+        // choose "THUNDER WAVE"
+        chooseAttack(battleModel, 3);
+
+        // Hitmonlee should not be paralyzed
+        assertEquals(StatusEffect.UNAFFLICTED, enemyTeam[0].statusEffect); 
     }
 
     /**
