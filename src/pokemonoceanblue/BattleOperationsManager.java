@@ -5,6 +5,25 @@ import java.util.Random;
 public class BattleOperationsManager {
     Random ranNum = new Random();
 
+    public void switchPokemon(int attacker, BattleModel model)
+    {
+        if (model.currentPokemon[attacker] >= 0)
+        {
+            model.turnEffectManager.removeMultiTurnEffects(model.team[attacker][model.currentPokemon[attacker]], attacker, false);
+        }
+        model.statChanges[attacker] = new int[8];
+        model.currentPokemon[attacker] = model.events.get(0).newPokemonIndex;
+        if (attacker == 1)
+        {
+            model.isSeen[model.events.get(0).newPokemonIndex] = true;
+        }
+        // add multi turn effect for any status effect the new pokemon may have
+        if (model.team[attacker][model.currentPokemon[attacker]].statusEffect > 0)
+        {
+            model.turnEffectManager.addStatusEffect(model.team[attacker][model.currentPokemon[attacker]].statusEffect, attacker, false, model);
+        }
+    }
+
     public int getAccuracy(int attacker, int moveAccuracy, int[][] statChanges)
     {
         int defender = (attacker + 1) % 2;

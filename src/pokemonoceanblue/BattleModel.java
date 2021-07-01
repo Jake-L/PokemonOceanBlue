@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import pokemonoceanblue.TurnEffectManager.MultiTurnEffect;
-
 public class BattleModel extends BaseModel
 {
     public PokemonModel[][] team = new PokemonModel[2][];
@@ -34,7 +32,7 @@ public class BattleModel extends BaseModel
     public int badgeIndex = -1;
     public int weather;
     private ItemModel reward;
-    private TurnEffectManager turnEffectManager = new TurnEffectManager();
+    public TurnEffectManager turnEffectManager = new TurnEffectManager();
     private BattleOperationsManager battleOperationsManager = new BattleOperationsManager();
     public boolean reloadSprites = false;
 
@@ -1068,49 +1066,11 @@ public class BattleModel extends BaseModel
     @Override
     public void update()
     {
-        // switch the current Pokemon
-        // do this at the start of counter to show the switching animation
+        // switch Pokemon at the start of counter to show the switching animation
         if (this.actionCounter == 100 && this.events.get(0).newPokemonIndex > -1)
         {
-            int attacker = this.events.get(0).attacker;
-            //remove confusion/curse
-            if (this.currentPokemon[attacker] != -1 && this.team[attacker][this.currentPokemon[attacker]].statusEffect > 6)
-            {
-                this.team[attacker][this.currentPokemon[attacker]].statusEffect = (byte)StatusEffect.UNAFFLICTED;
-            }
-            //remove multiTurnEffects that are applied to switched pokemon
-            if (turnEffectManager.multiTurnEffects.size() > 0)
-            {
-                int i = 0;
-                while (i < turnEffectManager.multiTurnEffects.size())
-                {
-                    if (turnEffectManager.multiTurnEffects.get(i).removalCondition == attacker)
-                    {
-                        turnEffectManager.multiTurnEffects.remove(i);
-                    }
-                    else
-                    {
-                        i++;
-                    }
-                }
-            }
-            this.currentPokemon[attacker] = this.events.get(0).newPokemonIndex;
-            //reset stat changes on switched pokemon
-            this.statChanges[attacker] = new int[8];
-            if (attacker == 1)
-            {
-                this.isSeen[this.events.get(0).newPokemonIndex] = true;
-            }
-            // add multi turn effect for any status effect the new pokemon may have
-            if (this.team[attacker][this.currentPokemon[attacker]].statusEffect > 0)
-            {
-                // add a multi turn effect for the new status effect
-                MoveEffectModel moveEffect = new MoveEffectModel(this.team[attacker][this.currentPokemon[attacker]].statusEffect);
-                MultiTurnEffect effect = turnEffectManager.new MultiTurnEffect(null, moveEffect, this.events.get(0).target, this.team, this.currentPokemon);
-                turnEffectManager.multiTurnEffects.add(effect);
-            }
+            battleOperationsManager.switchPokemon(this.events.get(0).attacker, this);
         }
-
         //calculate damage for an upcoming attack event and add second attack event if applicable
         else if (this.actionCounter == 60 && this.events.size() > 0 && this.events.get(0).damage == 1 && this.events.get(0).move != null && !this.moveProcessed[this.events.get(0).attacker])
         {
@@ -1198,25 +1158,7 @@ public class BattleModel extends BaseModel
             }
             else if (this.events.get(0).statusEffect > -1)
             {
-                this.team[this.events.get(0).target][this.currentPokemon[this.events.get(0).target]].statusEffect = (byte)this.events.get(0).statusEffect;
-                if (this.events.get(0).statusEffect == StatusEffect.UNAFFLICTED)
-                {
-                    // remove the multi turn effect for the previous status effect
-                    for (int i = 0; i < turnEffectManager.multiTurnEffects.size(); i++)
-                    {
-                        if (turnEffectManager.multiTurnEffects.get(i).effectId <= 8 && turnEffectManager.multiTurnEffects.get(i).target == this.events.get(0).target)
-                        {
-                            turnEffectManager.multiTurnEffects.remove(i);
-                        }
-                    }
-                }
-                else
-                {
-                    // add a multi turn effect for the new status effect
-                    MoveEffectModel moveEffect = new MoveEffectModel(this.events.get(0).statusEffect);
-                    MultiTurnEffect effect = turnEffectManager.new MultiTurnEffect(null, moveEffect, this.events.get(0).target, this.team, this.currentPokemon);
-                    turnEffectManager.multiTurnEffects.add(effect);
-                }
+                turnEffectManager.addStatusEffect(this.events.get(0).statusEffect, this.events.get(0).target, true, this);
             }
             else if (this.events.get(0).damage > 0)
             {

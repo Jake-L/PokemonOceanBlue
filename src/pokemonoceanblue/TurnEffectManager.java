@@ -155,6 +155,32 @@ public class TurnEffectManager
         events.add(event);
     }
 
+    public void removeMultiTurnEffects(PokemonModel pokemon, int attacker, boolean isFainted)
+    {
+        if (isFainted)
+        {
+            pokemon.statusEffect = 0;
+        }
+        else if (pokemon != null && pokemon.statusEffect > 6)
+        {
+            pokemon.statusEffect = (byte)StatusEffect.UNAFFLICTED;
+        }
+        if (this.multiTurnEffects.size() > 0)
+        {
+            for (int i = 0; i < this.multiTurnEffects.size();)
+            {
+                if (this.multiTurnEffects.get(i).removalCondition == attacker)
+                {
+                    this.multiTurnEffects.remove(i);
+                }
+                else
+                {
+                    i++;
+                }
+            }
+        }
+    }
+
     /** 
      * checks if either pokemon should suffer an end of turn effect
      */
@@ -264,6 +290,29 @@ public class TurnEffectManager
                 }
             }    
         }
+    }
+
+    public void addStatusEffect(int effectId, int target, boolean isNewStatusEffect, BattleModel model)
+    {
+        if (isNewStatusEffect)
+        {
+            model.team[model.events.get(0).target][model.currentPokemon[model.events.get(0).target]].statusEffect = (byte) effectId;
+            if (effectId == StatusEffect.UNAFFLICTED)
+            {
+                // remove the multi turn effect for the previous status effect
+                for (int i = 0; i < this.multiTurnEffects.size(); i++)
+                {
+                    if (this.multiTurnEffects.get(i).effectId <= 8 && this.multiTurnEffects.get(i).target == target)
+                    {
+                        this.multiTurnEffects.remove(i);
+                        break;
+                    }
+                }
+            }
+        }
+        MoveEffectModel moveEffect = new MoveEffectModel(effectId);
+        MultiTurnEffect effect = new MultiTurnEffect(null, moveEffect, target, model.team, model.currentPokemon);
+        this.multiTurnEffects.add(effect);
     }
 
     class MultiTurnEffect
