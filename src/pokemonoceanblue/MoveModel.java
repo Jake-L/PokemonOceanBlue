@@ -2,8 +2,6 @@ package pokemonoceanblue;
 
 import java.sql.*;
 
-import pokemonoceanblue.MoveEffectModel;
-
 public class MoveModel 
 {
     public int moveId;

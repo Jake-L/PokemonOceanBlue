@@ -2,7 +2,6 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -239,8 +238,8 @@ public class BattleTests {
             // choose "HARDEN"
             chooseAttack(battleModel, 0);
         }
-        assertNotEquals((team[0].getStat(2, battleModel.statChanges[0][2])), team[0].stats[2]); 
-        assertTrue(team[0].getStat(2, battleModel.statChanges[0][2]) > team[0].stats[2]);
+        assertNotEquals((team[0].getStat(2, battleModel.battleOperationsManager.statChanges[0][2])), team[0].stats[2]); 
+        assertTrue(team[0].getStat(2, battleModel.battleOperationsManager.statChanges[0][2]) > team[0].stats[2]);
     }
 
     /**

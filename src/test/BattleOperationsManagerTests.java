@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import pokemonoceanblue.BattleOperationsManager;
 import pokemonoceanblue.PokemonModel;
-import pokemonoceanblue.StatusEffect;
 
 public class BattleOperationsManagerTests {
 

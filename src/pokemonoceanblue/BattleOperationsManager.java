@@ -3,7 +3,8 @@ package pokemonoceanblue;
 import java.util.Random;
 
 public class BattleOperationsManager {
-    Random ranNum = new Random();
+    private Random ranNum = new Random();
+    public int[][] statChanges = new int[2][8];
 
     public void switchPokemon(int attacker, BattleModel model)
     {
@@ -11,7 +12,7 @@ public class BattleOperationsManager {
         {
             model.turnEffectManager.removeMultiTurnEffects(model.team[attacker][model.currentPokemon[attacker]], attacker, false);
         }
-        model.statChanges[attacker] = new int[8];
+        this.statChanges[attacker] = new int[8];
         model.currentPokemon[attacker] = model.events.get(0).newPokemonIndex;
         if (attacker == 1)
         {
@@ -24,15 +25,15 @@ public class BattleOperationsManager {
         }
     }
 
-    public int getAccuracy(int attacker, int moveAccuracy, int[][] statChanges)
+    public int getAccuracy(int attacker, int moveAccuracy)
     {
         int defender = (attacker + 1) % 2;
-        if (statChanges[attacker][6] == 0 && statChanges[defender][7] == 0)
+        if (this.statChanges[attacker][6] == 0 && this.statChanges[defender][7] == 0)
         {
             return moveAccuracy;
         }
-        return (int)(moveAccuracy * (2.0 / (Math.abs(statChanges[attacker][6]) + 2)) / 
-            (statChanges[defender][7] > 0 ? (Math.abs(statChanges[defender][7]) + 2) / 2.0 : 2.0 / (Math.abs(statChanges[defender][7]) + 2)));
+        return (int)(moveAccuracy * (2.0 / (Math.abs(this.statChanges[attacker][6]) + 2)) / 
+            (this.statChanges[defender][7] > 0 ? (Math.abs(this.statChanges[defender][7]) + 2) / 2.0 : 2.0 / (Math.abs(this.statChanges[defender][7]) + 2)));
     }
 
     /**
@@ -58,9 +59,11 @@ public class BattleOperationsManager {
     }
 
     public int determineFirstAttacker(PokemonModel playerPokemon, PokemonModel enemyPokemon, int playerMoveIndex, int enemyMoveIndex,
-                                      int playerSpeed, int enemySpeed)
+                                      BattleModel model)
     {
         int firstAttacker;
+        int playerSpeed = playerPokemon.getStat(Stat.SPEED, this.statChanges[0][Stat.SPEED]);
+        int enemySpeed = enemyPokemon.getStat(Stat.SPEED, this.statChanges[0][Stat.SPEED]);
         if (playerPokemon.moves[playerMoveIndex].priority > enemyPokemon.moves[enemyMoveIndex].priority)
         {
             firstAttacker = 0;
@@ -90,6 +93,104 @@ public class BattleOperationsManager {
             firstAttacker = ranNum.nextInt(2);
         }
         return firstAttacker;
+    }
+
+    /** 
+     * creates event for the stat changes applied by a move used
+     * @param attacker the attacking team
+     * @param move the move that inflicts the stat change
+     */
+    public void addStatChanges(int attacker, MoveModel move, BattleModel model)
+    {
+        if (ranNum.nextInt(100) + 1 <= move.effectChance)
+        {
+            String[] statChangeMessages = {" fell sharply.", " fell.", "", " rose.", " rose sharply."};
+            String[] changedStat = {"", " attack", " defense", " special attack", " special defense", " speed", " accuracy", " evasiveness"};
+            int target = (attacker + 1) % 2;
+            //loop through all stat changes in case there are multiple
+            for (int i = 0; i < move.moveStatEffects.length; i++)
+            {
+                BattleEvent event;
+                int statId = move.moveStatEffects[i].statId;
+                int statChange = move.moveStatEffects[i].statChange;
+                boolean willFail = false;
+                //when target id is 7 the move applies stat changes to the user, otherwise applied to foe
+                if (move.targetId == 7)
+                {
+                    target = attacker;
+                }
+                //check if mist will prevent stat change
+                if (model.turnEffectManager.multiTurnEffects.size() > 0)
+                {
+                    for (int j = 0; j < model.turnEffectManager.multiTurnEffects.size(); j++)
+                    {
+                        if (model.turnEffectManager.multiTurnEffects.get(j).effectId == 47 && model.turnEffectManager.multiTurnEffects.get(j).attacker == target)
+                        {
+                            willFail = true;
+                            model.events.add(new BattleEvent("The mist prevented stat changes.", target, target));
+                        }
+                    }
+                }
+                if (!willFail)
+                {
+                    //check if stat cannot be changed any further
+                    if ((this.statChanges[target][statId] == 6 && statChange > 0) || (this.statChanges[target][statId] == -6 && statChange < 0))
+                    {
+                        event = new BattleEvent(model.team[target][model.currentPokemon[target]].name + "'s " + changedStat[statId] + " cannot be " +
+                            (this.statChanges[target][statId] < 0 ? "decreased" : "increased") + " any further.", target, target);
+                    }
+                    else
+                    {
+                        event = new BattleEvent(model.team[target][model.currentPokemon[target]].name + "'s " +
+                            changedStat[statId] + statChangeMessages[statChange + 2], target, target);
+                        //apply stat change with limits of |6|
+                        this.statChanges[target][statId] = (statChange / Math.abs(statChange)) * Math.min(6, Math.abs(statChange + this.statChanges[target][statId]));
+                    }
+                    model.events.add(event);
+                }
+            }
+        }
+    }
+
+    /** 
+     * creates event for the self healing or recoil on attacking pokemon
+     * @param attacker the attacking team
+     * @param move the move that inflicts the heal or recoil
+     */
+    public BattleEvent createRecoilEvent(int attacker, MoveModel move, PokemonModel attackingPokemon, PokemonModel defendingPokemon, int weather, int attackDamage)
+    {
+        int damage;
+        //moves that have power=0 use attackers max hp to calc healing/recoil
+        if (move.power == 0)
+        {
+            damage = (int)(attackingPokemon.stats[Stat.HP] * (move.recoil / 100.0));
+            //morning sun, moonlight, synthesis heal for 2/3 hp when sun is shining 1/2 hp in clear weather 1/4 in other weather
+            if (move.moveEffect != null && move.moveEffect.effectId == 141)
+            {
+                if (weather > 1)
+                {
+                    damage /= 2;
+                }
+                else if (weather == 1)
+                {
+                    damage = (int)(damage * 4.0 / 3.0);
+                }
+            }
+        }
+        else if (move.recoil > 0)
+        {
+            damage = (int)(Math.ceil(Math.min(attackDamage, attackingPokemon.currentHP) * (move.recoil / 100.0)));
+        }
+        else
+        {
+            damage = (int)(Math.floor(attackDamage * (move.recoil / 100.0)));
+        }
+        if (damage != 0)
+        {
+            return new BattleEvent(attackingPokemon.name + (move.recoil < 0 ? " healed itself." : " is hit with recoil."),
+                                   damage, attacker, attacker, null, attacker);
+        }
+        return null;
     }
 
     /**

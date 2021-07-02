@@ -26,14 +26,13 @@ public class BattleModel extends BaseModel
     public boolean[] isSeen;
     private BattleEvent attackEvent[] = new BattleEvent[2];
     private String soundEffect;
-    public int[][] statChanges = new int[2][8];
     private boolean[] moveProcessed = new boolean[2];
     public int musicId;
     public int badgeIndex = -1;
     public int weather;
     private ItemModel reward;
     public TurnEffectManager turnEffectManager = new TurnEffectManager();
-    private BattleOperationsManager battleOperationsManager = new BattleOperationsManager();
+    public BattleOperationsManager battleOperationsManager = new BattleOperationsManager();
     public boolean reloadSprites = false;
 
     /** 
@@ -154,9 +153,7 @@ public class BattleModel extends BaseModel
                         int enemyMoveIndex = ranNum.nextInt(this.team[1][this.currentPokemon[1]].moves.length);
                         this.attackEvent[1] = enemyAttackEvent(enemyMoveIndex);
                         int firstAttacker = battleOperationsManager.determineFirstAttacker(this.team[0][this.currentPokemon[0]], this.team[1][this.currentPokemon[1]],
-                                                                                           this.optionIndex, enemyMoveIndex, 
-                                                                                           this.team[0][this.currentPokemon[0]].getStat(Stat.SPEED, this.statChanges[0][Stat.SPEED]),
-                                                                                           this.team[1][this.currentPokemon[1]].getStat(Stat.SPEED, this.statChanges[1][Stat.SPEED]));
+                                                                                           this.optionIndex, enemyMoveIndex, this);
                         this.events.add(this.attackEvent[firstAttacker]);
                 }
             }
@@ -397,104 +394,6 @@ public class BattleModel extends BaseModel
         }
     }
 
-    /** 
-     * creates event for the self healing or recoil on attacking pokemon
-     * @param attacker the attacking team
-     * @param move the move that inflicts the heal or recoil
-     */
-    private void recoil(int attacker, MoveModel move)
-    {
-        int damage;
-        //moves that have power=0 use attackers max hp to calc healing/recoil
-        if (move.power == 0)
-        {
-            damage = (int)(this.team[attacker][this.currentPokemon[attacker]].stats[Stat.HP] * (move.recoil / 100.0));
-            //morning sun, moonlight, synthesis heal for 2/3 hp when sun is shining 1/2 hp in clear weather 1/4 in other weather
-            if (move.moveEffect != null && move.moveEffect.effectId == 141)
-            {
-                if (this.weather > 1)
-                {
-                    damage /= 2;
-                }
-                else if (this.weather == 1)
-                {
-                    damage = (int)(damage * 4.0 / 3.0);
-                }
-            }
-        }
-        else if (move.recoil > 0)
-        {
-            damage = (int)(Math.ceil(Math.min(this.events.get(0).damage * (move.recoil / 100.0), 
-                this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]].currentHP)));
-        }
-        else
-        {
-            damage = (int)(Math.floor(this.events.get(0).damage * (move.recoil / 100.0)));
-        }
-        if (damage != 0)
-        {
-            this.events.add(new BattleEvent(this.team[attacker][this.currentPokemon[attacker]].name + (move.recoil < 0 ? " healed itself." : " is hit with recoil."),
-                damage, attacker, attacker, null, attacker));
-        }
-    }
-
-    /** 
-     * creates event for the stat changes applied by a move used
-     * @param attacker the attacking team
-     * @param move the move that inflicts the stat change
-     */
-    private void statChanges(int attacker, MoveModel move)
-    {
-        if (ranNum.nextInt(100) + 1 <= move.effectChance)
-        {
-            String[] statChangeMessages = {" fell sharply.", " fell.", "", " rose.", " rose sharply."};
-            String[] changedStat = {"", " attack", " defense", " special attack", " special defense", " speed", " accuracy", " evasiveness"};
-            int target = (attacker + 1) % 2;
-            //loop through all stat changes in case there are multiple
-            for (int i = 0; i < move.moveStatEffects.length; i++)
-            {
-                BattleEvent event;
-                int statId = move.moveStatEffects[i].statId;
-                int statChange = move.moveStatEffects[i].statChange;
-                boolean willFail = false;
-                //when target id is 7 the move applies stat changes to the user, otherwise applied to foe
-                if (move.targetId == 7)
-                {
-                    target = attacker;
-                }
-                //check if mist will prevent stat change
-                if (turnEffectManager.multiTurnEffects.size() > 0)
-                {
-                    for (int j = 0; j < turnEffectManager.multiTurnEffects.size(); j++)
-                    {
-                        if (turnEffectManager.multiTurnEffects.get(j).effectId == 47 && turnEffectManager.multiTurnEffects.get(j).attacker == target)
-                        {
-                            willFail = true;
-                            this.events.add(new BattleEvent("The mist prevented stat changes.", target, target));
-                        }
-                    }
-                }
-                if (!willFail)
-                {
-                    //check if stat cannot be changed any further
-                    if ((this.statChanges[target][statId] == 6 && statChange > 0) || (this.statChanges[target][statId] == -6 && statChange < 0))
-                    {
-                        event = new BattleEvent(this.team[target][this.currentPokemon[target]].name + "'s " + changedStat[statId] + " cannot be " +
-                            (this.statChanges[target][statId] < 0 ? "decreased" : "increased") + " any further.", target, target);
-                    }
-                    else
-                    {
-                        event = new BattleEvent(this.team[target][this.currentPokemon[target]].name + "'s " +
-                            changedStat[statId] + statChangeMessages[statChange + 2], target, target);
-                        //apply stat change with limits of |6|
-                        this.statChanges[target][statId] = (statChange / Math.abs(statChange)) * Math.min(6, Math.abs(statChange + this.statChanges[target][statId]));
-                    }
-                    this.events.add(event);
-                }
-            }
-        }
-    }
-
     private void moveEffect(MoveModel move, int attackEventIndex, int attacker)
     {
         int effectId = move.moveEffect.effectId;
@@ -622,7 +521,7 @@ public class BattleModel extends BaseModel
         else if (effectId == 26)
         {
             this.events.add(new BattleEvent("All Pokemon's stat changes were erased.", attacker, attacker));
-            this.statChanges = new int[2][8];
+            battleOperationsManager.statChanges = new int[2][8];
         }
         //aromatherapy/heal-bell
         else if (effectId == 103)
@@ -678,7 +577,7 @@ public class BattleModel extends BaseModel
             attack_stat = Stat.SPECIAL_ATTACK;
             defense_stat = Stat.SPECIAL_DEFENSE;
         }
-        else if (move.accuracy == -1 || this.ranNum.nextInt(100) + 1 <= battleOperationsManager.getAccuracy(attacker, move.accuracy, this.statChanges))
+        else if (move.accuracy == -1 || this.ranNum.nextInt(100) + 1 <= battleOperationsManager.getAccuracy(attacker, move.accuracy))
         {
             return 0;
         }
@@ -688,7 +587,7 @@ public class BattleModel extends BaseModel
             return 0;
         }
         //check if attack does not miss
-        if (move.accuracy == -1 || this.ranNum.nextInt(100) + 1 <= battleOperationsManager.getAccuracy(attacker, move.accuracy, this.statChanges))
+        if (move.accuracy == -1 || this.ranNum.nextInt(100) + 1 <= battleOperationsManager.getAccuracy(attacker, move.accuracy))
         {
             for (int i = 0; i < defendingPokemon.types.length; i++)
             {
@@ -831,8 +730,8 @@ public class BattleModel extends BaseModel
             return (int)Math.ceil((
                         (attackingPokemon.level * 2.0 / 5.0 + 2.0)
                         * (movePower) 
-                        * (attackingPokemon.getStat(attack_stat, this.statChanges[attacker][attack_stat]) * 1.0
-                        / defendingPokemon.getStat(defense_stat, this.statChanges[defender][defense_stat])) / 50 + 2) 
+                        * (attackingPokemon.getStat(attack_stat, battleOperationsManager.statChanges[attacker][attack_stat]) * 1.0
+                        / defendingPokemon.getStat(defense_stat, battleOperationsManager.statChanges[defender][defense_stat])) / 50 + 2) 
                     * this.typeModifier[attacker] * otherModifiers);
         }
         //missed attack
@@ -1089,7 +988,14 @@ public class BattleModel extends BaseModel
                 }
                 if (move.recoil != 0)
                 {
-                    this.recoil(attacker, move);
+                    BattleEvent event = battleOperationsManager.createRecoilEvent(attacker, move, 
+                        this.team[attacker][this.currentPokemon[attacker]], 
+                        this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]],
+                        this.weather, this.events.get(attackEventIndex).damage);
+                    if (event != null)
+                    {
+                        this.events.add(event);
+                    }
                 }
                 if (move.ailmentId > 0)
                 {
@@ -1098,7 +1004,7 @@ public class BattleModel extends BaseModel
                 }
                 if (move.moveStatEffects.length > 0)
                 {
-                    this.statChanges(attacker, move);
+                    battleOperationsManager.addStatChanges(attacker, move, this);
                 }
             }
             if (!this.moveProcessed[(attacker + 1) % 2])
@@ -1204,6 +1110,7 @@ public class BattleModel extends BaseModel
                     if (this.events.get(i).text.equals("Player blacked out!"))
                     {
                         eventExists = true;
+                        break;
                     }
                 }
                 if (!eventExists)
