@@ -121,12 +121,6 @@ public class App extends JFrame implements KeyListener
         this.playSong(0, false);
 
         this.partyModel = new PartyModel();
-        this.partyModel.addPokemon(0, new PokemonModel(3, 50, false));
-        this.partyModel.addPokemon(0, new PokemonModel(9, 50, true));
-        this.partyModel.addPokemon(0, new PokemonModel(6, 50, true));
-        this.partyModel.addPokemon(0, new PokemonModel(412, 50, false));
-        this.partyModel.addPokemon(0, new PokemonModel(351, 50, true));
-        this.partyModel.addPokemon(0, new PokemonModel(15, 50, false));
         this.inventoryModel = new InventoryModel();
         this.pokedexModel = new PokedexModel();
         this.pokemonStorageModel = new PokemonStorageModel();
@@ -175,7 +169,7 @@ public class App extends JFrame implements KeyListener
             //     ex.printStackTrace();
             //     this.setMap(1, 3, 3);
             // } 
-            this.setMap(49, 12, 1, Direction.DOWN);
+            this.setMap(6, 6, 6, Direction.DOWN);
         }
     }
 
@@ -705,8 +699,7 @@ public class App extends JFrame implements KeyListener
                     // add new quests
                     if (this.overworldModel.questId > 0)
                     {
-                        this.quests.add(new ObjectiveModel(this.overworldModel.questId));
-                        this.overworldModel.questId = -1;
+                        this.addQuest(this.overworldModel.questId);
                     }
                 }
                 else if (viewManager.getCurrentView().equals("PartyView"))
@@ -878,6 +871,44 @@ public class App extends JFrame implements KeyListener
     }
 
     /**
+     * don't add the quest if it's already in the list
+     * otherwise add the quest in sorted order
+     * @param questId the quest to be added
+     */
+    private void addQuest(int questId)
+    {
+        // add to an empty list
+        if (this.quests.size() == 0)
+        {
+            this.quests.add(new ObjectiveModel(questId));
+            return;
+        }
+        int i = 0;
+        while (i < this.quests.size() && questId > this.quests.get(i).objectiveId)
+        {
+            i++;
+        }
+
+        // add an objective to the end of the list
+        if (i == this.quests.size())
+        {
+            // don't insert if the quest in already in the list
+            if (questId > this.quests.get(i - 1).objectiveId)
+            {
+                this.quests.add(new ObjectiveModel(questId));
+            }
+            return;
+        }
+
+        // add an objective between two objectives
+        else if (questId < this.quests.get(i).objectiveId)
+        {
+            this.quests.add(i, new ObjectiveModel(questId));
+            return;
+        }
+    }
+
+    /**
      * Checks if any Pokemon can evolve, and adds the evolution to a queue
      */
     private void checkEvolution(boolean[] evolveQueue)
@@ -898,7 +929,8 @@ public class App extends JFrame implements KeyListener
                     // add the evolution to a queue
                     NewPokemonModel newPokemonModel = new NewPokemonModel(partyModel.team.get(i), partyModel, evolvedPokemonId, i);
                     this.newPokemonQueue.add(newPokemonModel);
-                    this.achievements.forEach((obj) -> obj.incrementCounter("evolve", 1));
+                    PokemonModel evolvedPokemon = new PokemonModel(evolvedPokemonId, 1, false);
+                    this.achievements.forEach((obj) -> obj.setPokemonEvolved(evolvedPokemon));
                 }
             }
         }
@@ -1004,7 +1036,7 @@ public class App extends JFrame implements KeyListener
     
                     // add a random quest
                     Random rand = new Random();
-                    this.quests.add(new ObjectiveModel(objectiveList.get(rand.nextInt(objectiveList.size()))));
+                    this.addQuest(objectiveList.get(rand.nextInt(objectiveList.size())));
                 }
             }
         }

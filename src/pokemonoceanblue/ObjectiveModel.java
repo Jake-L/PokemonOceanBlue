@@ -53,6 +53,16 @@ public class ObjectiveModel {
         }  
     }
 
+    public void setPokemonEvolved(PokemonModel pokemon)
+    {
+        incrementCounter("evolve", 1);
+        
+        for (int i = 0; i < pokemon.types.length; i++)
+        {
+            incrementCounter("evolveType", 1, String.valueOf(pokemon.types[i]));
+        }
+    }
+
     public void setPokemonCaught(PokemonModel pokemon)
     {
         incrementCounter("catchCount", 1);
@@ -93,7 +103,7 @@ public class ObjectiveModel {
                 incrementCounter("pokedexHoenn", 1);
             }
             //increse sinnoh dex counter
-            else
+            else if (pokemonId <= 493)
             {
                 incrementCounter("pokedexSinnoh", 1);
             }

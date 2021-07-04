@@ -508,7 +508,11 @@ public class OverworldModel extends BaseModel {
     private void checkConversationAction()
     {
         // add a new quest if one is available
-        this.questId = this.conversation.getQuestId();
+        int newQuestId = this.conversation.getQuestId();
+        if (newQuestId > -1)
+        {
+            this.questId = newQuestId;
+        }
 
         // show text options
         if (this.conversation.getOptions() != null)

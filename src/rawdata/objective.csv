@@ -73,7 +73,8 @@ Objective ID,objective group id,Name,Description,Reward ID,Reward Quantity,Rewar
 71,,Agriculturalist,,,,,118
 72,,Big Spender,,,,,
 73,,Good Samaritan,,,,,
-1000,,The Journey Begins,In order to become a Pokemon trainer$ you'll need to get your starter Pokemon. ,,,,
+1000,,The Journey Begins,The road to becoming a Pokemon master begins in Pallet Town.,,,,
+1001,,Find Cassie,A young trainer has gone missing and it's up to you to find her. ,,,,
 5000,0,Normal Type Challenge I,,,,133,
 5001,0,Fighting Type Challenge I,,,,66,
 5002,0,Flying Type Challenge I,,,,84,
