@@ -10,7 +10,7 @@ public class BattleEvent
     public int attacker;
     public int xp = 0;
     public int statusEffect = -1;
-    public MoveModel move;
+    public Attack attack;
     public int removalCondition;
     public MoveModel newMove;
     public int newWeatherId = -1;
@@ -29,18 +29,22 @@ public class BattleEvent
         this.removalCondition = removalCondition;
     }
 
+    public BattleEvent(Attack attack)
+    {
+        this(attack.moveUsedText, attack.attacker, attack.attacker);
+        this.attack = attack;
+        this.target = (attack.attacker + 1) % 2;
+    }
+
     /** 
-     * Constructor for moves used
+     * Setter for moves used
      * @param damage the damage that will be taken by target
      * @param target the pokemon that will recieve the damage
-     * @param move the move that inflicts the damage (null if damage is not applied by a move)
      */
-    public BattleEvent(String text, int damage, int target, int attacker, MoveModel move, int removalCondition)
+    public void setDamage(int damage, int target)
     {
-        this(text, attacker, removalCondition);
         this.damage = damage;
         this.target = target;
-        this.move = move;
     }
 
     /** 

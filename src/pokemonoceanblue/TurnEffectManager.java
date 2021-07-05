@@ -206,8 +206,8 @@ public class TurnEffectManager
             byte statusEffect = team[i][currentPokemon[i]].statusEffect;
             if (statusEffect > StatusEffect.FROZEN && statusEffect < StatusEffect.CONFUSION)
             {
-                BattleEvent event = new BattleEvent(team[i][currentPokemon[i]].name + effectMessages[team[i][currentPokemon[i]].statusEffect - 4],
-                    (int)Math.ceil(team[i][currentPokemon[i]].stats[Stat.HP] / 8.0), i, i, null, i);
+                BattleEvent event = new BattleEvent(team[i][currentPokemon[i]].name + effectMessages[team[i][currentPokemon[i]].statusEffect - 4], i, i);
+                event.setDamage((int)Math.ceil(team[i][currentPokemon[i]].stats[Stat.HP] / 8.0), i);
 
                 //badly poisoned
                 if (team[i][currentPokemon[i]].statusEffect == StatusEffect.BADLY_POISON)
@@ -242,13 +242,18 @@ public class TurnEffectManager
                 // add damage/recoil event if applicable
                 if ((effect.counter < effect.duration && effect.effectTimingId == 0) || effect.counter == effect.duration || effect.duration == -1)
                 {
+                    BattleEvent event;
                     if (effect.damage != 0)
                     {
-                        events.add(new BattleEvent(effect.text, effect.damage, effect.target, effect.attacker, null, effect.target));
+                        event = new BattleEvent(effect.text, effect.attacker, effect.target);
+                        event.setDamage(effect.damage, effect.target);
+                        events.add(event);
                     }
                     if (effect.recoil != 0 && team[effect.attacker][currentPokemon[effect.attacker]].currentHP < team[effect.attacker][currentPokemon[effect.attacker]].stats[Stat.HP])
                     {
-                        events.add(new BattleEvent(effect.text, effect.recoil, effect.attacker, effect.attacker, null, effect.target));
+                        event = new BattleEvent(effect.text, effect.attacker, effect.target);
+                        event.setDamage(effect.recoil, effect.attacker);
+                        events.add(event);
                     }
                 }
                 //increment effect counter
@@ -269,24 +274,18 @@ public class TurnEffectManager
             }
         }
         //check for end of turn damage from hail/sandstorm
-        if (weather > 2)
+        if (weather == Weather.HAIL || weather == Weather.SANDSTORM)
         {
             for (int i = 0; i < 2; i++)
             {
                 PokemonModel pokemon = team[i][currentPokemon[i]];
-                boolean isImmune = false;
-
-                if (pokemon.currentHP == 0 
-                    || (weather == 3 && (Type.typeIncludes(Type.STEEL, pokemon.types) || Type.typeIncludes(Type.ROCK, pokemon.types) || Type.typeIncludes(Type.GROUND, pokemon.types))) 
-                    || (weather == 4 && Type.typeIncludes(Type.ICE, pokemon.types)))
+                if (pokemon.currentHP > 0 && 
+                    !(weather == Weather.SANDSTORM && (Type.typeIncludes(Type.STEEL, pokemon.types) || Type.typeIncludes(Type.ROCK, pokemon.types) || Type.typeIncludes(Type.GROUND, pokemon.types))) &&
+                    !(weather == Weather.HAIL && Type.typeIncludes(Type.ICE, pokemon.types)))
                 {
-                    isImmune = true;
-                }
-
-                if (!isImmune)
-                {
-                    events.add(new BattleEvent(pokemon.name + " is hurt by the " + effectMessages[weather + 1], (int)Math.ceil(pokemon.stats[Stat.HP] / 16.0),
-                        i, i, null, i));
+                    BattleEvent event = new BattleEvent(pokemon.name + " is hurt by the " + effectMessages[weather + 1], i, i);
+                    event.setDamage((int)Math.ceil(pokemon.stats[Stat.HP] / 16.0), i);
+                    events.add(event);
                 }
             }    
         }
@@ -309,10 +308,13 @@ public class TurnEffectManager
                     }
                 }
             }
+            else
+            {
+                MoveEffectModel moveEffect = new MoveEffectModel(effectId);
+                MultiTurnEffect effect = new MultiTurnEffect(null, moveEffect, target, model.team, model.currentPokemon);
+                this.multiTurnEffects.add(effect);
+            }
         }
-        MoveEffectModel moveEffect = new MoveEffectModel(effectId);
-        MultiTurnEffect effect = new MultiTurnEffect(null, moveEffect, target, model.team, model.currentPokemon);
-        this.multiTurnEffects.add(effect);
     }
 
     class MultiTurnEffect

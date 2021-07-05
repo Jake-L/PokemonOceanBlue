@@ -25,15 +25,20 @@ public class BattleOperationsManager {
         }
     }
 
-    public int getAccuracy(int attacker, int moveAccuracy)
+    public boolean isHit(int attacker, int moveAccuracy)
     {
         int defender = (attacker + 1) % 2;
-        if (this.statChanges[attacker][6] == 0 && this.statChanges[defender][7] == 0)
+        if (this.statChanges[attacker][6] != 0 || this.statChanges[defender][7] != 0)
         {
-            return moveAccuracy;
+            moveAccuracy = (int)(moveAccuracy * (2.0 / (Math.abs(this.statChanges[attacker][6]) + 2)) / 
+                (this.statChanges[defender][7] > 0 ? (Math.abs(this.statChanges[defender][7]) + 2) / 2.0 : 2.0 / (Math.abs(this.statChanges[defender][7]) + 2)));
         }
-        return (int)(moveAccuracy * (2.0 / (Math.abs(this.statChanges[attacker][6]) + 2)) / 
-            (this.statChanges[defender][7] > 0 ? (Math.abs(this.statChanges[defender][7]) + 2) / 2.0 : 2.0 / (Math.abs(this.statChanges[defender][7]) + 2)));
+        return moveAccuracy == -1 || this.ranNum.nextInt(100) + 1 <= moveAccuracy;
+    }
+
+    public boolean isCrit(int critChance)
+    {
+        return critChance > 0 && ranNum.nextInt(10 - critChance) == 0;
     }
 
     /**
@@ -167,11 +172,11 @@ public class BattleOperationsManager {
             //morning sun, moonlight, synthesis heal for 2/3 hp when sun is shining 1/2 hp in clear weather 1/4 in other weather
             if (move.moveEffect != null && move.moveEffect.effectId == 141)
             {
-                if (weather > 1)
+                if (weather > Weather.SUNNY)
                 {
                     damage /= 2;
                 }
-                else if (weather == 1)
+                else if (weather == Weather.SUNNY)
                 {
                     damage = (int)(damage * 4.0 / 3.0);
                 }
@@ -187,8 +192,9 @@ public class BattleOperationsManager {
         }
         if (damage != 0)
         {
-            return new BattleEvent(attackingPokemon.name + (move.recoil < 0 ? " healed itself." : " is hit with recoil."),
-                                   damage, attacker, attacker, null, attacker);
+            BattleEvent event = new BattleEvent(attackingPokemon.name + (move.recoil < 0 ? " healed itself." : " is hit with recoil."), attacker, attacker);
+            event.setDamage(damage, attacker);
+            return event;
         }
         return null;
     }
