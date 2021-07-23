@@ -22,19 +22,15 @@ public class TurnEffectManager
         {
             boolean willFail = false;
             String[] statusEffectMessages = {" was paralyzed."," fell asleep."," was frozen solid."," was burned."," was poisoned."," was badly poisoned."," was cursed."," became confused."};
-            if (this.multiTurnEffects.size() > 0)
+            for (MultiTurnEffect effect : this.multiTurnEffects)
             {
-                for (int i = 0; i < this.multiTurnEffects.size(); i++)
+                if (effect.effectId == 125 && effect.attacker == defender && attacker != defender)
                 {
-                    if (this.multiTurnEffects.get(i).effectId == 125 && this.multiTurnEffects.get(i).attacker == defender && attacker != defender)
-                    {
-                        willFail = true;
-                        events.add(new BattleEvent(defendingPokemon.name + " was protected by safeguard.", defender, defender));
-                        break;
-                    }
+                    willFail = true;
+                    events.add(new BattleEvent(defendingPokemon.name + " was protected by safeguard.", defender, defender));
+                    break;
                 }
             }
-            
             if (defendingPokemon.ability != null
                 // check if Pokemon cannot sleep due to insomnia
                 && ((ailmentId == StatusEffect.SLEEP && defendingPokemon.ability.name.equals("INSOMNIA"))
@@ -83,9 +79,9 @@ public class TurnEffectManager
     public void addMultiTurnEffect(MoveModel move, int effectId, int attacker, PokemonModel[][] team, int currentPokemon[], List<BattleEvent> events)
     {
         boolean willFail = false;
-        for (int i = 0; i < this.multiTurnEffects.size(); i++)
+        for (MultiTurnEffect effect : this.multiTurnEffects)
         {
-            if (this.multiTurnEffects.get(i).effectId == effectId && this.multiTurnEffects.get(i).attacker == attacker)
+            if (effect.effectId == effectId && effect.attacker == attacker)
             {
                 willFail = true;
             }
@@ -165,20 +161,7 @@ public class TurnEffectManager
         {
             pokemon.statusEffect = (byte)StatusEffect.UNAFFLICTED;
         }
-        if (this.multiTurnEffects.size() > 0)
-        {
-            for (int i = 0; i < this.multiTurnEffects.size();)
-            {
-                if (this.multiTurnEffects.get(i).removalCondition == attacker)
-                {
-                    this.multiTurnEffects.remove(i);
-                }
-                else
-                {
-                    i++;
-                }
-            }
-        }
+        this.multiTurnEffects.removeIf(effect -> effect.removalCondition == attacker || effect.removalCondition == 2);
     }
 
     /** 
@@ -299,14 +282,7 @@ public class TurnEffectManager
             if (effectId == StatusEffect.UNAFFLICTED)
             {
                 // remove the multi turn effect for the previous status effect
-                for (int i = 0; i < this.multiTurnEffects.size(); i++)
-                {
-                    if (this.multiTurnEffects.get(i).effectId <= 8 && this.multiTurnEffects.get(i).target == target)
-                    {
-                        this.multiTurnEffects.remove(i);
-                        break;
-                    }
-                }
+                this.multiTurnEffects.removeIf(effect -> effect.effectId <= 8 && effect.target == target);
             }
             else
             {
