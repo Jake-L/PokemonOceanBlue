@@ -116,17 +116,7 @@ public class BattleModel extends BaseModel
 
                     case "POKEMON":
 
-                        //check if player can switch pokemon before opening the party
-                        boolean canSwitch = true;
-                        for (int i = 0; i < turnEffectManager.multiTurnEffects.size(); i++)
-                        {
-                            if (turnEffectManager.multiTurnEffects.get(i).effectId == 43 && turnEffectManager.multiTurnEffects.get(i).target == 0)
-                            {
-                                canSwitch = false;
-                                break;
-                            }
-                        }
-                        if (canSwitch)
+                        if (turnEffectManager.canSwitch())
                         {
                             this.battleOptions = null;
                             this.app.openParty(this.currentPokemon[0], true); 
@@ -300,25 +290,11 @@ public class BattleModel extends BaseModel
         // check if freze or sleep should end this turn
         if (attackingPokemon.statusEffect == StatusEffect.SLEEP || attackingPokemon.statusEffect == StatusEffect.FROZEN)
         {
-            for (int i = 0; i < turnEffectManager.multiTurnEffects.size(); i++)
+            BattleEvent event = turnEffectManager.wakeUpOrThawOut(attackingPokemon, attacker);
+            if (event != null) 
             {
-                if (turnEffectManager.multiTurnEffects.get(i).effectId == attackingPokemon.statusEffect && 
-                    turnEffectManager.multiTurnEffects.get(i).target == attacker &&
-                    turnEffectManager.multiTurnEffects.get(i).counter > turnEffectManager.multiTurnEffects.get(i).duration)
-                {
-                    BattleEvent event = new BattleEvent("", attacker, attacker);
-                    event.setStatusEffect(0, attacker);
-                    if (attackingPokemon.statusEffect == StatusEffect.FROZEN)
-                    {
-                        event.text = attackingPokemon.name + " thawed out!";
-                    }
-                    else
-                    {
-                        event.text = attackingPokemon.name + " woke up!";
-                    }
-                    this.events.add(0, event);
-                    attackEventIndex = 1;
-                }
+                this.events.add(0, event);
+                attackEventIndex = 1;
             }
         }
         // check if the attacking pokemon's status effect will prevent them from moving
@@ -651,18 +627,7 @@ public class BattleModel extends BaseModel
                     i++;
                 }
             }
-            i = 0;
-            while (i < turnEffectManager.multiTurnEffects.size())
-            {
-                if (turnEffectManager.multiTurnEffects.get(i).removalCondition == damagedTeamIndex || turnEffectManager.multiTurnEffects.get(i).removalCondition == 2)
-                {
-                    turnEffectManager.multiTurnEffects.remove(i);
-                }
-                else
-                {
-                    i++;
-                }
-            }
+            turnEffectManager.removeMultiTurnEffects(this.team[damagedTeamIndex][this.currentPokemon[damagedTeamIndex]], damagedTeamIndex, false);
             if (!faintEventExists)
             {
                 event = new BattleEvent(this.team[damagedTeamIndex][this.currentPokemon[damagedTeamIndex]].name + " fainted.", damagedTeamIndex, -1);
@@ -732,9 +697,9 @@ public class BattleModel extends BaseModel
             if (this.attacks[attacker].isUsed)
             {
                 List<BattleEvent> attackMessages = this.attacks[attacker].getAttackMessages();
-                for (int i = 0; i < attackMessages.size(); i++)
+                for (BattleEvent message : attackMessages)
                 {
-                    this.events.add(attackMessages.get(i));
+                    this.events.add(message);
                 }
             }
             //check if attack will occur or if move is self-destruct, explosion, or hi jump kick before applying effects
@@ -939,20 +904,20 @@ public class BattleModel extends BaseModel
 
             // add events for any new moves that the Pokemon learned from leveling up
             newMoves = this.team[0][this.currentPokemon[0]].addXP(xpMax - this.team[0][this.currentPokemon[0]].xp);
-            for (int i = 0; i < newMoves.size(); i++)
+            for (MoveModel move : newMoves)
             {
                 // learn the move immediately if they have any open slots
-                if (this.team[0][this.currentPokemon[0]].addMove(newMoves.get(i)))
+                if (this.team[0][this.currentPokemon[0]].addMove(move))
                 {
-                    this.events.add(2, new BattleEvent(this.team[0][this.currentPokemon[0]].name + " learned " + newMoves.get(i).name + "!", 0, 0));
+                    this.events.add(2, new BattleEvent(this.team[0][this.currentPokemon[0]].name + " learned " + move.name + "!", 0, 0));
                 }
                 // otherwise the player will need to choose a move to replace
                 else
                 {
                     event = new BattleEvent(
-                        this.team[0][this.currentPokemon[0]].name + " wants to learn " + newMoves.get(i).name + ", however it already knows four moves.", 
+                        this.team[0][this.currentPokemon[0]].name + " wants to learn " + move.name + ", however it already knows four moves.", 
                         0, 0);
-                    event.setNewMove(newMoves.get(i));
+                    event.setNewMove(move);
                     this.events.add(2, event);
                 }
             }

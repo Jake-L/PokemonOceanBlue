@@ -293,6 +293,33 @@ public class TurnEffectManager
         }
     }
 
+    public boolean canSwitch() 
+    {
+        for (MultiTurnEffect effect : this.multiTurnEffects)
+        {
+            if (effect.effectId == 43 && effect.target == 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public BattleEvent wakeUpOrThawOut(PokemonModel attackingPokemon, int attacker) 
+    {
+        for (MultiTurnEffect effect : this.multiTurnEffects)
+        {
+            if (effect.effectId == attackingPokemon.statusEffect && effect.target == attacker && effect.counter > effect.duration)
+            {
+                BattleEvent event = new BattleEvent(attackingPokemon.statusEffect == StatusEffect.FROZEN ? 
+                    attackingPokemon.name + " thawed out!" : attackingPokemon.name + " woke up!", attacker, attacker);
+                event.setStatusEffect(0, attacker);
+                return event;
+            }
+        }
+        return null;
+    }
+
     class MultiTurnEffect
     {
         String text;
