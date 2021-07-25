@@ -1,0 +1,35 @@
+* {
+    font-family: 'Source Code Pro', monospace;
+    margin: 0;
+    text-align: center;
+    box-sizing: border-box;
+}
+body {
+    background-color: #222;
+}
+nav {
+    background-color: rgb(29, 27, 145);
+    height: 80px;
+    border-bottom: 5px solid midnightblue;
+}
+nav a {
+    font-size: 24px;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    height: 100%;
+    width: 25%;
+    padding: 20px;
+}
+a:hover {
+    background-color: midnightblue;
+}
+a:active {
+    background-color: rgb(10, 10, 48)
+}
+#home-title {
+    font-size: 200px;
+    width: 100%;
+    color: cornflowerblue;
+    padding: 5%;
+}

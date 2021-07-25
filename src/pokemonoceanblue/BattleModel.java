@@ -261,13 +261,12 @@ public class BattleModel extends BaseModel
     }
 
     /**
-     * @return enemyAttack is the battle event that stores the enemy attack
+     * @return the battle event that stores the enemy attack
      * @param enemyMoveIndex is the index of the move the enemy will use
      */
     private Attack enemyAttack(int enemyMoveIndex)
     {
-        Attack enemyAttack = new Attack(this.team[1][this.currentPokemon[1]].name, this.team[1][this.currentPokemon[1]].moves[enemyMoveIndex], 1);
-        return enemyAttack;
+        return new Attack(this.team[1][this.currentPokemon[1]].name, this.team[1][this.currentPokemon[1]].moves[enemyMoveIndex], 1);
     }
 
     /**
