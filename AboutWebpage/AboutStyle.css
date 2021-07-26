@@ -8,13 +8,16 @@ h1, h2, h3, p {
     padding: 5px;
 }
 nav {
-    background-color: rgb(29, 27, 145);
+    background-color: #1d1b91;
     height: 80px;
     border-bottom: 5px solid midnightblue;
 }
 h3, p {
     max-width: 1000px;
     text-align: left;
+    margin: 0 auto;
+}
+table {
     margin: 0 auto;
 }
 nav a {
@@ -30,7 +33,7 @@ a:hover {
     background-color: midnightblue;
 }
 a:active {
-    background-color: rgb(10, 10, 48)
+    background-color: #0a0a30
 }
 #home {
     background-color: #222;
