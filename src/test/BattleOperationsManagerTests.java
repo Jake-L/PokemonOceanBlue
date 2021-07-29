@@ -5,8 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import pokemonoceanblue.BattleOperationsManager;
 import pokemonoceanblue.PokemonModel;
+import pokemonoceanblue.battle.BattleOperationsManager;
 
 public class BattleOperationsManagerTests {
 

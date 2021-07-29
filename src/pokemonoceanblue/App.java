@@ -17,6 +17,10 @@ import java.util.List;
 import java.util.Random;
 
 import javax.swing.JFrame;
+
+import pokemonoceanblue.battle.BattleModel;
+import pokemonoceanblue.battle.BattleView;
+
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.AudioSystem;

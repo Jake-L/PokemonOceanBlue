@@ -1,10 +1,19 @@
-package pokemonoceanblue;
+package pokemonoceanblue.battle;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import pokemonoceanblue.App;
+import pokemonoceanblue.BaseModel;
+import pokemonoceanblue.DatabaseUtility;
+import pokemonoceanblue.ItemModel;
+import pokemonoceanblue.MoveModel;
+import pokemonoceanblue.PokemonModel;
+import pokemonoceanblue.Stat;
+import pokemonoceanblue.StatusEffect;
 
 public class BattleModel extends BaseModel
 {

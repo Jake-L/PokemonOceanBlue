@@ -1,10 +1,15 @@
-package pokemonoceanblue;
+package pokemonoceanblue.battle;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
+
+import pokemonoceanblue.BaseView;
+import pokemonoceanblue.Stat;
+import pokemonoceanblue.Utils;
+
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.IOException;

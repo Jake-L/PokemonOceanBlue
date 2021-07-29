@@ -9,7 +9,7 @@ public class PokemonModel
 {
     public int pokemon_id;
     public int base_pokemon_id;
-    String name;
+    public String name;
     public int xp;
     public int level;
     public double levelModifier;
@@ -24,9 +24,9 @@ public class PokemonModel
     public int ivGain;
     public MoveModel[] moves = new MoveModel[0];
     public final boolean shiny;
-    int pokeballId = 3;
+    public int pokeballId = 3;
     public int happiness = 70;
-    int captureRate;
+    public int captureRate;
     int stepCounter;
     public int genderId;
     public boolean raidBoss;

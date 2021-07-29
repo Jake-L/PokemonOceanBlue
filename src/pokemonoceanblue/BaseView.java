@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class BaseView {
+public abstract class BaseView {
     protected byte graphicsScaling;
     protected int width;
     protected int height;
@@ -365,7 +365,7 @@ abstract class BaseView {
     }
 
     // render function that gets implemented by extended class
-    abstract void render(Graphics g, JPanel canvas);
+    public abstract void render(Graphics g, JPanel canvas);
 
     /**
      * @param image image to be recoloured 

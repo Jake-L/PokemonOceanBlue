@@ -1,4 +1,6 @@
-package pokemonoceanblue;
+package pokemonoceanblue.battle;
+
+import pokemonoceanblue.MoveModel;
 
 public class BattleEvent
 {

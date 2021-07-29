@@ -1,6 +1,13 @@
-package pokemonoceanblue;
+package pokemonoceanblue.battle;
 
 import java.util.Random;
+
+import pokemonoceanblue.MoveModel;
+import pokemonoceanblue.PokemonModel;
+import pokemonoceanblue.Stat;
+import pokemonoceanblue.StatusEffect;
+import pokemonoceanblue.Type;
+import pokemonoceanblue.Weather;
 
 public class BattleOperationsManager {
     private Random ranNum = new Random();

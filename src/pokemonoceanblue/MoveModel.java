@@ -89,7 +89,7 @@ public class MoveModel
     /**
      * Store stat change effects
      */
-    class MoveStatEffect
+    public class MoveStatEffect
     {
         public int statId;
         public int statChange;

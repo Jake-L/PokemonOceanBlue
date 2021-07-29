@@ -1,8 +1,16 @@
-package pokemonoceanblue;
+package pokemonoceanblue.battle;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import pokemonoceanblue.MoveEffectModel;
+import pokemonoceanblue.MoveModel;
+import pokemonoceanblue.PokemonModel;
+import pokemonoceanblue.Stat;
+import pokemonoceanblue.StatusEffect;
+import pokemonoceanblue.Type;
+import pokemonoceanblue.Weather;
 
 public class TurnEffectManager
 {

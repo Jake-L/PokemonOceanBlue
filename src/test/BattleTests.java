@@ -8,11 +8,11 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import pokemonoceanblue.BattleModel;
 import pokemonoceanblue.MoveModel;
 import pokemonoceanblue.PokemonModel;
 import pokemonoceanblue.StatusEffect;
 import pokemonoceanblue.Type;
+import pokemonoceanblue.battle.BattleModel;
 
 public class BattleTests {
     /**

@@ -1,7 +1,13 @@
-package pokemonoceanblue;
+package pokemonoceanblue.battle;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import pokemonoceanblue.MoveModel;
+import pokemonoceanblue.PokemonModel;
+import pokemonoceanblue.Stat;
+import pokemonoceanblue.StatusEffect;
+import pokemonoceanblue.Type;
 
 public class Attack {
     public List<String> eventText = new ArrayList<String>();
