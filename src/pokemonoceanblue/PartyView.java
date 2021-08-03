@@ -103,22 +103,25 @@ public class PartyView extends BaseView {
         }
 
         // display the currently hovered Pokemon
-        this.renderPokemonSidebar(this.model.team.get(this.model.optionIndex), 
-            this.pokemonSprite.get(this.model.team.get(this.model.optionIndex).getSpriteId()), 
-            0,
-            g, 
-            canvas);
-
-        // display the Pokemon's moves
-        for (int j = 0; j < this.model.team.get(this.model.optionIndex).moves.length; j++)
+        if (this.model.team.size() > 0)
         {
-            this.renderMove(this.model.team.get(this.model.optionIndex).moves[j], 
-                width * 2 / 3 + 24 * graphicsScaling, 
-                height / 20 + (this.summaryHeader[1].getHeight(null) + this.pokemonBackground[1].getHeight(null) + 8 + 24 * j) * graphicsScaling, 
-                false, // no moves can be hovered at this screen
-                false, // don't show power or accuracy to save space
+            this.renderPokemonSidebar(this.model.team.get(this.model.optionIndex), 
+                this.pokemonSprite.get(this.model.team.get(this.model.optionIndex).getSpriteId()), 
+                0,
                 g, 
                 canvas);
+
+            // display the Pokemon's moves
+            for (int j = 0; j < this.model.team.get(this.model.optionIndex).moves.length; j++)
+            {
+                this.renderMove(this.model.team.get(this.model.optionIndex).moves[j], 
+                    width * 2 / 3 + 24 * graphicsScaling, 
+                    height / 20 + (this.summaryHeader[1].getHeight(null) + this.pokemonBackground[1].getHeight(null) + 8 + 24 * j) * graphicsScaling, 
+                    false, // no moves can be hovered at this screen
+                    false, // don't show power or accuracy to save space
+                    g, 
+                    canvas);
+            }
         }
 
         //display pokemon windows
