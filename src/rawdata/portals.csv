@@ -46,6 +46,7 @@ map_id,area_id,x,y,x_offset,y_offset,dest_map_id,dest_area_id,dest_x,dest_y,dest
 33,1,22,9,0,1,41,0,3,9,0,-1,Cerulean -> Cerulean top right house
 33,1,8,20,0,1,536,0,5,11,0,-1,Cerulean -> Bike Shop
 33,1,9,20,0,1,536,0,5,11,0,-1,Cerulean -> Bike Shop
+33,1,40,20,0,1,544,0,3,9,0,-1,Cerulean -> Cerulean Academy
 42,0,16,37,0,1,43,0,6,13,0,-1,Vermilion -> gym
 44,0,8,45,0,1,47,0,4,38,0,-1,Route 10 -> Power Plant
 44,0,4,42,-1,0,47,0,0,10,1,0,Route 10 -> Power Plant side entrance
