@@ -4,7 +4,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
-import java.awt.Font;
 
 public class MapView extends BaseView 
 {

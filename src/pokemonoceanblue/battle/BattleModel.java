@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import pokemonoceanblue.App;
+import pokemonoceanblue.AppManager;
 import pokemonoceanblue.BaseModel;
 import pokemonoceanblue.DatabaseUtility;
 import pokemonoceanblue.ItemModel;
@@ -22,7 +22,7 @@ public class BattleModel extends BaseModel
     public String[] battleOptions;
     public List<BattleEvent> events = new ArrayList<BattleEvent>();
     private Random ranNum = new Random();
-    private App app;
+    private AppManager app;
     public boolean isCaught;
     public String trainerName;
     public String trainerSpriteName;
@@ -30,7 +30,6 @@ public class BattleModel extends BaseModel
     private boolean[] unableToMove = new boolean[2];
     public boolean[] isSeen;
     private Attack attacks[] = new Attack[2];
-    private String soundEffect;
     private boolean[] moveProcessed = new boolean[2];
     public int musicId;
     public int badgeIndex = -1;
@@ -45,7 +44,7 @@ public class BattleModel extends BaseModel
      * @param opponentTeam the opposing trainers pokemon team
      * @param playerTeam the players pokemon team
      */
-    public BattleModel(PokemonModel[] opponentTeam, PokemonModel[] playerTeam, App app, int weather)
+    public BattleModel(PokemonModel[] opponentTeam, PokemonModel[] playerTeam, AppManager app, int weather)
     {
         this.team[0] = playerTeam;
         this.team[1] = opponentTeam;
@@ -54,7 +53,7 @@ public class BattleModel extends BaseModel
         this.weather = weather;
     }
 
-    public BattleModel(PokemonModel[] playerTeam, int battleId, App app, int enemyScalingFactor, int weather)
+    public BattleModel(PokemonModel[] playerTeam, int battleId, AppManager app, int enemyScalingFactor, int weather)
     {
         this.team[0] = playerTeam;
         this.loadTeam(battleId, enemyScalingFactor);
@@ -1110,17 +1109,6 @@ public class BattleModel extends BaseModel
     public boolean[] getEvolveQueue()
     {
         return this.evolveQueue;
-    }
-
-    /**
-     * Returns the sound effect to be played and then clears it 
-     * @return the sound effect to be played
-     */
-    public String getSoundEffect()
-    {
-        String sound = this.soundEffect;
-        this.soundEffect = null;
-        return sound;
     }
 
     public ItemModel getBattleReward()

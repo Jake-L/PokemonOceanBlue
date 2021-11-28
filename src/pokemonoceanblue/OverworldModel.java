@@ -19,7 +19,7 @@ public class OverworldModel extends BaseModel {
     private List<PortalModel> portals = new ArrayList<PortalModel>();
     public List<BerryModel> plantedBerries = new ArrayList<BerryModel>();
     public ConversationModel conversation;
-    private App app;
+    private AppManager app;
     private WildPokemonModel wildPokemon;
     private List<ConversationTriggerModel> conversationTrigger = new ArrayList<ConversationTriggerModel>();
     private int areaId = -1;
@@ -41,7 +41,7 @@ public class OverworldModel extends BaseModel {
      * @param mapId unique identifier for the current map
      * @param playerModel model for the player to display it and calculate screen offset
      */
-    public OverworldModel(int mapId, CharacterModel playerModel, App app, InventoryModel inventoryModel, DayCareModel dayCareModel){
+    public OverworldModel(int mapId, CharacterModel playerModel, AppManager app, InventoryModel inventoryModel, DayCareModel dayCareModel){
         this.mapId = mapId;
         this.playerModel = playerModel;
         this.app = app;
@@ -73,7 +73,7 @@ public class OverworldModel extends BaseModel {
      * @param app
      * @param tournamentModel
      */
-    public OverworldModel(int mapId, CharacterModel playerModel, App app, TournamentModel tournamentModel)
+    public OverworldModel(int mapId, CharacterModel playerModel, AppManager app, TournamentModel tournamentModel)
     {
         this.mapId = mapId;
         this.playerModel = playerModel;
@@ -534,7 +534,7 @@ public class OverworldModel extends BaseModel {
         // play music
         else if (this.conversation.getMusicId() > -1)
         {
-            this.app.playSong(this.conversation.getMusicId(), true);
+            this.musicId = this.conversation.getMusicId();
         }
         // open the party screen
         else if (this.conversation.openParty())
@@ -559,7 +559,7 @@ public class OverworldModel extends BaseModel {
                 {
                     this.areaId = area.areaId;
                     this.battleBackgroundId = area.battleBackgroundId;
-                    this.app.playSong(area.musicId, false);
+                    this.musicId = area.musicId;
 
                     if (area.name != null)
                     {
@@ -601,6 +601,7 @@ public class OverworldModel extends BaseModel {
                 break;
             }
         }
+        
         if (canEncounterWildPkmn)
         {
             Random rand = new Random();

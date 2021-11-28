@@ -2,7 +2,6 @@ package pokemonoceanblue;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.sql.*;
 
 /** 
  * Hold's a users items and handles adding or removing items from inventory
