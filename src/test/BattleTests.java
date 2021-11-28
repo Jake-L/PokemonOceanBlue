@@ -692,7 +692,6 @@ public class BattleTests {
     {
         // skip opening animations
         updateBattleModel(battleModel, 503);
-        assertEquals(0, battleModel.events.size());
 
         // choose "FIGHT"
         battleModel.confirmSelection();
@@ -704,7 +703,6 @@ public class BattleTests {
 
         // skip end of turn animations
         updateBattleModel(battleModel, 503);
-        assertEquals(0, battleModel.events.size());
     }
 
     /**
@@ -719,5 +717,7 @@ public class BattleTests {
         {
             battleModel.update();
         }
+
+        assertEquals(0, battleModel.events.size());
     }
 }

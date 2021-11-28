@@ -147,7 +147,7 @@ public class BattleModel extends BaseModel
                         int enemyMoveIndex = ranNum.nextInt(this.team[1][this.currentPokemon[1]].moves.length);
                         this.attacks[1] = enemyAttack(enemyMoveIndex);
                         int firstAttacker = battleOperationsManager.determineFirstAttacker(this.team[0][this.currentPokemon[0]], this.team[1][this.currentPokemon[1]],
-                                                                                           this.optionIndex, enemyMoveIndex, this);
+                                                                                           this.optionIndex, enemyMoveIndex);
                         this.events.add(new BattleEvent(this.attacks[firstAttacker]));
                 }
             }
@@ -283,7 +283,11 @@ public class BattleModel extends BaseModel
      */
     private String getAttackSound(int attacker)
     {
-        return this.attacks[attacker].sound;
+        if (this.attacks[attacker] != null)
+        {
+            return this.attacks[attacker].sound;
+        }
+        return null;
     }
 
     /** 
@@ -701,7 +705,7 @@ public class BattleModel extends BaseModel
         {
             int attacker = this.events.get(0).attacker;
             int attackEventIndex = this.canAttack(attacker);
-            if (this.attacks[attacker].isUsed)
+            if (this.attacks[attacker] != null && this.attacks[attacker].isUsed)
             {
                 List<BattleEvent> attackMessages = this.attacks[attacker].getAttackMessages();
                 for (BattleEvent message : attackMessages)
@@ -710,9 +714,10 @@ public class BattleModel extends BaseModel
                 }
             }
             //check if attack will occur or if move is self-destruct, explosion, or hi jump kick before applying effects
-            if (attackEventIndex > -1 && this.events.get(attackEventIndex).attack != null && (!this.attacks[attacker].attackMissed ||
-                (this.events.get(attackEventIndex).attack.move.moveEffect != null &&
-                (this.events.get(attackEventIndex).attack.move.moveEffect.effectId == 46 || this.events.get(attackEventIndex).attack.move.moveEffect.effectId == 11))))
+            if (attackEventIndex > -1 && this.events.get(attackEventIndex).attack != null && (
+                (this.attacks[attacker] != null && !this.attacks[attacker].attackMissed) 
+                || (this.events.get(attackEventIndex).attack.move.moveEffect != null 
+                    && (this.events.get(attackEventIndex).attack.move.moveEffect.effectId == 46 || this.events.get(attackEventIndex).attack.move.moveEffect.effectId == 11))))
             {
                 MoveModel move = this.events.get(attackEventIndex).attack.move;
                 if (move.moveEffect != null && move.moveEffect.effectId > -1)

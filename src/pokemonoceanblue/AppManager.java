@@ -13,9 +13,9 @@ import pokemonoceanblue.battle.BattleView;
 public class AppManager {
     CharacterModel playerModel;
     CharacterModel oldPlayerModel;
-    ViewManager viewManager;
+    public ViewManager viewManager;
     OverworldModel overworldModel;
-    BattleModel battleModel;
+    public BattleModel battleModel;
     PartyModel partyModel;
     InventoryModel inventoryModel;
     PokedexModel pokedexModel;

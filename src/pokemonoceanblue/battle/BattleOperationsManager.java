@@ -70,8 +70,7 @@ public class BattleOperationsManager {
         return false;
     }
 
-    public int determineFirstAttacker(PokemonModel playerPokemon, PokemonModel enemyPokemon, int playerMoveIndex, int enemyMoveIndex,
-                                      BattleModel model)
+    public int determineFirstAttacker(PokemonModel playerPokemon, PokemonModel enemyPokemon, int playerMoveIndex, int enemyMoveIndex)
     {
         int firstAttacker;
         int playerSpeed = playerPokemon.getStat(Stat.SPEED, this.statChanges[0][Stat.SPEED]);
