@@ -2,14 +2,13 @@ package pokemonoceanblue;
 
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Color;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.awt.image.ColorConvertOp;
-import java.awt.color.ColorSpace;
 
 /** 
  * Renders the Pokedex
@@ -18,7 +17,7 @@ public class PokedexView extends BaseView
 {
     private BufferedImage[] pokemonIconSprite = new BufferedImage[506];
     private Image[] indexHighlight = new Image[2];
-    private Image pokemonSprite;
+    private BufferedImage pokemonSprite;
     private PokedexModel model;
     private Image background;
     private Image pokemonBackground;
@@ -40,14 +39,13 @@ public class PokedexView extends BaseView
      */
     private void loadImage() 
     {
-        ImageIcon ii = new ImageIcon(this.getClass().getResource("/pokemoncentered/frame0/" + this.model.optionIndex + ".png"));
-        this.pokemonSprite  = ii.getImage();
+        this.loadHoveredPokemon();
 
         for (int i = 0; i < pokemonIconSprite.length; i++)
         {
             try 
             {
-                this.pokemonIconSprite[i] = ImageIO.read(this.getClass().getResource("/pokemonicons/" + i + ".png"));              
+                this.pokemonIconSprite[i] = ImageIO.read(this.getClass().getResource("/pokemonicons/" + i + ".png"));
             }
             catch (IOException e)
             {
@@ -55,6 +53,8 @@ public class PokedexView extends BaseView
             }
             
         }
+
+        ImageIcon ii;
 
         for (int i = 0; i < indexHighlight.length; i++)
         {
@@ -68,19 +68,32 @@ public class PokedexView extends BaseView
         ii = new ImageIcon(this.getClass().getResource("/menus/pokedexPokemonBackground.png"));
         this.pokemonBackground = ii.getImage();
 
-        // converting all the images to greyscale takes about 2 seconds, so run it in a separate thread
-        new Thread(() -> {
-            for (int i = 0; i < pokemonIconSprite.length; i++)
+        for (int i = 0; i < pokemonIconSprite.length; i++)
+        {
+            // turn the icon black if they player hasn't caught the Pokemon
+            if (this.model.caughtPokemon[i] == 0)
             {
-                if (this.model.caughtPokemon[i] == 0)
-                {
-                    BufferedImage out = new BufferedImage(this.pokemonIconSprite[i].getWidth(), this.pokemonIconSprite[i].getHeight(), BufferedImage.TYPE_INT_ARGB);
-                    ColorConvertOp op = new ColorConvertOp(this.pokemonIconSprite[i].getColorModel().getColorSpace(), ColorSpace.getInstance(ColorSpace.CS_GRAY),  null);
-                    op.filter(this.pokemonIconSprite[i], out);
-                    this.pokemonIconSprite[i] = out; 
-                }
+                this.pokemonIconSprite[i] = this.colorImage(this.pokemonIconSprite[i], Color.BLACK.getRGB());
             }
-        }).start();
+        }
+    }
+
+    private void loadHoveredPokemon()
+    {
+        try 
+        {
+            this.pokemonSprite = ImageIO.read(this.getClass().getResource("/pokemoncentered/frame0/" + this.model.optionIndex + ".png"));
+
+            // turn the sprite black if they player hasn't caught the Pokemon
+            if (this.model.caughtPokemon[this.model.optionIndex] == 0)
+            {
+                this.pokemonSprite = this.colorImage(this.pokemonSprite, Color.BLACK.getRGB());
+            }
+        }
+        catch (IOException e)
+        {
+            System.out.println("Error loading /pokemoncentered/frame0/" + this.model.optionIndex + ".png");
+        }
     }
 
     /** 
@@ -106,8 +119,7 @@ public class PokedexView extends BaseView
         if (this.oldOptionIndex != this.model.optionIndex)
         {
             this.calcIndices();
-            ImageIcon ii = new ImageIcon(this.getClass().getResource("/pokemoncentered/frame0/" + this.model.optionIndex + ".png"));
-            this.pokemonSprite  = ii.getImage();
+            this.loadHoveredPokemon();
         }
 
         //draw the background

@@ -17,7 +17,7 @@ public class PartyView extends BaseView {
     private PartyModel model;
     private Image[] pokemonWindows = new Image[5];
     private Image hpBar;
-    private Image[] faintedPokemonWindows = new Image[3];
+    private Image[] faintedPokemonWindows = new Image[5];
     private Image background;
     private Image[] statusEffectImages = new Image[8];
     private Map<String, Image> pokemonIconSprite = new HashMap<String, Image>();
@@ -103,22 +103,25 @@ public class PartyView extends BaseView {
         }
 
         // display the currently hovered Pokemon
-        this.renderPokemonSidebar(this.model.team.get(this.model.optionIndex), 
-            this.pokemonSprite.get(this.model.team.get(this.model.optionIndex).getSpriteId()), 
-            0,
-            g, 
-            canvas);
-
-        // display the Pokemon's moves
-        for (int j = 0; j < this.model.team.get(this.model.optionIndex).moves.length; j++)
+        if (this.model.team.size() > 0)
         {
-            this.renderMove(this.model.team.get(this.model.optionIndex).moves[j], 
-                width * 2 / 3 + 24 * graphicsScaling, 
-                height / 20 + (this.summaryHeader[1].getHeight(null) + this.pokemonBackground[1].getHeight(null) + 8 + 24 * j) * graphicsScaling, 
-                false, // no moves can be hovered at this screen
-                false, // don't show power or accuracy to save space
+            this.renderPokemonSidebar(this.model.team.get(this.model.optionIndex), 
+                this.pokemonSprite.get(this.model.team.get(this.model.optionIndex).getSpriteId()), 
+                0,
                 g, 
                 canvas);
+
+            // display the Pokemon's moves
+            for (int j = 0; j < this.model.team.get(this.model.optionIndex).moves.length; j++)
+            {
+                this.renderMove(this.model.team.get(this.model.optionIndex).moves[j], 
+                    width * 2 / 3 + 24 * graphicsScaling, 
+                    height / 20 + (this.summaryHeader[1].getHeight(null) + this.pokemonBackground[1].getHeight(null) + 8 + 24 * j) * graphicsScaling, 
+                    false, // no moves can be hovered at this screen
+                    false, // don't show power or accuracy to save space
+                    g, 
+                    canvas);
+            }
         }
 
         //display pokemon windows
@@ -168,11 +171,15 @@ public class PartyView extends BaseView {
      */
     private void renderPokemonWindow(PokemonModel pokemon, int renderIndex, int x, int y, Graphics g, JPanel canvas)
     {
-        Image windowImage = this.faintedPokemonWindows[renderIndex];
-
-        if (renderIndex == 3 || pokemon.currentHP > 0)
+        Image windowImage;
+        
+        if (pokemon.currentHP > 0)
         {
             windowImage = this.pokemonWindows[renderIndex];
+        }
+        else
+        {
+            windowImage = this.faintedPokemonWindows[renderIndex];
         }
 
         g.drawImage(windowImage,

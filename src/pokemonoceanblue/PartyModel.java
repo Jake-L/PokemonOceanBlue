@@ -13,7 +13,8 @@ public class PartyModel extends BaseModel
     public boolean returnSelection = false;
     public int battleActivePokemon;
     public int switchPokemonIndex = -1;
-    public boolean updateOrder = false;
+    public boolean updateOrder;
+    public boolean openMap;
 
     public PartyModel()
     {
@@ -49,6 +50,8 @@ public class PartyModel extends BaseModel
         this.textOptions = null;
         this.textOptionIndex = 0;
         this.switchPokemonIndex = -1;
+        this.openMap = false;
+        this.updateOrder = false;
     }
 
     /**
@@ -104,6 +107,12 @@ public class PartyModel extends BaseModel
             {
                 this.textOptions = new String[] {"SELECT", "SUMMARY", "CANCEL"};
             }
+            // use fly with a dragon or flying type
+            else if (Type.typeIncludes(Type.FLYING, this.team.get(this.optionIndex).types)
+                || Type.typeIncludes(Type.DRAGON, this.team.get(this.optionIndex).types))
+            {
+                this.textOptions = new String[] {"SUMMARY", "FLY", "SWITCH", "CANCEL"};
+            }
             else
             {
                 this.textOptions = new String[] {"SUMMARY", "SWITCH", "CANCEL"};
@@ -119,6 +128,12 @@ public class PartyModel extends BaseModel
         else if (this.textOptions[this.textOptionIndex].equals("SWITCH"))
         {
             this.switchPokemonIndex = this.optionIndex;
+            this.textOptions = null;
+        }
+        // open the map to select a location to fly
+        else if (this.textOptions[this.textOptionIndex].equals("FLY"))
+        {
+            this.openMap = true;
             this.textOptions = null;
         }
         // close the pop-up window

@@ -4,6 +4,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.List;
+import java.util.Properties;
+
+import org.sqlite.SQLiteConfig;
+import org.sqlite.SQLiteConfig.Pragma;
 
 public class DatabaseUtility 
 {    
@@ -22,8 +26,12 @@ public class DatabaseUtility
             {
                 this.url =  "jdbc:sqlite::resource:" + this.getClass().getResource("/database/pokemon.db");
                 
+                SQLiteConfig sqLiteConfig = new SQLiteConfig();
+                Properties properties = sqLiteConfig.toProperties();
+                properties.setProperty(Pragma.DATE_STRING_FORMAT.pragmaName, "yyyy-MM-dd HH:mm:ss");
+
                 // create a connection to the database
-                conn = DriverManager.getConnection(this.url);
+                conn = DriverManager.getConnection(this.url, properties);
 
                 conn.createStatement().execute("PRAGMA foreign_keys = ON");
                 
@@ -62,12 +70,12 @@ public class DatabaseUtility
 
         // remove all the existing tables first
         String[] tableList = {
-            "player_pokemon", "player_location", "conversation_options",
+            "player_pokemon", "player_location", "conversation_options", "ability",
             "evolution_methods",  "pokemon_moves", "pokemon_location", 
             "conversation",  "type_effectiveness", "items", "battle_reward",
             "portal", "map_object", "area", "character", "move_stat_effect",
             "conversation_trigger", "achievements", "battle",
-            "player_pokedex", "objective_task", "objective", 
+            "player_pokedex", "objective_group", "objective_task", "objective", 
             "moves",
             "map_template",
             "move_effect", 
@@ -101,7 +109,9 @@ public class DatabaseUtility
                     iv_gain INT NOT NULL,
                     capture_rate INT NOT NULL,
                     base_pokemon_id INT NOT NULL,
-                    [description] VARCHAR(130) NULL)
+                    [description] VARCHAR(130) NULL,
+                    level_modifier FLOAT NOT NULL,
+                    ability_id INT NOT NULL)
                 """;
         runUpdate(query);
 
@@ -115,12 +125,12 @@ public class DatabaseUtility
                     defense, special_attack,
                     special_defense, speed,
                     iv_gain, capture_rate,
-                    base_pokemon_id, [description])
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    base_pokemon_id, [description], level_modifier, ability_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
         dataTypes = new String[] {"int", "String", "int", "int", "int", "int", 
-            "int", "int", "int", "int", "int", "int", "int", "String"};
+            "int", "int", "int", "int", "int", "int", "int", "String", "float", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================
@@ -206,6 +216,30 @@ public class DatabaseUtility
         dataTypes = new String[] {"int", "int", "int"};
         loadTable(path, query, dataTypes);
 
+        
+        //==================================================================================
+        // names and descriptions of abilities
+        query = """
+                CREATE TABLE ability (
+                    ability_id INT PRIMARY KEY,
+                    name VARCHAR(30) NOT NULL,
+                    description VARCHAR(255) NOT NULL,
+                    effect_id INT NOT NULL,
+                    battle_text VARCHAR(255) NULL)
+                """;
+        runUpdate(query);
+
+        // fill ability table with data
+        path = "/rawdata/ability.csv";
+        query = """
+                INSERT INTO ability (
+                    ability_id, name, description, effect_id, battle_text)
+                VALUES (?, ?, ?, ?, ?)
+                """;
+
+        dataTypes = new String[] {"int", "String", "String", "int", "String"};
+        loadTable(path, query, dataTypes);
+
         //==================================================================================
         // how specific Pokemon evolve, such as by level, item, or trade
         query = """
@@ -273,6 +307,8 @@ public class DatabaseUtility
                     max_y INT NOT NULL,
                     music_id INT NOT NULL,
                     battle_background_id INT NOT NULL,
+                    safe_x INT NULL,
+                    safe_y INT NULL,
                     FOREIGN KEY(map_id) REFERENCES map_template(map_id))
                 """;
         runUpdate(query);
@@ -284,11 +320,12 @@ public class DatabaseUtility
                     map_id, area_id, name, 
                     min_x, max_x,
                     min_y, max_y,
-                    music_id, battle_background_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    music_id, battle_background_id,
+                    safe_x, safe_y)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """;
         
-        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int", "int"};
+        dataTypes = new String[] {"int", "int", "String", "int", "int", "int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================
@@ -362,6 +399,8 @@ public class DatabaseUtility
                     area_id INT NOT NULL,
                     pokemon_id INT NOT NULL,
                     tile_id INT NOT NULL,
+                    rarity INT NOT NULL,
+                    time_of_day INT NULL,
                     FOREIGN KEY(map_id) REFERENCES map_template(map_id),
                     FOREIGN KEY(pokemon_id) REFERENCES pokemon(pokemon_id))
                 """;
@@ -371,14 +410,12 @@ public class DatabaseUtility
         path = "/rawdata/pokemonLocation.csv";
         query = """
                 INSERT INTO pokemon_location (
-                    map_id, 
-                    area_id,
-                    pokemon_id,
-                    tile_id)
-                VALUES (?, ?, ?, ?)
+                    map_id, area_id, pokemon_id,
+                    tile_id, rarity, time_of_day)
+                VALUES (?, ?, ?, ?, ?, ?)
                 """;
         
-        dataTypes = new String[] {"int", "int", "int", "int"};
+        dataTypes = new String[] {"int", "int", "int", "int", "int", "int"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================
@@ -491,17 +528,17 @@ public class DatabaseUtility
         //==================================================================================
         // triggers to start conversations
         query = """
-                CREATE TABLE conversation_trigger(
-                map_id INT NOT NULL,
-                area_id INT NOT NULL,
-                x INT NOT NULL,
-                y INT NOT NULL,
-                conversation_id INT NOT NULL,
-                character_id INT NOT NULL,
-                clear_conversation_id INT NOT NULL,
-                auto_trigger INT NOT NULL,
-                approach_player INT NOT NULL,
-                FOREIGN KEY(map_id) REFERENCES map_template(map_id))
+                CREATE TABLE conversation_trigger (
+                    map_id INT NOT NULL,
+                    area_id INT NOT NULL,
+                    x INT NOT NULL,
+                    y INT NOT NULL,
+                    conversation_id INT NOT NULL,
+                    character_id INT NOT NULL,
+                    clear_conversation_id INT NOT NULL,
+                    auto_trigger INT NOT NULL,
+                    approach_player INT NOT NULL,
+                    FOREIGN KEY(map_id) REFERENCES map_template(map_id))
                 """;
         runUpdate(query);
 
@@ -653,14 +690,37 @@ public class DatabaseUtility
         runUpdate(query);
 
         //==================================================================================
+        // store data for recurring objectives
+        query = """
+                CREATE TABLE objective_group (
+                    objective_group_id INT PRIMARY KEY,
+                    frequency INT NULL,
+                    last_reset DATETIME NULL)
+                """;
+        runUpdate(query);
+
+        // fill objective_group table with data
+        path = "/rawdata/objective_group.csv";
+        query = """
+                INSERT INTO objective_group (
+                    objective_group_id, frequency, last_reset)
+                    VALUES (?, ?, ?)
+                """;
+
+        dataTypes = new String[] {"int", "int", "Datetime"};
+        loadTable(path, query, dataTypes);
+
+        //==================================================================================
         // each data for each achievement/quest
         query = """
                 CREATE TABLE objective (
                     objective_id INT PRIMARY KEY,
+                    objective_group_id INT NOT NULL,
                     name VARCHAR(30) NOT NULL,
                     description VARCHAR(80) NULL,
                     reward_id INT NULL,
                     reward_quantity INT NULL,
+                    reward_pokemon_id INT NULL,
                     icon VARCHAR(20) NULL)
                 """;
         runUpdate(query);
@@ -669,12 +729,12 @@ public class DatabaseUtility
         path = "/rawdata/objective.csv";
         query = """
                 INSERT INTO objective (
-                    objective_id, name, description, 
-                    reward_id, reward_quantity, icon)
-                    VALUES (?, ?, ?, ?, ?, ?)
+                    objective_id, objective_group_id, name, description, 
+                    reward_id, reward_quantity, reward_pokemon_id, icon)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """;
 
-        dataTypes = new String[] {"int", "String", "String", "int", "int", "String"};
+        dataTypes = new String[] {"int", "int", "String", "String", "int", "int", "int", "String"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================
@@ -786,6 +846,11 @@ public class DatabaseUtility
                         {
                             statement.setFloat(i+1, Float.parseFloat(data[i]));
                         }   
+                    }
+                    else if (dataTypes[i] == "Datetime")
+                    {
+                        // never need to load dates from csv files
+                        statement.setTimestamp(i+1, null);
                     }
                 }  
 

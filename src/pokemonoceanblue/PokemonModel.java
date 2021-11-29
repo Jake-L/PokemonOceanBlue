@@ -9,9 +9,10 @@ public class PokemonModel
 {
     public int pokemon_id;
     public int base_pokemon_id;
-    String name;
-    int xp;
+    public String name;
+    public int xp;
     public int level;
+    public double levelModifier;
     public byte statusEffect = 0;
 
     public int[] types;
@@ -23,12 +24,13 @@ public class PokemonModel
     public int ivGain;
     public MoveModel[] moves = new MoveModel[0];
     public final boolean shiny;
-    int pokeballId = 3;
+    public int pokeballId = 3;
     public int happiness = 70;
-    int captureRate;
+    public int captureRate;
     int stepCounter;
     public int genderId;
     public boolean raidBoss;
+    public AbilityModel ability;
     
     /** 
      * Constructor
@@ -43,17 +45,6 @@ public class PokemonModel
         this.shiny = shiny;
         this.genderId = new Random().nextInt(2);
 
-        if (level > 0)
-        {
-            this.stepCounter = 500;
-            this.xp = (int) Math.pow(level, 3);
-            this.loadMoves();
-        }
-        else
-        {
-            this.stepCounter = 1500;
-        }
-
         // generate random IVs from 0 to 15
         Random rand = new Random();
         for (int i = 0; i < ivs.length; i++)
@@ -62,6 +53,17 @@ public class PokemonModel
         }
 
         this.loadStats();
+
+        if (level > 0)
+        {
+            this.stepCounter = 500;
+            this.xp = this.calcXP(0);
+            this.loadMoves();
+        }
+        else
+        {
+            this.stepCounter = 1500;
+        }
     }
 
     /** 
@@ -87,7 +89,7 @@ public class PokemonModel
 
     /**
      * Read the Pokemon's information from a SQL ResultSet
-     * @param rs ResultSet contianing the Pokemon's data
+     * @param rs ResultSet containing the Pokemon's data
      * @throws SQLException
      */
     public PokemonModel(ResultSet rs) throws SQLException
@@ -127,9 +129,40 @@ public class PokemonModel
     /** 
      * Recalculates a Pokemon's level based off it's current experience
      */
-    private void calcLevel()
+    private int calcLevel()
     {
-        this.level = (int) Math.floor(Math.cbrt(xp));
+        int level = 0;
+        level = (int) Math.floor(Math.cbrt(this.xp * (1 / this.levelModifier)));
+
+        // if the pokemon has any xp at all, it cannot be level 0
+        if (xp > 0)
+        {
+            level = Math.max(level, 1);
+        }
+
+        // can't exceed level 100
+        level = Math.min(level, 100);
+
+        return level;
+    }
+
+    /**
+     * Calculates the minimum amount of XP needed for a specific level
+     * @param levelOffset the amount to offset the Pokemon's level by
+     * @return the minimum amount of XP needed 
+     */
+    public int calcXP(int levelOffset)
+    {
+        int level = this.level + levelOffset;
+
+        if (level > 100)
+        {
+            return 1000000000;
+        }
+        else
+        {
+            return (int)Math.ceil(Math.pow(level, 3.0) * this.levelModifier);
+        }
     }
 
     /**
@@ -140,8 +173,9 @@ public class PokemonModel
     public List<MoveModel> addXP(int xp)
     {
         int oldLevel = this.level;
+        int missingHP = this.stats[0] - this.currentHP;
         this.xp += xp;
-        this.calcLevel();
+        this.level = this.calcLevel();
         
         if (oldLevel < this.level)
         {
@@ -155,6 +189,9 @@ public class PokemonModel
             // otherwise, check for any new moves that can be learned by leveling up
             else
             {
+                // deduct any HP that was missing before leveling up
+                this.currentHP -= missingHP;
+
                 return this.checkNewMoves(oldLevel);
             }
         }
@@ -369,6 +406,7 @@ public class PokemonModel
             this.name = rs.getString("name").toUpperCase();
             this.ivGain = rs.getInt("iv_gain");
             this.captureRate = rs.getInt("capture_rate");
+            this.levelModifier = rs.getDouble("level_modifier");
 
             // check if the Pokemon has one type or two
             if (rs.getInt("type2") == 0)
@@ -384,7 +422,15 @@ public class PokemonModel
             this.types[0] = rs.getInt("type1");
             
             // set the Pokemon's stats
-            this.stats[Stat.HP] = (int)Math.floor(2.0 * rs.getInt("hp") * this.level / 100) + this.level + 10;
+            if (rs.getInt("hp") > 1)
+            {
+                this.stats[Stat.HP] = (int)Math.floor(2.0 * rs.getInt("hp") * this.level / 100) + this.level + 10;
+            }
+            else
+            {
+                // Shedinja has base HP stat value of 1 for a constant 1 HP
+                this.stats[Stat.HP] = 1;
+            }
             this.currentHP = this.stats[Stat.HP];
 
             String[] stats = {"hp", "attack","defense","special_attack","special_defense","speed"};
@@ -392,6 +438,12 @@ public class PokemonModel
             for (int i = 1; i < stats.length; i++)
             {
                 this.stats[i] = (int)Math.floor((2.0 * rs.getInt(stats[i]) + this.ivs[i]) * this.level / 100) + 5;
+            }
+            
+            int abilityId = rs.getInt("ability_id");
+            if (abilityId > -1)
+            {
+                this.ability = new AbilityModel(abilityId);
             }
         }
         catch (SQLException e) 

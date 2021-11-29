@@ -2,21 +2,21 @@ package test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import pokemonoceanblue.BattleModel;
 import pokemonoceanblue.MoveModel;
 import pokemonoceanblue.PokemonModel;
+import pokemonoceanblue.StatusEffect;
+import pokemonoceanblue.Type;
+import pokemonoceanblue.battle.BattleModel;
 
 public class BattleTests {
     /**
      * Test that status effects get applied
-     * Done by using thunder wave 10 times, since it has 90% accuracy
      */
     @Test
     public void testParalyze() {
@@ -24,18 +24,15 @@ public class BattleTests {
         team[0] = new PokemonModel(25, 21, false);
         PokemonModel[] enemyTeam = new PokemonModel[1];
         enemyTeam[0] = new PokemonModel(1, 1, false);
-        // make sure Pikachu knows thunder wave
+        // make sure Pikachu knows thunder wave and give it infinite accuracy
         assertEquals("THUNDER WAVE", team[0].moves[3].name);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+        team[0].moves[3].accuracy = -1;
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
-        // run a few loops to make sure thunder wave lands
-        for (int i = 0; i < 10; i++)
-        {
-            // choose "THUNDER WAVE"
-            chooseAttack(battleModel, 3);
-        }
-        assertEquals(1, enemyTeam[0].statusEffect); 
+        // choose "THUNDER WAVE"
+        chooseAttack(battleModel, 3);
+        assertEquals(StatusEffect.PARALYSIS, enemyTeam[0].statusEffect); 
     }
     
     /**
@@ -58,7 +55,7 @@ public class BattleTests {
         enemyTeam[0].moves = new MoveModel[1];
         enemyTeam[0].moves[0] = new MoveModel(150);
 
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
 
         // choose "fissure"
         chooseAttack(battleModel, 0);
@@ -79,7 +76,7 @@ public class BattleTests {
         enemyTeam[0] = new PokemonModel(129, 1, false);
         // make sure rattata knows double edge
         assertEquals("DOUBLE-EDGE", team[0].moves[0].name);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
 
         // choose "double edge"
         chooseAttack(battleModel, 0);
@@ -103,7 +100,7 @@ public class BattleTests {
         // make sure bulbasaur knows tackle and gastly only knows swords dance 
         assertEquals("TACKLE", team[0].moves[0].name);
         enemyTeam[0].moves[0] = new MoveModel(14);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
 
         // choose "tackle"
         chooseAttack(battleModel, 0);
@@ -123,7 +120,7 @@ public class BattleTests {
         enemyTeam[0] = new PokemonModel(1, 1, false);
         // give crobat fakeout
         team[0].moves[0] = new MoveModel(252);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
 
         // choose "fakeout"
         chooseAttack(battleModel, 0);
@@ -149,7 +146,7 @@ public class BattleTests {
         team[0].moves[1] = new MoveModel(33);
         team[0].moves[2] = new MoveModel(33);
         team[0].moves[3] = new MoveModel(33);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // run a few loops to check that a random attack is used
@@ -186,7 +183,7 @@ public class BattleTests {
         enemyTeam[1] = new PokemonModel(2, 1, false);
         // make sure Pikachu knows discharge
         assertEquals("DISCHARGE", team[0].moves[2].name);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // make sure first Pokemon is sent out
@@ -212,7 +209,7 @@ public class BattleTests {
         // create the battle
         PokemonModel[] enemyTeam = new PokemonModel[1];
         enemyTeam[0] = new PokemonModel(1, 1, false);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
 
@@ -232,7 +229,7 @@ public class BattleTests {
         enemyTeam[0] = new PokemonModel(129, 1, false);
         // make sure metapod knows harden
         assertEquals("HARDEN", team[0].moves[0].name);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // run a few loops to check that metapods defense changes
@@ -241,8 +238,8 @@ public class BattleTests {
             // choose "HARDEN"
             chooseAttack(battleModel, 0);
         }
-        assertNotEquals((team[0].getStat(2, battleModel.statChanges[0][2])), team[0].stats[2]); 
-        assertTrue(team[0].getStat(2, battleModel.statChanges[0][2]) > team[0].stats[2]);
+        assertNotEquals((team[0].getStat(2, battleModel.battleOperationsManager.statChanges[0][2])), team[0].stats[2]); 
+        assertTrue(team[0].getStat(2, battleModel.battleOperationsManager.statChanges[0][2]) > team[0].stats[2]);
     }
 
     /**
@@ -264,7 +261,7 @@ public class BattleTests {
         team[0].moves = new MoveModel[2];
         team[0].moves[0] = new MoveModel(147);
         team[0].moves[1] = new MoveModel(33);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
 
         // choose "spore"
         chooseAttack(battleModel, 0);
@@ -300,7 +297,7 @@ public class BattleTests {
         team[0].moves[0] = new MoveModel(104);
         assertEquals("DOUBLE TEAM", team[0].moves[0].name);
         enemyTeam[0].moves[0] = new MoveModel(132);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
         // skip opening animations
         updateBattleModel(battleModel, 500);
         // run a few loops to check that metapods defense changes
@@ -342,7 +339,7 @@ public class BattleTests {
         team[0].moves[1] = new MoveModel(150);
         enemyTeam[0].moves = new MoveModel[1];
         enemyTeam[0].moves[0] = new MoveModel(150);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
 
         // choose "toxic"
         chooseAttack(battleModel, 0);
@@ -377,7 +374,7 @@ public class BattleTests {
         team[0].moves[0].accuracy = -1;
         enemyTeam[0].moves = new MoveModel[1];
         enemyTeam[0].moves[0] = new MoveModel(150);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
 
         // choose "poison powder"
         chooseAttack(battleModel, 0);
@@ -407,7 +404,7 @@ public class BattleTests {
         team[0].moves[0].accuracy = -1;
         enemyTeam[0].moves = new MoveModel[1];
         enemyTeam[0].moves[0] = new MoveModel(150);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
 
         // choose "poison powder"
         chooseAttack(battleModel, 0);
@@ -433,7 +430,7 @@ public class BattleTests {
         enemyTeam[0].moves[0] = new MoveModel(171);
         //give player bulbasaur splash for first turn
         team[0].moves[0] = new MoveModel(150);
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
 
         // choose "splash"
         chooseAttack(battleModel, 0);
@@ -465,7 +462,7 @@ public class BattleTests {
         team[0].moves = new MoveModel[2];
         team[0].moves[0] = new MoveModel(147); // spore
         team[0].moves[1] = new MoveModel(138); // dream eater
-        BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
 
         // first turn, check that Snore and Dream Eater does nothing when Pokemon is awake
         // choose "Dream Eater"
@@ -511,15 +508,15 @@ public class BattleTests {
 
             // set status effects on the Pokemon
             // make sure the first Pokemon has an effect that stills allows attacking
-            team[0].statusEffect = (byte) 4;
-            team[1].statusEffect = (byte) 1;
+            team[0].statusEffect = 4;
+            team[1].statusEffect = 1;
 
             // set both sides moves
             enemyTeam[0].moves = new MoveModel[1];
             enemyTeam[0].moves[0] = new MoveModel(10); // scratch
             team[0].moves = new MoveModel[1];
             team[0].moves[0] = new MoveModel(moveId); // heal bell
-            BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+            BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
 
             // skip opening animations
             updateBattleModel(battleModel, 500);
@@ -561,7 +558,7 @@ public class BattleTests {
             enemyTeam[0].moves[0] = new MoveModel(10); // scratch
             team[0].moves = new MoveModel[1];
             team[0].moves[0] = new MoveModel(moveId); // explosion
-            BattleModel battleModel = new BattleModel(enemyTeam, team, null, (byte)0);
+            BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
 
             // choose "Explosion"
             chooseAttack(battleModel, 0);
@@ -585,7 +582,7 @@ public class BattleTests {
         PokemonModel[] enemyTeam = new PokemonModel[1];
         enemyTeam[0] = new PokemonModel(10, 1, false);
         enemyTeam[0].currentHP = 1;
-        BattleModel battleModel = new BattleModel(enemyTeam, team, new DummyApp(), (byte)0);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, new DummyApp(), 0);
 
         // skip opening animations
         updateBattleModel(battleModel, 503);
@@ -607,11 +604,94 @@ public class BattleTests {
         assertEquals(1, battleModel.getNewPokemon().currentHP);
     }
 
+    @Test
+    /**
+     * Check that Castform's type changes correctly based on the weather
+     */
+    public void testCastform() {
+        // default Castform type is NORMAL
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(351, 100, false);
+        team[0].moves[0] = new MoveModel(240);
+        team[0].moves[1] = new MoveModel(241);
+        team[0].moves[2] = new MoveModel(258);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(10, 1, false);
+        assertEquals(team[0].types[0], Type.NORMAL);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, new DummyApp(), 0);
+
+        // changes to FIRE after using Sunny Day
+        this.chooseAttack(battleModel, 1);
+        assertEquals(team[0].types[0], Type.FIRE);
+
+        // changes to WATER after using Rain Dance
+        this.chooseAttack(battleModel, 0);
+        assertEquals(team[0].types[0], Type.WATER);
+
+        // changes to ICE after using Hail
+        this.chooseAttack(battleModel, 2);
+        assertEquals(team[0].types[0], Type.ICE);
+    }
+
+    @Test
+    /**
+     * Test that ground type moves don't damage Pokemon with the ability Levitate
+     */
+    public void testLevitate() {
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(1, 100, false);
+        // use Earthquake since it has 100% accuracy
+        team[0].moves[0] = new MoveModel(89);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(94, 1, false);
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);        
+
+        // Gengar should have levitate ability
+        assertEquals("LEVITATE", enemyTeam[0].ability.name);
+
+        // choose "Earthquake"
+        assertEquals("EARTHQUAKE", team[0].moves[0].name);
+        chooseAttack(battleModel, 0);
+        
+        // enemy should not have taken any damage
+        assertEquals(enemyTeam[0].getStat(0, 0), enemyTeam[0].currentHP);
+    }
+
+    /**
+     * Make sure Pokemon with the ability limber cannot be paralyzed
+     */
+    @Test
+    public void testLimber() {
+        PokemonModel[] team = new PokemonModel[1];
+        team[0] = new PokemonModel(25, 21, false);
+        PokemonModel[] enemyTeam = new PokemonModel[1];
+        enemyTeam[0] = new PokemonModel(106, 1, false);
+        
+        // make sure Pikachu knows thunder wave and give it infinite accuracy
+        assertEquals("THUNDER WAVE", team[0].moves[3].name);
+        team[0].moves[3].accuracy = -1;
+        BattleModel battleModel = new BattleModel(enemyTeam, team, null, 0);
+
+        // skip opening animations
+        updateBattleModel(battleModel, 500);
+
+        // choose "THUNDER WAVE"
+        chooseAttack(battleModel, 3);
+
+        // Hitmonlee should not be paralyzed
+        assertEquals(StatusEffect.UNAFFLICTED, enemyTeam[0].statusEffect); 
+    }
+
+    /**
+     * Helper function to skip start of turn animations, choose an attack,
+     * and then skip end of turn animations and make sure no events remain
+     * @param battleModel
+     * @param optionIndex index of the attack to use
+     */
     private void chooseAttack(BattleModel battleModel, int optionIndex)
     {
         // skip opening animations
         updateBattleModel(battleModel, 503);
-        assertEquals(0, battleModel.events.size());
 
         // choose "FIGHT"
         battleModel.confirmSelection();
@@ -623,7 +703,6 @@ public class BattleTests {
 
         // skip end of turn animations
         updateBattleModel(battleModel, 503);
-        assertEquals(0, battleModel.events.size());
     }
 
     /**
@@ -638,5 +717,7 @@ public class BattleTests {
         {
             battleModel.update();
         }
+
+        assertEquals(0, battleModel.events.size());
     }
 }

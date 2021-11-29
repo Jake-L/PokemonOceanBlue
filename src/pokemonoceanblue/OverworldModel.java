@@ -8,8 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.HashMap;
-import java.util.Map;
 
 public class OverworldModel extends BaseModel {
     public int mapId;
@@ -21,8 +19,8 @@ public class OverworldModel extends BaseModel {
     private List<PortalModel> portals = new ArrayList<PortalModel>();
     public List<BerryModel> plantedBerries = new ArrayList<BerryModel>();
     public ConversationModel conversation;
-    private App app;
-    private Map<Integer, List<Integer>> wildPokemon = new HashMap<Integer, List<Integer>>();
+    private AppManager app;
+    private WildPokemonModel wildPokemon;
     private List<ConversationTriggerModel> conversationTrigger = new ArrayList<ConversationTriggerModel>();
     private int areaId = -1;
     private List<AreaModel> areas = new ArrayList<AreaModel>();
@@ -37,12 +35,13 @@ public class OverworldModel extends BaseModel {
     public String tilesSuffix;
     public int completeConversation = -1;
     public int questId;
+    public NotificationModel notification;
     
     /** 
      * @param mapId unique identifier for the current map
      * @param playerModel model for the player to display it and calculate screen offset
      */
-    public OverworldModel(int mapId, CharacterModel playerModel, App app, InventoryModel inventoryModel, DayCareModel dayCareModel){
+    public OverworldModel(int mapId, CharacterModel playerModel, AppManager app, InventoryModel inventoryModel, DayCareModel dayCareModel){
         this.mapId = mapId;
         this.playerModel = playerModel;
         this.app = app;
@@ -50,8 +49,8 @@ public class OverworldModel extends BaseModel {
         this.dayCareModel = dayCareModel;
         
         this.readMapFile();
-        this.loadWildPokemon();
         this.loadMapObjects();
+        this.wildPokemon = new WildPokemonModel(this.mapId);
         this.loadPortals();
         this.loadCharacters();
         this.loadConversationTriggers();
@@ -74,7 +73,7 @@ public class OverworldModel extends BaseModel {
      * @param app
      * @param tournamentModel
      */
-    public OverworldModel(int mapId, CharacterModel playerModel, App app, TournamentModel tournamentModel)
+    public OverworldModel(int mapId, CharacterModel playerModel, AppManager app, TournamentModel tournamentModel)
     {
         this.mapId = mapId;
         this.playerModel = playerModel;
@@ -287,6 +286,16 @@ public class OverworldModel extends BaseModel {
                 this.plantedBerries.remove(i);
             }
         }
+
+        // update notification
+        if (this.notification != null)
+        {
+            this.notification.update();
+            if (this.notification.isComplete())
+            {
+                this.notification = null;
+            }
+        }
     }
 
     /** 
@@ -370,7 +379,21 @@ public class OverworldModel extends BaseModel {
             // start a battle
             if (this.conversation.getBattleId() >= 0)
             {
-                this.app.createTrainerBattle(this.conversation.getBattleId());
+                // rock smash
+                if (this.conversation.getBattleId() == 999)
+                {
+                    // start an encounter with a rock type
+                    int pokemonId = this.wildPokemon.getPokemonId(this.areaId, 999);
+                    if (pokemonId > -1)
+                    {
+                        Random rand = new Random();
+                        this.app.createWildBattle(pokemonId, 2 + rand.nextInt(4), false);
+                    }
+                }
+                else
+                {
+                    this.app.createTrainerBattle(this.conversation.getBattleId());
+                }
             }
             else
             {
@@ -384,9 +407,32 @@ public class OverworldModel extends BaseModel {
             && (tiles[y][x] == 0 || tiles[y][x] == 1) 
             && this.playerModel.getMovementCounter() <= 0)
         {
-            this.playerModel.surf = true;
-            this.playerModel.setMovement(x - this.playerModel.getX(), y - this.playerModel.getY(), 1);
-            this.actionCounter = 15;
+            boolean canSurf = false;
+            if (inventoryModel.getQuantity(37) > 0)
+            {
+                canSurf = true;
+            }
+            else
+            {
+                for (int i = 0; i < app.partyModel.team.size(); i++) 
+                {
+                    if (Type.typeIncludes(Type.WATER, app.partyModel.team.get(i).types) || Type.typeIncludes(Type.ICE, app.partyModel.team.get(i).types))
+                    {
+                        canSurf = true;
+                        break;
+                    }
+                }
+            }
+            if (canSurf)
+            {
+                this.playerModel.surf = true;
+                this.playerModel.setMovement(x - this.playerModel.getX(), y - this.playerModel.getY(), 1);
+                this.actionCounter = 15;
+            }
+            else
+            {
+                this.conversation = new ConversationModel("You can't surf without a water pokemon, ice pokemon, or Boogie Board", null);
+            }
         }
         // otherwise check for a cpu to interact with
         else
@@ -424,6 +470,7 @@ public class OverworldModel extends BaseModel {
                     {
                         app.openPokemonStorage();
                     }
+                    // talk to day care lady
                     else if (current.conversationId == 9998)
                     {
                         this.conversation = new DayCareConversationModel(this.dayCareModel);
@@ -461,7 +508,11 @@ public class OverworldModel extends BaseModel {
     private void checkConversationAction()
     {
         // add a new quest if one is available
-        this.questId = this.conversation.getQuestId();
+        int newQuestId = this.conversation.getQuestId();
+        if (newQuestId > -1)
+        {
+            this.questId = newQuestId;
+        }
 
         // show text options
         if (this.conversation.getOptions() != null)
@@ -483,7 +534,7 @@ public class OverworldModel extends BaseModel {
         // play music
         else if (this.conversation.getMusicId() > -1)
         {
-            this.app.playSong(this.conversation.getMusicId(), true);
+            this.musicId = this.conversation.getMusicId();
         }
         // open the party screen
         else if (this.conversation.openParty())
@@ -508,7 +559,13 @@ public class OverworldModel extends BaseModel {
                 {
                     this.areaId = area.areaId;
                     this.battleBackgroundId = area.battleBackgroundId;
-                    this.app.playSong(area.musicId, false);
+                    this.musicId = area.musicId;
+
+                    if (area.name != null)
+                    {
+                        this.notification = new NotificationModel(area.name, 1);
+                    }
+                    
                     break;
                 }
             }
@@ -535,16 +592,29 @@ public class OverworldModel extends BaseModel {
         this.checkArea(x, y);
 
         // check for wild Pokemon encounters
-        int index = this.areaId * 1000 + this.tiles[y][x];
-        if (this.wildPokemon.get(index) != null)
+        boolean canEncounterWildPkmn = true;
+        for (int i = 0; i < inventoryModel.items[InventoryModel.KEY_ITEMS].size(); i++) 
         {
-            Random rand = new Random();
-            int n = rand.nextInt(this.wildPokemon.get(index).size() * 5);
-            if (n < this.wildPokemon.get(index).size())
+            if (inventoryModel.items[InventoryModel.KEY_ITEMS].get(i).itemId == 188 && inventoryModel.items[InventoryModel.KEY_ITEMS].get(i).enabled)
             {
-                this.app.createWildBattle(this.wildPokemon.get(index).get(n), 5, false);
+                canEncounterWildPkmn = false;
+                break;
             }
         }
+        
+        if (canEncounterWildPkmn)
+        {
+            Random rand = new Random();
+            if (rand.nextInt(5) == 1)
+            {
+                int pokemonId = this.wildPokemon.getPokemonId(this.areaId, this.tiles[y][x]);
+                if (pokemonId > -1)
+                {
+                    this.app.createWildBattle(pokemonId, 2 + rand.nextInt(4), false);
+                }
+            }
+        }
+
         // player is no longer surfing when they step onto solid land
         if (this.tiles[y][x] > 1)
         {
@@ -598,7 +668,7 @@ public class OverworldModel extends BaseModel {
         // open the menu
         else if (this.conversation == null)
         {
-            this.textOptions = new String[]{"Pokedex", "Pokemon", "Bag", "Quests", "Achievements", "Save"};
+            this.textOptions = new String[]{"Pokedex", "Pokemon", "Bag", "Map", "Quests", "Achievements", "Save"};
             this.textOptionIndex = 0;
         }
     }
@@ -647,6 +717,11 @@ public class OverworldModel extends BaseModel {
             app.openInventory();
             this.openMenu();
         }
+        else if (this.textOptions[this.textOptionIndex] == "Map")
+        {
+            app.openMap();
+            this.openMenu();
+        }
         else if (this.textOptions[this.textOptionIndex] == "Save")
         {
             app.save();
@@ -679,35 +754,6 @@ public class OverworldModel extends BaseModel {
     public void exitScreen()
     {
         this.openMenu();
-    }
-
-    /** 
-     * load a list of wild pokemon that can appear on the current map
-     */
-    private void loadWildPokemon()
-    {
-        try
-        {
-            DatabaseUtility db = new DatabaseUtility();
-
-            String query = "SELECT area_id, tile_id, pokemon_id FROM pokemon_location WHERE map_id = " + this.mapId;
-
-            ResultSet rs = db.runQuery(query);
-
-            while(rs.next()) 
-            {
-                int indexId = rs.getInt("area_id") * 1000 + rs.getInt("tile_id");
-                if (this.wildPokemon.get(indexId) == null)
-                {
-                    this.wildPokemon.put(indexId, new ArrayList<Integer>());
-                }
-                this.wildPokemon.get(indexId).add(rs.getInt("pokemon_id"));
-            }            
-        }
-        catch (SQLException e) 
-        {
-            e.printStackTrace();
-        }  
     }
 
     /** 
@@ -871,7 +917,7 @@ public class OverworldModel extends BaseModel {
                 LEFT JOIN area a
                 ON a.area_id = c.area_id
                 AND a.map_id = c.map_id
-                WHERE COALESCE(c.conversation_id, 0) < 1000 
+                WHERE (COALESCE(c.conversation_id, 0) < 1000 OR COALESCE(c.conversation_id, 0) > 1999)
                 AND c.map_id = 
                 """ + this.mapId;
 
@@ -1021,6 +1067,27 @@ public class OverworldModel extends BaseModel {
         {
             this.plantedBerries.add(new BerryModel(x, y, itemId, System.currentTimeMillis()));
             return true;
+        }
+        // activate/deactivate cleanse tag
+        else if (itemId == 188)
+        {
+            for (int i = 0; i < inventoryModel.items[InventoryModel.KEY_ITEMS].size(); i++)
+            {
+                if (inventoryModel.items[InventoryModel.KEY_ITEMS].get(i).itemId == 188)
+                {
+                    inventoryModel.items[InventoryModel.KEY_ITEMS].get(i).enabled = !inventoryModel.items[InventoryModel.KEY_ITEMS].get(i).enabled;
+                    if (inventoryModel.items[InventoryModel.KEY_ITEMS].get(i).enabled)
+                    {
+                        this.conversation = new ConversationModel("Wild Pokemon will not appear.", null);
+                    }
+                    else
+                    {
+                        this.conversation = new ConversationModel("Wild Pokemon will appear.", null);
+                    }
+                    return false;
+                }
+            }
+            return false;
         }
         else
         {

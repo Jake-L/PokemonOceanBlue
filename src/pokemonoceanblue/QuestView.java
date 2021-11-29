@@ -1,12 +1,10 @@
 package pokemonoceanblue;
 
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Font;
 
 import java.util.List;
 
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 public class QuestView extends BaseView {
@@ -29,46 +27,82 @@ public class QuestView extends BaseView {
     @Override
     public void render(Graphics g, JPanel canvas) 
     {
-        int fontSize = 10 * graphicsScaling;
-        Font font = new Font("Pokemon Fire Red", Font.PLAIN, fontSize);      
-        g.setFont(font);
-
         renderQuestList(0, height / 10, g, canvas);
 
         if (this.quests.size() > 0)
         {
-            renderQuestDetails(height / 4, height / 10, g, canvas);
+            renderQuestDetails(width / 4, height / 10, g, canvas);
         }
     }
 
     private void renderQuestList(int x, int y, Graphics g, JPanel canvas)
     {
-        for (int i = 0; i < this.quests.size(); i++)
+        int renderCount = 0;
+        String[] headers = new String[]{"MAIN QUESTS","SIDE QUESTS","DAILY QUESTS"};
+        int[] minIndex = new int[]{1000, 3000, 5000};
+        int[] maxIndex = new int[]{2999, 4999, 6999};
+
+        for (int i = 0; i < headers.length; i++)
         {
+            int fontSize = 20 * graphicsScaling;
+            Font font = new Font("Pokemon Fire Red", Font.PLAIN, fontSize);      
+            g.setFont(font);
+    
             g.drawString(
-                this.quests.get(i).name, 
+                headers[i], 
                 x + 8 * graphicsScaling, 
-                y + i * 10 * graphicsScaling
+                y + renderCount * 10 * graphicsScaling
             );
-        }
+            renderCount++;
+
+            fontSize = 10 * graphicsScaling;
+            font = new Font("Pokemon Fire Red", Font.PLAIN, fontSize);      
+            g.setFont(font);
+    
+            // render main quests
+            for (int j = 0; j < this.quests.size(); j++)
+            {
+                if (this.quests.get(j).objectiveId >= minIndex[i] && this.quests.get(j).objectiveId <= maxIndex[i])
+                {
+                    g.drawString(
+                        this.quests.get(j).name, 
+                        x + 8 * graphicsScaling, 
+                        y + renderCount * 10 * graphicsScaling
+                    );
+
+                    renderCount++;
+                }
+            }
+
+            renderCount++;
+        }        
     }
 
     private void renderQuestDetails(int x, int y, Graphics g, JPanel canvas)
     {
+        int fontSize = 20 * graphicsScaling;
+        Font font = new Font("Pokemon Fire Red", Font.PLAIN, fontSize);      
+        g.setFont(font);
+
         // display information for the currently hovered quest
         ObjectiveModel hoveredQuest = this.quests.get(this.model.optionIndex);
         g.drawString(
             hoveredQuest.name, 
-            x + 8 * graphicsScaling, 
-            y + 10 * graphicsScaling
+            x, 
+            y
         );
+
+        fontSize = 10 * graphicsScaling;
+        font = new Font("Pokemon Fire Red", Font.PLAIN, fontSize);      
+        g.setFont(font);
+
 
         // display the quest description
         displayText(
             hoveredQuest.description, 
             10 * graphicsScaling, 
             x,
-            y + 40 * graphicsScaling, 
+            y + 20 * graphicsScaling, 
             width - x,
             20 * graphicsScaling, 
             g, canvas
@@ -79,13 +113,12 @@ public class QuestView extends BaseView {
         {
             g.drawString(
                 hoveredQuest.tasks.get(i).description, 
-                x + 8 * graphicsScaling, 
+                x, 
                 y + (i * 10 + 60) * graphicsScaling
             );
 
-            //if (hoveredQuest.getRequired() > 1)
             g.drawString(
-                hoveredQuest.getCounter() + "/" + hoveredQuest.getRequired(),
+                hoveredQuest.tasks.get(i).counter + "/" + hoveredQuest.tasks.get(i).requiredValue,
                 x + 300 * graphicsScaling, 
                 y + (i * 10 + 60) * graphicsScaling
             );

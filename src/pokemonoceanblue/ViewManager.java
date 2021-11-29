@@ -73,6 +73,34 @@ public class ViewManager extends JPanel {
         this.view.setViewSize(this.graphicsScaling, this.width, this.height);
     }
 
+    public Color updateTransition()
+    {
+        Color colour;
+
+        if (this.transitionCounter <= 0)
+        {
+            return null;
+        }
+        if (this.transitionCounter > this.TRANSITION_MAX / 2)
+        {
+            colour = new Color(0, 0, 0, 255 - (this.transitionCounter - this.TRANSITION_MAX / 2) * 255 / (this.TRANSITION_MAX / 2));
+        }
+        else if (this.transitionCounter == this.TRANSITION_MAX / 2)
+        {
+            colour = new Color(0, 0, 0, 255);
+            this.view = this.newView;
+            this.newView = null;
+        }
+        else
+        {
+            colour = new Color(0, 0, 0, this.transitionCounter * 255 / (this.TRANSITION_MAX / 2));
+        }
+
+        this.transitionCounter--;
+
+        return colour;
+    }
+
     /** 
      * Render the current view
      */
@@ -86,26 +114,9 @@ public class ViewManager extends JPanel {
         // display transitions between views
         if (this.transitionCounter > 0)
         {
-            Color colour;
-
-            if (this.transitionCounter > this.TRANSITION_MAX / 2)
-            {
-                colour = new Color(0, 0, 0, 255 - (this.transitionCounter - this.TRANSITION_MAX / 2) * 255 / (this.TRANSITION_MAX / 2));
-            }
-            else if (this.transitionCounter == this.TRANSITION_MAX / 2)
-            {
-                colour = new Color(0, 0, 0, 255);
-                this.view = this.newView;
-                this.newView = null;
-            }
-            else
-            {
-                colour = new Color(0, 0, 0, this.transitionCounter * 255 / (this.TRANSITION_MAX / 2));
-            }
-
+            Color colour = updateTransition();
             g.setColor(colour);
             g.fillRect(0, 0, width, height);
-            this.transitionCounter--;
         }
 
         // update the display

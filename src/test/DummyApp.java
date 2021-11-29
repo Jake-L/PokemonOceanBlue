@@ -1,24 +1,12 @@
 package test;
 
-import pokemonoceanblue.App;
+import pokemonoceanblue.AppManager;
 
-public class DummyApp extends App 
+public class DummyApp extends AppManager 
 {
     public DummyApp()
     {
-
-    }
-    
-    @Override
-    protected void createAndShowGUI()
-    {
-
-    }
-
-    @Override
-    public void playSong(int musicId, boolean skipTransition)
-    {
-
+        super(100, 100);
     }
 
     @Override

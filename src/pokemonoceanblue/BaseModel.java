@@ -14,6 +14,7 @@ public class BaseModel {
     protected String soundEffect;
     public String[] textOptions;
     public int textOptionIndex;
+    public int musicId;
 
     /**
      * Class for all models to inherit from
@@ -159,7 +160,9 @@ public class BaseModel {
      */
     public int getSelection()
     {
-        return this.returnValue;
+        int prevReturnValue = this.returnValue;
+        this.returnValue = -2;
+        return prevReturnValue;
     }
 
     /**

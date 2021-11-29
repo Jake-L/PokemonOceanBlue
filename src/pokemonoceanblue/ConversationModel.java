@@ -11,6 +11,7 @@ public class ConversationModel
     private int counter = 0;
     protected List<ConversationEvent> events = new ArrayList<ConversationEvent>();
     private boolean approachPlayer;
+    private int initialCharacterId;
     
     /** 
      * Constructor
@@ -21,6 +22,10 @@ public class ConversationModel
         this.conversationId = conversationId;
         this.counter = TEXT_LENGTH;
         this.approachPlayer = approachPlayer;
+        if (cpu != null)
+        {
+            this.initialCharacterId = cpu.characterId;
+        }
 
         // move trainer to approach the player at the start of the conversation
         if (this.approachPlayer)
@@ -417,13 +422,20 @@ public class ConversationModel
                 // after winning a battle, remove the character before displaying the overworld
                 || (this.events.get(0).battleId >= 0 && this.counter == 0)))
         {
-            // update the character's conversation in the database
-            this.removeTriggers(triggers, this.conversationId);
-            this.setConversation(this.events.get(0).characterId, this.events.get(0).newConversationId);
+            // update the character's conversation in the 
+            // don't permanently remove rock smash conversations
+            if (this.conversationId != 999)
+            {
+                this.removeTriggers(triggers, this.conversationId);
+                this.setConversation(this.events.get(0).characterId, this.events.get(0).newConversationId);
+            }
 
             for (int i = 0; i < characters.size(); i++)
             {
-                if (characters.get(i).characterId == this.events.get(0).characterId)
+                // remove the character that is specified
+                if (characters.get(i).characterId == this.events.get(0).characterId
+                    // if no character was specified, remove the conversation initiator
+                    || (this.events.get(0).characterId == -1 && characters.get(i).characterId == this.initialCharacterId))
                 {
                     // remove the character from the map
                     characters.remove(i);  

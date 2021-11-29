@@ -3,7 +3,7 @@ package pokemonoceanblue;
 import java.sql.*;
 
 
-class ItemModel
+public class ItemModel
 {
     public int itemId;
     public int quantity;
@@ -11,6 +11,7 @@ class ItemModel
     public int categoryId;
     public int cost;
     public String description;
+    public boolean enabled;
 
     public ItemModel(int itemId, int quantity)
     {

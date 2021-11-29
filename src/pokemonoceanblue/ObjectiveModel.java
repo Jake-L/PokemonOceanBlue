@@ -8,7 +8,9 @@ import java.util.List;
 public class ObjectiveModel {
 
     public List<ObjectiveTaskModel> tasks = new ArrayList<ObjectiveTaskModel>();
-    public int objectiveId;
+    public final int objectiveId;
+    public int objectiveGroupId;
+    public int rewardPokemonId;
     public ItemModel reward;
     public String name;
     public String description;    
@@ -26,9 +28,11 @@ public class ObjectiveModel {
 
             ResultSet rs = db.runQuery(query);
 
+            this.objectiveGroupId = rs.getInt("objective_group_id");
             this.name = rs.getString("name");
             this.description = rs.getString("description");
             this.icon = rs.getString("icon");
+            this.rewardPokemonId = rs.getInt("reward_pokemon_id");
 
             if (rs.getInt("reward_id") > -1)
             {
@@ -47,6 +51,16 @@ public class ObjectiveModel {
         {
             e.printStackTrace();
         }  
+    }
+
+    public void setPokemonEvolved(PokemonModel pokemon)
+    {
+        incrementCounter("evolve", 1);
+        
+        for (int i = 0; i < pokemon.types.length; i++)
+        {
+            incrementCounter("evolveType", 1, String.valueOf(pokemon.types[i]));
+        }
     }
 
     public void setPokemonCaught(PokemonModel pokemon)
@@ -89,7 +103,7 @@ public class ObjectiveModel {
                 incrementCounter("pokedexHoenn", 1);
             }
             //increse sinnoh dex counter
-            else
+            else if (pokemonId <= 493)
             {
                 incrementCounter("pokedexSinnoh", 1);
             }

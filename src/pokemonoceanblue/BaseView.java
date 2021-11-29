@@ -7,11 +7,10 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.util.ArrayList;
 import java.util.List;
 
-abstract class BaseView {
+public abstract class BaseView {
     protected byte graphicsScaling;
     protected int width;
     protected int height;
@@ -52,7 +51,7 @@ abstract class BaseView {
         if (itemSprite == null)
         {
             // load item sprites
-            itemSprite = new Image[150];
+            itemSprite = new Image[200];
 
             for (int i = 0; i < itemSprite.length; i++)
             {
@@ -289,7 +288,7 @@ abstract class BaseView {
 
         List<String> renderText = new ArrayList<String>();
         renderText.add("");
-        String[] splitText = text.replace("$",",").split(" ");
+        String[] splitText = text.replace("$",",").replace("#",",").split(" ");
         int index = 0;
         int line = 0;
 
@@ -366,27 +365,30 @@ abstract class BaseView {
     }
 
     // render function that gets implemented by extended class
-    abstract void render(Graphics g, JPanel canvas);
+    public abstract void render(Graphics g, JPanel canvas);
 
     /**
-     * @param image image to be recoloured white
+     * @param image image to be recoloured 
+     * @param rgb color to set the image
      */
-    protected BufferedImage colorImage(BufferedImage image, int red, int green, int blue) 
+    protected BufferedImage colorImage(BufferedImage image, int rgb) 
     {
-        WritableRaster raster = image.getRaster();
+        int width = image.getWidth();
+        int height = image.getHeight();
 
-        for (int x = 0; x < image.getWidth(); x++) 
+        for (int x = 0; x < width; x++) 
         {
-            for (int y = 0; y < image.getHeight(); y++) 
+            for (int y = 0; y < height; y++) 
             {
-                int[] pixels = raster.getPixel(x, y, (int[]) null);
-                pixels[0] = red;
-                pixels[1] = green;
-                pixels[2] = blue;
-                raster.setPixel(x, y, pixels);
+                Color originalColor = new Color(image.getRGB(x, y), true);
+
+                // only recolour the pixels that aren't transparent
+                if (originalColor.getAlpha() == 255) 
+                {
+                    image.setRGB(x, y, rgb);
+                }
             }
         }
-
         return image;
     }
 

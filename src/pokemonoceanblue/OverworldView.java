@@ -20,6 +20,7 @@ public class OverworldView extends BaseView {
 
     private OverworldModel model;
     private Image[] tileSprite = new Image[128];
+    private Image[] overlayTileSprite = new Image[128];
     private Map<String, Image> animatedTileSprite = new HashMap<String, Image>();
     private Map<String, Image> mapObjectSprite = new HashMap<String, Image>();
     private Map<String, Image> characterSprite = new HashMap<String, Image>();
@@ -33,6 +34,7 @@ public class OverworldView extends BaseView {
     private Image mugshotLightningSprite;
     private Image mugshotVsSprite;
     private Image[] inventoryBorder = new Image[9];
+    private Image[] notificationBorder = new Image[9];
     
     /** 
      * Constructor for the overworld view
@@ -53,6 +55,12 @@ public class OverworldView extends BaseView {
         // load tile sprites
         for (int i = 0; i < tileSprite.length; i++)
         {
+            // load overlay tiles
+            if ((i >= 27 && i <= 65) || (i >= 85 && i <= 104) || (i >= 1 && i <= 8) || (i >= 117 && i <= 125 && i != 118 && i != 121))
+            {
+                ii = new ImageIcon(this.getClass().getResource(String.format("/tilesOverlay/%s.png", i)));
+                overlayTileSprite[i] = ii.getImage();
+            }
             int animatedIndex = Arrays.binarySearch(ANIMATED_TILES, i);
             if (animatedIndex < 0)
             {
@@ -68,7 +76,6 @@ public class OverworldView extends BaseView {
                     animatedTileSprite.put(String.format("%s-%s", i, j), ii.getImage());
                 }
             }
-            
         }
 
         for (int i = 0; i < this.model.mapObjects.size(); i++) 
@@ -184,6 +191,9 @@ public class OverworldView extends BaseView {
         {
             ii = new ImageIcon(this.getClass().getResource("/inventory/border" + i + ".png"));
             inventoryBorder[i]  = ii.getImage();
+
+            ii = new ImageIcon(this.getClass().getResource("/menus/notificationBorder" + i + ".png"));
+            notificationBorder[i]  = ii.getImage();
         }
     }
 
@@ -221,7 +231,7 @@ public class OverworldView extends BaseView {
         {
             for (int x = 0 + Math.max(xOffset / 16,0); x < Math.min(model.tiles[y].length, this.model.playerModel.getX() + width / (16 * graphicsScaling)); x++)
             {
-                renderTile(g, canvas, Math.abs(this.model.tiles[y][x]), x, y);
+                renderTile(g, canvas, Math.abs(this.model.tiles[y][x]), x, y, false);
             }
         }
 
@@ -232,9 +242,9 @@ public class OverworldView extends BaseView {
             {
                 for (int x = 0 + Math.max(xOffset / 16,0); x < Math.min(model.tilesOverlay[y].length, this.model.playerModel.getX() + width / (16 * graphicsScaling)); x++)
                 {
-                    if (this.model.tilesOverlay[y][x] != 0)
+                    if (this.model.tilesOverlay[y][x] > 0)
                     {
-                        renderTile(g, canvas, Math.abs(this.model.tilesOverlay[y][x]), x, y);
+                        renderTile(g, canvas, Math.abs(this.model.tilesOverlay[y][x]), x, y, true);
                     }
                 }
             }
@@ -293,6 +303,21 @@ public class OverworldView extends BaseView {
                 sprite.getWidth(null) * graphicsScaling, 
                 sprite.getHeight(null) * graphicsScaling, 
                 canvas);
+        }
+
+        // display overlay tiles
+        if (this.model.tilesOverlay != null)
+        {
+            for (int y = 0 + Math.max(yOffset / 16,0); y < Math.min(model.tilesOverlay.length, this.model.playerModel.getY() + height / (16 * graphicsScaling)); y++)
+            {
+                for (int x = 0 + Math.max(xOffset / 16,0); x < Math.min(model.tilesOverlay[y].length, this.model.playerModel.getX() + width / (16 * graphicsScaling)); x++)
+                {
+                    if (this.model.tilesOverlay[y][x] < 0)
+                    {
+                        renderTile(g, canvas, Math.abs(this.model.tilesOverlay[y][x]), x, y, true);
+                    }
+                }
+            }
         }
 
         this.renderWeather(this.model.weather, g, canvas);
@@ -408,6 +433,30 @@ public class OverworldView extends BaseView {
         {
             this.renderShop(g, canvas);
         }
+
+        // display notifications
+        if (this.model.notification != null)
+        {
+            int fontSize = Math.max(16, height / 10);
+            Font font = new Font("Pokemon Fire Red", Font.PLAIN, fontSize);      
+            g.setFont(font);
+            int textWidth = g.getFontMetrics(font).stringWidth(this.model.notification.text);
+
+            this.displayTextbox(
+                notificationBorder, 
+                0, 
+                (-50 + this.model.notification.getYOffset()) * graphicsScaling, 
+                textWidth + 32 * graphicsScaling,
+                32 * graphicsScaling, 
+                g, canvas
+            );
+
+            g.drawString(
+                this.model.notification.text, 
+                8 * graphicsScaling, 
+                (-50 + this.model.notification.getYOffset() * graphicsScaling) - fontSize * 2 / 3
+            );
+        }
     }
 
     /**
@@ -418,12 +467,17 @@ public class OverworldView extends BaseView {
      * @param tileId the id the for the tile to be rendered
      * @param x x-coordinate of the tile
      * @param y y-coordinate of the tile
+     * @param isOverlay whether the tile to be rendered is apart of the overlay
      */
-    private void renderTile(Graphics g, JPanel canvas, int tileId, int x, int y)
+    private void renderTile(Graphics g, JPanel canvas, int tileId, int x, int y, boolean isOverlay)
     {
         Image sprite;
         int animatedIndex = Arrays.binarySearch(ANIMATED_TILES, tileId);
-        if (animatedIndex >= 0)
+        if (isOverlay && tileId != 121 && tileId != 118)
+        {
+            sprite = overlayTileSprite[tileId];
+        }
+        else if (animatedIndex >= 0)
         {
             // get animated sprite
             sprite = animatedTileSprite.get(String.format("%s-%s", 
@@ -567,7 +621,7 @@ public class OverworldView extends BaseView {
             this.xOffset = this.calcOffsetAux(player.getRenderX(), player.getDx(), width, model.tiles[player.getY()].length);
         }
         // shift the x offset while the player moves
-        else if (player.getMovementCounter() >= 0)
+        else if (player.getMovementCounter() >= 0 && player.getDx() != 0)
         {
             int newXOffset = this.calcOffsetAux(player.getRenderX(), player.getDx(), width, model.tiles[player.getY()].length);
 
@@ -586,7 +640,7 @@ public class OverworldView extends BaseView {
             this.yOffset = this.calcOffsetAux(player.getRenderY(), player.getDy(), height, columnHeight(player.getX()));
         }
         // shift the y offset while the player moves
-        else if (player.getMovementCounter() >= 0)
+        else if (player.getMovementCounter() >= 0 && player.getDy() != 0)
         {
             int newYOffset = this.calcOffsetAux(player.getRenderY(), player.getDy(), height, columnHeight(player.getX()));
 
