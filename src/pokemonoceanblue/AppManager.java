@@ -59,8 +59,8 @@ public class AppManager {
         this.partyModel = new PartyModel();
         this.partyModel.addPokemon(0, new PokemonModel(10114, 30, false));
         this.partyModel.addPokemon(0, new PokemonModel(3, 30, false));
-        this.partyModel.addPokemon(0, new PokemonModel(6, 30, false));
-        this.partyModel.addPokemon(0, new PokemonModel(9, 30, false));
+        this.partyModel.addPokemon(0, new PokemonModel(133, 30, false));
+        this.partyModel.addPokemon(0, new PokemonModel(492, 30, false));
         this.inventoryModel = new InventoryModel();
         this.pokedexModel = new PokedexModel();
         this.pokemonStorageModel = new PokemonStorageModel();
@@ -202,7 +202,6 @@ public class AppManager {
 
     public void openParty(int currentPokemon, boolean returnSelection)
     {
-        loadDailyQuests();
         this.partyModel.initialize(currentPokemon, returnSelection);
         viewManager.setView(new PartyView(partyModel));
         if (!this.modelQueue.get(0).getClass().getSimpleName().equals("PartyModel"))
@@ -304,6 +303,12 @@ public class AppManager {
             viewManager.setView(new NewPokemonView(newPokemonQueue.get(0)));
             this.addModelQueue(newPokemonQueue.get(0));
             newPokemonQueue.remove(0);
+        }
+        // return to inventory
+        else if (this.modelQueue.get(0).getClass().getSimpleName().equals("InventoryModel"))
+        {
+            InventoryView inventoryView = new InventoryView(inventoryModel);
+            viewManager.setView(inventoryView);
         }
         // return to overworld
         else if (this.modelQueue.get(0).getClass().getSimpleName().equals("OverworldModel"))
@@ -495,7 +500,7 @@ public class AppManager {
                     this.addPokemon(this.battleModel.getNewPokemon());
                 }
 
-                this.checkEvolution(evolveQueue);
+                this.checkEvolution(evolveQueue, -1);
 
                 // check for Pokemon form changes
                 for (PokemonModel pokemon : this.partyModel.team)
@@ -607,6 +612,22 @@ public class AppManager {
                     {
                         this.battleModel.setPokemon(returnValue);
                     }
+                    else if (this.partyModel.itemId > 0)
+                    {
+                        if (returnValue > -1)
+                        {
+                            boolean[] evolveQueue = new boolean[this.partyModel.team.size()];
+                            evolveQueue[returnValue] = true;
+                            this.checkEvolution(evolveQueue, this.partyModel.itemId);
+                            this.partyModel.team.get(returnValue).checkFormChange(this.partyModel.itemId);
+                            // if they used an item, return to the overworld
+                            this.modelQueue.remove(1);
+                        }
+                        
+                        // if they exited the party screen without using an item,
+                        // return them to their inventory
+                        this.partyModel.itemId = -1;
+                    }
                     else if (overworldModel.setPokemon(returnValue >= 0 ? this.partyModel.team.get(returnValue) : null))
                     {
                         // remove the Pokemon from the player's team if they were left in the day care, etc.
@@ -657,19 +678,38 @@ public class AppManager {
                 int returnValue = inventoryModel.getSelection();
                 if (returnValue > -1)
                 {
+                    int categoryId = inventoryModel.getCategory(returnValue);
+
                     // in battle, use the item and remove from inventory
                     if (this.battleModel != null)
                     {
-                        this.battleModel.setItem(returnValue);
-                        this.inventoryModel.removeItem(returnValue, 1);
+                        // only pokeballs can be used in battle for now
+                        if (categoryId == 0)
+                        {
+                            this.battleModel.setItem(returnValue);
+                            this.inventoryModel.removeItem(returnValue, 1);
+                        }
+                        else
+                        {
+                            this.battleModel.setItem(-1);
+                        }
+
+                        // return to battle screen
+                        this.exitCurrentView();
+                    }
+                    // items to be used on a Pokemon
+                    else if (categoryId == 4 || categoryId == 5)
+                    {
+                        this.partyModel.setItem(returnValue);
+                        this.openParty(-1, true);
                     }
                     // in overworld, check if item can be used before removing from inventory
                     else if (this.overworldModel.setItem(returnValue))
                     {
                         this.inventoryModel.removeItem(returnValue, 1);
+                        // return to overworld
+                        this.exitCurrentView();
                     }
-                    // return to overworld or battle screen
-                    this.exitCurrentView();
                 }
                 else if (returnValue == -1)
                 {
@@ -769,7 +809,7 @@ public class AppManager {
     /**
      * Checks if any Pokemon can evolve, and adds the evolution to a queue
      */
-    private void checkEvolution(boolean[] evolveQueue)
+    private void checkEvolution(boolean[] evolveQueue, int itemId)
     {
         int evolvedPokemonId = -1;
 
@@ -777,7 +817,7 @@ public class AppManager {
         {
             if (evolveQueue[i])
             {
-                evolvedPokemonId = evolveCheck.checkEvolution(partyModel.team.get(i), overworldModel.mapId);
+                evolvedPokemonId = evolveCheck.checkEvolution(partyModel.team.get(i), overworldModel.mapId, itemId);
 
                 if (evolvedPokemonId != -1)
                 {

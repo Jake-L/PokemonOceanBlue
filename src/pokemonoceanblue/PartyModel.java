@@ -15,6 +15,7 @@ public class PartyModel extends BaseModel
     public int switchPokemonIndex = -1;
     public boolean updateOrder;
     public boolean openMap;
+    public int itemId;
 
     public PartyModel()
     {
@@ -248,5 +249,10 @@ public class PartyModel extends BaseModel
         }
 
         return true;
+    }
+
+    public void setItem(int itemId)
+    {
+        this.itemId = itemId;
     }
 }

@@ -32,14 +32,12 @@ item_id,name,category_id,cost,description
 30,Soda Pop,2,300,A fizzy soda drink. It restores the HP of one Pokémon by 60 points.
 31,Lemonade,2,400,A very sweet drink. It restores the HP of one Pokémon by 80 points.
 32,Moomoo Milk,2,600,Milk with a very high nutrition content. It restores the HP of one Pokémon by 100 points.
-33,GioCorp Stock,16,0,Shares of the sinister GioCorp organization. Perhaps someone with enough of these could make a difference.
+33,GioCorp Stock,7,0,Shares of the sinister GioCorp organization. Perhaps someone with enough of these could make a difference.
 34,Energy Root,2,1200,A very bitter root. It restores the HP of one Pokémon by 200 points.
 35,Heal Powder,2,300,A very bitter medicine powder. It heals all the status problems of a single Pokémon.
 36,Revival Herb,2,2800,A very bitter medicinal herb. It revives a fainted Pokémon$ fully restoring its HP.
-37,Boogie Board,2,50000,A buoyant board that can support a single person. A trainer can use it to surf.
-38,Hang Glider,2,50000,An unpowered flying apparatus that can support a single person. A trainer can use it to fly.
-39,Elixir,2,3000,It restores the PP of all the moves learned by the targeted Pokémon by 10 points each.
-40,Max Elixir,2,4500,It fully restores the PP of all the moves learned by the targeted Pokémon.
+37,Boogie Board,7,50000,A buoyant board that can support a single person. A trainer can use it to surf.
+38,Hang Glider,7,50000,An unpowered flying apparatus that can support a single person. A trainer can use it to fly.
 41,Lava Cookie,2,350,Lavaridge Town's local specialty. It heals all the status problems of one Pokémon.
 42,Berry Juice,2,200,A 100% pure juice made of Berries. It restores the HP of one Pokémon by just 20 points.
 43,Sacred Ash,2,50000,It revives all fainted Pokémon. In doing so$ it also fully restores their HP.
@@ -53,50 +51,41 @@ item_id,name,category_id,cost,description
 51,Zinc,2,10000,A nutritious drink for Pokémon. It raises the base Sp. Def (Special Defense) stat of a single Pokémon.
 52,PP Max,2,10000,It maximally raises the top PP of a selected move that has been learned by the target Pokémon.
 53,Old Gateau,2,350,Old Chateau's hidden specialty. It heals all the status problems of a single Pokémon.
-54,Guard Spec.,2,1500,An item that prevents stat reduction among the Trainer's party Pokémon for five turns after use.
-55,Dire Hit,2,1000,It raises the critical-hit ratio greatly. It can be used only once and wears off if the Pokémon is withdrawn.
-56,X Attack,2,1000,An item that raises the Attack stat of a Pokémon in battle. It wears off if the Pokémon is withdrawn.
-57,X Defense,2,2000,An item that raises the Defense stat of a Pokémon in battle. It wears off if the Pokémon is withdrawn.
-58,X Speed,2,1000,An item that raises the Speed stat of a Pokémon in battle. It wears off if the Pokémon is withdrawn.
-59,X Accuracy,2,1000,An item that raises the accuracy of a Pokémon in battle. It wears off if the Pokémon is withdrawn.
-60,X Sp. Atk,2,1000,An item that raises the Sp. Atk stat of a Pokémon in battle. It wears off if the Pokémon is withdrawn.
-61,X Sp. Def,2,2000,An item that raises the Sp. Def stat of a Pokémon in battle. It wears off if the Pokémon is withdrawn.
-62,Pok\u00E9 Doll,2,100,A doll that attracts Pokémon. Use it to flee from any battle with a wild Pokémon.
-63,Fluffy Tail,2,100,An item that attracts Pokémon. Use it to flee from any battle with a wild Pokémon.
-64,Blue Flute,2,20,A toy flute made from blue glass. A maniac will buy it for a high price.
-65,Yellow Flute,2,20,A toy flute made from yellow glass. A maniac will buy it for a high price.
-66,Red Flute,2,20,A toy flute made from red glass. A maniac will buy it for a high price.
-67,Black Flute,2,20,A toy flute made from black glass. A maniac will buy it for a high price.
-68,White Flute,2,20,A toy flute made from white glass. A maniac will buy it for a high price.
-69,Shoal Salt,2,20,Pure salt that can be discovered deep inside the Shoal Cave. A maniac will buy it for a high price.
-70,Shoal Shell,2,20,A pretty seashell that can be found deep inside the Shoal Cave. A maniac will buy it for a high price.
-71,Red Shard,2,1000,A small red shard. It appears to be from some sort of implement made long ago.
-72,Blue Shard,2,1000,A small blue shard. It appears to be from some sort of implement made long ago.
-73,Yellow Shard,2,1000,A small yellow shard. It appears to be from some sort of implement made long ago.
-74,Green Shard,2,1000,A small green shard. It appears to be from some sort of implement made long ago.
-75,Super Repel,2,700,An item that prevents weak wild Pokémon from appearing for 200 steps after its use.
-76,Max Repel,2,900,An item that prevents weak wild Pokémon from appearing for 250 steps after its use.
-77,Escape Rope,2,1000,A long$ durable rope. Use it to escape instantly from a cave or a dungeon.
-78,Repel,2,400,An item that prevents weak wild Pokémon from appearing for 100 steps after its use.
-79,Sun Stone,2,3000,A peculiar stone that makes certain species of Pokémon evolve. It is as red as the sun.
-80,Moon Stone,2,3000,A peculiar stone that makes certain species of Pokémon evolve. It is as black as the night sky.
-81,Fire Stone,2,3000,A peculiar stone that makes certain species of Pokémon evolve. It is colored orange.
-82,Thunder Stone,2,3000,A peculiar stone that makes certain species of Pokémon evolve. It has a thunderbolt pattern.
-83,Water Stone,2,3000,A peculiar stone that makes certain species of Pokémon evolve. It is a clear$ light blue.
-84,Leaf Stone,2,3000,A peculiar stone that makes certain species of Pokémon evolve. It has a leaf pattern.
-85,Tiny Mushroom,2,500,A small and rare mushroom. It is sought after by collectors.
-86,Big Mushroom,2,5000,A large and rare mushroom. It is sought after by collectors.
-87,Pearl,2,2000,A somewhat-small pearl that sparkles in a pretty silver color. It can be sold cheaply to shops.
-88,Big Pearl,2,8000,A quite-large pearl that sparkles in a pretty silver color. It can be sold at a high price to shops.
-89,Stardust,2,3000,Lovely$ red-colored sand with a loose$ silky feel. It can be sold at a high price to shops.
-90,Star Piece,2,12000,A shard of a pretty gem that sparkles in a red color. It can be sold at a high price to shops.
-91,Nugget,2,10000,A nugget of pure gold that gives off a lustrous gleam. It can be sold at a high price to shops.
-92,Heart Scale,2,100,A pretty$ heart-shaped scale that is extremely rare. It glows faintly in the colors of the rainbow.
-93,Honey,2,300,A sweet honey with a lush aroma that attracts wild Pokémon when it is used in grass$ caves$ or on special trees.
-94,Growth Mulch,2,200,A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
-95,Damp Mulch,2,200,A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
-96,Stable Mulch,2,200,A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
-97,Gooey Mulch,2,200,A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
+63,Ice Stone,4,3000,A peculiar stone that can make certain species of Pokémon evolve. It has an unmistakable snowflake pattern.
+64,Blue Flute,8,20,A toy flute made from blue glass. A maniac will buy it for a high price.
+65,Yellow Flute,8,20,A toy flute made from yellow glass. A maniac will buy it for a high price.
+66,Red Flute,8,20,A toy flute made from red glass. A maniac will buy it for a high price.
+67,Black Flute,8,20,A toy flute made from black glass. A maniac will buy it for a high price.
+68,White Flute,8,20,A toy flute made from white glass. A maniac will buy it for a high price.
+69,Shoal Salt,8,20,Pure salt that can be discovered deep inside the Shoal Cave. A maniac will buy it for a high price.
+70,Shoal Shell,8,20,A pretty seashell that can be found deep inside the Shoal Cave. A maniac will buy it for a high price.
+71,Red Shard,8,1000,A small red shard. It appears to be from some sort of implement made long ago.
+72,Blue Shard,8,1000,A small blue shard. It appears to be from some sort of implement made long ago.
+73,Yellow Shard,8,1000,A small yellow shard. It appears to be from some sort of implement made long ago.
+74,Green Shard,8,1000,A small green shard. It appears to be from some sort of implement made long ago.
+75,Super Repel,9,700,An item that prevents weak wild Pokémon from appearing for 200 steps after its use.
+76,Max Repel,9,900,An item that prevents weak wild Pokémon from appearing for 250 steps after its use.
+77,Escape Rope,9,1000,A long$ durable rope. Use it to escape instantly from a cave or a dungeon.
+78,Repel,9,400,An item that prevents weak wild Pokémon from appearing for 100 steps after its use.
+79,Sun Stone,4,3000,A peculiar stone that makes certain species of Pokémon evolve. It is as red as the sun.
+80,Moon Stone,4,3000,A peculiar stone that makes certain species of Pokémon evolve. It is as black as the night sky.
+81,Fire Stone,4,3000,A peculiar stone that makes certain species of Pokémon evolve. It is colored orange.
+82,Thunder Stone,4,3000,A peculiar stone that makes certain species of Pokémon evolve. It has a thunderbolt pattern.
+83,Water Stone,4,3000,A peculiar stone that makes certain species of Pokémon evolve. It is a clear$ light blue.
+84,Leaf Stone,4,3000,A peculiar stone that makes certain species of Pokémon evolve. It has a leaf pattern.
+85,Tiny Mushroom,8,500,A small and rare mushroom. It is sought after by collectors.
+86,Big Mushroom,8,5000,A large and rare mushroom. It is sought after by collectors.
+87,Pearl,8,2000,A somewhat-small pearl that sparkles in a pretty silver color. It can be sold cheaply to shops.
+88,Big Pearl,8,8000,A quite-large pearl that sparkles in a pretty silver color. It can be sold at a high price to shops.
+89,Stardust,8,3000,Lovely$ red-colored sand with a loose$ silky feel. It can be sold at a high price to shops.
+90,Star Piece,8,12000,A shard of a pretty gem that sparkles in a red color. It can be sold at a high price to shops.
+91,Nugget,8,10000,A nugget of pure gold that gives off a lustrous gleam. It can be sold at a high price to shops.
+92,Heart Scale,8,100,A pretty$ heart-shaped scale that is extremely rare. It glows faintly in the colors of the rainbow.
+93,Honey,9,300,A sweet honey with a lush aroma that attracts wild Pokémon when it is used in grass$ caves$ or on special trees.
+94,Growth Mulch,9,200,A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
+95,Damp Mulch,9,200,A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
+96,Stable Mulch,9,200,A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
+97,Gooey Mulch,9,200,A fertilizer to be spread on soft soil in regions where Berries are grown. A maniac will buy it for a high price.
 98,Root Fossil,3,7000,A fossil of an ancient Pokémon that lived in the sea. It appears to be part of a plant root.
 99,Claw Fossil,3,7000,A fossil of an ancient Pokémon that lived in the sea. It appears to be part of a claw.
 100,Helix Fossil,3,7000,A fossil of an ancient Pokémon that lived in the sea. It appears to be part of a seashell.
@@ -104,14 +93,14 @@ item_id,name,category_id,cost,description
 102,Old Amber,3,10000,A piece of amber that contains the genetic material of an ancient Pokémon. It is clear with a reddish tint.
 103,Armor Fossil,3,7000,A fossil from a prehistoric Pokémon that lived on the land. It appears to be part of a collar.
 104,Skull Fossil,3,7000,A fossil from a prehistoric Pokémon that lived on the land. It appears to be part of a head.
-105,Rare Bone,2,5000,A bone that is extremely valuable for Pokémon archeology. It can be sold for a high price to shops.
-106,Shiny Stone,2,3000,A peculiar stone that makes certain species of Pokémon evolve. It shines with a dazzling light.
-107,Dusk Stone,2,3000,A peculiar stone that makes certain species of Pokémon evolve. It is as dark as dark can be.
-108,Dawn Stone,2,3000,A peculiar stone that makes certain species of Pokémon evolve. It sparkles like eyes.
-109,Oval Stone,2,2000,A peculiar stone that makes certain species of Pokémon evolve. It is shaped like an egg.
-110,Odd Keystone,2,2100,A vital item that is needed to keep a stone tower from collapsing. Voices can be heard from it occasionally.
-111,Adamant Orb,2,0,A brightly gleaming orb to be held by Dialga. It boosts the power of Dragon-? and Steel-type moves.
-112,Lustrous Orb,2,0,A beautifully glowing orb to be held by Palkia. It boosts the power of Dragon-? and Water-type moves.
+105,Rare Bone,8,5000,A bone that is extremely valuable for Pokémon archeology. It can be sold for a high price to shops.
+106,Shiny Stone,4,3000,A peculiar stone that makes certain species of Pokémon evolve. It shines with a dazzling light.
+107,Dusk Stone,4,3000,A peculiar stone that makes certain species of Pokémon evolve. It is as dark as dark can be.
+108,Dawn Stone,4,3000,A peculiar stone that makes certain species of Pokémon evolve. It sparkles like eyes.
+109,Oval Stone,4,2000,A peculiar stone that makes certain species of Pokémon evolve. It is shaped like an egg.
+110,Odd Keystone,9,2100,A vital item that is needed to keep a stone tower from collapsing. Voices can be heard from it occasionally.
+111,Adamant Orb,6,0,A brightly gleaming orb to be held by Dialga. It boosts the power of Dragon-? and Steel-type moves.
+112,Lustrous Orb,6,0,A beautifully glowing orb to be held by Palkia. It boosts the power of Dragon-? and Water-type moves.
 113,Cheri Berry,1,20,If held by a Pokémon$ it recovers from paralysis.
 114,Chesto Berry,1,20,If held by a Pokémon$ it recovers from sleep.
 115,Pecha Berry,1,20,If held by a Pokémon$ it recovers from poison.
@@ -176,119 +165,120 @@ item_id,name,category_id,cost,description
 174,Custap Berry,1,20,If held by a Pokémon$ it gets to move first just once in a pinch.
 175,Jaboca Berry,1,20,If held by a Pokémon and a physical attack lands$ the attacker also takes damage.
 176,Rowap Berry,1,20,If held by a Pokémon and a special attack lands$ the attacker also takes damage.
-177,Bright Powder,12,4000,An item to be held by a Pokémon. It casts a tricky glare that lowers the opponent's accuracy.
-178,White Herb,12,4000,An item to be held by a Pokémon. It restores any lowered stat in battle. It can be used only once.
-179,Macho Brace,14,3000,An item to be held by a Pokémon. It is a stiff and heavy brace that promotes strong growth but lowers Speed.
-180,Exp. Share,16,0,An item to be held by a Pokémon. The holder gets a share of a battle's Exp. Points without battling.
-181,Quick Claw,12,4000,An item to be held by a Pokémon. A light$ sharp claw that lets the bearer move first occasionally.
-182,Soothe Bell,16,4000,An item to be held by a Pokémon. It is a bell with a comforting chime that calms the holder and makes it friendly.
-183,Mental Herb,12,4000,An item to be held by a Pokémon. It snaps the holder out of infatuation. It can be used only once.
-184,Choice Band,13,4000,An item to be held by a Pokémon. This headband ups Attack$ but allows the use of only one of its moves.
-185,King's Rock,12,5000,An item to be held by a Pokémon. When the holder inflicts damage$ the target may flinch.
-186,Silver Powder,19,1000,An item to be held by a Pokémon. It is a shiny$ silver powder that ups the power of Bug-type moves.
-187,Amulet Coin,16,10000,An item to be held by a Pokémon. It doubles a battle's prize money if the holding Pokémon joins in.
-188,Cleanse Tag,2,5000,An item to be held by a Trainer. It keeps wild Pokémon away while in use.
-189,Soul Dew,18,0,A wondrous orb to be held by Latios or Latias. It raises both the Sp. Atk and Sp. Def stats.
-190,Deep Sea Tooth,18,2000,An item to be held by Clamperl. A fang that gleams a sharp silver$ it raises the Sp. Atk stat.
-191,Deep Sea Scale,18,2000,An item to be held by Clamperl. A scale that shines a faint pink$ it raises the Sp. Def stat.
-192,Smoke Ball,12,4000,An item to be held by a Pokémon. It enables the holder to flee from any wild Pokémon without fail.
-193,Everstone,16,3000,An item to be held by a Pokémon. The Pokémon holding this peculiar stone is prevented from evolving.
-194,Focus Band,12,4000,An item to be held by a Pokémon. The holder may endure a potential KO attack$ leaving it with just 1 HP.
-195,Lucky Egg,16,10000,An item to be held by a Pokémon. It is an egg filled with happiness that earns extra Exp. Points in battle.
-196,Scope Lens,12,4000,An item to be held by a Pokémon. It is a lens that boosts the holder's critical-hit ratio.
-197,Metal Coat,19,2000,An item to be held by a Pokémon. It is a special metallic film that ups the power of Steel-type moves.
-198,Leftovers,12,4000,An item to be held by a Pokémon. The holder's HP is gradually restored during battle.
-199,Dragon Scale,10,2000,A thick and tough scale. Dragon-type Pokémon may be holding this item when caught.
-200,Light Ball,18,1000,An item to be held by Pikachu. It is a puzzling orb that raises the Attack and Sp. Atk stat.
-201,Soft Sand,19,1000,An item to be held by a Pokémon. It is a loose$ silky sand that boosts the power of Ground-type moves.
-202,Hard Stone,19,1000,An item to be held by a Pokémon. It is an unbreakable stone that ups the power of Rock-type moves.
-203,Miracle Seed,19,1000,An item to be held by a Pokémon. It is a seed imbued with life that ups the power of Grass-type moves.
-204,Black Glasses,19,1000,An item to be held by a Pokémon. It is a shady-looking pair of glasses that boosts Dark-type moves.
-205,Black Belt,19,1000,An item to be held by a Pokémon. It is a belt that boosts determination and Fighting-type moves.
-206,Magnet,19,1000,An item to be held by a Pokémon. It is a powerful magnet that boosts the power of Electric-type moves.
-207,Mystic Water,19,1000,An item to be held by a Pokémon. It is a teardrop-shaped gem that ups the power of Water-type moves.
-208,Sharp Beak,19,1000,An item to be held by a Pokémon. It is a long$ sharp beak that boosts the power of Flying-type moves.
-209,Poison Barb,19,1000,An item to be held by a Pokémon. It is a small$ poisonous barb that ups the power of Poison-type moves.
-210,Never-Melt Ice,19,1000,An item to be held by a Pokémon. It is a piece of ice that repels heat and boosts Ice-type moves.
-211,Spell Tag,19,1000,An item to be held by a Pokémon. It is a sinister$ eerie tag that boosts the power of Ghost-type moves.
-212,Twisted Spoon,19,1000,An item to be held by a Pokémon. It is a spoon imbued with telekinetic power that boosts Psychic-type moves.
-213,Charcoal,19,1000,An item to be held by a Pokémon. It is a combustible fuel that boosts the power of Fire-type moves.
-214,Dragon Fang,19,1000,An item to be held by a Pokémon. It is a hard and sharp fang that ups the power of Dragon-type moves.
-215,Silk Scarf,19,1000,An item to be held by a Pokémon. It is a sumptuous scarf that boosts the power of Normal-type moves.
-216,Up-Grade,10,2000,A transparent device filled with all sorts of data. It was produced by Silph Co.
-217,Shell Bell,12,4000,An item to be held by a Pokémon. The holder's HP is restored a little every time it inflicts damage.
-218,Sea Incense,19,2000,An item to be held by a Pokémon. It is incense with a curious aroma that boosts the power of Water-type moves.
-219,Lax Incense,12,5000,An item to be held by a Pokémon. The tricky aroma of this incense may make attacks miss the holder.
-220,Lucky Punch,18,1000,An item to be held by Chansey. It is a pair of gloves that boosts Chansey's critical-hit ratio.
-221,Metal Powder,18,1000,An item to be held by Ditto. Extremely fine yet hard$ this odd powder boosts the Defense stat.
-222,Thick Club,18,1000,An item to be held by Cubone or Marowak. It is a hard bone of some sort that boosts the Attack stat.
-223,Stick,18,1000,An item to be held by Farfetch'd. It is a very long and stiff stalk of leek that boosts the critical-hit ratio.
-224,Red Scarf,36,100,An item to be held by a Pokémon. It boosts the Cool aspect of the holder in a Contest.
-225,Blue Scarf,36,100,An item to be held by a Pokémon. It boosts the Beauty aspect of the holder in a Contest.
-226,Pink Scarf,36,100,An item to be held by a Pokémon. It boosts the Cute aspect of the holder in a Contest.
-227,Green Scarf,36,100,An item to be held by a Pokémon. It boosts the Smart aspect of the holder in a Contest.
-228,Yellow Scarf,36,100,An item to be held by a Pokémon. It boosts the Tough aspect of the holder in a Contest.
-229,Wide Lens,12,4000,An item to be held by a Pokémon. It is a magnifying lens that slightly boosts the accuracy of moves.
-230,Muscle Band,12,4000,An item to be held by a Pokémon. It is a headband that slightly boosts the power of physical moves.
-231,Wise Glasses,12,4000,An item to be held by a Pokémon. It is a thick pair of glasses that slightly boosts the power of special moves.
-232,Expert Belt,12,4000,An item to be held by a Pokémon. It is a well-worn belt that slightly boosts the power of supereffective moves.
-233,Light Clay,12,4000,A Pokémon held item that extends the duration of barrier moves like Light Screen and Reflect used by the holder.
-234,Life Orb,12,4000,An item to be held by a Pokémon. It boosts the power of moves$ but at the cost of some HP on each hit.
-235,Power Herb,12,4000,A single-use item to be held by a Pokémon. It allows the immediate use of a move that charges on the first turn.
-236,Toxic Orb,15,4000,An item to be held by a Pokémon. It is a bizarre orb that badly poisons the holder in battle.
-237,Flame Orb,15,4000,An item to be held by a Pokémon. It is a bizarre orb that inflicts a burn on the holder in battle.
-238,Quick Powder,18,1000,An item to be held by Ditto. Extremely fine yet hard$ this odd powder boosts the Speed stat.
-239,Focus Sash,12,4000,An item to be held by a Pokémon. If it has full HP$ the holder will endure one potential KO attack$ leaving 1 HP.
-240,Zoom Lens,12,4000,An item to be held by a Pokémon. If the holder moves after its target$ its accuracy will be boosted.
-241,Metronome,12,4000,A Pokémon held item that boosts a move used consecutively. Its effect is reset if another move is used.
-242,Iron Ball,15,4000,A Pokémon held item that cuts Speed. It makes Flying-type and levitating holders susceptible to Ground moves.
-243,Lagging Tail,15,4000,An item to be held by a Pokémon. It is tremendously heavy and makes the holder move slower than usual.
-244,Destiny Knot,12,4000,A long$ thin$ bright-red string to be held by a Pokémon. If the holder becomes infatuated$ the foe does too.
-245,Black Sludge,12,4000,A held item that gradually restores the HP of Poison-type Pokémon. It inflicts damage on all other types.
-246,Icy Rock,12,4000,A Pokémon held item that extends the duration of the move Hail used by the holder.
-247,Smooth Rock,12,4000,A Pokémon held item that extends the duration of the move Sandstorm used by the holder.
-248,Heat Rock,12,4000,A Pokémon held item that extends the duration of the move Sunny Day used by the holder.
-249,Damp Rock,12,4000,A Pokémon held item that extends the duration of the move Rain Dance used by the holder.
-250,Grip Claw,12,4000,A Pokémon held item that extends the duration of multiturn attacks like Bind and Wrap.
-251,Choice Scarf,13,4000,An item to be held by a Pokémon. This scarf boosts Speed$ but allows the use of only one of its moves.
-252,Sticky Barb,15,4000,A held item that damages the holder on every turn. It may latch on to foes and allies that touch the holder.
-253,Power Bracer,14,3000,A Pokémon held item that promotes Attack gain on leveling$ but reduces the Speed stat.
-254,Power Belt,14,3000,A Pokémon held item that promotes Defense gain on leveling$ but reduces the Speed stat.
-255,Power Lens,14,3000,A Pokémon held item that promotes Sp. Atk gain on leveling$ but reduces the Speed stat.
-256,Power Band,14,3000,A Pokémon held item that promotes Sp. Def gain on leveling$ but reduces the Speed stat.
-257,Power Anklet,14,3000,A Pokémon held item that promotes Speed gain on leveling$ but reduces the Speed stat.
-258,Power Weight,14,3000,A Pokémon held item that promotes HP gain on leveling$ but reduces the Speed stat.
-259,Shed Shell,12,4000,A tough$ discarded carapace to be held by a Pokémon. It enables the holder to switch with a waiting Pokémon in battle.
-260,Big Root,12,4000,A Pokémon held item that boosts the power of HP-stealing moves to let the holder recover more HP.
-261,Choice Specs,13,4000,An item to be held by a Pokémon. These distinctive glasses boost Sp. Atk but allow the use of only one of its moves.
-262,Flame Plate,17,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Fire-type moves.
-263,Splash Plate,17,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Water-type moves.
-264,Zap Plate,17,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Electric-type moves.
-265,Meadow Plate,17,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Grass-type moves.
-266,Icicle Plate,17,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Ice-type moves.
-267,Fist Plate,17,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Fighting-type moves.
-268,Toxic Plate,17,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Poison-type moves.
-269,Earth Plate,17,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Ground-type moves.
-270,Sky Plate,17,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Flying-type moves.
-271,Mind Plate,17,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Psychic-type moves.
-272,Insect Plate,17,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Bug-type moves.
-273,Stone Plate,17,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Rock-type moves.
-274,Spooky Plate,17,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Ghost-type moves.
-275,Draco Plate,17,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Dragon-type moves.
-276,Dread Plate,17,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Dark-type moves.
-277,Iron Plate,17,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Steel-type moves.
-278,Odd Incense,19,2000,An item to be held by a Pokémon. It is an exotic-smelling incense that boosts the power of Psychic-type moves.
-279,Rock Incense,19,2000,An item to be held by a Pokémon. It is an exotic-smelling incense that boosts the power of Rock-type moves.
-280,Full Incense,15,5000,An item to be held by a Pokémon. It is an exotic-smelling incense that makes the holder bloated and slow moving.
-281,Wave Incense,19,2000,An item to be held by a Pokémon. It is incense with a curious aroma that boosts the power of Water-type moves.
-282,Rose Incense,19,2000,An item to be held by a Pokémon. It is an exotic-smelling incense that boosts the power of Grass-type moves.
-283,Luck Incense,16,11000,An item to be held by a Pokémon. It doubles a battle's prize money if the holding Pokémon joins in.
-284,Pure Incense,16,6000,An item to be held by a Pokémon. It helps keep wild Pokémon away if the holder is the first one in the party.
-285,Protector,10,2000,A protective item of some sort. It is extremely stiff and heavy. It is loved by a certain Pokémon.
-286,Electirizer,10,2000,A box packed with a tremendous amount of electric energy. It is loved by a certain Pokémon.
-287,Magmarizer,10,2000,A box packed with a tremendous amount of magma energy. It is loved by a certain Pokémon.
-288,Dubious Disc,10,2000,A transparent device overflowing with dubious data. Its producer is unknown.
-289,Reaper Cloth,10,2000,A cloth imbued with horrifyingly strong spiritual energy. It is loved by a certain Pokémon.
-290,Razor Claw,12,5000,An item to be held by a Pokémon. It is a sharply hooked claw that ups the holder's critical-hit ratio.
-291,Razor Fang,12,5000,An item to be held by a Pokémon. It may make foes and allies flinch when the holder inflicts damage.
+177,Bright Powder,6,4000,An item to be held by a Pokémon. It casts a tricky glare that lowers the opponent's accuracy.
+178,White Herb,6,4000,An item to be held by a Pokémon. It restores any lowered stat in battle. It can be used only once.
+179,Macho Brace,6,3000,An item to be held by a Pokémon. It is a stiff and heavy brace that promotes strong growth but lowers Speed.
+180,Exp. Share,6,0,An item to be held by a Pokémon. The holder gets a share of a battle's Exp. Points without battling.
+181,Quick Claw,6,4000,An item to be held by a Pokémon. A light$ sharp claw that lets the bearer move first occasionally.
+182,Soothe Bell,6,4000,An item to be held by a Pokémon. It is a bell with a comforting chime that calms the holder and makes it friendly.
+183,Mental Herb,6,4000,An item to be held by a Pokémon. It snaps the holder out of infatuation. It can be used only once.
+184,Choice Band,6,4000,An item to be held by a Pokémon. This headband ups Attack$ but allows the use of only one of its moves.
+185,King's Rock,4,5000,An item to be held by a Pokémon. When the holder inflicts damage$ the target may flinch.
+186,Silver Powder,6,1000,An item to be held by a Pokémon. It is a shiny$ silver powder that ups the power of Bug-type moves.
+187,Amulet Coin,6,10000,An item to be held by a Pokémon. It doubles a battle's prize money if the holding Pokémon joins in.
+188,Cleanse Tag,6,5000,An item to be held by a Trainer. It keeps wild Pokémon away while in use.
+189,Soul Dew,6,0,A wondrous orb to be held by Latios or Latias. It raises both the Sp. Atk and Sp. Def stats.
+190,Deep Sea Tooth,4,2000,An item to be held by Clamperl. A fang that gleams a sharp silver$ it raises the Sp. Atk stat.
+191,Deep Sea Scale,4,2000,An item to be held by Clamperl. A scale that shines a faint pink$ it raises the Sp. Def stat.
+192,Smoke Ball,6,4000,An item to be held by a Pokémon. It enables the holder to flee from any wild Pokémon without fail.
+193,Everstone,6,3000,An item to be held by a Pokémon. The Pokémon holding this peculiar stone is prevented from evolving.
+194,Focus Band,6,4000,An item to be held by a Pokémon. The holder may endure a potential KO attack$ leaving it with just 1 HP.
+195,Lucky Egg,6,10000,An item to be held by a Pokémon. It is an egg filled with happiness that earns extra Exp. Points in battle.
+196,Scope Lens,6,4000,An item to be held by a Pokémon. It is a lens that boosts the holder's critical-hit ratio.
+197,Metal Coat,6,2000,An item to be held by a Pokémon. It is a special metallic film that ups the power of Steel-type moves.
+198,Leftovers,6,4000,An item to be held by a Pokémon. The holder's HP is gradually restored during battle.
+199,Dragon Scale,4,2000,A thick and tough scale. Dragon-type Pokémon may be holding this item when caught.
+200,Light Ball,6,1000,An item to be held by Pikachu. It is a puzzling orb that raises the Attack and Sp. Atk stat.
+201,Soft Sand,6,1000,An item to be held by a Pokémon. It is a loose$ silky sand that boosts the power of Ground-type moves.
+202,Hard Stone,6,1000,An item to be held by a Pokémon. It is an unbreakable stone that ups the power of Rock-type moves.
+203,Miracle Seed,6,1000,An item to be held by a Pokémon. It is a seed imbued with life that ups the power of Grass-type moves.
+204,Black Glasses,6,1000,An item to be held by a Pokémon. It is a shady-looking pair of glasses that boosts Dark-type moves.
+205,Black Belt,6,1000,An item to be held by a Pokémon. It is a belt that boosts determination and Fighting-type moves.
+206,Magnet,6,1000,An item to be held by a Pokémon. It is a powerful magnet that boosts the power of Electric-type moves.
+207,Mystic Water,6,1000,An item to be held by a Pokémon. It is a teardrop-shaped gem that ups the power of Water-type moves.
+208,Sharp Beak,6,1000,An item to be held by a Pokémon. It is a long$ sharp beak that boosts the power of Flying-type moves.
+209,Poison Barb,6,1000,An item to be held by a Pokémon. It is a small$ poisonous barb that ups the power of Poison-type moves.
+210,Never-Melt Ice,6,1000,An item to be held by a Pokémon. It is a piece of ice that repels heat and boosts Ice-type moves.
+211,Spell Tag,6,1000,An item to be held by a Pokémon. It is a sinister$ eerie tag that boosts the power of Ghost-type moves.
+212,Twisted Spoon,6,1000,An item to be held by a Pokémon. It is a spoon imbued with telekinetic power that boosts Psychic-type moves.
+213,Charcoal,6,1000,An item to be held by a Pokémon. It is a combustible fuel that boosts the power of Fire-type moves.
+214,Dragon Fang,6,1000,An item to be held by a Pokémon. It is a hard and sharp fang that ups the power of Dragon-type moves.
+215,Silk Scarf,6,1000,An item to be held by a Pokémon. It is a sumptuous scarf that boosts the power of Normal-type moves.
+216,Up-Grade,4,2000,A transparent device filled with all sorts of data. It was produced by Silph Co.
+217,Shell Bell,6,4000,An item to be held by a Pokémon. The holder's HP is restored a little every time it inflicts damage.
+218,Sea Incense,6,2000,An item to be held by a Pokémon. It is incense with a curious aroma that boosts the power of Water-type moves.
+219,Lax Incense,6,5000,An item to be held by a Pokémon. The tricky aroma of this incense may make attacks miss the holder.
+220,Lucky Punch,6,1000,An item to be held by Chansey. It is a pair of gloves that boosts Chansey's critical-hit ratio.
+221,Metal Powder,6,1000,An item to be held by Ditto. Extremely fine yet hard$ this odd powder boosts the Defense stat.
+222,Thick Club,6,1000,An item to be held by Cubone or Marowak. It is a hard bone of some sort that boosts the Attack stat.
+223,Stick,6,1000,An item to be held by Farfetch'd. It is a very long and stiff stalk of leek that boosts the critical-hit ratio.
+224,Red Scarf,6,100,An item to be held by a Pokémon. It boosts the Cool aspect of the holder in a Contest.
+225,Blue Scarf,6,100,An item to be held by a Pokémon. It boosts the Beauty aspect of the holder in a Contest.
+226,Pink Scarf,6,100,An item to be held by a Pokémon. It boosts the Cute aspect of the holder in a Contest.
+227,Green Scarf,6,100,An item to be held by a Pokémon. It boosts the Smart aspect of the holder in a Contest.
+228,Yellow Scarf,6,100,An item to be held by a Pokémon. It boosts the Tough aspect of the holder in a Contest.
+229,Wide Lens,6,4000,An item to be held by a Pokémon. It is a magnifying lens that slightly boosts the accuracy of moves.
+230,Muscle Band,6,4000,An item to be held by a Pokémon. It is a headband that slightly boosts the power of physical moves.
+231,Wise Glasses,6,4000,An item to be held by a Pokémon. It is a thick pair of glasses that slightly boosts the power of special moves.
+232,Expert Belt,6,4000,An item to be held by a Pokémon. It is a well-worn belt that slightly boosts the power of supereffective moves.
+233,Light Clay,6,4000,A Pokémon held item that extends the duration of barrier moves like Light Screen and Reflect used by the holder.
+234,Life Orb,6,4000,An item to be held by a Pokémon. It boosts the power of moves$ but at the cost of some HP on each hit.
+235,Power Herb,6,4000,A single-use item to be held by a Pokémon. It allows the immediate use of a move that charges on the first turn.
+236,Toxic Orb,6,4000,An item to be held by a Pokémon. It is a bizarre orb that badly poisons the holder in battle.
+237,Flame Orb,6,4000,An item to be held by a Pokémon. It is a bizarre orb that inflicts a burn on the holder in battle.
+238,Quick Powder,6,1000,An item to be held by Ditto. Extremely fine yet hard$ this odd powder boosts the Speed stat.
+239,Focus Sash,6,4000,An item to be held by a Pokémon. If it has full HP$ the holder will endure one potential KO attack$ leaving 1 HP.
+240,Zoom Lens,6,4000,An item to be held by a Pokémon. If the holder moves after its target$ its accuracy will be boosted.
+241,Metronome,6,4000,A Pokémon held item that boosts a move used consecutively. Its effect is reset if another move is used.
+242,Iron Ball,6,4000,A Pokémon held item that cuts Speed. It makes Flying-type and levitating holders susceptible to Ground moves.
+243,Lagging Tail,6,4000,An item to be held by a Pokémon. It is tremendously heavy and makes the holder move slower than usual.
+244,Destiny Knot,6,4000,A long$ thin$ bright-red string to be held by a Pokémon. If the holder becomes infatuated$ the foe does too.
+245,Black Sludge,6,4000,A held item that gradually restores the HP of Poison-type Pokémon. It inflicts damage on all other types.
+246,Icy Rock,6,4000,A Pokémon held item that extends the duration of the move Hail used by the holder.
+247,Smooth Rock,6,4000,A Pokémon held item that extends the duration of the move Sandstorm used by the holder.
+248,Heat Rock,6,4000,A Pokémon held item that extends the duration of the move Sunny Day used by the holder.
+249,Damp Rock,6,4000,A Pokémon held item that extends the duration of the move Rain Dance used by the holder.
+250,Grip Claw,6,4000,A Pokémon held item that extends the duration of multiturn attacks like Bind and Wrap.
+251,Choice Scarf,6,4000,An item to be held by a Pokémon. This scarf boosts Speed$ but allows the use of only one of its moves.
+252,Sticky Barb,6,4000,A held item that damages the holder on every turn. It may latch on to foes and allies that touch the holder.
+253,Power Bracer,6,3000,A Pokémon held item that promotes Attack gain on leveling$ but reduces the Speed stat.
+254,Power Belt,6,3000,A Pokémon held item that promotes Defense gain on leveling$ but reduces the Speed stat.
+255,Power Lens,6,3000,A Pokémon held item that promotes Sp. Atk gain on leveling$ but reduces the Speed stat.
+256,Power Band,6,3000,A Pokémon held item that promotes Sp. Def gain on leveling$ but reduces the Speed stat.
+257,Power Anklet,6,3000,A Pokémon held item that promotes Speed gain on leveling$ but reduces the Speed stat.
+258,Power Weight,6,3000,A Pokémon held item that promotes HP gain on leveling$ but reduces the Speed stat.
+259,Shed Shell,6,4000,A tough$ discarded carapace to be held by a Pokémon. It enables the holder to switch with a waiting Pokémon in battle.
+260,Big Root,6,4000,A Pokémon held item that boosts the power of HP-stealing moves to let the holder recover more HP.
+261,Choice Specs,6,4000,An item to be held by a Pokémon. These distinctive glasses boost Sp. Atk but allow the use of only one of its moves.
+262,Flame Plate,5,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Fire-type moves.
+263,Splash Plate,5,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Water-type moves.
+264,Zap Plate,5,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Electric-type moves.
+265,Meadow Plate,5,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Grass-type moves.
+266,Icicle Plate,5,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Ice-type moves.
+267,Fist Plate,5,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Fighting-type moves.
+268,Toxic Plate,5,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Poison-type moves.
+269,Earth Plate,5,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Ground-type moves.
+270,Sky Plate,5,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Flying-type moves.
+271,Mind Plate,5,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Psychic-type moves.
+272,Insect Plate,5,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Bug-type moves.
+273,Stone Plate,5,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Rock-type moves.
+274,Spooky Plate,5,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Ghost-type moves.
+275,Draco Plate,5,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Dragon-type moves.
+276,Dread Plate,5,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Dark-type moves.
+277,Iron Plate,5,1000,An item to be held by a Pokémon. It is a stone tablet that boosts the power of Steel-type moves.
+278,Odd Incense,6,2000,An item to be held by a Pokémon. It is an exotic-smelling incense that boosts the power of Psychic-type moves.
+279,Rock Incense,6,2000,An item to be held by a Pokémon. It is an exotic-smelling incense that boosts the power of Rock-type moves.
+280,Full Incense,6,5000,An item to be held by a Pokémon. It is an exotic-smelling incense that makes the holder bloated and slow moving.
+281,Wave Incense,6,2000,An item to be held by a Pokémon. It is incense with a curious aroma that boosts the power of Water-type moves.
+282,Rose Incense,6,2000,An item to be held by a Pokémon. It is an exotic-smelling incense that boosts the power of Grass-type moves.
+283,Luck Incense,6,11000,An item to be held by a Pokémon. It doubles a battle's prize money if the holding Pokémon joins in.
+284,Pure Incense,6,6000,An item to be held by a Pokémon. It helps keep wild Pokémon away if the holder is the first one in the party.
+285,Protector,4,2000,A protective item of some sort. It is extremely stiff and heavy. It is loved by a certain Pokémon.
+286,Electirizer,4,2000,A box packed with a tremendous amount of electric energy. It is loved by a certain Pokémon.
+287,Magmarizer,4,2000,A box packed with a tremendous amount of magma energy. It is loved by a certain Pokémon.
+288,Dubious Disc,4,2000,A transparent device overflowing with dubious data. Its producer is unknown.
+289,Reaper Cloth,4,2000,A cloth imbued with horrifyingly strong spiritual energy. It is loved by a certain Pokémon.
+290,Razor Claw,4,5000,An item to be held by a Pokémon. It is a sharply hooked claw that ups the holder's critical-hit ratio.
+291,Razor Fang,4,5000,An item to be held by a Pokémon. It may make foes and allies flinch when the holder inflicts damage.
+292,Gracidea,5,5000,A flower sometimes bundled in bouquets to convey gratitude on special occasions like birthdays.
 1000,Money,17,1,Money can be exchanged for goods and services.

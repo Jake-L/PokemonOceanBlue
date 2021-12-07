@@ -387,6 +387,33 @@ public class PokemonModel
         }
     }
 
+    
+    /**
+     * Checks for Pokemon that change forms when exposed to an item
+     * @param itemId the form changing item
+     * @return true if the Pokemon's form changes
+     */
+    public boolean checkFormChange(int itemId)
+    {
+        int newPokemonId = -1;
+
+        // change Shaymin to sky form with the Gracidea
+        if (this.base_pokemon_id == 492 && itemId == 292)
+        {
+            newPokemonId = 10006;
+        }
+
+        if (newPokemonId > -1 && newPokemonId != this.pokemon_id)
+        {
+            this.evolve(newPokemonId);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     /** 
      * Read the Pokemon's stats, types, etc from a database
      */

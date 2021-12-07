@@ -13,6 +13,19 @@ public class ItemModel
     public String description;
     public boolean enabled;
 
+    /**
+     * Possible categoryId values
+     * 0 - Pokeballs
+     * 1 - Healing items (single use)
+     * 2 - Berries
+     * 3 - Fossils
+     * 4 - Evolution items (single use)
+     * 5 - Form changing items (multi use)
+     * 6 - Held items (multi use)
+     * 7 - Key items
+     * 8 - Trading items (shards, gold nuggets, etc)
+     * 9 - Overworld items (single use)
+     */
     public ItemModel(int itemId, int quantity)
     {
         this.itemId = itemId;

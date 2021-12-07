@@ -13,7 +13,7 @@ public class EvolutionCheck
      * Check if the given Pokemon has met all the conditions for evolving
      * @return the id the pokemon can evolve into, or -1 otherwise
      */
-    public int checkEvolution(PokemonModel pokemon, int currentMapId)
+    public int checkEvolution(PokemonModel pokemon, int currentMapId, int itemId)
     {
         int evolve = -1;
         int preSpeciesId = pokemon.pokemon_id;
@@ -57,7 +57,7 @@ public class EvolutionCheck
                 {
                     evolve = -1;
                 }
-                else if (triggerItemId > 0)
+                else if (triggerItemId > 0 && itemId != triggerItemId)
                 {
                     evolve = -1;
                 }

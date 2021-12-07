@@ -51,7 +51,7 @@ public abstract class BaseView {
         if (itemSprite == null)
         {
             // load item sprites
-            itemSprite = new Image[200];
+            itemSprite = new Image[293];
 
             for (int i = 0; i < itemSprite.length; i++)
             {

@@ -16,17 +16,17 @@ public class EvolutionTests {
         // max happiness Eevee on map 14 (viridian forest) should evolve into Leafeon
         PokemonModel pokemon = new PokemonModel(133, 1, false);
         pokemon.updateHappiness(200);
-        assertEquals(470, evolutionCheck.checkEvolution(pokemon, 14));
+        assertEquals(470, evolutionCheck.checkEvolution(pokemon, 14, -1));
 
         // max happiness Eevee on a map other than map 14 should not evolve into Leafeon
-        assertNotEquals(470, evolutionCheck.checkEvolution(pokemon, 0));
+        assertNotEquals(470, evolutionCheck.checkEvolution(pokemon, 0, -1));
 
         // Magneton should evolve into Magnezone on map 47 (power plant)
         pokemon = new PokemonModel(82, 1, false);
-        assertEquals(462, evolutionCheck.checkEvolution(pokemon, 47));
+        assertEquals(462, evolutionCheck.checkEvolution(pokemon, 47, -1));
 
         // Magneton should not evolve on any other map
-        assertNotEquals(462, evolutionCheck.checkEvolution(pokemon, 0));
+        assertNotEquals(462, evolutionCheck.checkEvolution(pokemon, 0, -1));
     }
 
     @Test
@@ -35,14 +35,37 @@ public class EvolutionTests {
 
         // Bulbasaur shouldn't evolve at level 1
         PokemonModel pokemon = new PokemonModel(1, 1, false);
-        assertEquals(-1, evolutionCheck.checkEvolution(pokemon, 0));
+        assertEquals(-1, evolutionCheck.checkEvolution(pokemon, 0, -1));
 
         // Bulbasaur should evolve at level 16
         pokemon = new PokemonModel(1, 16, false);
-        assertEquals(2, evolutionCheck.checkEvolution(pokemon, 0));
+        assertEquals(2, evolutionCheck.checkEvolution(pokemon, 0, -1));
         
         // Bulbasaur should evolve into Ivysaur at level 40, not Venusaur
         pokemon = new PokemonModel(1, 40, false);
-        assertEquals(2, evolutionCheck.checkEvolution(pokemon, 0));
+        assertEquals(2, evolutionCheck.checkEvolution(pokemon, 0, -1));
+    }
+
+    @Test
+    public void testEvolveItem() {
+        EvolutionCheck evolutionCheck = new EvolutionCheck();
+
+        // Eevee should evolve into Vaporeon, Flareon, Jolteon,
+        // Leafeon, or Glaceon with the appropriate stone
+        PokemonModel pokemon = new PokemonModel(133, 1, false);
+        assertEquals(-1, evolutionCheck.checkEvolution(pokemon, 0, -1));
+        assertEquals(136, evolutionCheck.checkEvolution(pokemon, 0, 81));
+        assertEquals(135, evolutionCheck.checkEvolution(pokemon, 0, 82));
+        assertEquals(134, evolutionCheck.checkEvolution(pokemon, 0, 83));
+        assertEquals(471, evolutionCheck.checkEvolution(pokemon, 0, 63));
+        assertEquals(470, evolutionCheck.checkEvolution(pokemon, 0, 84));
+
+        // Murkrow, Misdreavus, and Lampent evolve with Dusk Stone
+        pokemon = new PokemonModel(198, 1, false);
+        assertEquals(430, evolutionCheck.checkEvolution(pokemon, 0, 107));
+        pokemon = new PokemonModel(200, 1, false);
+        assertEquals(429, evolutionCheck.checkEvolution(pokemon, 0, 107));
+        pokemon = new PokemonModel(497, 1, false);
+        assertEquals(498, evolutionCheck.checkEvolution(pokemon, 0, 107));
     }
 }

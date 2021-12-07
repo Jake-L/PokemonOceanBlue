@@ -46,6 +46,8 @@ public class InventoryModel extends BaseModel {
         this.addItem(113, 8);
         this.addItem(116, 8);
         this.addItem(38, 1);
+        this.addItem(292, 1);
+        this.addItem(81, 1);
         // add and enable cleanse tag
         ItemModel item = new ItemModel(188, 1);
         item.enabled = true;
@@ -201,6 +203,22 @@ public class InventoryModel extends BaseModel {
         }
 
         return 0;
+    }
+
+    public int getCategory(int itemId)
+    {
+        for (int i = 0; i < this.items.length; i++)
+        {
+            for (int j = 0; j < this.items[i].size(); j++)
+            {
+                if (this.items[i].get(j).itemId == itemId)
+                {
+                    return this.items[i].get(j).categoryId;
+                }
+            }
+        }
+
+        return -1;
     }
 
     /**
