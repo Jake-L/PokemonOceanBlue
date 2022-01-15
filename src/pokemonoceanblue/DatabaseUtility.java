@@ -79,7 +79,7 @@ public class DatabaseUtility
             "moves",
             "map_template",
             "move_effect", 
-            "pokemon",
+            "pokemon", "pokemon_moves_raw"
         };
 
         for (String t : tableList)
@@ -216,7 +216,29 @@ public class DatabaseUtility
         dataTypes = new String[] {"int", "int", "int"};
         loadTable(path, query, dataTypes);
 
-        
+        //==================================================================================
+        // each move a Pokemon can learn and at which level
+        query = """
+                CREATE TABLE pokemon_moves_raw (
+                    pokemon_id INT NOT NULL,
+                    version_group_id INT NOT NULL,
+                    move_id INT NOT NULL,
+                    pokemon_move_method_id INT NOT NULL,
+                    level INT NOT NULL)
+                """;
+        runUpdate(query);
+
+        // fill pokemon moves table with data
+        path = "/rawdata/pokemon_moves_raw.csv";
+        query = """
+                INSERT INTO pokemon_moves_raw (
+                    pokemon_id, version_group_id, move_id, pokemon_move_method_id, level)
+                VALUES (?, ?, ?, ?, ?)
+                """;
+       
+        dataTypes = new String[] {"int", "int", "int", "int", "int"};
+        loadTable(path, query, dataTypes);
+
         //==================================================================================
         // names and descriptions of abilities
         query = """

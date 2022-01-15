@@ -1,7 +1,5 @@
 package pokemonoceanblue;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -93,43 +91,10 @@ public class DayCareModel
             {
                 this.eggCounters.remove(i);
                 return this.pokemon[0].genderId == 0 
-                    ? this.getFirstEvolution(this.pokemon[0].base_pokemon_id)
-                    : this.getFirstEvolution(this.pokemon[1].base_pokemon_id);
+                    ? Utils.getFirstEvolution(this.pokemon[0].base_pokemon_id)
+                    : Utils.getFirstEvolution(this.pokemon[1].base_pokemon_id);
             }
         }
-
-        return -1;
-    }
-
-    /**
-     * Determines the first evolution of the given Pokemon
-     * @param pokemon_id the Pokemon to look up
-     * @return the first evolution of the Pokemon
-     */
-    public int getFirstEvolution(int pokemon_id)
-    {
-        try
-        {
-            DatabaseUtility db = new DatabaseUtility();
-
-            String query = """
-            SELECT COALESCE(em2.pre_species_id, em1.pre_species_id, p.pokemon_id)
-            FROM pokemon p
-            LEFT JOIN evolution_methods em1
-            ON p.pokemon_id = em1.evolved_species_id
-            LEFT JOIN evolution_methods em2
-            ON em1.pre_species_id = em2.evolved_species_id
-            WHERE pokemon_id = 
-            """ + pokemon_id; 
-
-            ResultSet rs = db.runQuery(query);
-
-            return rs.getInt(1);
-        }
-        catch (SQLException e) 
-        {
-            e.printStackTrace();
-        }  
 
         return -1;
     }

@@ -37,6 +37,7 @@ public class App extends JFrame implements KeyListener
         // this code should be uncommented when testing database changes
         DatabaseUtility db = new DatabaseUtility();
         db.prepareDatabase();
+        new MoveAnalysis();
         createAndShowGUI();
     }
 
@@ -129,7 +130,7 @@ public class App extends JFrame implements KeyListener
             //     ex.printStackTrace();
             //     this.setMap(1, 3, 3);
             // } 
-            this.appManager.setMap(0, 20, 60, Direction.DOWN);
+            this.appManager.setMap(306, 12, 12, Direction.DOWN);
         }
     }
 

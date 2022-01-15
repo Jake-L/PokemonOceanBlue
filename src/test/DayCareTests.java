@@ -8,6 +8,7 @@ import static org.junit.Assert.assertFalse;
 import org.junit.Test;
 
 import pokemonoceanblue.PokemonModel;
+import pokemonoceanblue.Utils;
 import pokemonoceanblue.DayCareConversationModel;
 import pokemonoceanblue.DayCareModel;
 
@@ -59,12 +60,11 @@ public class DayCareTests {
     public void testGetFirstEvolution() 
     {
         // make sure first stage evolutions are identified properly
-        DayCareModel dayCareModel = new DayCareModel();
-        assertEquals(150, dayCareModel.getFirstEvolution(150));
-        assertEquals(1, dayCareModel.getFirstEvolution(1));
-        assertEquals(1, dayCareModel.getFirstEvolution(2));
-        assertEquals(1, dayCareModel.getFirstEvolution(3));
-        assertEquals(133, dayCareModel.getFirstEvolution(471));
+        assertEquals(150, Utils.getFirstEvolution(150));
+        assertEquals(1, Utils.getFirstEvolution(1));
+        assertEquals(1, Utils.getFirstEvolution(2));
+        assertEquals(1, Utils.getFirstEvolution(3));
+        assertEquals(133, Utils.getFirstEvolution(471));
     }
 
     @Test

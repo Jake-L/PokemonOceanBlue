@@ -57,10 +57,9 @@ public class AppManager {
         this.musicId = 0;
 
         this.partyModel = new PartyModel();
-        this.partyModel.addPokemon(0, new PokemonModel(10114, 30, false));
-        this.partyModel.addPokemon(0, new PokemonModel(3, 30, false));
-        this.partyModel.addPokemon(0, new PokemonModel(133, 30, false));
-        this.partyModel.addPokemon(0, new PokemonModel(492, 30, false));
+        this.partyModel.addPokemon(0, new PokemonModel(3, 70, false));
+        this.partyModel.addPokemon(0, new PokemonModel(6, 70, false));
+        this.partyModel.addPokemon(0, new PokemonModel(9, 70, false));
         this.inventoryModel = new InventoryModel();
         this.pokedexModel = new PokedexModel();
         this.pokemonStorageModel = new PokemonStorageModel();

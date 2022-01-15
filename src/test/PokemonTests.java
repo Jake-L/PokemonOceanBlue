@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Hashtable;
+
 import org.junit.Test;
 
 import pokemonoceanblue.PokedexModel;
@@ -15,7 +17,8 @@ public class PokemonTests {
     /**
      * Check that happinesss always falls within 0 and 200
      */
-    public void testUpdateHappiness() {
+    public void testUpdateHappiness() 
+    {
         PokemonModel pokemon = new PokemonModel(1, 1, false);
         assertEquals(70, pokemon.happiness);
 
@@ -36,7 +39,8 @@ public class PokemonTests {
     /**
      * Test that eggs have the name and sprite of an egg rather than the underlying Pokemon
      */
-    public void testEgg() {
+    public void testEgg() 
+    {
         PokemonModel pokemon = new PokemonModel(1, 0, false);
 
         // test egg characteristics
@@ -57,7 +61,8 @@ public class PokemonTests {
     /**
      * Test that shiny rate increases after catching a pokemon of that species
      */
-    public void testShinyRate() {
+    public void testShinyRate() 
+    {
         PokedexModel pokedexModel = new PokedexModel();
         double initialRate = pokedexModel.getShinyRate(1);
         assertTrue(initialRate > 0);
@@ -69,7 +74,8 @@ public class PokemonTests {
     /**
      * Test that IVs are randomly generated and that they increase after a battle
      */
-    public void testIVs() {
+    public void testIVs() 
+    {
         PokemonModel pokemonStrong = new PokemonModel(1, 100, false);
         PokemonModel pokemonWeak = new PokemonModel(1, 1, false);
         // both Pokemon should have randomly generated IVs, so they should not be equal
@@ -85,7 +91,8 @@ public class PokemonTests {
     /**
      * Check that Castform's type changes correctly based on the weather
      */
-    public void testCastform() {
+    public void testCastform() 
+    {
         // default Castform type is NORMAL
         PokemonModel pokemon = new PokemonModel(351, 100, false);
         assertEquals(pokemon.types[0], Type.NORMAL);
@@ -108,7 +115,8 @@ public class PokemonTests {
      * Check that different Pokemon need different amounts of XP
      * to reach level 100
      */
-    public void testLevelModifier() {
+    public void testLevelModifier() 
+    {
         // mewtwo should need 1,250,000 xp to reach level 100
         // and 1,212,574 xp to reach level 99
         PokemonModel pokemon = new PokemonModel(150, 0, false);
@@ -137,7 +145,8 @@ public class PokemonTests {
     /**
      * Check that a Pokemon missing HP will still be missing it after leveling up
      */
-    public void testLevelUpCurrentHP() {
+    public void testLevelUpCurrentHP() 
+    {
         // Create a level 10 Bulbasaur missing 5 HP
         PokemonModel pokemon = new PokemonModel(1, 10, false);
         assertEquals(10, pokemon.level);
@@ -186,5 +195,45 @@ public class PokemonTests {
             assertTrue(raidBoss.stats[i] * 1.00 / pokemon.stats[i] > 1.8);
             assertTrue(raidBoss.stats[i] * 1.00 / pokemon.stats[i] < 2.2);
         }
+    }
+
+    @Test
+    /**
+     * Checks that pokemon learn their exclusive moves by level 80
+     */
+    public void testExclusiveMoves()
+    {
+        Hashtable<Integer, Integer[]> expected_data = new Hashtable<Integer, Integer[]>();
+
+         // grass starters should learn frenzy plant
+        expected_data.put(338, new Integer[]{3, 154, 154, 389});
+
+        // fire starters should learn blast burn
+        expected_data.put(307, new Integer[]{6, 157, 257, 392});
+
+        // water starters should learn hydro cannon
+        expected_data.put(338, new Integer[]{9, 160, 160, 395});
+
+        // mewtwo should learn psystrike
+        expected_data.put(540, new Integer[]{150});
+
+        // hitmontop should learn triple kick
+        expected_data.put(167, new Integer[]{237});
+
+        // miltank should learn milk drink
+        expected_data.put(208, new Integer[]{241});
+
+        // lugia should learn aeroblast
+        expected_data.put(177, new Integer[]{249});
+
+        // ho-oh should learn sacret fire
+        expected_data.put(221, new Integer[]{250});
+
+        // Makuhita and Hariyama should learn Smelling Salts
+        expected_data.put(265, new Integer[]{296, 297});
+
+        // Blaziken and Hitmonlee should learn Blaze Kick
+        expected_data.put(299, new Integer[]{106, 257});
+
     }
 }

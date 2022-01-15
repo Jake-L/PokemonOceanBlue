@@ -5,6 +5,7 @@ import static org.junit.Assert.fail;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import javax.swing.ImageIcon;
 
 import org.junit.Test;
 
@@ -77,7 +78,7 @@ public class OverworldTests {
     @Test
     public void testUnusedTiles() 
     {
-        boolean[][] usedTiles = new boolean[3][128];
+        boolean[][] usedTiles = new boolean[4][128];
         CharacterModel playerModel = new CharacterModel("red", 5, 5, -1, -1, 0, Direction.DOWN);
 
         try 
@@ -91,6 +92,7 @@ public class OverworldTests {
             {
                 int map_template_id = rs.getInt(1);
                 int tiles_suffix_id = rs.getInt(2);
+                System.out.println(map_template_id);
                 if (tiles_suffix_id > 0)
                 {
                     tiles_suffix_id--;
@@ -103,27 +105,69 @@ public class OverworldTests {
                         usedTiles[tiles_suffix_id][Math.abs(overworldModel.tiles[i][j])] = true;
                     }
                 }
-                if (overworldModel.tilesOverlay != null)
+            }
+
+            for (int i = 0; i < usedTiles.length; i++)
+            {
+                System.out.println("TILES: " + i);
+                for (int j = 0; j < usedTiles[i].length; j++)
                 {
-                    for (int i = 0; i < overworldModel.tilesOverlay.length; i++)
+                    if (!usedTiles[i][j])
                     {
-                        for (int j = 0; j < overworldModel.tilesOverlay[i].length; j++)
-                        {
-                            usedTiles[tiles_suffix_id][Math.abs(overworldModel.tilesOverlay[i][j])] = true;
-                        }
+                        System.out.println("UNUSED: " + j);
+                    }
+                }
+            }
+
+        }
+        catch (SQLException e)
+        {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testUnusedOverlayTiles() 
+    {
+        boolean[] usedTiles = new boolean[128];
+        CharacterModel playerModel = new CharacterModel("red", 5, 5, -1, -1, 0, Direction.DOWN);
+
+        try 
+        {
+            DatabaseUtility db = new DatabaseUtility();
+
+            // check if there are any characters on the map
+            String query = "SELECT DISTINCT map_template_id FROM map_template WHERE overlay = 1";
+            ResultSet rs = db.runQuery(query);
+            while (rs.next())
+            {
+                int map_template_id = rs.getInt(1);
+                System.out.println(map_template_id);
+                OverworldModel overworldModel = new OverworldModel(map_template_id, playerModel, new DummyApp(), null, null);
+
+                for (int i = 0; i < overworldModel.tilesOverlay.length; i++)
+                {
+                    for (int j = 0; j < overworldModel.tilesOverlay[i].length; j++)
+                    {
+                        usedTiles[Math.abs(overworldModel.tilesOverlay[i][j])] = true;
                     }
                 }
             }
 
             for (int i = 0; i < usedTiles.length; i++)
             {
-                //System.out.println("TILES: " + i);
-                for (int j = 0; j < usedTiles[i].length; j++)
+                if (!usedTiles[i])
                 {
-                    if (!usedTiles[i][j])
+                    try
                     {
-                        //System.out.println("UNUSED: " + j);
+                        ImageIcon ii = new ImageIcon(this.getClass().getResource(String.format("/tilesOverlay/%s.png", i)));
+                        ii.getImage();
+                        System.out.println("UNUSED: " + i);
                     }
+                    catch (Exception e)
+                    {
+                        // don't complain about missing tiles if there isn't a sprite
+                    } 
                 }
             }
 
