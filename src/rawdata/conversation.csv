@@ -321,6 +321,7 @@ conversation_id,conversation_event_id,text,battle_id,heal_team,character_id,move
 112,4,Or maybe I'm just past my prime and it's time Cinnabar had a young gym leader again.,,,,,,5,,,,,,,,
 112,5,Either way$ in honour of your victory here today$ I present you with the Flame Badge. ,,,,,,6,,,,,,,,
 112,6,I also have a gift for you$ one warrior to another. Take care of this egg and you will have a red hot addition to your team!,,,,,,,240,0,,,,,,
+113,0,...,2005,,,,,,,,-2,,,,,
 999,0,The rock was destroyed!,999,,,,,,,,-2,,,,,
 1001,0,1001,1001,,,,,1,,,,,,,,
 1001,1,I still have a lot to learn,,,,,,,,,,,,,,

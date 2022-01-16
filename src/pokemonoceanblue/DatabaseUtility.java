@@ -237,7 +237,7 @@ public class DatabaseUtility
                 """;
        
         dataTypes = new String[] {"int", "int", "int", "int", "int"};
-        loadTable(path, query, dataTypes);
+        //loadTable(path, query, dataTypes);
 
         //==================================================================================
         // names and descriptions of abilities

@@ -37,7 +37,7 @@ public class App extends JFrame implements KeyListener
         // this code should be uncommented when testing database changes
         DatabaseUtility db = new DatabaseUtility();
         db.prepareDatabase();
-        new MoveAnalysis();
+        //new MoveAnalysis();
         createAndShowGUI();
     }
 

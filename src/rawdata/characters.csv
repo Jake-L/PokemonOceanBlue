@@ -120,6 +120,7 @@ character_id,map_id,area_id,name,sprite_name,x,y,conversation_id,wander_range,di
 110,48,0,,lass,17,10,110,1,1,
 111,48,0,,blackBelt,4,9,111,2,2,
 112,535,0,Gym Leader Blaine,blaine,7,3,112,0,2,102
+113,302,0,,deoxys,13,8,113,0,2,
 1000,1000,0,Gym Leader Misty,misty,12,6,1301,0,3,
 1001,1000,0,Youngster Jimmothy,youngsterBoy,12,6,1001,0,3,
 1002,1000,0,Youngster Jimmothy,youngsterBoy,12,6,1002,0,3,

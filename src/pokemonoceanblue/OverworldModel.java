@@ -158,6 +158,11 @@ public class OverworldModel extends BaseModel {
                         {
                             output[lineCounter][i] = Byte.parseByte(data[i]);
                         }
+                        // empty tiles should just display black
+                        else if (!path.contains("overlay"))
+                        {
+                            output[lineCounter][i] = (byte)-14;
+                        }
                     }
                 }
                 else
