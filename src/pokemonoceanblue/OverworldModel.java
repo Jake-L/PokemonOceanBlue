@@ -57,13 +57,6 @@ public class OverworldModel extends BaseModel {
         this.loadAreas();
         this.checkArea(playerModel.getX(), playerModel.getY());
         this.checkAutoTriggers(playerModel.getX(), playerModel.getY());
-
-        if (this.tiles.length > 20 && this.mapId != 14 && this.mapId != 47)
-        {
-            // generate random weather when on a large map
-            // since most large maps are outside
-            //this.weather = (byte)(new Random().nextInt(5));
-        }
     }
 
     /**
@@ -610,7 +603,7 @@ public class OverworldModel extends BaseModel {
         if (canEncounterWildPkmn)
         {
             Random rand = new Random();
-            if (rand.nextInt(5) == 1)
+            if (rand.nextInt(6) == 1)
             {
                 int pokemonId = this.wildPokemon.getPokemonId(this.areaId, this.tiles[y][x]);
                 if (pokemonId > -1)
@@ -1115,5 +1108,13 @@ public class OverworldModel extends BaseModel {
             && y < this.tiles.length
             && x < this.tiles[y].length
         );
+    }
+
+    public void setWeather(byte weather)
+    {
+        if (this.tiles.length > 20 && this.mapId != 14 && this.mapId != 47)
+        {
+            this.weather = weather;
+        }
     }
 }

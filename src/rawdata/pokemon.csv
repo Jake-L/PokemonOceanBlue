@@ -1,4 +1,4 @@
-pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,speed,iv_gain,capture_rate,base_pokemon_id,description,level_modifier,ability
+﻿pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,speed,iv_gain,capture_rate,base_pokemon_id,description,level_modifier,ability
 1,Bulbasaur,12,4,45,49,49,65,65,45,4,20,1,The seed on its back is filled with nutrients. The seed grows steadily larger as its body grows.,1.05,-1
 2,Ivysaur,12,4,60,62,63,80,80,60,4,20,2,Exposure to sunlight adds to its strength. Sunlight also makes the bud on its back grow larger.,1.05,-1
 3,Venusaur,12,4,80,82,83,100,100,80,4,20,3,By spreading the broad petals of its flower and catching the sun's rays$ it fills its body with power.,1.05,-1
@@ -492,19 +492,18 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 491,Darkrai,17,0,70,90,90,135,90,125,3,2,491,It chases people and Pokemon from its territory by causing them to experience deep$ nightmarish slumbers.,1.2,-1
 492,Shaymin,12,0,100,100,100,100,100,100,3,20,492,The blooming of Gracidea flowers confers the power of flight upon it. Feelings  of gratitude are the message it delivers.,1.2,-1
 493,Arceus,1,0,120,120,120,120,120,120,0,2,493,According to the legends of Sinnoh$ this Pokemon emerged from an egg and shaped all there is in this world.,1.25,-1
-494,Zorua,17,0,40,65,40,80,40,65,3,30,570,To protect themselves from danger$ they hide their true identities by transforming into people and Pok�mon.,1.02,-1
-495,Zoroark,17,0,60,105,60,120,60,105,3,20,571,Bonds between these Pok�mon are very strong. It protects the safety of its pack by tricking its opponents.,1.02,-1
-496,Litwick,8,10,50,30,55,65,55,20,3,75,607,Litwick shines a light that absorbs the life energy of people and Pok�mon$ which becomes the fuel that it burns.,1.04,-1
-497,Lampent,8,10,60,40,60,95,60,55,3,40,608,The spirits it absorbs fuel its baleful fire. Once it finds someone whose death is near$ it will trail quietly after them.,1.04,-1
-498,Chandelure,8,10,60,55,90,145,90,80,3,20,609,The spirits burned up in its ominous flame lose their way and wander this world forever.,1.04,-1
-499,Axew,16,0,46,87,60,30,40,57,1,30,610,Its large tusks have a tendency to break$ but each time they grow back$ they grow in harder and sturdier.,1.08,-1
-500,Fraxure,16,0,66,117,70,40,50,67,1,25,611,Their tusks can shatter rocks. Territory battles between Fraxure can be intensely violent.,1.08,-1
-501,Haxorus,16,0,76,147,90,60,70,97,1,20,612,They are kind but can be relentless when defending territory. They challenge foes with tusks that can cut steel.,1.08,-1
-502,Deino,17,16,52,65,50,45,50,38,1,20,633,Lacking sight$ it's unaware of its surroundings$ so it bumps into things and eats anything that moves.,1.2,-1
-503,Zweilous,17,16,72,85,70,65,70,58,1,20,634,After it has eaten up all the food in its territory$ it moves to another area. Its two heads do not get along.,1.2,-1
-504,Hydreigon,17,16,92,105,90,125,90,98,3,20,635,This brutal Pok�mon travels the skies on its six wings. They use all three heads to consume and destroy everything in its path!,1.2,-1
-505,Sylveon,18,0,95,65,65,110,130,60,4,20,700,It sends a soothing aura from its ribbonlike feelers to calm fights.,1.05,-1
-506,Rambardo,6,17,97,165,60,65,50,58,1,20,506,,0.99,-1
+494,Zorua,17,0,40,65,40,80,40,65,3,30,494,To protect themselves from danger$ they hide their true identities by transforming into people and Pok�mon.,1.02,-1
+495,Zoroark,17,0,60,105,60,120,60,105,3,20,495,Bonds between these Pok�mon are very strong. It protects the safety of its pack by tricking its opponents.,1.02,-1
+496,Litwick,8,10,50,30,55,65,55,20,3,75,496,Litwick shines a light that absorbs the life energy of people and Pok�mon$ which becomes the fuel that it burns.,1.04,-1
+497,Lampent,8,10,60,40,60,95,60,55,3,40,497,The spirits it absorbs fuel its baleful fire. Once it finds someone whose death is near$ it will trail quietly after them.,1.04,-1
+498,Chandelure,8,10,60,55,90,145,90,80,3,20,498,The spirits burned up in its ominous flame lose their way and wander this world forever.,1.04,-1
+499,Axew,16,0,46,87,60,30,40,57,1,30,499,Its large tusks have a tendency to break$ but each time they grow back$ they grow in harder and sturdier.,1.08,-1
+500,Fraxure,16,0,66,117,70,40,50,67,1,25,500,Their tusks can shatter rocks. Territory battles between Fraxure can be intensely violent.,1.08,-1
+501,Haxorus,16,0,76,147,90,60,70,97,1,20,501,They are kind but can be relentless when defending territory. They challenge foes with tusks that can cut steel.,1.08,-1
+502,Deino,17,16,52,65,50,45,50,38,1,20,502,Lacking sight$ it's unaware of its surroundings$ so it bumps into things and eats anything that moves.,1.2,-1
+503,Zweilous,17,16,72,85,70,65,70,58,1,20,503,After it has eaten up all the food in its territory$ it moves to another area. Its two heads do not get along.,1.2,-1
+504,Hydreigon,17,16,92,105,90,125,90,98,3,20,504,This brutal Pok�mon travels the skies on its six wings. They use all three heads to consume and destroy everything in its path!,1.2,-1
+505,Sylveon,18,0,95,65,65,110,130,60,4,20,505,It sends a soothing aura from its ribbonlike feelers to calm fights.,1.05,-1
 10001,Deoxys,14,0,50,180,20,180,20,150,3,2,386,,1.2,-1
 10002,Deoxys,14,0,50,70,160,70,160,90,4,2,386,,1.2,-1
 10003,Deoxys,14,0,50,95,90,95,90,180,5,2,386,,1.2,-1
@@ -524,16 +523,8 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 10017,Burmy,7,0,40,29,45,29,45,36,4,50,412,,0.848,-1
 10018,Cherrim,12,0,70,60,70,87,78,85,3,30,421,,0.9,-1
 10100,Raichu,13,14,60,85,50,95,85,110,5,2,26,,0.97,26
-10101,sandshrew-alola,15,9,50,75,90,10,35,40,2,2,27,,0.6,-1
-10102,sandslash-alola,15,9,75,100,120,25,65,65,2,2,28,,0.9,-1
-10103,vulpix-alola,15,0,38,41,40,50,65,65,5,2,37,,0.598,-1
-10104,ninetales-alola,15,18,73,67,75,81,100,109,5,2,38,,1.01,-1
-10113,exeggutor-alola,12,16,95,105,85,125,75,45,3,2,103,,1.06,-1
 10114,Cubone,8,0,50,50,95,40,50,35,2,75,104,,0.85,-1
 10115,Marowak,10,8,60,80,110,50,80,45,2,20,105,,0.85,-1
 10116,Slowpoke,14,0,90,65,65,40,40,15,0,75,79,,0.63,-1
 10117,Slowbro,14,4,95,100,95,100,70,30,2,30,80,,0.98,-1
 10118,Slowking,14,4,95,65,80,110,110,30,4,30,199,,0.98,-1
-10119,Gible,16,11,58,70,45,40,45,42,1,20,443,,0.6,-1
-10120,Gabite,16,11,68,90,65,50,55,82,1,20,444,,0.82,-1
-10121,Garchomp,16,11,108,130,95,80,85,102,1,20,445,,1.2,-1

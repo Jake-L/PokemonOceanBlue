@@ -3,11 +3,17 @@ package test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Hashtable;
+
+import javax.swing.ImageIcon;
 
 import org.junit.Test;
 
+import pokemonoceanblue.DatabaseUtility;
 import pokemonoceanblue.PokedexModel;
 import pokemonoceanblue.PokemonModel;
 import pokemonoceanblue.Type;
@@ -235,5 +241,78 @@ public class PokemonTests {
         // Blaziken and Hitmonlee should learn Blaze Kick
         expected_data.put(299, new Integer[]{106, 257});
 
+    }
+
+    @Test
+    /**
+     * Checks that every Pokemon has an icon sprite
+     */
+    public void testIconSprites()
+    {
+        testSprite("pokemonicons");
+    }
+
+    @Test
+    /**
+     * Checks that every Pokemon has a front sprite
+     */
+    public void testFrontSprites()
+    {
+        // test the sprites that appear in battle
+        testSprite("pokemon/frame0");
+        testSprite("pokemon/frame1");
+        testSprite("pokemon/shinyframe0");
+        testSprite("pokemon/frame1");
+
+        // test the centered sprites that appear in the party screen
+        testSprite("pokemoncentered/frame0");
+        testSprite("pokemoncentered/shinyframe0");
+    }
+
+    @Test
+    /**
+     * Checks that every Pokemon has a back sprite
+     */
+    public void testBackSprites()
+    {
+        // test the sprites that appear in battle
+        testSprite("pokemonback/frame0");
+        testSprite("pokemonback/frame1");
+        testSprite("pokemonback/shinyframe0");
+        testSprite("pokemonback/frame1");
+    }
+
+    /**
+     * Checks that every Pokemon has a sprite in the given folder
+     */
+    private void testSprite(String path)
+    {
+        try 
+        {
+            DatabaseUtility db = new DatabaseUtility();
+
+            // pull a list of every Pokemon
+            String query = "SELECT pokemon_id FROM pokemon";
+            ResultSet rs = db.runQuery(query);
+            while (rs.next())
+            {
+                int pokemonId = rs.getInt(1);
+
+                try
+                {
+                    ImageIcon ii = new ImageIcon(this.getClass().getResource(String.format("/%s/%s.png", path, pokemonId)));
+                    ii.getImage();
+                }
+                catch (Exception e)
+                {
+                    fail("Missing sprite for Pokemon: " + pokemonId + " in folder: " + path);
+                } 
+            }
+
+        }
+        catch (SQLException e)
+        {
+            fail(e.getMessage());
+        }
     }
 }

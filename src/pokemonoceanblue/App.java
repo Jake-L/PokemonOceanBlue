@@ -11,6 +11,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.JFrame;
 
@@ -19,11 +21,16 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.AudioSystem;
 import java.awt.Font;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+
 public class App extends JFrame implements KeyListener
 {
     private static final long serialVersionUID = -1949827959244745733L;
-    private AppManager appManager;
-    private ViewManager viewManager;
+    private static AppManager appManager;
+    private static ViewManager viewManager;
     MusicPlayer musicPlayer;
     List<Integer> keysDown = new ArrayList<Integer>();
 
@@ -95,6 +102,16 @@ public class App extends JFrame implements KeyListener
         });
         
         this.playSong(0, false);
+
+        // fetch the weather every 10 minutes
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run()
+            {
+                getWeather(); 
+            }
+        }, 0, 1000 * 60 * 10);
 
         this.update();
     }
@@ -215,5 +232,47 @@ public class App extends JFrame implements KeyListener
     public void playSong(int musicId, boolean skipTransition)
     {
         musicPlayer.setSong(musicId, skipTransition);
+    }
+
+    public static void getWeather()
+    {
+        try 
+        {
+            URL url = new URL("http://api.openweathermap.org/data/2.5/weather?q=Toronto&appid=e77827ffa3e6cf01166c4a7ecd050960");
+            URLConnection conn = url.openConnection();
+            BufferedReader in = new BufferedReader(
+                                    new InputStreamReader(
+                                    conn.getInputStream()));
+            String inputLine = in.readLine();
+            in.close();
+
+            System.out.println(inputLine);
+            
+            // id beginning with 2 means thunderstorm
+            // id beginning with 3 means drizzle
+            // id beginning with 5 means rain
+            if (inputLine.contains("\"weather\":[{\"id\":2")
+                || inputLine.contains("\"weather\":[{\"id\":3")
+                || inputLine.contains("\"weather\":[{\"id\":5"))
+            {
+                appManager.weather = (byte) Weather.RAIN;
+                System.out.println("Weather: rain");
+            }
+            // id beginning with 6 means snow
+            else if (inputLine.contains("\"weather\":[{\"id\":6"))
+            {
+                appManager.weather = (byte) Weather.HAIL;
+                System.out.println("Weather: hail");
+            }
+            else
+            {
+                appManager.weather = (byte) Weather.NEUTRAL;
+                System.out.println("Weather: clear");
+            }
+        }
+        catch (Exception e) 
+        {
+            System.out.println(e.getMessage());
+        }
     }
 }

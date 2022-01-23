@@ -35,6 +35,7 @@ public class AppManager {
 
     int musicId = -1;
     String soundEffect;
+    byte weather;
 
     List<ObjectiveModel> achievements = new ArrayList<ObjectiveModel>();
     List<ObjectiveModel> quests = new ArrayList<ObjectiveModel>();
@@ -87,7 +88,7 @@ public class AppManager {
         else
         {
             // actual trainer battles
-            battleModel = new BattleModel(partyModel.getTeamArray(), battleId, this, this.enemyScalingFactor, overworldModel.weather);
+            battleModel = new BattleModel(partyModel.getTeamArray(), battleId, this, this.enemyScalingFactor, this.overworldModel.weather);
             this.musicId = battleModel.musicId;
             BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
             viewManager.setView(battleView);
@@ -120,7 +121,7 @@ public class AppManager {
         team[0] = new PokemonModel(pokemonId, level + levelScaling, shiny, raidBoss);
 
         // create the battle
-        battleModel = new BattleModel(team, partyModel.getTeamArray(), this, overworldModel.weather);
+        battleModel = new BattleModel(team, partyModel.getTeamArray(), this, this.overworldModel.weather);
         BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
         viewManager.setView(battleView);
         this.addModelQueue(battleModel);
@@ -154,6 +155,7 @@ public class AppManager {
             this.overworldModel = new OverworldModel(mapId, playerModel, this, this.inventoryModel, this.dayCareModel);
         }
         
+        this.overworldModel.setWeather(this.weather);
         this.modelQueue.clear();
         this.addModelQueue(this.overworldModel);
         playerModel.setOverworldModel(this.overworldModel);
@@ -312,6 +314,7 @@ public class AppManager {
         // return to overworld
         else if (this.modelQueue.get(0).getClass().getSimpleName().equals("OverworldModel"))
         {
+            this.overworldModel.setWeather(this.weather);
             OverworldView overworldView = new OverworldView(overworldModel);
             viewManager.setView(overworldView);
         }
