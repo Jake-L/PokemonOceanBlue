@@ -238,6 +238,7 @@ public class App extends JFrame implements KeyListener
     {
         try 
         {
+            // TODO: use the player's location rather than a hardcoded location
             URL url = new URL("http://api.openweathermap.org/data/2.5/weather?q=Toronto&appid=e77827ffa3e6cf01166c4a7ecd050960");
             URLConnection conn = url.openConnection();
             BufferedReader in = new BufferedReader(
