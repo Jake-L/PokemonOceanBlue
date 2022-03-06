@@ -32,12 +32,10 @@ public class BattleModel extends BaseModel
     private Attack attacks[] = new Attack[2];
     private boolean[] moveProcessed = new boolean[2];
     public int musicId;
-    public int badgeIndex = -1;
-    public int weather;
-    private ItemModel reward;
     public TurnEffectManager turnEffectManager = new TurnEffectManager();
-    public BattleOperationsManager battleOperationsManager = new BattleOperationsManager();
+    public BattleOperationsManager battleOperationsManager = new BattleOperationsManager(turnEffectManager);
     public boolean reloadSprites = false;
+    public BattleResult battleResult = new BattleResult();
 
     /** 
      * Constructor
@@ -50,7 +48,7 @@ public class BattleModel extends BaseModel
         this.team[1] = opponentTeam;
         this.app = app;
         this.initializeBattle();
-        this.weather = weather;
+        this.turnEffectManager.weather = weather;
     }
 
     public BattleModel(PokemonModel[] playerTeam, int battleId, AppManager app, int enemyScalingFactor, int weather)
@@ -59,7 +57,7 @@ public class BattleModel extends BaseModel
         this.loadTeam(battleId, enemyScalingFactor);
         this.app = app;
         this.initializeBattle();
-        this.weather = weather;
+        this.turnEffectManager.weather = weather;
     }
 
     /**
@@ -145,7 +143,7 @@ public class BattleModel extends BaseModel
                             this.team[0][this.currentPokemon[0]].moves[optionIndex], 0);
                         this.actionCounter = 60;
                         int enemyMoveIndex = ranNum.nextInt(this.team[1][this.currentPokemon[1]].moves.length);
-                        this.attacks[1] = enemyAttack(enemyMoveIndex);
+                        this.attacks[1] = this.enemyAttack(enemyMoveIndex);
                         int firstAttacker = battleOperationsManager.determineFirstAttacker(this.team[0][this.currentPokemon[0]], this.team[1][this.currentPokemon[1]],
                                                                                            this.optionIndex, enemyMoveIndex);
                         this.events.add(new BattleEvent(this.attacks[firstAttacker]));
@@ -196,7 +194,8 @@ public class BattleModel extends BaseModel
                 event = new BattleEvent("The wild " + this.team[1][this.currentPokemon[1]].name + " escaped!", 1, -1);
                 event.setNewPokemon(0);
                 this.events.add(2, event);
-                this.events.add(new BattleEvent(this.enemyAttack(ranNum.nextInt(this.team[1][this.currentPokemon[1]].moves.length))));
+                int enemyMoveIndex = ranNum.nextInt(this.team[1][this.currentPokemon[1]].moves.length);
+                this.events.add(new BattleEvent(this.enemyAttack(enemyMoveIndex)));
                 shakeCount = ranNum.nextInt(3);
             }
 
@@ -232,7 +231,8 @@ public class BattleModel extends BaseModel
             // this is the players turn
             this.moveProcessed[0] = true;
             // let the enemy attack after player switches
-            this.events.add(new BattleEvent(this.enemyAttack(ranNum.nextInt(this.team[1][this.currentPokemon[1]].moves.length))));
+            int enemyMoveIndex = ranNum.nextInt(this.team[1][this.currentPokemon[1]].moves.length);
+            this.events.add(new BattleEvent(this.enemyAttack(enemyMoveIndex)));
         }
         else
         {
@@ -269,8 +269,7 @@ public class BattleModel extends BaseModel
     }
 
     /**
-     * @return the battle event that stores the enemy attack
-     * @param enemyMoveIndex is the index of the move the enemy will use
+     * @return the battle event that generates and stores the enemy attack
      */
     private Attack enemyAttack(int enemyMoveIndex)
     {
@@ -356,7 +355,7 @@ public class BattleModel extends BaseModel
         if (!this.unableToMove[attacker])
         {
             this.events.get(attackEventIndex).attack.useAttack(this.team[attacker][this.currentPokemon[attacker]],
-                this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]], battleOperationsManager, turnEffectManager, weather);
+                this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]], battleOperationsManager, turnEffectManager);
             this.events.get(attackEventIndex).damage = this.events.get(attackEventIndex).attack.damage;
             return attackEventIndex;
         }
@@ -376,7 +375,7 @@ public class BattleModel extends BaseModel
         {
             BattleEvent event;
             // changing the weather fails if the same weather already exists
-            if (this.weather == effectId - 136)
+            if (this.turnEffectManager.weather == effectId - 136)
             {
                 event = new BattleEvent("But it failed.", attacker, attacker);
             }
@@ -647,7 +646,7 @@ public class BattleModel extends BaseModel
 
                 if ((this.moveProcessed[0] || this.moveProcessed[1]) && (!this.moveProcessed[0] || !this.moveProcessed[1]))
                 {
-                    turnEffectManager.endOfTurnEffects(this.team, this.currentPokemon, this.events, this.weather);
+                    turnEffectManager.endOfTurnEffects(this.team, this.currentPokemon, this.events);
                 }
                 if (damagedTeamIndex == 0)
                 {
@@ -661,7 +660,8 @@ public class BattleModel extends BaseModel
                     event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " gained " + xp + " experience.", 0, 0);
                     event.setXP(xp);
                     this.events.add(event);
-                    //send out enemy's next pokemon if any remain
+
+                    // send out enemy's next pokemon if any remain
                     if (!battleOperationsManager.teamFainted(this.team[1]))
                     {
                         event = new BattleEvent(this.trainerName + " sent out " + this.team[1][this.currentPokemon[1] + 1].name, 1, -1);
@@ -669,18 +669,14 @@ public class BattleModel extends BaseModel
                         this.events.add(event);
                     }
                     // give the player a reward for winning the battle if all their Pokemon are defeated
-                    else if (this.reward != null)
+                    else
                     {
-                        if (this.reward.itemId == 1000)
+                        String rewardText = this.battleResult.getRewardText();
+                        if (rewardText != null)
                         {
-                            this.events.add(new BattleEvent("Player received $" + this.reward.quantity + " for their victory", 0, 0));
+                            this.events.add(new BattleEvent(rewardText, 0, 0));
+                            this.actionCounter = 60;
                         }
-                        else
-                        {
-                            this.events.add(new BattleEvent("Player received " + this.reward.quantity + " " + this.reward.name + " for their victory", 0, 0));
-                        }
-                        
-                        this.actionCounter = 60;
                     }
                 }
             }
@@ -729,7 +725,7 @@ public class BattleModel extends BaseModel
                     BattleEvent event = battleOperationsManager.createRecoilEvent(attacker, move, 
                         this.team[attacker][this.currentPokemon[attacker]], 
                         this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]],
-                        this.weather, this.events.get(attackEventIndex).damage);
+                        this.events.get(attackEventIndex).damage);
                     if (event != null)
                     {
                         this.events.add(event);
@@ -822,11 +818,11 @@ public class BattleModel extends BaseModel
             // change weather
             else if (this.events.get(0).newWeatherId > -1)
             {
-                this.weather = this.events.get(0).newWeatherId;
+                this.turnEffectManager.weather = this.events.get(0).newWeatherId;
                 // check if any Pokemon changed forms from the weather change
                 for (int i = 0; i < this.team.length; i++)
                 {
-                    if (this.team[i][this.currentPokemon[i]].checkFormChange((byte)this.weather, (byte)-1))
+                    if (this.team[i][this.currentPokemon[i]].checkFormChange((byte)this.turnEffectManager.weather, (byte)-1))
                     {
                         this.events.add(1, new BattleEvent(this.team[i][this.currentPokemon[i]].name + " transformed!", i, i));
                         this.reloadSprites = true;
@@ -871,7 +867,7 @@ public class BattleModel extends BaseModel
         {
             if (this.moveProcessed[0] || this.moveProcessed[1])
             {
-                turnEffectManager.endOfTurnEffects(this.team, this.currentPokemon, this.events, this.weather);
+                turnEffectManager.endOfTurnEffects(this.team, this.currentPokemon, this.events);
             }
             if (this.events.size() > 0)
             {
@@ -1056,33 +1052,7 @@ public class BattleModel extends BaseModel
             loadTeam.toArray(this.team[1]);
 
             // store if the player gets a badge for winning this battle
-            switch (battleId)
-            {
-                case 10:
-                    this.badgeIndex = 0;
-                    break;
-                case 12:
-                    this.badgeIndex = 1;
-                    break;
-                case 14:
-                    this.badgeIndex = 2;
-                    break;
-                case 15:
-                    this.badgeIndex = 3;
-                    break;
-                case 16:
-                    this.badgeIndex = 4;
-                    break;
-                case 17:
-                    this.badgeIndex = 5;
-                    break;
-                case 18:
-                    this.badgeIndex = 6;
-                    break;
-                case 19:
-                    this.badgeIndex = 7;
-                    break;
-            }
+            this.battleResult.setBadgeIndex(battleId);
 
             // load the reward for defeating the trainer in battle
             query = "SELECT item_id, quantity FROM battle_reward WHERE battle_id = " + battleId;
@@ -1099,7 +1069,7 @@ public class BattleModel extends BaseModel
                 {
                     quantity *= team[1][team[1].length - 1].level;
                 }
-                this.reward = new ItemModel(itemId, quantity);
+                this.battleResult.reward = new ItemModel(itemId, quantity);
             } 
         }
         catch (SQLException e) 
@@ -1114,10 +1084,5 @@ public class BattleModel extends BaseModel
     public boolean[] getEvolveQueue()
     {
         return this.evolveQueue;
-    }
-
-    public ItemModel getBattleReward()
-    {
-        return this.reward;
     }
 }    

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Random;
 
 import pokemonoceanblue.battle.BattleModel;
+import pokemonoceanblue.battle.BattleResult;
 import pokemonoceanblue.battle.BattleView;
 
 public class AppManager {
@@ -475,21 +476,22 @@ public class AppManager {
             }
             else if (this.battleModel.isComplete())
             {
+                BattleResult battleResult = this.battleModel.battleResult;
                 if (this.battleModel.trainerSpriteName != null)
                 {
                     this.achievements.forEach((obj) -> obj.incrementCounter("battleWin", 1, this.battleModel.trainerSpriteName));
                 }
 
                 // check if the player earned money or other reward
-                this.inventoryModel.addItem(this.battleModel.getBattleReward());
+                this.inventoryModel.addItem(battleResult.reward);
 
                 // check if the player earned a badge
-                if (this.battleModel.badgeIndex > -1 
-                    && !this.badges[this.battleModel.badgeIndex] 
+                if (battleResult.badgeIndex > -1 
+                    && !this.badges[battleResult.badgeIndex] 
                     // make sure they don't earn badges from fighting gym leaders in tournaments
                     && this.overworldModel.mapId < 1000)
                 {
-                    this.badges[this.battleModel.badgeIndex] = true;
+                    this.badges[battleResult.badgeIndex] = true;
                     this.enemyScalingFactor += 5;
                 }
 

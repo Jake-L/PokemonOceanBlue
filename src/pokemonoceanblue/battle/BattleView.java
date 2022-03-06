@@ -273,7 +273,7 @@ public class BattleView extends BaseView {
                 canvas);
         }
 
-        this.renderWeather(this.model.weather, g, canvas);
+        this.renderWeather(this.model.turnEffectManager.weather, g, canvas);
 
         // set text colour back to black
         Color colour = new Color(0, 0, 0, 255);

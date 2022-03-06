@@ -10,13 +10,14 @@ import pokemonoceanblue.MoveModel;
 import pokemonoceanblue.PokemonModel;
 import pokemonoceanblue.StatusEffect;
 import pokemonoceanblue.battle.BattleOperationsManager;
+import pokemonoceanblue.battle.TurnEffectManager;
 
 public class BattleOperationsManagerTests {
 
     @Test
     public void testCaptureRateLegendary() 
     {
-        BattleOperationsManager battleOperationsManager = new BattleOperationsManager();
+        BattleOperationsManager battleOperationsManager = new BattleOperationsManager(new TurnEffectManager());
         PokemonModel pokemon = new PokemonModel(150, 100, false);
         
         // master ball should have capture chance significantly above 100%
@@ -53,7 +54,7 @@ public class BattleOperationsManagerTests {
      */
     public void testTeamFainted() 
     {
-        BattleOperationsManager battleOperationsManager = new BattleOperationsManager();
+        BattleOperationsManager battleOperationsManager = new BattleOperationsManager(new TurnEffectManager());
         PokemonModel[] team;
         
         // team just includes one full health Pokemon
@@ -65,30 +66,24 @@ public class BattleOperationsManagerTests {
         team[0].currentHP = 0;
         assertTrue(battleOperationsManager.teamFainted(team));
 
-        // team includes five fainted Pokemon and one full health Pokemon
-        team = new PokemonModel[6];
-        team[0] = new PokemonModel(1, 1, false);
-        team[0].currentHP = 0;
-        team[1] = new PokemonModel(1, 1, false);
-        team[1].currentHP = 0;
-        team[2] = new PokemonModel(1, 1, false);
-        team[2].currentHP = 0;
-        team[3] = new PokemonModel(1, 1, false);
-        team[3].currentHP = 0;
-        team[4] = new PokemonModel(1, 1, false);
-        team[4].currentHP = 0;
-        team[5] = new PokemonModel(1, 1, false);
-        assertFalse(battleOperationsManager.teamFainted(team));
-
         // team includes six fainted Pokemon
-        team[5].currentHP = 0;
+        team = new PokemonModel[6];
+        for (int i = 0; i < team.length; i++)
+        {
+            team[i] = new PokemonModel(1, 1, false);
+            team[i].currentHP = 0;  
+        }
         assertTrue(battleOperationsManager.teamFainted(team));
+
+        // team includes five fainted Pokemon and one full health Pokemon
+        team[5].currentHP = 1;
+        assertFalse(battleOperationsManager.teamFainted(team));
     }
 
     @Test
     public void testFirstAttacker()
     {
-        BattleOperationsManager battleOperationsManager = new BattleOperationsManager();
+        BattleOperationsManager battleOperationsManager = new BattleOperationsManager(new TurnEffectManager());
         PokemonModel[] team = new PokemonModel[1];
         PokemonModel[] enemyTeam = new PokemonModel[1];
         int firstAttacker;
@@ -128,6 +123,5 @@ public class BattleOperationsManagerTests {
         // player uses pound and enemy uses counter
         firstAttacker = battleOperationsManager.determineFirstAttacker(team[0], enemyTeam[0], 0, 2);
         assertEquals(0, firstAttacker);
-
     }
 }

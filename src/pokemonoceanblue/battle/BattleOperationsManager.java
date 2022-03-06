@@ -12,7 +12,18 @@ import pokemonoceanblue.Weather;
 public class BattleOperationsManager {
     private Random ranNum = new Random();
     public int[][] statChanges = new int[2][8];
+    private TurnEffectManager turnEffectManager;
 
+    public BattleOperationsManager(TurnEffectManager turnEffectManager)
+    {
+        this.turnEffectManager = turnEffectManager;
+    }
+
+    /**
+     * Logic for switching the current Pokemon in battle
+     * @param attacker
+     * @param model
+     */
     public void switchPokemon(int attacker, BattleModel model)
     {
         if (model.currentPokemon[attacker] >= 0)
@@ -32,6 +43,12 @@ public class BattleOperationsManager {
         }
     }
 
+    /**
+     * Check if a move lands
+     * @param attacker
+     * @param moveAccuracy
+     * @return True if the move hits
+     */
     public boolean isHit(int attacker, int moveAccuracy)
     {
         int defender = (attacker + 1) % 2;
@@ -43,6 +60,11 @@ public class BattleOperationsManager {
         return moveAccuracy == -1 || this.ranNum.nextInt(100) + 1 <= moveAccuracy;
     }
 
+    /**
+     * Determines whether an attack is a critical hit
+     * @param critChance the chance of a critical hit after applying modifiers
+     * @return True if the attack is a critical hit
+     */
     public boolean isCrit(int critChance)
     {
         return critChance > 0 && ranNum.nextInt(10 - critChance) == 0;
@@ -70,6 +92,14 @@ public class BattleOperationsManager {
         return false;
     }
 
+    /**
+     * Determine's which Pokemon attacks first
+     * @param playerPokemon
+     * @param enemyPokemon
+     * @param playerMoveIndex
+     * @param enemyMoveIndex
+     * @return
+     */
     public int determineFirstAttacker(PokemonModel playerPokemon, PokemonModel enemyPokemon, int playerMoveIndex, int enemyMoveIndex)
     {
         int firstAttacker;
@@ -168,9 +198,11 @@ public class BattleOperationsManager {
      * @param attacker the attacking team
      * @param move the move that inflicts the heal or recoil
      */
-    public BattleEvent createRecoilEvent(int attacker, MoveModel move, PokemonModel attackingPokemon, PokemonModel defendingPokemon, int weather, int attackDamage)
+    public BattleEvent createRecoilEvent(int attacker, MoveModel move, PokemonModel attackingPokemon, PokemonModel defendingPokemon, int attackDamage)
     {
         int damage;
+        int weather = this.turnEffectManager.weather;
+
         //moves that have power=0 use attackers max hp to calc healing/recoil
         if (move.power == 0)
         {
@@ -256,5 +288,154 @@ public class BattleOperationsManager {
             - (pokemon.level / 10) * pokemon.currentHP / (double)(pokemon.stats[Stat.HP]);
 
         return captureChance;
+    }
+
+    /**
+     * Determine's the type effectiveness multiplier for the Pokemon's current attack
+     * @param attackingPokemon
+     * @param defendingPokemon
+     * @param move
+     * @return
+     */
+    public float getTypeModifier(PokemonModel attackingPokemon, 
+                                 PokemonModel defendingPokemon, MoveModel move)
+    {
+        float typeModifier = 1.0f;
+
+        for (int i = 0; i < defendingPokemon.types.length; i++)
+        {
+            typeModifier *= Type.typeEffectiveness[move.typeId][defendingPokemon.types[i]];
+        }
+
+        // check for abilities that grant immunity to certain types
+        if (move.typeId == Type.GROUND 
+        && defendingPokemon.ability != null
+        && defendingPokemon.ability.abilityId == 26)
+        {
+            typeModifier = 0.0f;
+        }
+
+        // check for effects that affect the type modifier
+        if (move.moveEffect != null)
+        {
+            // super fang inflicts typeless damage
+            if (move.moveEffect.effectId == 41)
+            {
+                typeModifier = 1.0f;
+            }
+        }
+
+        return typeModifier;
+    }
+
+    /**
+     * Determine's the multipliers to the Pokemon's attack, excluding critical hits or the 
+     * type effectiveness multiplier
+     * @param attackingPokemon
+     * @param defendingPokemon
+     * @param move
+     * @param isCrit
+     * @param defender
+     * @return
+     */
+    public float getDamageMultiplier(PokemonModel attackingPokemon, PokemonModel defendingPokemon, 
+                                     MoveModel move, boolean isCrit, int defender)
+    {
+        float otherModifiers = 1.0f;
+        int weather = this.turnEffectManager.weather;
+
+        // check for effects that affect the type modifier
+        if (move.moveEffect != null)
+        {
+            int effectId = move.moveEffect.effectId;
+
+            if (effectId == 170 && (attackingPokemon.statusEffect == StatusEffect.PARALYSIS || 
+                                        attackingPokemon.statusEffect == StatusEffect.BURN || 
+                                        attackingPokemon.statusEffect == StatusEffect.POISON ||
+                                        attackingPokemon.statusEffect == StatusEffect.BADLY_POISON))
+            {
+                // attacks that do double damage when affected by status conditions
+                otherModifiers *= 2.0f;
+            }
+            else if (effectId == 222 && defendingPokemon.currentHP < Math.ceil(defendingPokemon.stats[Stat.HP] / 2.0))
+            {
+                // attacks that do double damage on foes with less than 50% HP
+                otherModifiers *= 2.0f;
+            }
+            else if (effectId == 284 && defendingPokemon.statusEffect == StatusEffect.POISON)
+            {
+                // attacks that do double damage on poisoned targets
+                otherModifiers *= 2.0f;
+            }
+        }
+
+        // apply weather modifiers
+        if ((weather == 2 || weather == 1) && (move.typeId == 10 || move.typeId == 11))
+        {
+            otherModifiers *= (weather == 2 && move.typeId == 10) || (weather == 1 && move.typeId == 11) ? 0.5 : 1.5;
+        }
+
+        // check for multiTurnEffects that apply a damage multiplier
+        if (turnEffectManager.multiTurnEffects.size() > 0)
+        {
+            for (int i = 0; i < turnEffectManager.multiTurnEffects.size(); i++)
+            {
+                if (!isCrit && turnEffectManager.multiTurnEffects.get(i).attacker == defender &&
+                    ((turnEffectManager.multiTurnEffects.get(i).effectId == 36 && move.damageClassId == 3) ||
+                    (turnEffectManager.multiTurnEffects.get(i).effectId == 66 && move.damageClassId == 2)))
+                {
+                    otherModifiers *= 0.5;
+                }
+                else if ((move.typeId == Type.ELECTRIC && turnEffectManager.multiTurnEffects.get(i).effectId == 202) ||
+                            (move.typeId == Type.FIRE && turnEffectManager.multiTurnEffects.get(i).effectId == 211))
+                {
+                    otherModifiers *= 0.5;
+                }
+            }
+        }
+
+        return otherModifiers;
+    }
+
+    /**
+     * Calculate's a Pokemon's attack's critical hit chance
+     * @param move
+     * @param attacker
+     * @return
+     */
+    public int getCritChance(MoveModel move, int attacker)
+    {
+        int critChance = 1;
+
+        // check for effects that affect the type modifier
+        if (move.moveEffect != null)
+        {
+            if (move.moveEffect.effectId == 44)
+            {
+                // moves with a boosted critical hit chance
+                critChance++;
+            }
+        }
+
+        // focus-energy and lucky-chant
+        if (turnEffectManager.multiTurnEffects.size() > 0)
+        {
+            for (int i = 0; i < turnEffectManager.multiTurnEffects.size(); i++)
+            {
+                if (turnEffectManager.multiTurnEffects.get(i).effectId == 241 
+                    && turnEffectManager.multiTurnEffects.get(i).target == attacker)
+                {
+                    critChance = 0;
+                    break;
+                }
+                else if (turnEffectManager.multiTurnEffects.get(i).effectId == 48 
+                    && turnEffectManager.multiTurnEffects.get(i).attacker == attacker)
+                {
+                    critChance += 2;
+                }
+            }
+        }
+
+        return critChance;
     }
 }

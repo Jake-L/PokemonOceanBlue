@@ -16,6 +16,7 @@ public class TurnEffectManager
 {
     private Random ranNum = new Random();
     public List<MultiTurnEffect> multiTurnEffects = new ArrayList<MultiTurnEffect>();
+    public int weather;
 
     /** 
      * creates event for the status effect inflicted by current move
@@ -175,7 +176,7 @@ public class TurnEffectManager
     /** 
      * checks if either pokemon should suffer an end of turn effect
      */
-    public void endOfTurnEffects(PokemonModel team[][], int currentPokemon[], List<BattleEvent> events, int weather)
+    public void endOfTurnEffects(PokemonModel team[][], int currentPokemon[], List<BattleEvent> events)
     {
         String[] effectMessages = {" is hurt by burn."," is hurt by poison."," is badly hurt by poison."," is hurt by the curse.","sandstorm.","hail."};
         //check for status effect end of turn effects
