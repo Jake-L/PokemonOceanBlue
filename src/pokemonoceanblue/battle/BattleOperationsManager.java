@@ -297,8 +297,7 @@ public class BattleOperationsManager {
      * @param move
      * @return
      */
-    public float getTypeModifier(PokemonModel attackingPokemon, 
-                                 PokemonModel defendingPokemon, MoveModel move)
+    public static float getTypeModifier(PokemonModel attackingPokemon, PokemonModel defendingPokemon, MoveModel move)
     {
         float typeModifier = 1.0f;
 
@@ -398,7 +397,7 @@ public class BattleOperationsManager {
     }
 
     /**
-     * Calculate's a Pokemon's attack's critical hit chance
+     * Calculates a Pokemon's attack's critical hit chance
      * @param move
      * @param attacker
      * @return

@@ -4,6 +4,7 @@ import java.sql.*;
 
 public class PokedexModel extends BaseModel
 {
+    // TODO: add tasks for defeating Pokemon, catching them 20 times, etc
     public int[] caughtPokemon = new int[506];
     public String[] pokemonDescription = new String[506];
     public int uniqueCaught = 0;

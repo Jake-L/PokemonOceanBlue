@@ -15,14 +15,19 @@ public class BattleAI {
 
     public BattleAI(String trainerName, int battleId)
     {
-        if (trainerName.contains("Gym Leader") || battleId >= 1000) 
+        if ((trainerName != null && trainerName.contains("Gym Leader")) || battleId >= 1000) 
         {
-            difficulty = 1;
+            this.difficulty = 1;
         }
         else 
         {
-            difficulty = 0;
+            this.difficulty = 0;
         }
+    }
+
+    public BattleAI()
+    {
+        this.difficulty = 0;
     }
 
     /**
@@ -30,24 +35,60 @@ public class BattleAI {
      */
     public int getAction(PokemonModel[] team, PokemonModel enemy, int currentPokemon)
     {
-        int action;
+        int action = 0;
 
         // for difficulty 0, just use a random move
-        //if (this.difficulty == 0)
-        //{
-        action = ranNum.nextInt(team[currentPokemon].moves.length);
-        //}
+        if (this.difficulty == 0)
+        {
+            action = ranNum.nextInt(team[currentPokemon].moves.length);
+        }
         // for difficulty 1, prioritize super effective attacks
-        // else 
-        // {
-        //     List<Integer> attackUtility = new ArrayList<Integer>();
-        //     int totalUtility = 0;
+        else 
+        {
+            List<Integer> attackUtility = new ArrayList<Integer>();
+            int totalUtility = 0;
+            int utility = 0;
 
-        //     for (MoveModel move : team[currentPokemon].moves)
-        //     {
+            // generate the utility of each move
+            for (MoveModel move : team[currentPokemon].moves)
+            {
+                // status moves
+                if (move.damageClassId == 1)
+                {
+                    utility = 50;
+                }
+                else
+                {
+                    float typeModifier = BattleOperationsManager.getTypeModifier(team[currentPokemon], enemy, move);
+
+                    if (move.accuracy == -1)
+                    {
+                        // assign bonus utility for moves that never miss
+                        utility = (int)(20 + move.power * typeModifier);
+                    }
+                    else
+                    {
+                        utility = (int)(move.power * (move.accuracy / 100.00) * typeModifier);
+                    }
+                }
                 
-        //     }
-        // }
+                attackUtility.add(utility);
+                totalUtility += utility;
+            }
+
+            // randomly pick a move, weighted based on utility
+            utility = ranNum.nextInt(totalUtility);
+            int index = 0;
+
+            // find which option was randomly selected by utility
+            while (utility > 0)
+            {
+                action = index;
+                utility -= attackUtility.get(index);
+                index++; 
+            }
+
+        }
 
         return action;
     }

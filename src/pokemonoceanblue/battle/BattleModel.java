@@ -36,6 +36,7 @@ public class BattleModel extends BaseModel
     public BattleOperationsManager battleOperationsManager = new BattleOperationsManager(turnEffectManager);
     public boolean reloadSprites = false;
     public BattleResult battleResult = new BattleResult();
+    private BattleAI battleAI;
 
     /** 
      * Constructor
@@ -47,6 +48,7 @@ public class BattleModel extends BaseModel
         this.team[0] = playerTeam;
         this.team[1] = opponentTeam;
         this.app = app;
+        this.battleAI = new BattleAI();
         this.initializeBattle();
         this.turnEffectManager.weather = weather;
     }
@@ -142,7 +144,7 @@ public class BattleModel extends BaseModel
                         this.attacks[0] = new Attack(this.team[0][this.currentPokemon[0]].name, 
                             this.team[0][this.currentPokemon[0]].moves[optionIndex], 0);
                         this.actionCounter = 60;
-                        int enemyMoveIndex = ranNum.nextInt(this.team[1][this.currentPokemon[1]].moves.length);
+                        int enemyMoveIndex = this.battleAI.getAction(this.team[1], this.team[0][this.currentPokemon[0]], this.currentPokemon[1]);
                         this.attacks[1] = this.enemyAttack(enemyMoveIndex);
                         int firstAttacker = battleOperationsManager.determineFirstAttacker(this.team[0][this.currentPokemon[0]], this.team[1][this.currentPokemon[1]],
                                                                                            this.optionIndex, enemyMoveIndex);
@@ -194,7 +196,7 @@ public class BattleModel extends BaseModel
                 event = new BattleEvent("The wild " + this.team[1][this.currentPokemon[1]].name + " escaped!", 1, -1);
                 event.setNewPokemon(0);
                 this.events.add(2, event);
-                int enemyMoveIndex = ranNum.nextInt(this.team[1][this.currentPokemon[1]].moves.length);
+                int enemyMoveIndex = this.battleAI.getAction(this.team[1], this.team[0][this.currentPokemon[0]], this.currentPokemon[1]);
                 this.events.add(new BattleEvent(this.enemyAttack(enemyMoveIndex)));
                 shakeCount = ranNum.nextInt(3);
             }
@@ -231,7 +233,7 @@ public class BattleModel extends BaseModel
             // this is the players turn
             this.moveProcessed[0] = true;
             // let the enemy attack after player switches
-            int enemyMoveIndex = ranNum.nextInt(this.team[1][this.currentPokemon[1]].moves.length);
+            int enemyMoveIndex = this.battleAI.getAction(this.team[1], this.team[0][this.currentPokemon[0]], this.currentPokemon[1]);
             this.events.add(new BattleEvent(this.enemyAttack(enemyMoveIndex)));
         }
         else
@@ -661,6 +663,9 @@ public class BattleModel extends BaseModel
                     event.setXP(xp);
                     this.events.add(event);
 
+                    // track the Pokemon the player has defeated
+                    this.battleResult.setDefeatedPokemon(this.team[1][this.currentPokemon[1]].base_pokemon_id);
+
                     // send out enemy's next pokemon if any remain
                     if (!battleOperationsManager.teamFainted(this.team[1]))
                     {
@@ -708,6 +713,9 @@ public class BattleModel extends BaseModel
                 {
                     this.events.add(message);
                 }
+
+                // track the attacks used by each Pokemon
+                
             }
             //check if attack will occur or if move is self-destruct, explosion, or hi jump kick before applying effects
             if (attackEventIndex > -1 && this.events.get(attackEventIndex).attack != null && (
@@ -776,7 +784,7 @@ public class BattleModel extends BaseModel
             }
             else if (this.events.get(0).newPokemonIndex > -1)
             {
-                this.soundEffect = String.valueOf(this.team[this.events.get(0).attacker][this.events.get(0).newPokemonIndex].base_pokemon_id);
+                this.soundEffect = String.format("%03d", this.team[this.events.get(0).attacker][this.events.get(0).newPokemonIndex].base_pokemon_id);
             }
         }
         if (this.actionCounter > 0)
@@ -1071,6 +1079,8 @@ public class BattleModel extends BaseModel
                 }
                 this.battleResult.reward = new ItemModel(itemId, quantity);
             } 
+
+            this.battleAI = new BattleAI(this.trainerName, battleId);
         }
         catch (SQLException e) 
         {

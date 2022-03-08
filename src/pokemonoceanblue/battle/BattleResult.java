@@ -1,10 +1,15 @@
 package pokemonoceanblue.battle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import pokemonoceanblue.ItemModel;
 
 public class BattleResult {
     public ItemModel reward;
     public int badgeIndex = -1;
+    public List<Integer> defeatedPokemon = new ArrayList<Integer>();
+    public List<int[]> attackUsed = new ArrayList<int[]>();
 
     /**
      * Generate the text displayed in battles saying what the player recieved for their victory
@@ -59,5 +64,29 @@ public class BattleResult {
                 this.badgeIndex = 7;
                 break;
         }
+    }
+
+    /**
+     * Indicate that the player has defeated the specified Pokemon
+     * used for tracking progress on some tasks
+     * @param pokemon_id
+     */
+    public void setDefeatedPokemon(int pokemon_id)
+    {
+        this.defeatedPokemon.add(pokemon_id);
+    }
+
+    /**
+     * Indicates that the player has witnessed a Pokemon use a specific move
+     * used for tracking progress on some tasks
+     * @param pokemon_id
+     * @param move_id
+     */
+    public void setAttackUsed(int pokemon_id, int move_id)
+    {
+        int[] data = new int[2];
+        data[0] = pokemon_id;
+        data[1] = move_id;
+        this.attackUsed.add(data);
     }
 }

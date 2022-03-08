@@ -7,7 +7,6 @@ import pokemonoceanblue.MoveModel;
 import pokemonoceanblue.PokemonModel;
 import pokemonoceanblue.Stat;
 import pokemonoceanblue.StatusEffect;
-import pokemonoceanblue.Type;
 
 public class Attack {
     public List<String> eventText = new ArrayList<String>();
@@ -58,7 +57,7 @@ public class Attack {
         boolean isCrit = battleOperationsManager.isCrit(critChance);
 
         // get damage modifiers related to type effectiveness and other modifiers
-        float typeModifier = battleOperationsManager.getTypeModifier(attackingPokemon, defendingPokemon, move);
+        float typeModifier = BattleOperationsManager.getTypeModifier(attackingPokemon, defendingPokemon, move);
         float otherModifiers = battleOperationsManager.getDamageMultiplier(attackingPokemon, defendingPokemon, move, isCrit, defender);
 
         if (!battleOperationsManager.isHit(this.attacker, this.move.accuracy) || (defendingPokemon.currentHP == 0 && move.targetId != 7))
