@@ -53,7 +53,7 @@ public class AppManagerTests {
 
     private void createApp()
     {
-        appManager = new AppManager(100, 100);
+        appManager = AppManager.createInstance(100, 100);
         pokemon = new PokemonModel(150, 100, false);
         appManager.addPokemonSilent(pokemon);
         pokemon = new PokemonModel(250, 100, false);

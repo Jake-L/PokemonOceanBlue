@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import pokemonoceanblue.AppManager;
 import pokemonoceanblue.MoveEffectModel;
 import pokemonoceanblue.MoveModel;
 import pokemonoceanblue.PokemonModel;
@@ -16,7 +17,7 @@ public class TurnEffectManager
 {
     private Random ranNum = new Random();
     public List<MultiTurnEffect> multiTurnEffects = new ArrayList<MultiTurnEffect>();
-    public int weather;
+    public Weather weather = AppManager.getInstance().getWeather();
 
     /** 
      * creates event for the status effect inflicted by current move
@@ -275,7 +276,7 @@ public class TurnEffectManager
                     !(weather == Weather.SANDSTORM && (Type.typeIncludes(Type.STEEL, pokemon.types) || Type.typeIncludes(Type.ROCK, pokemon.types) || Type.typeIncludes(Type.GROUND, pokemon.types))) &&
                     !(weather == Weather.HAIL && Type.typeIncludes(Type.ICE, pokemon.types)))
                 {
-                    BattleEvent event = new BattleEvent(pokemon.name + " is hurt by the " + effectMessages[weather + 1], i, i);
+                    BattleEvent event = new BattleEvent(pokemon.name + " is hurt by the " + effectMessages[weather.ordinal() + 1], i, i);
                     event.setDamage((int)Math.ceil(pokemon.stats[Stat.HP] / 16.0), i);
                     events.add(event);
                 }

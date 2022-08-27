@@ -65,14 +65,14 @@ public class BattleView extends BaseView {
         // load opponent's pokemon front sprites
         this.loadPokemonImage(1);
 
-        //loads health bar fill images
+        // loads health bar fill images
         for (int i = 0; i < 3; i++)
         {  
             ii = new ImageIcon(this.getClass().getResource("/battle/hp" + i + ".png"));
             this.healthBarFill[i] = ii.getImage();
         }
 
-        //loads pokeball sprites
+        // loads pokeball sprites
         int[] pokeballIndex = new int[]{0, 1, 2, 3, 5, 11, 12, 14};
         for (int i : pokeballIndex)
         {
@@ -83,14 +83,14 @@ public class BattleView extends BaseView {
             }
         }
 
-        //loads status effect images
+        // loads status effect images
         for (int i = 0; i < this.statusEffectImages.length; i++)
         {
             ii = new ImageIcon(this.getClass().getResource("/menus/ailment" + (i + 1) + ".png"));
             this.statusEffectImages[i] = ii.getImage();
         }
 
-        //loads status window images and xp
+        // loads status window images and xp
         ii = new ImageIcon(this.getClass().getResource("/battle/TrainerStatusWindow.png"));
         this.statusWindow[0] = ii.getImage();
         ii = new ImageIcon(this.getClass().getResource("/battle/OpponentStatusWindow.png"));
@@ -98,10 +98,10 @@ public class BattleView extends BaseView {
         ii = new ImageIcon(this.getClass().getResource("/battle/exp.png"));
         this.xp = ii.getImage();
 
-        //load trainer sprite
-        if (this.model.trainerSpriteName != null)
+        // load trainer sprite
+        if (this.model instanceof TrainerBattle)
         {
-            ii = new ImageIcon(this.getClass().getResource("/trainerBattleSprite/" + model.trainerSpriteName + ".png"));
+            ii = new ImageIcon(this.getClass().getResource("/trainerBattleSprite/" + ((TrainerBattle)model).trainerSpriteName + ".png"));
             this.trainerSprite = ii.getImage();
         }
 
@@ -118,7 +118,7 @@ public class BattleView extends BaseView {
             this.backgroundBase[i]  = ii.getImage();
         }
         
-        //loads background image
+        // loads background image
         ii = new ImageIcon(this.getClass().getResource("/battle/background" + battleBackgroundId + "" + Utils.getTimeOfDayId() + ".png"));
         this.background = ii.getImage();
 

@@ -1,6 +1,7 @@
 package pokemonoceanblue.battle;
 
 import pokemonoceanblue.MoveModel;
+import pokemonoceanblue.Weather;
 
 public class BattleEvent
 {
@@ -15,7 +16,7 @@ public class BattleEvent
     public Attack attack;
     public int removalCondition;
     public MoveModel newMove;
-    public int newWeatherId = -1;
+    public Weather newWeather = null;
     public boolean pokeballShake = false;
 
     /** 
@@ -100,9 +101,9 @@ public class BattleEvent
      * Setter for changing the weather
      * @param newWeatherId
      */
-    public void setWeather(int newWeatherId)
+    public void setWeather(Weather newWeather)
     {
-        this.newWeatherId = newWeatherId;
+        this.newWeather = newWeather;
     }
 
     /**

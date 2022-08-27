@@ -17,6 +17,7 @@ import pokemonoceanblue.DatabaseUtility;
 import pokemonoceanblue.PokedexModel;
 import pokemonoceanblue.PokemonModel;
 import pokemonoceanblue.Type;
+import pokemonoceanblue.Weather;
 
 public class PokemonTests {
     @Test
@@ -104,15 +105,15 @@ public class PokemonTests {
         assertEquals(pokemon.types[0], Type.NORMAL);
 
         // changes to FIRE in sunny weather
-        pokemon.checkFormChange((byte)1, (byte)0);
+        pokemon.checkFormChange(Weather.SUNNY, (byte)0);
         assertEquals(pokemon.types[0], Type.FIRE);
 
         // changes to WATER in rainy weather
-        pokemon.checkFormChange((byte)2, (byte)0);
+        pokemon.checkFormChange(Weather.RAIN, (byte)0);
         assertEquals(pokemon.types[0], Type.WATER);
 
         // changes to ICE in snowy weather
-        pokemon.checkFormChange((byte)4, (byte)0);
+        pokemon.checkFormChange(Weather.HAIL, (byte)0);
         assertEquals(pokemon.types[0], Type.ICE);
     }
 

@@ -392,21 +392,23 @@ public abstract class BaseView {
         return image;
     }
 
-    protected void renderWeather(int weatherId, Graphics g, JPanel canvas)
+    protected void renderWeather(Weather weather, Graphics g, JPanel canvas)
     {
-        switch (weatherId)
+        switch (weather)
         {
-            case 1:
+            case SUNNY:
                 this.renderSunny(g, canvas);
                 break;
-            case 2:
+            case RAIN:
                 this.renderRain(g, canvas);
                 break;
-            case 3:
+            case SANDSTORM:
                 this.renderSandstorm(g, canvas);
                 break;
-            case 4:
+            case HAIL:
                 this.renderHail(g, canvas);
+                break;
+            default:
                 break;
         }
     }

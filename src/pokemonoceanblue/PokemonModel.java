@@ -320,26 +320,23 @@ public class PokemonModel
      * @param battleBackgroundId the environment of the current location
      * @return true if the Pokemon's form changes
      */
-    public boolean checkFormChange(byte weatherId, byte battleBackgroundId)
+    public boolean checkFormChange(Weather weather, byte battleBackgroundId)
     {
         int newPokemonId = -1;
 
         // change Castform based on the current weather
         if (this.base_pokemon_id == 351)
         {
-            switch (weatherId)
+            switch (weather)
             {
-                // sunny Castform
-                case 1:
-                    newPokemonId = 10013;
+                case SUNNY:
+                    newPokemonId = 10013; // sunny Castform
                     break;
-                // rain Castform
-                case 2:
-                    newPokemonId = 10014;
+                case RAIN:
+                    newPokemonId = 10014; // rain Castform
                     break;
-                // snowy Castform
-                case 4:
-                    newPokemonId = 10015;
+                case HAIL:
+                    newPokemonId = 10015; // snowy Castform
                     break;
                 default:
                     newPokemonId = 351;

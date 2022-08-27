@@ -201,7 +201,7 @@ public class BattleOperationsManager {
     public BattleEvent createRecoilEvent(int attacker, MoveModel move, PokemonModel attackingPokemon, PokemonModel defendingPokemon, int attackDamage)
     {
         int damage;
-        int weather = this.turnEffectManager.weather;
+        Weather weather = this.turnEffectManager.weather;
 
         //moves that have power=0 use attackers max hp to calc healing/recoil
         if (move.power == 0)
@@ -210,14 +210,10 @@ public class BattleOperationsManager {
             //morning sun, moonlight, synthesis heal for 2/3 hp when sun is shining 1/2 hp in clear weather 1/4 in other weather
             if (move.moveEffect != null && move.moveEffect.effectId == 141)
             {
-                if (weather > Weather.SUNNY)
-                {
-                    damage /= 2;
-                }
-                else if (weather == Weather.SUNNY)
-                {
+                if (weather == Weather.SUNNY)
                     damage = (int)(damage * 4.0 / 3.0);
-                }
+                else if (weather != Weather.NEUTRAL)
+                    damage /= 2;
             }
         }
         else if (move.recoil > 0)
@@ -341,7 +337,7 @@ public class BattleOperationsManager {
                                      MoveModel move, boolean isCrit, int defender)
     {
         float otherModifiers = 1.0f;
-        int weather = this.turnEffectManager.weather;
+        Weather weather = this.turnEffectManager.weather;
 
         // check for effects that affect the type modifier
         if (move.moveEffect != null)
@@ -369,9 +365,9 @@ public class BattleOperationsManager {
         }
 
         // apply weather modifiers
-        if ((weather == 2 || weather == 1) && (move.typeId == 10 || move.typeId == 11))
+        if ((weather == Weather.RAIN || weather == Weather.SUNNY) && (move.typeId == 10 || move.typeId == 11))
         {
-            otherModifiers *= (weather == 2 && move.typeId == 10) || (weather == 1 && move.typeId == 11) ? 0.5 : 1.5;
+            otherModifiers *= (weather == Weather.RAIN && move.typeId == 10) || (weather == Weather.SUNNY && move.typeId == 11) ? 0.5 : 1.5;
         }
 
         // check for multiTurnEffects that apply a damage multiplier

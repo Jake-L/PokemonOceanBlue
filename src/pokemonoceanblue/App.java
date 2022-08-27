@@ -26,8 +26,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class App extends JFrame implements KeyListener
-{
+public class App extends JFrame implements KeyListener {
     private static final long serialVersionUID = -1949827959244745733L;
     private static AppManager appManager;
     private static ViewManager viewManager;
@@ -37,43 +36,38 @@ public class App extends JFrame implements KeyListener
     // number of milliseconds between frames
     private final byte FRAME_LENGTH = 32;
     private long startTime;
-    
 
-    public App(){
+    public App() {
         this.musicPlayer = new MusicPlayer();
         // this code should be uncommented when testing database changes
         DatabaseUtility db = new DatabaseUtility();
         db.prepareDatabase();
-        //new MoveAnalysis();
+        // new MoveAnalysis();
         createAndShowGUI();
     }
 
-    public static void main(String[] args) throws Exception
-    {
+    public static void main(String[] args) throws Exception {
         new App();
     }
 
-    protected void createAndShowGUI() 
-    {
+    protected void createAndShowGUI() {
         // load custom font
         GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        try
-        {
-            ge.registerFont(Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("/pokemonfont.ttf")));
-        }
-        catch (Exception e)
-        {
+        try {
+            ge.registerFont(
+                    Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("/pokemonfont.ttf")));
+        } catch (Exception e) {
             System.out.println("Error loading font");
         }
 
-        //Create and set up the window.
+        // Create and set up the window.
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Insets scnMax = Toolkit.getDefaultToolkit().getScreenInsets(getGraphicsConfiguration());
         this.setPreferredSize(new Dimension(screenSize.width, screenSize.height - scnMax.bottom));
         startTime = System.currentTimeMillis();
 
-        appManager = new AppManager(screenSize.width, screenSize.height - scnMax.bottom);
+        appManager = AppManager.createInstance(screenSize.width, screenSize.height - scnMax.bottom);
         viewManager = appManager.viewManager;
 
         // set the size of the ViewManager, must come after pack()
@@ -83,7 +77,7 @@ public class App extends JFrame implements KeyListener
         // listen for key press and release
         addKeyListener(this);
 
-        //Display the window.
+        // Display the window.
         this.pack();
         this.setVisible(true);
 
@@ -92,7 +86,7 @@ public class App extends JFrame implements KeyListener
         // listen for screen resizes
         this.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent e) {
-                Component c = (Component)e.getSource();
+                Component c = (Component) e.getSource();
 
                 // Get new size
                 Dimension newSize = c.getSize();
@@ -100,16 +94,15 @@ public class App extends JFrame implements KeyListener
                 viewManager.setViewSize(newSize.width - 16, newSize.height - scnMax.bottom - scnMax.top);
             }
         });
-        
+
         this.playSong(0, false);
 
         // fetch the weather every 10 minutes
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
-            public void run()
-            {
-                getWeather(); 
+            public void run() {
+                getWeather();
             }
         }, 0, 1000 * 60 * 10);
 
@@ -123,31 +116,31 @@ public class App extends JFrame implements KeyListener
 
     /** Add the pressed key to list of pressed keys */
     public void keyPressed(KeyEvent e) {
-        if (!this.keysDown.contains(e.getKeyCode()))
-        {
+        if (!this.keysDown.contains(e.getKeyCode())) {
             this.keysDown.add(e.getKeyCode());
         }
 
         // pressing any key will advance from the title screen
-        if (viewManager.getCurrentView().equals("TitleScreenView") && System.currentTimeMillis() - startTime > 1000 && appManager.playerModel == null)
-        {
+        if (viewManager.getCurrentView().equals("TitleScreenView") && System.currentTimeMillis() - startTime > 1000
+                && appManager.playerModel == null) {
             // load the player's position from the database
             // try
             // {
-            //     DatabaseUtility db = new DatabaseUtility();
+            // DatabaseUtility db = new DatabaseUtility();
 
-            //     String query = "SELECT * FROM player_location";
+            // String query = "SELECT * FROM player_location";
 
-            //     ResultSet rs = db.runQuery(query);
+            // ResultSet rs = db.runQuery(query);
 
-            //     this.setMap(rs.getInt("map_id"), rs.getInt("x"), rs.getInt("y"), Direction.DOWN);
+            // this.setMap(rs.getInt("map_id"), rs.getInt("x"), rs.getInt("y"),
+            // Direction.DOWN);
             // }
-            // catch (SQLException ex) 
+            // catch (SQLException ex)
             // {
-            //     ex.printStackTrace();
-            //     this.setMap(1, 3, 3);
-            // } 
-            appManager.setMap(306, 12, 12, Direction.DOWN);
+            // ex.printStackTrace();
+            // this.setMap(1, 3, 3);
+            // }
+            appManager.setMap(17, 4, 4, Direction.DOWN);
         }
     }
 
@@ -156,8 +149,7 @@ public class App extends JFrame implements KeyListener
         keysDown.remove(Integer.valueOf(e.getKeyCode()));
     }
 
-    public void update()
-    {
+    public void update() {
         // the last time the function was run
         long lastRun;
 
@@ -169,19 +161,16 @@ public class App extends JFrame implements KeyListener
         while (true) {
 
             // update on a set interval
-            if (System.currentTimeMillis() - lastRun > FRAME_LENGTH)
-            {
+            if (System.currentTimeMillis() - lastRun > FRAME_LENGTH) {
                 appManager.update(keysDown);
 
                 int musicId = appManager.getMusicId();
-                if (musicId > -1)
-                {
+                if (musicId > -1) {
                     this.playSong(musicId, musicId >= 100);
                 }
 
                 String soundEffect = appManager.getSoundEffect();
-                if (soundEffect != null)
-                {
+                if (soundEffect != null) {
                     this.playSound(soundEffect);
                 }
 
@@ -199,12 +188,9 @@ public class App extends JFrame implements KeyListener
 
             // sleep until next frame
             if (sleepLength > 0) {
-                try
-                {
+                try {
                     Thread.sleep(sleepLength, 10);
-                }
-                catch (InterruptedException e)
-                {
+                } catch (InterruptedException e) {
                     System.out.println(String.format("Thread interrupted: %s", e.getMessage()));
                 }
             }
@@ -214,65 +200,51 @@ public class App extends JFrame implements KeyListener
     /**
      * @param path the sound to be played
      */
-    public void playSound(String path)
-    {
-        try
-        {
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(this.getClass().getResourceAsStream(String.format("/sounds/%s.wav", path)));
+    public void playSound(String path) {
+        try {
+            AudioInputStream audioStream = AudioSystem
+                    .getAudioInputStream(this.getClass().getResourceAsStream(String.format("/sounds/%s.wav", path)));
             Clip currentClip = AudioSystem.getClip();
             currentClip.open(audioStream);
             currentClip.start();
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             System.out.println("Error playing sound: " + path);
         }
     }
 
-    public void playSong(int musicId, boolean skipTransition)
-    {
+    public void playSong(int musicId, boolean skipTransition) {
         musicPlayer.setSong(musicId, skipTransition);
     }
 
-    public static void getWeather()
-    {
-        try 
-        {
+    public static void getWeather() {
+        try {
             // TODO: use the player's location rather than a hardcoded location
-            URL url = new URL("http://api.openweathermap.org/data/2.5/weather?q=Toronto&appid=e77827ffa3e6cf01166c4a7ecd050960");
+            URL url = new URL(
+                    "http://api.openweathermap.org/data/2.5/weather?q=Toronto&appid=e77827ffa3e6cf01166c4a7ecd050960");
             URLConnection conn = url.openConnection();
-            BufferedReader in = new BufferedReader(
-                                    new InputStreamReader(
-                                    conn.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             String inputLine = in.readLine();
             in.close();
 
             System.out.println(inputLine);
-            
+
             // id beginning with 2 means thunderstorm
             // id beginning with 3 means drizzle
             // id beginning with 5 means rain
-            if (inputLine.contains("\"weather\":[{\"id\":2")
-                || inputLine.contains("\"weather\":[{\"id\":3")
-                || inputLine.contains("\"weather\":[{\"id\":5"))
-            {
-                appManager.weather = (byte) Weather.RAIN;
+            if (inputLine.contains("\"weather\":[{\"id\":2") || inputLine.contains("\"weather\":[{\"id\":3")
+                    || inputLine.contains("\"weather\":[{\"id\":5")) {
+                appManager.weather = Weather.RAIN;
                 System.out.println("Weather: rain");
             }
             // id beginning with 6 means snow
-            else if (inputLine.contains("\"weather\":[{\"id\":6"))
-            {
-                appManager.weather = (byte) Weather.HAIL;
+            else if (inputLine.contains("\"weather\":[{\"id\":6")) {
+                appManager.weather = Weather.HAIL;
                 System.out.println("Weather: hail");
-            }
-            else
-            {
-                appManager.weather = (byte) Weather.NEUTRAL;
+            } else {
+                appManager.weather = Weather.NEUTRAL;
                 System.out.println("Weather: clear");
             }
-        }
-        catch (Exception e) 
-        {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }

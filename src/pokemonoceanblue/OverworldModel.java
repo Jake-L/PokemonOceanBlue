@@ -31,7 +31,7 @@ public class OverworldModel extends BaseModel {
     public List<ItemModel> itemOptions = new ArrayList<ItemModel>(); 
     public InventoryModel inventoryModel;
     public DayCareModel dayCareModel;
-    public byte weather;
+    public Weather weather = Weather.NEUTRAL;
     public String tilesSuffix;
     public int completeConversation = -1;
     public int questId;
@@ -1110,7 +1110,7 @@ public class OverworldModel extends BaseModel {
         );
     }
 
-    public void setWeather(byte weather)
+    public void setWeather(Weather weather)
     {
         if (this.tiles.length > 20 && this.mapId != 14 && this.mapId != 47)
         {

@@ -1,31 +1,25 @@
 package pokemonoceanblue.battle;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import pokemonoceanblue.AppManager;
 import pokemonoceanblue.BaseModel;
-import pokemonoceanblue.DatabaseUtility;
-import pokemonoceanblue.ItemModel;
 import pokemonoceanblue.MoveModel;
 import pokemonoceanblue.PokemonModel;
 import pokemonoceanblue.Stat;
 import pokemonoceanblue.StatusEffect;
+import pokemonoceanblue.Weather;
 
-public class BattleModel extends BaseModel
+public abstract class BattleModel extends BaseModel
 {
     public PokemonModel[][] team = new PokemonModel[2][];
     public int[] currentPokemon = new int[2];
     public String[] battleOptions;
     public List<BattleEvent> events = new ArrayList<BattleEvent>();
-    private Random ranNum = new Random();
+    protected Random ranNum = new Random();
     private AppManager app;
-    public boolean isCaught;
-    public String trainerName;
-    public String trainerSpriteName;
     private boolean[] evolveQueue = new boolean[6];
     private boolean[] unableToMove = new boolean[2];
     public boolean[] isSeen;
@@ -36,65 +30,23 @@ public class BattleModel extends BaseModel
     public BattleOperationsManager battleOperationsManager = new BattleOperationsManager(turnEffectManager);
     public boolean reloadSprites = false;
     public BattleResult battleResult = new BattleResult();
-    private BattleAI battleAI;
+    protected BattleAI battleAI;
 
-    /** 
-     * Constructor
-     * @param opponentTeam the opposing trainers pokemon team
-     * @param playerTeam the players pokemon team
-     */
-    public BattleModel(PokemonModel[] opponentTeam, PokemonModel[] playerTeam, AppManager app, int weather)
-    {
+    public BattleModel(PokemonModel[] opponentTeam, PokemonModel[] playerTeam) {
         this.team[0] = playerTeam;
         this.team[1] = opponentTeam;
-        this.app = app;
-        this.battleAI = new BattleAI();
-        this.initializeBattle();
-        this.turnEffectManager.weather = weather;
-    }
-
-    public BattleModel(PokemonModel[] playerTeam, int battleId, AppManager app, int enemyScalingFactor, int weather)
-    {
-        this.team[0] = playerTeam;
-        this.loadTeam(battleId, enemyScalingFactor);
-        this.app = app;
-        this.initializeBattle();
-        this.turnEffectManager.weather = weather;
-    }
-
-    /**
-     * Set initial variable values
-     */
-    public void initializeBattle()
-    {
-        super.initialize();
+        this.app = AppManager.getInstance();
         this.currentPokemon[0] = -1;
         this.currentPokemon[1] = -1;
-        int firstPokemon = 0;
-        BattleEvent event;
+    }
+
+    public void start()
+    {
+        super.initialize();
         this.isSeen = new boolean[this.team[1].length];
         this.isSeen[0] = true;
-
-        // send out the first Pokemon with HP > 0 and that's not an egg
-        while (this.team[0][firstPokemon].currentHP == 0 || this.team[0][firstPokemon].level == 0)
-        {
-            firstPokemon++;
-        }
-
-        if (this.trainerName == null)
-        {
-            event = new BattleEvent("A wild " + this.team[1][0].name + " appeared!", 1, -1);
-        }
-        else
-        {
-            event = new BattleEvent(this.trainerName + " sent out " + this.team[1][0].name + ".", 1, -1);
-        }
-        event.setNewPokemon(0);
-        this.events.add(event);
-
-        event = new BattleEvent("Trainer sent out " + this.team[0][firstPokemon].name + ".", 0, -1);
-        event.setNewPokemon(firstPokemon);
-        this.events.add(event);
+        sendOutOpponentPokemon();
+        sendOutFirstPlayerPokemon();
         this.actionCounter = 100;
     }
 
@@ -153,64 +105,23 @@ public class BattleModel extends BaseModel
             }
         }
     }
-    
-    /**
-     * @param itemId is the item that will be used
-     */
-    public void setItem(int itemId)
-    {
-        BattleEvent event;
 
-        if (itemId == -1)
-        {
-            this.loadBattleMenu();
+    protected abstract void sendOutOpponentPokemon();
+
+    private void sendOutFirstPlayerPokemon() {
+        // send out the first Pokemon with HP > 0 and that's not an egg
+        int firstPokemon = 0;
+        while (this.team[0][firstPokemon].currentHP == 0 || this.team[0][firstPokemon].level == 0) {
+            firstPokemon++;
         }
-        else
-        {
-            event = new BattleEvent("Trainer used a " + itemId + ".", 0, -1);
-            event.setItem(itemId);
-            this.events.add(event);
-
-            event = new BattleEvent("Trainer used a " + itemId + ".", 1, -1);
-            event.setItem(itemId);
-            event.setNewPokemon(-1);
-            this.events.add(event);
-            this.actionCounter = 60;
-            
-            // find the probability of the Pokemon being captured
-            double captureChance = battleOperationsManager.captureChanceCalc(this.team[1][this.currentPokemon[1]], itemId);
-            
-            int shakeCount = 3;
-
-            // determine if the Pokemon should be captured
-            if (ranNum.nextInt(100) + 1 <= captureChance)
-            {
-                event = new BattleEvent("Trainer caught wild " + this.team[1][this.currentPokemon[1]].name + "!", 0, -1);
-                event.setItem(itemId);
-                this.events.add(event);
-                this.isCaught = true;
-                this.team[1][this.currentPokemon[1]].pokeballId = itemId;
-            }
-            else
-            {
-                event = new BattleEvent("The wild " + this.team[1][this.currentPokemon[1]].name + " escaped!", 1, -1);
-                event.setNewPokemon(0);
-                this.events.add(2, event);
-                int enemyMoveIndex = this.battleAI.getAction(this.team[1], this.team[0][this.currentPokemon[0]], this.currentPokemon[1]);
-                this.events.add(new BattleEvent(this.enemyAttack(enemyMoveIndex)));
-                shakeCount = ranNum.nextInt(3);
-            }
-
-            // add events for the Pokeball shaking animation
-            for (int i = 0; i < shakeCount; i++)
-            {
-                event = new BattleEvent("Trainer used a " + itemId + ".", 0, -1);
-                event.setItem(itemId);
-                event.setPokeballShake();
-                this.events.add(2, event);
-            }
-        }
+        BattleEvent event = new BattleEvent("Trainer sent out " + this.team[0][firstPokemon].name + ".", 0, -1);
+        event.setNewPokemon(firstPokemon);
+        this.events.add(event);
     }
+
+    protected abstract void addPlayerDefeatedEvent();
+
+    public abstract void setItem(int itemId); // TODO: rename to useItem, also, there should be a separate fn for exiting the menu (rather than setItem(-1))
 
     /**
      * @param pokemon is the pokemon that will be sent out
@@ -273,7 +184,7 @@ public class BattleModel extends BaseModel
     /**
      * @return the battle event that generates and stores the enemy attack
      */
-    private Attack enemyAttack(int enemyMoveIndex)
+    protected Attack enemyAttack(int enemyMoveIndex)
     {
         return new Attack(this.team[1][this.currentPokemon[1]].name, this.team[1][this.currentPokemon[1]].moves[enemyMoveIndex], 1);
     }
@@ -376,8 +287,9 @@ public class BattleModel extends BaseModel
         if (effectId < 141 && effectId > 136)
         {
             BattleEvent event;
+            Weather effectWeather = Weather.values()[effectId - 136];
             // changing the weather fails if the same weather already exists
-            if (this.turnEffectManager.weather == effectId - 136)
+            if (this.turnEffectManager.weather == effectWeather)
             {
                 event = new BattleEvent("But it failed.", attacker, attacker);
             }
@@ -390,7 +302,7 @@ public class BattleModel extends BaseModel
                     attacker, 
                     attacker
                 );
-                event.setWeather(effectId - 136);
+                event.setWeather(effectWeather);
             }
             this.events.add(event);
         }
@@ -399,15 +311,15 @@ public class BattleModel extends BaseModel
         {
             turnEffectManager.addMultiTurnEffect(move, effectId, attacker, this.team, this.currentPokemon, this.events);
         }
-        //splash
+        // splash
         else if (effectId == 86)
         {
             this.events.add(new BattleEvent("Nothing happened.", attacker, attacker));
         }
-        //tri-attack
+        // tri-attack
         else if (effectId == 37)
         {
-            //decide whether move will paralyze, freeze, or burn
+            // decide whether move will paralyze, freeze, or burn
             int ailmentId = ranNum.nextInt(3);
             turnEffectManager.statusEffect(attacker, (attacker + 1) % 2, move.effectChance, ailmentId + (ailmentId % 2) * 2 + 1, 
                                            this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]], this.events);
@@ -523,24 +435,11 @@ public class BattleModel extends BaseModel
         }
     }
 
-    /**
-     * returns to menu
-     */
     public void loadBattleMenu()
     {
         if (this.events.size() == 0)
         {
-            if (this.trainerName == null)
-            {
-                this.battleOptions = new String[3];
-                this.battleOptions[2] = "POKEBALLS";
-            }
-            else
-            {
-                this.battleOptions = new String[2];
-            }
-            this.battleOptions[0] = "FIGHT";
-            this.battleOptions[1] = "POKEMON";
+            this.battleOptions = getBattleOptions();
             this.optionIndex = 0;
             this.actionCounter = this.ACTION_DELAY;
             this.optionMax = this.battleOptions.length - 1;
@@ -548,6 +447,8 @@ public class BattleModel extends BaseModel
             this.optionHeight = 2;
         }
     }
+
+    protected abstract String[] getBattleOptions();
 
     /**
      * Wrapper for loadBattleMenu that gets called by BaseController when user presses ESC
@@ -558,31 +459,21 @@ public class BattleModel extends BaseModel
         this.loadBattleMenu();
     }
 
-    /** 
-     * checks if battle is complete
-     */ 
     public boolean isComplete()
     {
         if (this.actionCounter > 0 || this.events.size() > 0 || this.battleOptions != null)
         {
             return false;
         }
-
-        if (battleOperationsManager.teamFainted(this.team[0]) || battleOperationsManager.teamFainted(this.team[1]) || this.isCaught)
+        else if (battleOperationsManager.teamFainted(this.team[0]) || battleOperationsManager.teamFainted(this.team[1]))
         {
-            //remove confusion/curse
-            for (int i = 0; i < this.team[0].length; i++)
-            {
-                if (this.team[0][i].statusEffect > 6)
-                {
-                    this.team[0][i].statusEffect = (byte)StatusEffect.UNAFFLICTED;
-                }
-            }
-
+            // TODO: remove confusion/curse from all party members at the end of a battle (maybe they shouldn't be coded the same as status effects...)
             return true;
         }
-
-        return false;
+        else
+        {
+            return false;
+        }
     }
 
     /**
@@ -600,17 +491,7 @@ public class BattleModel extends BaseModel
         }
     }
 
-    public PokemonModel getNewPokemon()
-    {
-        if (this.isComplete() && this.trainerName == null && this.isCaught)
-        {
-            return this.team[1][0];
-        }
-        else
-        {
-            return null;
-        }
-    }
+    public abstract PokemonModel getNewPokemon(); // TODO: this should probably only be called for wild pokemon battles, so we should maybe change the wild battle code in AppManager to use a WildPokemonBattle instead of generic BattleModel
 
     /** 
      * checks if any pokemon have fainted after damage has been applied
@@ -669,9 +550,7 @@ public class BattleModel extends BaseModel
                     // send out enemy's next pokemon if any remain
                     if (!battleOperationsManager.teamFainted(this.team[1]))
                     {
-                        event = new BattleEvent(this.trainerName + " sent out " + this.team[1][this.currentPokemon[1] + 1].name, 1, -1);
-                        event.setNewPokemon(this.currentPokemon[1] + 1);
-                        this.events.add(event);
+                        sendOutOpponentPokemon();
                     }
                     // give the player a reward for winning the battle if all their Pokemon are defeated
                     else
@@ -824,13 +703,13 @@ public class BattleModel extends BaseModel
                 this.app.openSummaryNewMove(this.currentPokemon[0], this.events.get(0).newMove);
             }
             // change weather
-            else if (this.events.get(0).newWeatherId > -1)
+            else if (this.events.get(0).newWeather != null)
             {
-                this.turnEffectManager.weather = this.events.get(0).newWeatherId;
+                this.turnEffectManager.weather = this.events.get(0).newWeather;
                 // check if any Pokemon changed forms from the weather change
                 for (int i = 0; i < this.team.length; i++)
                 {
-                    if (this.team[i][this.currentPokemon[i]].checkFormChange((byte)this.turnEffectManager.weather, (byte)-1))
+                    if (this.team[i][this.currentPokemon[i]].checkFormChange(this.turnEffectManager.weather, (byte)-1))
                     {
                         this.events.add(1, new BattleEvent(this.team[i][this.currentPokemon[i]].name + " transformed!", i, i));
                         this.reloadSprites = true;
@@ -851,7 +730,7 @@ public class BattleModel extends BaseModel
                 }
                 if (!eventExists)
                 {
-                    this.events.add(new BattleEvent("Player was defeated by " + (this.trainerName == null ? "the wild " + this.team[1][0].name : trainerName) + "!", 0, -1));
+                    addPlayerDefeatedEvent();
                     this.events.add(new BattleEvent("Player blacked out!", 0, -1));
                 }
             }
@@ -890,7 +769,7 @@ public class BattleModel extends BaseModel
                 this.optionMax = 0;
                 this.app.openParty(this.currentPokemon[0], true);
             }
-            else if (this.events.size() == 0 && !this.isCaught)
+            else if (this.events.size() == 0) // TODO: && !this.isCaught)
             {
                 this.loadBattleMenu();
             }
@@ -971,121 +850,6 @@ public class BattleModel extends BaseModel
             return this.events.get(0).text;
         }
         return null;
-    }
-
-    /**
-     * Load the enemy team
-     * @param battleId unique identifier for the enemy's team
-     */
-    private void loadTeam(int battleId, int enemyScalingFactor)
-    {
-        List<PokemonModel> loadTeam = new ArrayList<PokemonModel>();
-
-        // Pokemon league lets Pokemon's level scale up by max 75
-        if (battleId >= 1300)
-        {
-            enemyScalingFactor = Math.min(75, enemyScalingFactor);
-        }
-        // everywhere else Pokemon's level scale up by max 50
-        else
-        {
-            enemyScalingFactor = Math.min(50, enemyScalingFactor);
-        }
-
-        // limit the number of Pokemon the enemy can have in early stages of the game
-        int teamLimit = 3;
-        if (enemyScalingFactor >= 35)
-        {
-            teamLimit = 6;
-        }
-        else if (enemyScalingFactor >= 25)
-        {
-            teamLimit = 5;
-        }
-        else if (enemyScalingFactor >= 10)
-        {
-            teamLimit = 4;
-        }
-        
-        try
-        {
-            DatabaseUtility db = new DatabaseUtility();
-
-            // if there are multiple characters with the same conversation id
-            // the trainer shown in battle is the one with the lowest character id
-            String query = String.format("""
-                SELECT 
-                    COALESCE(em2.pre_species_id, em1.pre_species_id, b.pokemon_id), 
-                    b.level + @level_scaling, 
-                    c.name, 
-                    c.sprite_name, 
-                    COALESCE(c.music_id, 101) AS music_id
-                FROM battle b
-                INNER JOIN (select ch.name, ch.sprite_name, ch.music_id, cv.conversation_id, cv.battle_id,
-                ROW_NUMBER() OVER(ORDER BY ch.character_id ASC) AS char_num
-                FROM conversation cv
-                INNER JOIN character ch
-                ON ch.conversation_id = cv.conversation_id
-                AND cv.battle_id = %s) c
-                ON b.battle_id = c.battle_id 
-                -- evolution is dynamic based on level scaling
-                LEFT JOIN evolution_methods em1
-                ON b.pokemon_id = em1.evolved_species_id
-                AND b.level + @level_scaling < em1.enemy_minimum_level
-                LEFT JOIN evolution_methods em2
-                ON em1.pre_species_id = em2.evolved_species_id
-                AND b.level + @level_scaling < em2.enemy_minimum_level
-                WHERE char_num = 1
-                LIMIT %s
-                """.replace("@level_scaling", String.valueOf(enemyScalingFactor)), 
-                battleId, teamLimit);
-
-            ResultSet rs = db.runQuery(query);
-
-            while(rs.next()) 
-            {
-                loadTeam.add(new PokemonModel(rs.getInt(1), rs.getInt(2), false));
-                this.trainerName = rs.getString(3);
-                this.trainerSpriteName = rs.getString(4);
-                this.musicId = rs.getInt(5);
-
-                // set the default trainer battle music
-                if (this.musicId == -1)
-                {
-                    this.musicId = 101;
-                }
-            }       
-            
-            this.team[1] = new PokemonModel[loadTeam.size()];
-            loadTeam.toArray(this.team[1]);
-
-            // store if the player gets a badge for winning this battle
-            this.battleResult.setBadgeIndex(battleId);
-
-            // load the reward for defeating the trainer in battle
-            query = "SELECT item_id, quantity FROM battle_reward WHERE battle_id = " + battleId;
-            rs = db.runQuery(query);
-
-            // not all battles have a reward
-            if (rs.next()) 
-            {
-                int itemId = rs.getInt(1);
-                int quantity = rs.getInt(2);
-                
-                // money gets multiplied by the level of the their last pokemon
-                if (itemId == 1000)
-                {
-                    quantity *= team[1][team[1].length - 1].level;
-                }
-                this.battleResult.reward = new ItemModel(itemId, quantity);
-            } 
-
-            this.battleAI = new BattleAI(this.trainerName, battleId);
-        }
-        catch (SQLException e) 
-        {
-            e.printStackTrace();
-        }  
     }
 
     /**
