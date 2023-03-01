@@ -36,7 +36,6 @@ map_id,map_template_id,overlay,tiles_suffix,comment
 34,34,0,,Cerulean gym
 35,7,0,,Cerulean pokemon center
 36,31,0,,Cerulean pokemart
-37,1,0,,Rick Astley's house
 38,1,0,,"Cerulean bottom, third from right house"
 39,1,0,,"Cerulean bottom, second from right house"
 40,1,0,,"Cerulean bottom, right house"
@@ -62,14 +61,14 @@ map_id,map_template_id,overlay,tiles_suffix,comment
 400,400,1,,Ilex Forest
 500,1,0,,Vermilion top left house
 501,7,0,,Vermilion Pokemon Center
-502,1,0,,Vermiion house right of Pokemon center
+502,1,0,,Vermilion house right of Pokemon center
 503,1,0,,Vermilion top right house
 504,1,0,,Vermilion bar
 505,1,0,,Vermilion complex
 506,31,0,,Vermilion pokemart
 507,1,0,,Vermilion bottom right house
 508,1,0,,Vermilion bottom house
-509,1,0,,Vermilion house beside bar
+509,1,0,,Vermilion Rick Astley's house
 510,510,0,,Celadon city gym
 511,1,0,,Celadon city top right house
 512,1,0,,Celadon top second right house

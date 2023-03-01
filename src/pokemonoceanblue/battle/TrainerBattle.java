@@ -8,16 +8,21 @@ import java.util.List;
 import pokemonoceanblue.DatabaseUtility;
 import pokemonoceanblue.ItemModel;
 import pokemonoceanblue.PokemonModel;
+import pokemonoceanblue.Weather;
 
 public class TrainerBattle extends BattleModel {
     public String trainerName;
     public String trainerSpriteName;
 
-    public TrainerBattle(PokemonModel[] playerTeam, int battleId, int enemyScalingFactor) {
-        super(null, playerTeam);
+    public TrainerBattle(PokemonModel[] playerTeam, int battleId, int enemyScalingFactor, Weather weather) {
+        super(null, playerTeam, weather);
         setUpTrainerBattle(battleId, enemyScalingFactor);
         this.battleAI = new BattleAI(this.trainerName, battleId);
         start(); // TODO: this is messy, should not call BattleModel functions from subclasses
+    }
+
+    public TrainerBattle(PokemonModel[] playerTeam, int battleId, int enemyScalingFactor) {
+        this(playerTeam, battleId, enemyScalingFactor, Weather.NEUTRAL);
     }
 
     @Override

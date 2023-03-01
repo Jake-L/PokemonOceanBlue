@@ -1,15 +1,20 @@
 package pokemonoceanblue.battle;
 
 import pokemonoceanblue.PokemonModel;
+import pokemonoceanblue.Weather;
 
 public class WildPokemonBattle extends BattleModel {
     public boolean isCaught;
 
-    public WildPokemonBattle(PokemonModel wildPokemon, PokemonModel[] playerTeam) {
-        super(new PokemonModel[] { wildPokemon }, playerTeam);
+    public WildPokemonBattle(PokemonModel wildPokemon, PokemonModel[] playerTeam, Weather weather) {
+        super(new PokemonModel[] { wildPokemon }, playerTeam, weather);
         this.battleAI = new BattleAI();
         start();
     }
+
+    public WildPokemonBattle(PokemonModel wildPokemon, PokemonModel[] playerTeam) {
+        this(wildPokemon, playerTeam, Weather.NEUTRAL);
+  }
 
     @Override
     protected void sendOutOpponentPokemon() {

@@ -5,9 +5,13 @@ import static org.junit.Assert.fail;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.ImageIcon;
 
 import org.junit.Test;
+import org.junit.BeforeClass;
 
 import pokemonoceanblue.Direction;
 import pokemonoceanblue.SpriteModel;
@@ -17,16 +21,34 @@ import pokemonoceanblue.DatabaseUtility;
 
 public class OverworldTests {
 
-    // rather than making this dynamic, hard code a limit
-    // so work in progress maps don't throw errors for no reason
-    private int MAX_MAP_ID = 25;
+    private static int[] map_id_array;
+
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception 
+    {
+        DatabaseUtility db = new DatabaseUtility();
+        String query = "SELECT map_id FROM map_template WHERE map_id < 999";
+
+        ResultSet rs = db.runQuery(query);
+
+        List<Integer> map_list = new ArrayList<Integer>();
+
+        while(rs.next()) 
+        {
+            map_list.add(rs.getInt("map_id"));
+        }   
+        
+        // convert lists into arrays and pass to ConverstaionEvent object
+        map_id_array = map_list.stream().mapToInt(i->i).toArray();
+    }
+     
 
     @Test
     public void testMapObjectOverlap() 
     {
         CharacterModel playerModel = new CharacterModel("red", 5, 5, -1, -1, 0, Direction.DOWN);
 
-        for (int i = 0; i <= this.MAX_MAP_ID; i++)
+        for (int i : map_id_array)
         {
             OverworldModel overworldModel = new OverworldModel(i, playerModel, new DummyApp(), null, null);
 
@@ -44,13 +66,13 @@ public class OverworldTests {
     }
 
     @Test
-    public void testEmptyMap() 
+    public void testMapNoCharacters() 
     {
         try 
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            for (int i = 0; i <= this.MAX_MAP_ID; i++)
+            for (int i : map_id_array)
             {
                 // check if there are any characters on the map
                 String query = "SELECT * FROM character WHERE map_id = " + i;
@@ -66,6 +88,32 @@ public class OverworldTests {
                     {
                         fail("No characters or wild Pokemon for map " + i);
                     }
+                }
+            }
+        }
+        catch (SQLException e)
+        {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testMapNoPortals() 
+    {
+        try 
+        {
+            DatabaseUtility db = new DatabaseUtility();
+
+            for (int i : map_id_array)
+            {
+                // check if there are any portals on the map
+                String query = "SELECT * FROM portal WHERE map_id = " + i 
+                    + " OR dest_map_id = " + i;
+                ResultSet rs = db.runQuery(query);
+        
+                if (!rs.next()) 
+                {
+                    fail("No portals for map " + i);
                 }
             }
         }

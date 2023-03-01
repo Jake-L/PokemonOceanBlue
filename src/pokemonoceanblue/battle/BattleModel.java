@@ -26,18 +26,20 @@ public abstract class BattleModel extends BaseModel
     private Attack attacks[] = new Attack[2];
     private boolean[] moveProcessed = new boolean[2];
     public int musicId;
-    public TurnEffectManager turnEffectManager = new TurnEffectManager();
-    public BattleOperationsManager battleOperationsManager = new BattleOperationsManager(turnEffectManager);
+    public TurnEffectManager turnEffectManager;
+    public BattleOperationsManager battleOperationsManager;
     public boolean reloadSprites = false;
     public BattleResult battleResult = new BattleResult();
     protected BattleAI battleAI;
 
-    public BattleModel(PokemonModel[] opponentTeam, PokemonModel[] playerTeam) {
+    public BattleModel(PokemonModel[] opponentTeam, PokemonModel[] playerTeam, Weather weather) {
         this.team[0] = playerTeam;
         this.team[1] = opponentTeam;
         this.app = AppManager.getInstance();
         this.currentPokemon[0] = -1;
         this.currentPokemon[1] = -1;
+        this.turnEffectManager = new TurnEffectManager(weather);
+        this.battleOperationsManager = new BattleOperationsManager(turnEffectManager);
     }
 
     public void start()

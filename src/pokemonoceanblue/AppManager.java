@@ -22,10 +22,6 @@ public class AppManager {
         return appManagerInstance;
     }
 
-    public Weather getWeather() {
-        return weather;
-    }
-
     CharacterModel playerModel;
     CharacterModel oldPlayerModel;
     public ViewManager viewManager;
@@ -94,7 +90,7 @@ public class AppManager {
             int[] legendaryData = new DatabaseUtility().getLegendaryData(battleId);
             this.createWildBattle(legendaryData[0], legendaryData[1], true);
         } else {
-            battleModel = new TrainerBattle(partyModel.getTeamArray(), battleId, this.enemyScalingFactor);
+            this.battleModel = new TrainerBattle(partyModel.getTeamArray(), battleId, this.enemyScalingFactor, this.weather);
             this.musicId = battleModel.musicId;
             BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
             viewManager.setView(battleView);
@@ -123,7 +119,7 @@ public class AppManager {
         PokemonModel wildPokemon = new PokemonModel(pokemonId, level + levelScaling, shiny, raidBoss);
 
         // create the battle
-        battleModel = new WildPokemonBattle(wildPokemon, partyModel.getTeamArray());
+        this.battleModel = new WildPokemonBattle(wildPokemon, partyModel.getTeamArray(), this.weather);
         BattleView battleView = new BattleView(this.battleModel, this.overworldModel.getBattleBackgroundId());
         viewManager.setView(battleView);
         this.addModelQueue(battleModel);

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import pokemonoceanblue.AppManager;
 import pokemonoceanblue.MoveEffectModel;
 import pokemonoceanblue.MoveModel;
 import pokemonoceanblue.PokemonModel;
@@ -17,7 +16,15 @@ public class TurnEffectManager
 {
     private Random ranNum = new Random();
     public List<MultiTurnEffect> multiTurnEffects = new ArrayList<MultiTurnEffect>();
-    public Weather weather = AppManager.getInstance().getWeather();
+    public Weather weather;
+
+    public TurnEffectManager() {
+        this(Weather.NEUTRAL);
+    }
+
+    public TurnEffectManager(Weather weather) {
+        this.weather = weather;
+    }
 
     /** 
      * creates event for the status effect inflicted by current move
