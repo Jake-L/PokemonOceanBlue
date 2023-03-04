@@ -455,23 +455,32 @@ public abstract class BaseView {
 
         for (int i = 0; i < counter; i++)
         {
-            // pick the frame of the rain animation
-            //int factor = (int)(((System.currentTimeMillis() + (300 * i)) / 300) % 3) + (i % 3);
-            int factor = (int)(((System.currentTimeMillis() / 300) % 3)) + 2 * (i % 2);
-            // introduces the appearance of randomness into the location of the rain
-            //int adjust_factor = (int)(((System.currentTimeMillis() + 85 * i) / (85*3)) % 2);
+            // pick the frame of the hail animation
+            int frame = (int)(((System.currentTimeMillis() + 100 * i) / 300) % 5) + (i % 2);
+            int factor = frame;
+
+            // some hail will never get to the large ice chunk stage
+            if (i % 2 == 0) {
+                frame /= 2;
+            }
+            // hold the large ice chunks twice as long so it appears "stuck" to the screen
+            else if (frame == 5) {
+                factor--;
+                frame--;
+            }
+
             g.drawImage(
-                hailSprite[factor],
-                (int)(12 + 62 * (i % rainCounterWidth) + (System.currentTimeMillis() / 30) % 30) * graphicsScaling,
-                (int)(50 * (i % rainCounterHeight) + 5 * (i / 7) + (System.currentTimeMillis() / 30) % 30) * graphicsScaling,
-                hailSprite[factor].getWidth(null) * graphicsScaling,
-                hailSprite[factor].getHeight(null) * graphicsScaling,
+                hailSprite[frame],
+                (int)(62 * (i % rainCounterWidth) + (factor * 8)) * graphicsScaling,
+                (int)(50 * (i % rainCounterHeight) + 5 * (i / 7) + (factor * 15)) * graphicsScaling,
+                hailSprite[frame].getWidth(null) * graphicsScaling,
+                hailSprite[frame].getHeight(null) * graphicsScaling,
                 canvas
             );
         }
 
         // tint the screen a blueish white
-        g.setColor(new Color(0.5f, 0.5f, 1.0f, 0.25f));
+        g.setColor(new Color(0.5f, 0.5f, 1.0f, 0.4f));
         g.fillRect(0, 0, width, height);
     }
 

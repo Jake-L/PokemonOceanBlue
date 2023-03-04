@@ -15,6 +15,7 @@ public class MusicPlayer
     private Clip currentClip;
     private int transitionCounter = 0;
     boolean intro = false;
+    final double BASE_VOLUME = 0.5;
 
     public MusicPlayer()
     {
@@ -32,7 +33,7 @@ public class MusicPlayer
             newSong = musicId;
             transitionCounter = 0;
             playSong();
-            setVolume(0.25);
+            setVolume(BASE_VOLUME);
         }
         // only switch songs if the new song is different from the one currently being played
         else if (musicId != currentSong)
@@ -113,7 +114,7 @@ public class MusicPlayer
                 currentClip = AudioSystem.getClip();
                 currentClip.open(newAudioStream);
                 currentClip.loop(Clip.LOOP_CONTINUOUSLY);
-                setVolume(0.25);
+                setVolume(BASE_VOLUME);
                 this.intro = false;
             }
             catch (Exception ex)
@@ -125,15 +126,14 @@ public class MusicPlayer
 
         if (transitionCounter > 0)
         {
-            gain = 0.25 * (transitionCounter + 15) / 40;
+            gain = BASE_VOLUME * (transitionCounter + 15) / 40;
             setVolume(gain);
             transitionCounter--;
         }
         else if (currentSong != newSong)
         {
             playSong();
-            gain = 0.25;
-            setVolume(gain);
+            setVolume(BASE_VOLUME);
         }
     }
 }

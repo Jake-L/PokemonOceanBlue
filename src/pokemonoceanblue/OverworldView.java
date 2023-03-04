@@ -352,7 +352,6 @@ public class OverworldView extends BaseView {
                     } 
                 }
             }
-            this.renderWeather(this.model.weather, g, canvas);
         }
 
         // put text colour back to black

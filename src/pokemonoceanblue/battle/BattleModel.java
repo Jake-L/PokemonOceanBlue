@@ -540,7 +540,7 @@ public abstract class BattleModel extends BaseModel
                 else 
                 {
                     this.team[0][this.currentPokemon[0]].updateHappiness(1);
-                    this.team[0][this.currentPokemon[0]].updateIVs(this.team[1][this.currentPokemon[1]].ivGain);
+                    this.team[0][this.currentPokemon[0]].updateEVs(this.team[1][this.currentPokemon[1]].evGain);
                     int xp = xpCalc(this.team[1][this.currentPokemon[1]].level);
                     event = new BattleEvent(this.team[0][this.currentPokemon[0]].name + " gained " + xp + " experience.", 0, 0);
                     event.setXP(xp);

@@ -197,7 +197,7 @@ public class PokedexView extends BaseView
     
         // display the number of unique pokemon caught
         g.drawString(
-            "Species Caught: " + String.valueOf(this.model.uniqueCaught),
+            "Species Caught: " + String.valueOf(this.model.uniqueCaught) + "/" + String.valueOf(pokemonIconSprite.length),
             2 * graphicsScaling,
             12 * graphicsScaling
         );

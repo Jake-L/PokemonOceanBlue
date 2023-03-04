@@ -21,7 +21,8 @@ public class PokemonModel
     public int[] stats = new int[6];
 
     public int[] ivs = new int[6];
-    public int ivGain;
+    public int[] evs = new int[6];
+    public int evGain;
     public MoveModel[] moves = new MoveModel[0];
     public final boolean shiny;
     public int pokeballId = 3;
@@ -101,6 +102,7 @@ public class PokemonModel
         for (int i = 0; i < this.ivs.length; i++)
         {
             this.ivs[i] = rs.getInt("iv_" + i);
+            this.evs[i] = rs.getInt("ev_" + i);
         }
 
         // loads the Pokemon's moves
@@ -247,11 +249,17 @@ public class PokemonModel
     }
 
     /** 
-     * add IVs
+     * add EVs if the Pokemon hasn't hit the limit
      */
-    public void updateIVs(int ivChange)
+    public void updateEVs(int evChange)
     {
-        this.ivs[ivChange]++;
+        int totalEvs = 0;
+        for (int i : this.evs) {
+            totalEvs += i;
+        }
+        if (totalEvs < 510) {
+            this.evs[evChange]++;
+        }
     }
 
     /**
@@ -428,7 +436,7 @@ public class PokemonModel
 
             this.base_pokemon_id = rs.getInt("base_pokemon_id");
             this.name = rs.getString("name").toUpperCase();
-            this.ivGain = rs.getInt("iv_gain");
+            this.evGain = rs.getInt("iv_gain");
             this.captureRate = rs.getInt("capture_rate");
             this.levelModifier = rs.getDouble("level_modifier");
 
@@ -448,7 +456,7 @@ public class PokemonModel
             // set the Pokemon's stats
             if (rs.getInt("hp") > 1)
             {
-                this.stats[Stat.HP] = (int)Math.floor(2.0 * rs.getInt("hp") * this.level / 100) + this.level + 10;
+                this.stats[Stat.HP] = (int)Math.floor((2.0 * rs.getInt("hp") + this.evs[0] / 4) * this.level / 100) + this.level + 10;
             }
             else
             {
@@ -461,7 +469,7 @@ public class PokemonModel
 
             for (int i = 1; i < stats.length; i++)
             {
-                this.stats[i] = (int)Math.floor((2.0 * rs.getInt(stats[i]) + this.ivs[i]) * this.level / 100) + 5;
+                this.stats[i] = (int)Math.floor((2.0 * rs.getInt(stats[i]) + this.ivs[i] + this.evs[i] / 4) * this.level / 100) + 5;
             }
             
             int abilityId = rs.getInt("ability_id");
@@ -554,17 +562,18 @@ public class PokemonModel
         for (int i = 0; i < this.ivs.length; i++)
         {
             statement.setInt(6 + i, this.ivs[i]);
+            statement.setInt(12 + i, this.evs[i]);
         }
 
-        statement.setInt(12, this.statusEffect);
-        statement.setInt(13, this.happiness);
-        statement.setInt(14, this.stepCounter);
+        statement.setInt(18, this.statusEffect);
+        statement.setInt(19, this.happiness);
+        statement.setInt(20, this.stepCounter);
 
         for (int i = 0; i < 4; i++)
         {
-            statement.setObject(15 + i, this.moves.length > i ? this.moves[i].moveId : -1);
+            statement.setObject(21 + i, this.moves.length > i ? this.moves[i].moveId : -1);
         }
 
-        statement.setInt(19, index);
+        statement.setInt(25, index);
     }
 }

@@ -134,6 +134,7 @@ public class SummaryView extends BaseView {
     {
         //displays pokemon stats
         int pokemonIndex = this.model.optionIndex;
+        PokemonModel pokemon = this.model.pokemonList.get(pokemonIndex);
 
         g.drawImage(this.summaryBox[1],
                 x,
@@ -143,9 +144,9 @@ public class SummaryView extends BaseView {
                 canvas);
 
         String[] stats = {"HP","ATTACK","DEFENSE","SP. ATTACK","SP. DEFENSE","SPEED"};
-        for (int i = 0; i < this.model.pokemonList.get(pokemonIndex).stats.length; i++)
+        for (int i = 0; i < pokemon.stats.length; i++)
         {
-            g.drawString(String.valueOf(this.model.pokemonList.get(pokemonIndex).stats[i]),
+            g.drawString(String.valueOf(pokemon.stats[i]),
                 x + 90 * graphicsScaling,
                 y + (i * 17 + 12) * graphicsScaling);
             
@@ -156,7 +157,8 @@ public class SummaryView extends BaseView {
             this.renderProgressBar(
                 x + 61 * graphicsScaling, 
                 y + (i * 17 + 13) * graphicsScaling, 
-                this.model.pokemonList.get(pokemonIndex).ivs[i] / 64.0, 
+                // max 16 stats from ivs and 64 from evs
+                (pokemon.ivs[i] + (pokemon.evs[i] / 4.0)) / 80.0, 
                 g, canvas);
         }
     }

@@ -79,7 +79,7 @@ public class PokemonTests {
 
     @Test
     /**
-     * Test that IVs are randomly generated and that they increase after a battle
+     * Test that IVs are randomly generated
      */
     public void testIVs() 
     {
@@ -87,11 +87,21 @@ public class PokemonTests {
         PokemonModel pokemonWeak = new PokemonModel(1, 1, false);
         // both Pokemon should have randomly generated IVs, so they should not be equal
         assertNotEquals(pokemonStrong.ivs, pokemonWeak.ivs);
+    }
+
+    @Test
+    /**
+     * Test that EVs increase after a battle
+     */
+    public void testEVs() 
+    {
+        PokemonModel pokemonStrong = new PokemonModel(1, 100, false);
+        PokemonModel pokemonWeak = new PokemonModel(1, 1, false);
 
         // test IV gain after winning a battle
-        int previousIV = pokemonStrong.ivs[pokemonWeak.ivGain];
-        pokemonStrong.updateIVs(pokemonWeak.ivGain);
-        assertTrue(pokemonStrong.ivs[pokemonWeak.ivGain] > previousIV);
+        int previousIV = pokemonStrong.evs[pokemonWeak.evGain];
+        pokemonStrong.updateEVs(pokemonWeak.evGain);
+        assertTrue(pokemonStrong.evs[pokemonWeak.evGain] > previousIV);
     }
 
     @Test
