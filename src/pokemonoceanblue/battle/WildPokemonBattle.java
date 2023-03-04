@@ -27,10 +27,19 @@ public class WildPokemonBattle extends BattleModel {
     protected void addPlayerDefeatedEvent() {
         this.events.add(new BattleEvent("Player was defeated by the wild " + this.team[1][0].name + "!", 0, -1));
     }
+    
+    @Override
+    public void update()
+    {
+        if (this.actionCounter == 1 && this.events.size() > 0 && this.events.get(0).isCaught) {
+            this.isCaught = true;
+        }
+        super.update();
+    }
 
     @Override
     public boolean isComplete() {
-        return isCaught || super.isComplete();
+        return super.isComplete() || this.isCaught;
     }
 
     /**
@@ -64,8 +73,8 @@ public class WildPokemonBattle extends BattleModel {
                 event = new BattleEvent("Trainer caught wild " + this.team[1][this.currentPokemon[1]].name + "!", 0,
                         -1);
                 event.setItem(itemId);
+                event.setCaught();
                 this.events.add(event);
-                this.isCaught = true;
                 this.team[1][this.currentPokemon[1]].pokeballId = itemId;
             } else {
                 event = new BattleEvent("The wild " + this.team[1][this.currentPokemon[1]].name + " escaped!", 1, -1);

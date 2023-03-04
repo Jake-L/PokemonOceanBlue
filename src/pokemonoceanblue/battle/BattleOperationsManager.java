@@ -62,12 +62,12 @@ public class BattleOperationsManager {
 
     /**
      * Determines whether an attack is a critical hit
-     * @param critChance the chance of a critical hit after applying modifiers
+     * @param critChance the critical hit modifier, with a default value of 1
      * @return True if the attack is a critical hit
      */
     public boolean isCrit(int critChance)
     {
-        return critChance > 0 && ranNum.nextInt(10 - critChance) == 0;
+        return critChance > 0 && ranNum.nextInt(100) <= 100.0 / (16 / critChance);
     }
 
     /**

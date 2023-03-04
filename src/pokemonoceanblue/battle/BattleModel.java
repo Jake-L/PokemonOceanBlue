@@ -311,7 +311,7 @@ public abstract class BattleModel extends BaseModel
         // multiTurnEffects
         else if (move.moveEffect.minCounter != 0 || move.moveEffect.maxCounter != 0)
         {
-            turnEffectManager.addMultiTurnEffect(move, effectId, attacker, this.team, this.currentPokemon, this.events);
+            this.events.add(turnEffectManager.addMultiTurnEffect(move, attacker, this.team, this.currentPokemon));
         }
         // splash
         else if (effectId == 86)
@@ -771,7 +771,7 @@ public abstract class BattleModel extends BaseModel
                 this.optionMax = 0;
                 this.app.openParty(this.currentPokemon[0], true);
             }
-            else if (this.events.size() == 0) // TODO: && !this.isCaught)
+            else if (this.events.size() == 0)
             {
                 this.loadBattleMenu();
             }

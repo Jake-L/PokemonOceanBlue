@@ -93,79 +93,76 @@ public class TurnEffectManager
     /*
      * checks if a multi turn effect should be added, and if so, adds a multi turn effect
      */
-    public void addMultiTurnEffect(MoveModel move, int effectId, int attacker, PokemonModel[][] team, int currentPokemon[], List<BattleEvent> events)
+    public BattleEvent addMultiTurnEffect(MoveModel move, int attacker, PokemonModel[][] team, int currentPokemon[])
     {
-        boolean willFail = false;
+        int effectId = move.moveEffect.effectId;
+
+        // effect fails if it's already applied
         for (MultiTurnEffect effect : this.multiTurnEffects)
         {
             if (effect.effectId == effectId && effect.attacker == attacker)
             {
-                willFail = true;
+                return new BattleEvent("But it failed.", attacker, attacker);
             }
         }
+
         BattleEvent event;
-        if (willFail)
+        MultiTurnEffect effect = new MultiTurnEffect(move, move.moveEffect, attacker, team, currentPokemon);
+        PokemonModel attackingPokemon = team[attacker][currentPokemon[attacker]];
+        PokemonModel defendingPokemon = team[(attacker + 1) % 2][currentPokemon[(attacker + 1) % 2]];
+        if (effectId == 43)
         {
-            event = new BattleEvent("But it failed.", attacker, attacker);
+            event = new BattleEvent(defendingPokemon.name + " is trapped in a " + move.name + "!", attacker, (attacker + 1) % 2);
+        }
+        else if (effectId == 85 && !Type.typeIncludes(Type.GRASS, defendingPokemon.types))
+        {
+            event = new BattleEvent(defendingPokemon.name + " is seeded.", attacker, (attacker + 1) % 2);
+        }
+        else if (effectId == 36)
+        {
+            event = new BattleEvent("Light screen made " + attackingPokemon.name + "'s team stronger against special moves.",
+                attacker, attacker);
+        }
+        else if (effectId == 66)
+        {
+            event = new BattleEvent("Reflect made " + attackingPokemon.name + "'s team stronger against physical moves.",
+                attacker, attacker);
+        }
+        else if (effectId == 125)
+        {
+            event = new BattleEvent(attackingPokemon.name + "'s team is protected from status conditions.", attacker, attacker);
+        }
+        else if (effectId == 47)
+        {
+            event = new BattleEvent(attackingPokemon.name + "'s team are immune to stat changes.", attacker, attacker);
+        }
+        else if (effectId == 202)
+        {
+            event = new BattleEvent("Electricity's power was weakened.", attacker, attacker);
+        }
+        else if (effectId == 211)
+        {
+            event = new BattleEvent("Fire's power was weakened.", attacker, attacker);
+        }
+        else if (effectId == 48)
+        {
+            event = new BattleEvent(attackingPokemon.name + " is getting pumped up.", attacker, attacker);
+        }
+        else if (effectId == 241)
+        {
+            event = new BattleEvent(attackingPokemon.name + " protected its team from critical hits.", attacker, attacker);
+        }
+        else if (effectId == 252)
+        {
+            event = new BattleEvent(attackingPokemon.name + " surrounded itself with a veil of water.", attacker, attacker);
         }
         else
         {
-            MultiTurnEffect effect = new MultiTurnEffect(move, move.moveEffect, attacker, team, currentPokemon);
-            PokemonModel attackingPokemon = team[attacker][currentPokemon[attacker]];
-            PokemonModel defendingPokemon = team[(attacker + 1) % 2][currentPokemon[(attacker + 1) % 2]];
-            if (effectId == 43)
-            {
-                event = new BattleEvent(defendingPokemon.name + " is trapped in a " + move.name + "!", attacker, (attacker + 1) % 2);
-            }
-            else if (effectId == 85 && !Type.typeIncludes(Type.GRASS, defendingPokemon.types))
-            {
-                event = new BattleEvent(defendingPokemon.name + " is seeded.", attacker, (attacker + 1) % 2);
-            }
-            else if (effectId == 36)
-            {
-                event = new BattleEvent("Light screen made " + attackingPokemon.name + "'s team stronger against special moves.",
-                    attacker, attacker);
-            }
-            else if (effectId == 66)
-            {
-                event = new BattleEvent("Reflect made " + attackingPokemon.name + "'s team stronger against physical moves.",
-                    attacker, attacker);
-            }
-            else if (effectId == 125)
-            {
-                event = new BattleEvent(attackingPokemon.name + "'s team is protected from status conditions.", attacker, attacker);
-            }
-            else if (effectId == 47)
-            {
-                event = new BattleEvent(attackingPokemon.name + "'s team are immune to stat changes.", attacker, attacker);
-            }
-            else if (effectId == 202)
-            {
-                event = new BattleEvent("Electricity's power was weakened.", attacker, attacker);
-            }
-            else if (effectId == 211)
-            {
-                event = new BattleEvent("Fire's power was weakened.", attacker, attacker);
-            }
-            else if (effectId == 48)
-            {
-                event = new BattleEvent(attackingPokemon.name + " is getting pumped up.", attacker, attacker);
-            }
-            else if (effectId == 241)
-            {
-                event = new BattleEvent(attackingPokemon.name + " protected its team from critical hits.", attacker, attacker);
-            }
-            else if (effectId == 252)
-            {
-                event = new BattleEvent(attackingPokemon.name + " surrounded itself with a veil of water.", attacker, attacker);
-            }
-            else
-            {
-                event = new BattleEvent("But it failed.", attacker, attacker);
-            }
-            this.multiTurnEffects.add(effect);
+            event = new BattleEvent("Effect id " + effectId + " hasn't been set up by the lazy developers.", attacker, attacker);
         }
-        events.add(event);
+
+        this.multiTurnEffects.add(effect);
+        return event;
     }
 
     public void removeMultiTurnEffects(PokemonModel pokemon, int attacker, boolean isFainted)

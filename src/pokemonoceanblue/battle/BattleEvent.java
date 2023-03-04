@@ -18,6 +18,7 @@ public class BattleEvent
     public MoveModel newMove;
     public Weather newWeather = null;
     public boolean pokeballShake = false;
+    public boolean isCaught = false;
 
     /** 
      * Base Constructor
@@ -112,5 +113,10 @@ public class BattleEvent
     public void setPokeballShake()
     {
         this.pokeballShake = true;
+    }
+
+    public void setCaught()
+    {
+        this.isCaught = true;
     }
 }

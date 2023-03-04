@@ -674,13 +674,6 @@ map_id,area_id,name,x,y,y_offset
 38,0,doormat,2,9,-2
 38,0,pottedTree,0,8,0
 38,0,kitchensink,0,2,0
-37,0,pottedTree,11,8,0
-37,0,table4,5,5,0
-37,0,carpet2,3,6,-4
-37,0,tv,8,2,0
-37,0,doormat,2,9,-2
-37,0,pottedTree,0,8,0
-37,0,kitchensink,0,2,0
 36,0,storeDisplayLeft,10,7,0
 36,0,storeDisplayRight,8,7,0
 36,0,storeDisplayLeft,7,7,0
