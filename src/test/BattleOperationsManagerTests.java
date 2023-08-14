@@ -132,16 +132,30 @@ public class BattleOperationsManagerTests {
         BattleOperationsManager battleOperationsManager = new BattleOperationsManager(turnEffectManager);
         int critChance;
         MoveModel move;
+        PokemonModel attackingPokemon = new PokemonModel(1, 5, false);
+        PokemonModel defendingPokemon = new PokemonModel(4, 5, false);
 
         // Pound is a simple move with no crit modifiers
         move = new MoveModel(1);
-        critChance = battleOperationsManager.getCritChance(move, 0);
+        critChance = battleOperationsManager.getCritChance(move, 0, attackingPokemon, defendingPokemon);
         assertEquals(1, critChance);
 
         // Night Slash has a boosted crit chance
         move = new MoveModel(400);
-        critChance = battleOperationsManager.getCritChance(move, 0);
+        critChance = battleOperationsManager.getCritChance(move, 0, attackingPokemon, defendingPokemon);
         assertEquals(2, critChance);
+
+        // Pokemon with Super Luck ability have boosted crit chance
+        attackingPokemon = new PokemonModel(359, 5, false);
+        move = new MoveModel(1);
+        critChance = battleOperationsManager.getCritChance(move, 0, attackingPokemon, defendingPokemon);
+        assertEquals(2, critChance);
+
+        // Pokemon with Shell Armor ability cannot be hit by critical hits
+        defendingPokemon = new PokemonModel(131, 5, false);
+        move = new MoveModel(1);
+        critChance = battleOperationsManager.getCritChance(move, 0, attackingPokemon, defendingPokemon);
+        assertEquals(0, critChance);
 
         // Focus Energy adds a much boosted crit chance
         move = new MoveModel(116);
@@ -149,9 +163,11 @@ public class BattleOperationsManagerTests {
         team[0][0] = new PokemonModel(1, 1, false);
         team[1][0] = new PokemonModel(1, 1, false);
         int currentPokemon[] = new int[2];
+        attackingPokemon = new PokemonModel(1, 5, false);
+        defendingPokemon = new PokemonModel(4, 5, false);
         BattleEvent event = turnEffectManager.addMultiTurnEffect(move, 0, team, currentPokemon);
         assertEquals("BULBASAUR is getting pumped up.", event.text);
-        critChance = battleOperationsManager.getCritChance(move, 0);
+        critChance = battleOperationsManager.getCritChance(move, 0, attackingPokemon, defendingPokemon);
         assertEquals(3, critChance);
     }
 

@@ -398,7 +398,7 @@ public class BattleOperationsManager {
      * @param attacker
      * @return
      */
-    public int getCritChance(MoveModel move, int attacker)
+    public int getCritChance(MoveModel move, int attacker, PokemonModel attackingPokemon, PokemonModel defendingPokemon)
     {
         int critChance = 1;
 
@@ -410,6 +410,12 @@ public class BattleOperationsManager {
                 // moves with a boosted critical hit chance
                 critChance++;
             }
+        }
+
+        // Super Luck ability increases crit chance
+        if (attackingPokemon.ability != null && attackingPokemon.ability.abilityId == 105)
+        {
+          critChance++;
         }
 
         // focus-energy and lucky-chant
@@ -429,6 +435,12 @@ public class BattleOperationsManager {
                     critChance += 2;
                 }
             }
+        }
+
+        // Shell Armor ability prevents critical hits
+        if (defendingPokemon.ability != null && defendingPokemon.ability.abilityId == 75)
+        {
+          critChance = 0;
         }
 
         return critChance;
