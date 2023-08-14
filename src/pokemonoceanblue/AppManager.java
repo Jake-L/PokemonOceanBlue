@@ -611,8 +611,11 @@ public class AppManager {
         } else if (viewManager.getCurrentView().equals("MapView")) {
             if (this.currentController != null) {
                 int returnValue = mapModel.getSelection();
-                if (returnValue > -1 && mapModel.destX > -1) {
+                if (returnValue > -1 && mapModel.destX > -1 && mapModel.areaName != null) {
                     setMap(mapModel.getMapId(), mapModel.destX, mapModel.destY, Direction.DOWN);
+                } else if (returnValue == -1) {
+                    // return to overworld or battle screen
+                    this.exitCurrentView();
                 }
             }
         } else if (viewManager.getCurrentView().equals("PokedexView")

@@ -2,6 +2,8 @@ package pokemonoceanblue;
 
 import java.awt.Graphics;
 import java.awt.Font;
+import java.awt.Color;
+
 
 import java.util.List;
 
@@ -27,7 +29,7 @@ public class QuestView extends BaseView {
     @Override
     public void render(Graphics g, JPanel canvas) 
     {
-        renderQuestList(0, height / 10, g, canvas);
+        renderQuestList(0, height / 20, g, canvas);
 
         if (this.quests.size() > 0)
         {
@@ -37,13 +39,37 @@ public class QuestView extends BaseView {
 
     private void renderQuestList(int x, int y, Graphics g, JPanel canvas)
     {
-        int renderCount = 0;
+        // when we draw the strings, the y coordinate we specify is the bottom,
+        // so we start on line 1 rather than line 0
+        int renderCount = 1;
         String[] headers = new String[]{"MAIN QUESTS","SIDE QUESTS","DAILY QUESTS"};
         int[] minIndex = new int[]{1000, 3000, 5000};
         int[] maxIndex = new int[]{2999, 4999, 6999};
 
+        Color colour;
+
         for (int i = 0; i < headers.length; i++)
         {
+            // count how many quests appear under each category,
+            // and draw the background box
+            int questCount = 0;
+            for (ObjectiveModel quest : this.quests) {
+                if (quest.objectiveId >= minIndex[i] && quest.objectiveId <= maxIndex[i]) {
+                    questCount++;
+                }
+            }
+
+            this.renderHeader(
+                x + 6 * graphicsScaling,
+                y + 10 * (renderCount - 1) * graphicsScaling,
+                questCount,
+                g,
+                canvas
+            ); 
+
+            // set text colour back to black
+            colour = new Color(0, 0, 0, 255);
+            g.setColor(colour);
             int fontSize = 20 * graphicsScaling;
             Font font = new Font("Pokemon Fire Red", Font.PLAIN, fontSize);      
             g.setFont(font);
@@ -51,7 +77,7 @@ public class QuestView extends BaseView {
             g.drawString(
                 headers[i], 
                 x + 8 * graphicsScaling, 
-                y + renderCount * 10 * graphicsScaling
+                y + (renderCount * 10 + 2) * graphicsScaling
             );
             renderCount++;
 
@@ -67,7 +93,7 @@ public class QuestView extends BaseView {
                     g.drawString(
                         this.quests.get(j).name, 
                         x + 8 * graphicsScaling, 
-                        y + renderCount * 10 * graphicsScaling
+                        y + (renderCount * 10 + 2) * graphicsScaling
                     );
 
                     renderCount++;

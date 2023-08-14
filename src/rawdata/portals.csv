@@ -14,14 +14,15 @@ map_id,area_id,x,y,x_offset,y_offset,dest_map_id,dest_area_id,dest_x,dest_y,dest
 0,2,33,26,0,1,13,0,3,9,0,-1,middle right house
 0,2,22,3,0,1,15,0,4,12,0,-1,viridian city route building
 0,2,21,3,0,1,15,0,4,12,0,-1,viridian city route building
-15,0,4,0,0,1,14,0,20,48,0,-1,viridian forest
 0,0,16,30,0,-1,18,0,4,0,0,1,pallet -> pallet-route 21 building
 0,0,17,30,0,-1,18,0,4,0,0,1,pallet -> pallet-route 21 building
+0,2,17,36,0,1,31,0,5,9,0,-1,viridan city -> pokemart
+14,0,8,3,0,1,19,0,4,12,0,-1,vforest -> vforest-pewter route building
+14,0,9,3,0,1,19,0,4,12,0,-1,vforest -> vforest-pewter route building
+15,0,4,0,0,1,14,0,20,48,0,-1,viridian forest
 16,0,9,3,0,1,18,0,4,12,0,-1,route 21 -> pallet-route 21 building
 16,0,10,3,0,1,18,0,4,12,0,-1,route 21 -> pallet-route 21 building
 16,0,23,80,0,1,535,0,7,13,0,-1,cinnabar -> cinnabar gym
-14,0,8,3,0,1,19,0,4,12,0,-1,vforest -> vforest-pewter route building
-14,0,9,3,0,1,19,0,4,12,0,-1,vforest -> vforest-pewter route building
 17,0,19,45,0,-1,19,0,4,0,0,1,pewter -> vforest-pewter route building
 17,0,20,45,0,-1,19,0,4,0,0,1,pewter -> vforest-pewter route building
 17,0,12,23,0,1,20,0,6,13,0,-1,pewter -> pewter gym
@@ -30,8 +31,19 @@ map_id,area_id,x,y,x_offset,y_offset,dest_map_id,dest_area_id,dest_x,dest_y,dest
 17,0,14,39,0,1,23,0,3,9,0,-1,"pewter -> south west, second house from left"
 17,0,8,39,0,1,24,0,3,9,0,-1,"pewter -> south west, first house from left"
 17,0,25,39,0,1,25,0,3,8,0,-1,pewter -> day care
-0,2,17,36,0,1,31,0,5,9,0,-1,viridan city -> pokemart
 17,0,14,32,0,1,32,0,5,9,0,-1,pewter city -> pokemart
+30,0,33,19,0,1,510,0,6,13,0,-1,Celadon -> gym
+30,0,17,27,0,1,1102,0,4,8,0,-1,Celadon -> tournament
+30,0,45,9,0,1,511,0,3,9,0,-1,Celadon top right house
+30,0,41,9,0,1,512,0,3,9,0,-1,Celadon top second right house
+30,0,32,9,0,1,513,0,3,9,0,-1,Celadon apartments
+30,0,25,9,0,1,514,0,3,9,0,-1,Celadon top left house
+30,0,51,19,0,1,515,0,3,9,0,-1,Celadon middle right house
+30,0,25,17,0,1,516,0,3,9,0,-1,Celadon house behind pond
+30,0,49,27,0,1,517,0,3,9,0,-1,Celadon bottom right house
+30,0,41,27,0,1,518,0,3,9,0,-1,Celadon bottom second right house
+30,0,33,27,0,1,519,0,3,9,0,-1,Celadon bottom left house
+30,0,29,27,0,1,520,0,3,9,0,-1,Celadon bottom second left house
 33,1,28,20,0,1,34,0,6,18,0,-1,Cerulean city -> Cerulean gym
 33,1,34,9,0,1,1002,0,4,8,0,-1,Cerulean city -> Cerulean tournament entrance
 33,1,14,20,0,1,35,0,5,10,0,-1,Cerulean city -> Cerulean pokemon center
@@ -48,8 +60,6 @@ map_id,area_id,x,y,x_offset,y_offset,dest_map_id,dest_area_id,dest_x,dest_y,dest
 33,1,9,20,0,1,536,0,5,11,0,-1,Cerulean -> Bike Shop
 33,1,40,20,0,1,544,0,3,9,0,-1,Cerulean -> Cerulean Academy
 42,0,16,37,0,1,43,0,6,13,0,-1,Vermilion -> gym
-44,0,8,45,0,1,47,0,4,38,0,-1,Route 10 -> Power Plant
-44,0,4,42,-1,0,47,0,0,10,1,0,Route 10 -> Power Plant side entrance
 42,0,10,10,0,1,500,0,3,9,0,-1,Vermilion -> top left house
 42,0,16,10,0,1,501,0,5,10,0,-1,Vermilion -> Pokemon center
 42,0,20,10,0,1,502,0,3,9,0,-1,Vermilion -> house right of pokemon center
@@ -60,47 +70,22 @@ map_id,area_id,x,y,x_offset,y_offset,dest_map_id,dest_area_id,dest_x,dest_y,dest
 42,0,43,28,0,1,507,0,3,9,0,-1,Vermilion -> bottom right house
 42,0,32,37,0,1,508,0,3,9,0,-1,Vermilion -> bottom house
 42,0,18,26,0,1,509,0,3,9,0,-1,Vermilion -> house beside bar
-30,0,33,19,0,1,510,0,6,13,0,-1,Celadon -> gym
-30,0,17,27,0,1,1102,0,4,8,0,-1,Celadon -> tournament
-30,0,45,9,0,1,511,0,3,9,0,-1,Celadon top right house
-30,0,41,9,0,1,512,0,3,9,0,-1,Celadon top second right house
-30,0,32,9,0,1,513,0,3,9,0,-1,Celadon apartments
-30,0,25,9,0,1,514,0,3,9,0,-1,Celadon top left house
-30,0,51,19,0,1,515,0,3,9,0,-1,Celadon middle right house
-30,0,25,17,0,1,516,0,3,9,0,-1,Celadon house behind pond
-30,0,49,27,0,1,517,0,3,9,0,-1,Celadon bottom right house
-30,0,41,27,0,1,518,0,3,9,0,-1,Celadon bottom second right house
-30,0,33,27,0,1,519,0,3,9,0,-1,Celadon bottom left house
-30,0,29,27,0,1,520,0,3,9,0,-1,Celadon bottom second left house
+44,0,8,45,0,1,47,0,4,38,0,-1,Route 10 -> Power Plant
+44,0,4,42,-1,0,47,0,0,10,1,0,Route 10 -> Power Plant side entrance
 45,0,45,15,0,1,521,0,6,13,0,-1,Saffron -> gym
 45,0,27,21,1,0,46,0,17,1,-1,0,Saffron -> tunnel
 45,0,21,17,0,1,522,0,7,14,0,-1,Saffron -> paper company office
-522,0,13,2,-1,0,523,0,13,2,-1,0,Saffron paper company office L1 -> L2
-523,0,1,2,1,0,524,0,1,2,1,0,Saffron paper company office L2 -> L3
 45,0,39,15,0,1,525,0,5,14,0,-1,Saffron -> fighting gym
 45,0,16,32,0,1,526,0,7,14,0,-1,Saffron -> Pokemart head office L1
-526,0,13,2,-1,0,46,0,3,18,-1,0,Pokemart head office L1 -> tunnel
-526,0,1,2,1,0,527,0,1,2,1,0,Pokemart head office L1 -> L2
-527,0,13,2,-1,0,528,0,13,2,-1,0,Pokemart head office L2 -> L3
 45,0,17,44,0,1,529,0,5,10,0,-1,Saffron -> Pokemon center
-48,0,6,5,0,1,530,0,5,10,0,-1,Lavendar -> Pokemon center
-48,0,10,16,0,1,533,0,3,9,0,-1,Lavendar -> Haunted house
-48,0,20,15,0,1,534,0,5,9,0,-1,Vermilion -> pokemart
-1001,0,4,2,0,1,1000,0,5,10,0,-1,Cerulean tournament waiting room -> battle room
-1002,0,4,2,0,1,1000,0,5,10,0,-1,Cerulean tournament entrance -> battle room
-1101,0,4,2,0,1,1100,0,5,10,0,-1,Celadon tournament waiting room -> battle room
-1102,0,4,2,0,1,1100,0,5,10,0,-1,Celadon tournament entrance -> battle room
-1201,0,4,2,0,1,1200,0,5,10,0,-1,Cinnabar tournament waiting room -> battle room
-1202,0,4,2,0,1,1200,0,5,10,0,-1,Cinnabar tournament entrance -> battle room
-1301,0,4,2,0,1,1300,0,5,10,0,-1,Pokemon League tournament waiting room -> battle room
-1302,0,4,2,0,1,1300,0,5,10,0,-1,Pokemon League tournament entrance -> battle room
-48,0,18,6,0,1,537,0,9,19,0,-1,Lavender Town -> Lavender Tower L1
-537,0,17,8,-1,0,538,0,17,10,-1,0,Lavender Tower L1 -> Lavender Tower L2
-538,0,1,10,1,0,539,0,1,10,1,0,Lavender Tower L2 -> Lavender Tower L3
-539,0,17,10,-1,0,540,0,17,10,-1,0,Lavender Tower L3 -> Lavender Tower L4
-540,0,1,10,1,0,541,0,1,10,1,0,Lavender Tower L4 -> Lavender Tower L5
-541,0,17,10,-1,0,542,0,17,10,-1,0,Lavender Tower L5 -> Lavender Tower L6
-542,0,8,16,1,0,543,0,8,16,1,0,Lavender Tower L6 -> Lavender Tower L7
+48,0,6,13,0,1,530,0,5,10,0,-1,Lavendar -> Pokemon center
+48,0,10,24,0,1,533,0,3,9,0,-1,Lavendar -> Haunted house
+48,0,20,23,0,1,534,0,5,9,0,-1,Lavendar -> pokemart
+48,0,18,14,0,1,537,0,9,19,0,-1,Lavender Town -> Lavender Tower L1
+48,0,9,3,0,1,545,0,4,12,0,-1,Lavendar Town -> Lavendar-Route 10 building
+48,0,10,3,0,1,545,0,4,12,0,-1,Lavendar Town -> Lavendar-Route 10 building
+44,0,16,50,0,-1,545,0,4,0,0,1,Route 10 -> Lavendar-Route 10 building
+44,0,17,50,0,-1,545,0,4,0,0,1,Route 10 -> Lavendar-Route 10 building
 300,0,5,6,0,0,301,0,1,3,0,0,Mt Moon 1F -> 2F
 300,0,19,14,0,0,304,0,9,4,0,0,Mt Moon 1F -> B1Fb
 300,0,31,16,0,0,305,0,1,5,0,0,Mt Moon 1F -> B1Fc
@@ -109,3 +94,22 @@ map_id,area_id,x,y,x_offset,y_offset,dest_map_id,dest_area_id,dest_x,dest_y,dest
 306,0,5,10,0,0,303,0,1,5,0,0,Mt Moon B2F -> B1Fa
 306,0,25,21,0,0,304,0,3,4,0,0,Mt Moon B2F -> B1Fb
 306,0,31,11,0,0,305,0,1,5,0,0,Mt Moon B2F -> B1Fc
+522,0,13,2,-1,0,523,0,13,2,-1,0,Saffron paper company office L1 -> L2
+523,0,1,2,1,0,524,0,1,2,1,0,Saffron paper company office L2 -> L3
+526,0,13,2,-1,0,46,0,3,18,-1,0,Pokemart head office L1 -> tunnel
+526,0,1,2,1,0,527,0,1,2,1,0,Pokemart head office L1 -> L2
+527,0,13,2,-1,0,528,0,13,2,-1,0,Pokemart head office L2 -> L3
+537,0,17,8,-1,0,538,0,17,10,-1,0,Lavender Tower L1 -> Lavender Tower L2
+538,0,1,10,1,0,539,0,1,10,1,0,Lavender Tower L2 -> Lavender Tower L3
+539,0,17,10,-1,0,540,0,17,10,-1,0,Lavender Tower L3 -> Lavender Tower L4
+540,0,1,10,1,0,541,0,1,10,1,0,Lavender Tower L4 -> Lavender Tower L5
+541,0,17,10,-1,0,542,0,17,10,-1,0,Lavender Tower L5 -> Lavender Tower L6
+542,0,8,16,1,0,543,0,8,16,1,0,Lavender Tower L6 -> Lavender Tower L7
+1001,0,4,2,0,1,1000,0,5,10,0,-1,Cerulean tournament waiting room -> battle room
+1002,0,4,2,0,1,1000,0,5,10,0,-1,Cerulean tournament entrance -> battle room
+1101,0,4,2,0,1,1100,0,5,10,0,-1,Celadon tournament waiting room -> battle room
+1102,0,4,2,0,1,1100,0,5,10,0,-1,Celadon tournament entrance -> battle room
+1201,0,4,2,0,1,1200,0,5,10,0,-1,Cinnabar tournament waiting room -> battle room
+1202,0,4,2,0,1,1200,0,5,10,0,-1,Cinnabar tournament entrance -> battle room
+1301,0,4,2,0,1,1300,0,5,10,0,-1,Pokemon League tournament waiting room -> battle room
+1302,0,4,2,0,1,1300,0,5,10,0,-1,Pokemon League tournament entrance -> battle room

@@ -844,7 +844,7 @@ public class DatabaseUtility
                 {
                     if (dataTypes[i] == "int")
                     {
-                        if (i >= data.length || data[i].equals(""))
+                        if (i >= data.length || data[i].strip().equals(""))
                         {
                             statement.setInt(i+1, -1);
                         }

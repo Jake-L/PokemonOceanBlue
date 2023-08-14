@@ -115,8 +115,8 @@ public class PartyView extends BaseView {
             for (int j = 0; j < this.model.team.get(this.model.optionIndex).moves.length; j++)
             {
                 this.renderMove(this.model.team.get(this.model.optionIndex).moves[j], 
-                    width * 2 / 3 + 24 * graphicsScaling, 
-                    height / 20 + (this.summaryHeader[1].getHeight(null) + this.pokemonBackground[1].getHeight(null) + 8 + 24 * j) * graphicsScaling, 
+                    this.width - (96 * graphicsScaling),
+                    height / 20 + (this.summaryHeader[1].getHeight(null) + this.pokemonBackground[1].getHeight(null) + 8 + 20 * j) * graphicsScaling, 
                     false, // no moves can be hovered at this screen
                     false, // don't show power or accuracy to save space
                     g, 
