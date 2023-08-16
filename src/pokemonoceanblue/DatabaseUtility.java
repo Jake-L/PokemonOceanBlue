@@ -247,6 +247,7 @@ public class DatabaseUtility
                     name VARCHAR(30) NOT NULL,
                     description VARCHAR(255) NOT NULL,
                     effect_id INT NOT NULL,
+                    effect_chance INT NULL,
                     battle_text VARCHAR(255) NULL)
                 """;
         runUpdate(query);
@@ -255,11 +256,11 @@ public class DatabaseUtility
         path = "/rawdata/ability.csv";
         query = """
                 INSERT INTO ability (
-                    ability_id, name, description, effect_id, battle_text)
-                VALUES (?, ?, ?, ?, ?)
+                    ability_id, name, description, effect_id, effect_chance, battle_text)
+                VALUES (?, ?, ?, ?, ?, ?)
                 """;
 
-        dataTypes = new String[] {"int", "String", "String", "int", "String"};
+        dataTypes = new String[] {"int", "String", "String", "int", "int", "String"};
         loadTable(path, query, dataTypes);
 
         //==================================================================================

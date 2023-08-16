@@ -5,6 +5,7 @@ import java.sql.*;
 public class AbilityModel 
 {
     public int abilityId;
+    public int effectChance;
     public String name;
     public String description;
     public String battleText;
@@ -37,6 +38,7 @@ public class AbilityModel
             this.name = rs.getString("name").toUpperCase();
             this.description = rs.getString("description");
             int effectId = rs.getInt("effect_id");
+            this.effectChance = rs.getInt("effect_chance");
             this.battleText = rs.getString("battle_text");
 
             // // get number of stat effects

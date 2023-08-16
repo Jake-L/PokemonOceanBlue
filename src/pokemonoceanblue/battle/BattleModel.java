@@ -437,6 +437,54 @@ public abstract class BattleModel extends BaseModel
         }
     }
 
+    /**
+     * Checks for an ability effects that occur during an attack,
+     * such as STATIC paralyzing the attacker
+     * @param move the attack being used
+     * @param attackEventIndex
+     * @param attacker index of the attacking team
+     */
+    private void abilityEffect(MoveModel move, int attackEventIndex, int attacker)
+    {
+        PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
+        PokemonModel defendingPokemon = this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]];
+        System.out.println("abilityEffect");
+
+        // abilities trigger upon being damaged by a physical attack
+        if (defendingPokemon.ability != null && move.damageClassId == 2)
+        {
+            int abilityId = defendingPokemon.ability.abilityId;
+            int statusEffect = -1;
+
+            // STATIC paralyzes the foe
+            if (abilityId == 9)
+            {
+                statusEffect = StatusEffect.PARALYSIS;
+            }
+            // POISON POINT poisons the foe
+            else if (abilityId == 38)
+            {
+                statusEffect = StatusEffect.POISON;
+            }
+            // FLAME BODY burns the foe
+            else if (abilityId == 49)
+            {
+                statusEffect = StatusEffect.BURN;
+            }
+
+            if (statusEffect > 0 && this.ranNum.nextInt(100) < defendingPokemon.ability.effectChance)
+            {
+                BattleEvent event = new BattleEvent(
+                    defendingPokemon.ability.battleText.replace("{defender}", defendingPokemon.name).replace("{attacker}", attackingPokemon.name),
+                    attacker,
+                    attacker
+                );
+                event.setStatusEffect(statusEffect, attacker);
+                this.events.add(event);
+            }
+        }
+    }
+
     public void loadBattleMenu()
     {
         if (this.events.size() == 0)
@@ -609,6 +657,9 @@ public abstract class BattleModel extends BaseModel
                 {
                     this.moveEffect(move, attackEventIndex, attacker);
                 }
+
+                this.abilityEffect(move, attackEventIndex, attacker);
+
                 if (move.recoil != 0)
                 {
                     BattleEvent event = battleOperationsManager.createRecoilEvent(attacker, move, 

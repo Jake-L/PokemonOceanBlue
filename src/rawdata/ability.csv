@@ -2,12 +2,11 @@ id,name,description,effect id,effect chance,battle text,prose
 1,Stench,The stench may cause the target to flinch.,-1,10,,Has a 10% chance of making target Pokémon [flinch]{mechanic:flinch} with each hit.
 2,Drizzle,The Pokémon makes it rain if it appears in battle.,-1,,,Summons [rain]{mechanic:rain} that lasts indefinitely upon entering battle.
 3,Speed Boost,Its Speed stat is gradually boosted.,-1,,,Raises [Speed]{mechanic:speed} one [stage]{mechanic:stat-modifier} after each turn.
-4,Battle Armor,The Pokémon is protected against critical hits.,-1,,,Protects against [critical hits]{mechanic:critical-hit}.
 5,Sturdy,It cannot be knocked out with one hit.,-1,,,Prevents being KOed from full [HP]{mechanic:hp}# leaving 1 HP instead.  Protects against the one-hit KO moves regardless of HP.
 6,Damp,Prevents the use of self-destructing moves.,-1,,,Prevents []{move:self-destruct}# []{move:explosion}# and []{ability:aftermath} from working while the Pokémon is in battle.
 7,Limber,The Pokémon is protected from paralysis.,-1,,{defender} cannot be paralyzed due to it's LIMBER.,
 8,Sand Veil,Boosts the Pokémon's evasion in a sandstorm.,-1,,,Increases [evasion]{mechanic:evasion} to 1.25x during a [sandstorm]{mechanic:sandstorm}.  Protects against sandstorm damage.
-9,Static,Contact with the Pokémon may cause paralysis.,-1,30,,Has a 30% chance of [paralyzing]{mechanic:paralysis} attacking Pokémon on contact.
+9,Static,Contact with the Pokémon may cause paralysis.,-1,30,{attacker} was paralyzed by {defender}'s STATIC.,Has a 30% chance of [paralyzing]{mechanic:paralysis} attacking Pokémon on contact.
 10,Volt Absorb,Restores HP if hit by an Electric-type move.,-1,,,Absorbs []{type:electric} moves# healing for 1/4 max [HP]{mechanic:hp}.
 11,Water Absorb,Restores HP if hit by a Water-type move.,-1,,,Absorbs []{type:water} moves# healing for 1/4 max [HP]{mechanic:hp}.
 13,Cloud Nine,Eliminates the effects of weather.,-1,,,Negates all effects of [weather]{mechanic:weather}# but does not prevent the weather itself.
@@ -35,7 +34,7 @@ id,name,description,effect id,effect chance,battle text,prose
 35,Illuminate,Raises the likelihood of meeting wild Pokémon.,-1,,,Doubles the wild encounter rate.
 36,Trace,The Pokémon copies a foe's Ability.,-1,,,Copies an opponent's ability upon entering battle.
 37,Huge Power,Raises the Pokémon's Attack stat.,-1,,,Doubles [Attack]{mechanic:attack} in battle.
-38,Poison Point,Contact with the Pokémon may poison the attacker.,-1,,,Has a 30% chance of [poisoning]{mechanic:poison} attacking Pokémon on contact.
+38,Poison Point,Contact with the Pokémon may poison the attacker.,-1,30,{attacker} was poisoned by {defender}'s POISON POINT.,Has a 30% chance of [poisoning]{mechanic:poison} attacking Pokémon on contact.
 39,Inner Focus,The Pokémon is protected from flinching.,-1,,,Prevents [flinching]{mechanic:flinching}.
 40,Magma Armor,Prevents the Pokémon from becoming frozen.,-1,,,Prevents [freezing]{mechanic:freezing}.
 41,Water Veil,Prevents the Pokémon from getting a burn.,-1,,,Prevents [burns]{mechanic:burn}.
@@ -46,7 +45,7 @@ id,name,description,effect id,effect chance,battle text,prose
 46,Pressure,The Pokémon raises the foe's PP usage.,-1,,,Increases the [PP]{mechanic:pp} cost of moves targetting the Pokémon by one.
 47,Thick Fat,Ups resistance to Fire-​ and Ice-type moves.,-1,,,Halves damage from []{type:fire} and []{type:ice} moves.
 48,Early Bird,The Pokémon awakens quickly from sleep.,-1,,,Makes [sleep]{mechanic:sleep} pass twice as quickly.
-49,Flame Body,Contact with the Pokémon may burn the attacker.,-1,,,Has a 30% chance of [burning]{mechanic:burn} attacking Pokémon on contact.
+49,Flame Body,Contact with the Pokémon may burn the attacker.,-1,30,{attacker} was burned by {defender}'s FLAME BODY.,Has a 30% chance of [burning]{mechanic:burn} attacking Pokémon on contact.
 50,Run Away,Enables a sure getaway from wild Pokémon.,-1,,,Ensures success fleeing from wild battles.
 51,Keen Eye,Prevents other Pokémon from lowering accuracy.,-1,,,Prevents [accuracy]{mechanic:accuracy} from being [lowered]{mechanic:stat-modifier}.
 52,Hyper Cutter,Prevents other Pokémon from lowering Attack stat.,-1,,,Prevents [Attack]{mechanic:attack} from being [lowered]{mechanic:stat-modifiers} by other Pokémon.
