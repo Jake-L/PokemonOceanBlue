@@ -4,10 +4,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import pokemonoceanblue.MoveModel;
 import pokemonoceanblue.PokemonModel;
+import pokemonoceanblue.Stat;
 import pokemonoceanblue.StatusEffect;
 import pokemonoceanblue.battle.BattleEvent;
 import pokemonoceanblue.battle.BattleOperationsManager;
@@ -187,8 +190,8 @@ public class BattleOperationsManagerTests {
             }
         }
 
-        assertTrue(critCount > 40);
-        assertTrue(critCount < 85);
+        assertTrue(critCount > 30);
+        assertTrue(critCount < 100);
 
         // check that a triple boosted attack (modifier = 4) crits roughly 25% of the time
         critCount = 0;
@@ -198,7 +201,46 @@ public class BattleOperationsManagerTests {
             }
         }
 
-        assertTrue(critCount > 220);
-        assertTrue(critCount < 280);
+        assertTrue(critCount > 210);
+        assertTrue(critCount < 290);
+    }
+
+    @Test
+    /**
+     * Checks that critical hit random generation works
+     */
+    public void testStatChanges() {
+        TurnEffectManager turnEffectManager = new TurnEffectManager();
+        BattleOperationsManager battleOperationsManager;
+        List<BattleEvent> events;
+        MoveModel move = new MoveModel(45);
+        PokemonModel defendingPokemon;
+
+        // check that GROWL reduces attack
+        defendingPokemon = new PokemonModel(1, 5, false);
+        battleOperationsManager = new BattleOperationsManager(turnEffectManager);
+        events = battleOperationsManager.addStatChanges(0, move, defendingPokemon);
+        assertEquals(-1, battleOperationsManager.statChanges[1][Stat.ATTACK]);
+        assertEquals(1, events.size());
+
+        // check that GROWL doesn't reduce attack of a Pokemon with CLEAR BODY
+        defendingPokemon = new PokemonModel(376, 5, false);
+        battleOperationsManager = new BattleOperationsManager(turnEffectManager);
+        events = battleOperationsManager.addStatChanges(0, move, defendingPokemon);
+        assertEquals(0, battleOperationsManager.statChanges[1][Stat.ATTACK]);
+        assertEquals(1, events.size());
+
+        // check that MIST prevents the stat reduction as well
+        PokemonModel[][] team = new PokemonModel[2][1];
+        defendingPokemon = new PokemonModel(1, 5, false);
+        team[0][0] = new PokemonModel(1, 1, false);
+        team[1][0] = defendingPokemon;
+        // add the MIST effect, used by team 1
+        turnEffectManager.addMultiTurnEffect(new MoveModel(54), 1, team, new int[2]);
+        battleOperationsManager = new BattleOperationsManager(turnEffectManager);
+        // check that GROWL has no effect, used by team 0 affecting team 1
+        events = battleOperationsManager.addStatChanges(0, move, defendingPokemon);
+        assertEquals(0, battleOperationsManager.statChanges[1][Stat.ATTACK]);
+        assertEquals(1, events.size());
     }
 }

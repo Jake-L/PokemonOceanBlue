@@ -1,5 +1,7 @@
 package pokemonoceanblue.battle;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import pokemonoceanblue.MoveModel;
@@ -8,6 +10,7 @@ import pokemonoceanblue.Stat;
 import pokemonoceanblue.StatusEffect;
 import pokemonoceanblue.Type;
 import pokemonoceanblue.Weather;
+import pokemonoceanblue.battle.TurnEffectManager.MultiTurnEffect;
 
 public class BattleOperationsManager {
     private Random ranNum = new Random();
@@ -141,56 +144,97 @@ public class BattleOperationsManager {
      * @param attacker the attacking team
      * @param move the move that inflicts the stat change
      */
-    public void addStatChanges(int attacker, MoveModel move, BattleModel model)
+    public List<BattleEvent> addStatChanges(int attacker, MoveModel move, PokemonModel targetPokemon)
     {
+        List<BattleEvent> battleEvents = new ArrayList<BattleEvent>();
+
         if (ranNum.nextInt(100) + 1 <= move.effectChance)
         {
             String[] statChangeMessages = {" fell sharply.", " fell.", "", " rose.", " rose sharply."};
             String[] changedStat = {"", " attack", " defense", " special attack", " special defense", " speed", " accuracy", " evasiveness"};
-            int target = (attacker + 1) % 2;
+            int target;
+
+            //when target id is 7 the move applies stat changes to the user, otherwise applied to foe
+            if (move.targetId == 7)
+            {
+                target = attacker;
+            }
+            else
+            {
+                target = (attacker + 1) % 2;
+            }
+
             //loop through all stat changes in case there are multiple
             for (int i = 0; i < move.moveStatEffects.length; i++)
             {
-                BattleEvent event;
                 int statId = move.moveStatEffects[i].statId;
                 int statChange = move.moveStatEffects[i].statChange;
-                boolean willFail = false;
-                //when target id is 7 the move applies stat changes to the user, otherwise applied to foe
-                if (move.targetId == 7)
-                {
-                    target = attacker;
-                }
+
                 //check if mist will prevent stat change
-                if (model.turnEffectManager.multiTurnEffects.size() > 0)
+                if (this.turnEffectManager.multiTurnEffects.size() > 0)
                 {
-                    for (int j = 0; j < model.turnEffectManager.multiTurnEffects.size(); j++)
+                    for (MultiTurnEffect multiTurnEffect : this.turnEffectManager.multiTurnEffects)
                     {
-                        if (model.turnEffectManager.multiTurnEffects.get(j).effectId == 47 && model.turnEffectManager.multiTurnEffects.get(j).attacker == target)
+                        if (multiTurnEffect.effectId == 47 && multiTurnEffect.attacker == target)
                         {
-                            willFail = true;
-                            model.events.add(new BattleEvent("The mist prevented stat changes.", target, target));
+                            battleEvents.add(new BattleEvent("The mist prevented stat changes.", target, target));
+                            // if all stat changes are prevented it can return immediately
+                            return battleEvents;
                         }
                     }
                 }
-                if (!willFail)
+                // KEEN EYE prevents accuracy reductions
+                if (targetPokemon.ability != null 
+                    && targetPokemon.ability.abilityId == 51 
+                    && statId == Stat.ACCURACY
+                    && statChange < 0)
                 {
-                    //check if stat cannot be changed any further
-                    if ((this.statChanges[target][statId] == 6 && statChange > 0) || (this.statChanges[target][statId] == -6 && statChange < 0))
-                    {
-                        event = new BattleEvent(model.team[target][model.currentPokemon[target]].name + "'s " + changedStat[statId] + " cannot be " +
-                            (this.statChanges[target][statId] < 0 ? "decreased" : "increased") + " any further.", target, target);
-                    }
-                    else
-                    {
-                        event = new BattleEvent(model.team[target][model.currentPokemon[target]].name + "'s " +
-                            changedStat[statId] + statChangeMessages[statChange + 2], target, target);
-                        //apply stat change with limits of |6|
-                        this.statChanges[target][statId] = (statChange / Math.abs(statChange)) * Math.min(6, Math.abs(statChange + this.statChanges[target][statId]));
-                    }
-                    model.events.add(event);
+                    battleEvents.add(new BattleEvent(targetPokemon.name + "'s KEEN EYE prevents accuracy reductions.", target, target));
+                }
+                // HYPER CUTTER prevents attack reductions
+                else if (targetPokemon.ability != null 
+                    && targetPokemon.ability.abilityId == 52 
+                    && statId == Stat.ATTACK
+                    && statChange < 0)
+                {
+                    battleEvents.add(new BattleEvent(targetPokemon.name + "'s HYPER CUTTER prevents attack reductions.", target, target));
+                }
+                // CLEAR BODY prevents stat reduces from the foe (but not the user)
+                else if (targetPokemon.ability != null 
+                    && targetPokemon.ability.abilityId == 29 
+                    && statChange < 0
+                    && target != attacker)
+                {
+                    battleEvents.add(new BattleEvent(targetPokemon.name + "'s CLEAR BODY prevents stat reductions.", target, target));
+                }
+                // WHITE SMOKE prevents stat reduces from the foe (but not the user)
+                else if (targetPokemon.ability != null 
+                    && targetPokemon.ability.abilityId == 73 
+                    && statChange < 0
+                    && target != attacker)
+                {
+                    battleEvents.add(new BattleEvent(targetPokemon.name + "'s WHITE SMOKE prevents stat reductions.", target, target));
+                }
+            
+                //check if stat cannot be changed any further
+                else if ((this.statChanges[target][statId] == 6 && statChange > 0) || (this.statChanges[target][statId] == -6 && statChange < 0))
+                {
+                    battleEvents.add(new BattleEvent(targetPokemon.name + "'s " + changedStat[statId] + " cannot be " +
+                        (this.statChanges[target][statId] < 0 ? "decreased" : "increased") + " any further.", target, target));
+                }
+
+                else
+                {
+                    //apply stat change with limits of |6|
+                    this.statChanges[target][statId] = (statChange / Math.abs(statChange)) * Math.min(6, Math.abs(statChange + this.statChanges[target][statId]));
+
+                    battleEvents.add(new BattleEvent(targetPokemon.name + "'s " +
+                        changedStat[statId] + statChangeMessages[statChange + 2], target, target));
                 }
             }
         }
+
+        return battleEvents;
     }
 
     /** 

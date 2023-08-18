@@ -448,7 +448,6 @@ public abstract class BattleModel extends BaseModel
     {
         PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
         PokemonModel defendingPokemon = this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]];
-        System.out.println("abilityEffect");
 
         // abilities trigger upon being damaged by a physical attack
         if (defendingPokemon.ability != null && move.damageClassId == 2)
@@ -635,6 +634,9 @@ public abstract class BattleModel extends BaseModel
         {
             int attacker = this.events.get(0).attacker;
             int attackEventIndex = this.canAttack(attacker);
+            PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
+            PokemonModel defendingPokemon = this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]];
+
             if (this.attacks[attacker] != null && this.attacks[attacker].isUsed)
             {
                 List<BattleEvent> attackMessages = this.attacks[attacker].getAttackMessages();
@@ -663,8 +665,8 @@ public abstract class BattleModel extends BaseModel
                 if (move.recoil != 0)
                 {
                     BattleEvent event = battleOperationsManager.createRecoilEvent(attacker, move, 
-                        this.team[attacker][this.currentPokemon[attacker]], 
-                        this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]],
+                        attackingPokemon, 
+                        defendingPokemon,
                         this.events.get(attackEventIndex).damage);
                     if (event != null)
                     {
@@ -674,11 +676,11 @@ public abstract class BattleModel extends BaseModel
                 if (move.ailmentId > 0)
                 {
                     turnEffectManager.statusEffect(attacker, (attacker + 1) % 2, move.effectChance, move.ailmentId,
-                                                   this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]], this.events);
+                                                   defendingPokemon, this.events);
                 }
                 if (move.moveStatEffects.length > 0)
                 {
-                    battleOperationsManager.addStatChanges(attacker, move, this);
+                    this.events.addAll(battleOperationsManager.addStatChanges(attacker, move, defendingPokemon));
                 }
             }
             if (!this.moveProcessed[(attacker + 1) % 2])

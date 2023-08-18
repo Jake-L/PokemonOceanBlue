@@ -7,4 +7,5 @@ public class Stat {
     public static int SPECIAL_ATTACK = 3;
     public static int SPECIAL_DEFENSE = 4;
     public static int SPEED = 5;
+    public static int ACCURACY = 6;
 }
