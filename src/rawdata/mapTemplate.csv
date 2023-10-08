@@ -21,9 +21,9 @@ map_id,map_template_id,overlay,tiles_suffix,comment
 19,15,0,3,
 20,20,0,,Pewter gym
 21,7,0,,Pewter pokemon center
-22,1,0,,
-23,1,0,,
-24,1,0,,
+22,1,0,,Pewter top right house
+23,1,0,,Pewter bottom right house
+24,1,0,,Pewter bottom left house
 25,25,0,,day care
 26,1,0,,Cerulean top left house
 27,1,0,,Cerulean bottom left house
