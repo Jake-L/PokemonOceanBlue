@@ -16,6 +16,7 @@ import org.junit.Test;
 import pokemonoceanblue.DatabaseUtility;
 import pokemonoceanblue.PokedexModel;
 import pokemonoceanblue.PokemonModel;
+import pokemonoceanblue.StatusEffect;
 import pokemonoceanblue.Type;
 import pokemonoceanblue.Weather;
 
@@ -195,6 +196,34 @@ public class PokemonTests {
         pokemon = new PokemonModel(292, 100, false);
         assertEquals(1, pokemon.currentHP);
         assertEquals(1, pokemon.stats[0]);
+    }
+
+    @Test
+    /**
+     * Make sure any temporary status is cleared at the end of a round
+     */
+    public void testClearTemporaryStatus()
+    {
+        PokemonModel pokemon;
+
+        // a fainted Pokemon shouldn't have a status
+        pokemon = new PokemonModel(1, 1, false);
+        pokemon.statusEffect = StatusEffect.PARALYSIS;
+        pokemon.currentHP = 0;
+        pokemon.clearTemporaryStatus();
+        assertEquals(StatusEffect.UNAFFLICTED, pokemon.statusEffect);
+
+        // paralysis should not be cleared
+        pokemon = new PokemonModel(1, 1, false);
+        pokemon.statusEffect = StatusEffect.PARALYSIS;
+        pokemon.clearTemporaryStatus();
+        assertEquals(StatusEffect.PARALYSIS, pokemon.statusEffect);
+
+        // confusion status should be cleared
+        pokemon = new PokemonModel(1, 1, false);
+        pokemon.statusEffect = StatusEffect.CONFUSION;
+        pokemon.clearTemporaryStatus();
+        assertEquals(StatusEffect.UNAFFLICTED, pokemon.statusEffect);
     }
 
     @Test

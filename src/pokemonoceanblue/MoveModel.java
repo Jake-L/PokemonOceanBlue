@@ -14,7 +14,7 @@ public class MoveModel
     public int targetId;
     public int flinchChance;
     public int effectChance;
-    public int ailmentId;
+    public byte ailmentId;
     public int recoil;
     public MoveStatEffect[] moveStatEffects;
     public MoveEffectModel moveEffect;
@@ -54,7 +54,7 @@ public class MoveModel
             this.targetId = rs.getInt("target_id");
             this.flinchChance = rs.getInt("flinch_chance");
             this.effectChance = rs.getInt("effect_chance");
-            this.ailmentId = rs.getInt("ailment_id");
+            this.ailmentId = (byte)rs.getInt("ailment_id");
             this.recoil = rs.getInt("recoil");
             int effectId = rs.getInt("effect_id");
 

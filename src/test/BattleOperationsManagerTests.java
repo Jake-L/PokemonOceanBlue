@@ -47,7 +47,7 @@ public class BattleOperationsManagerTests {
         // pokeball should have capture chance close to 4% with 1 hp when Pokemon is
         // asleep
         pokemon.currentHP = 1;
-        pokemon.statusEffect = (byte) StatusEffect.SLEEP;
+        pokemon.statusEffect = StatusEffect.SLEEP;
         assertTrue(battleOperationsManager.captureChanceCalc(pokemon, 3) > 3.9);
         assertTrue(battleOperationsManager.captureChanceCalc(pokemon, 3) < 4);
     }

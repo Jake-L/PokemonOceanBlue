@@ -70,11 +70,13 @@ public class OverworldModel extends BaseModel {
     {
         this.mapId = mapId;
         this.playerModel = playerModel;
+        this.inventoryModel = new InventoryModel();
         this.app = app;
 
         this.readMapFile();
         this.loadMapObjects();
-        this.loadPortals();
+        this.wildPokemon = new WildPokemonModel(this.mapId);
+        //this.loadPortals();
         this.loadCharacters();
         this.loadConversationTriggers();
         this.loadAreas();
@@ -208,7 +210,7 @@ public class OverworldModel extends BaseModel {
                 {
                     if (Math.abs(cpuModel.get(i).spawn_x - cpuModel.get(i).getX() - dx) + Math.abs(cpuModel.get(i).spawn_y - cpuModel.get(i).getY() - dy) <= cpuModel.get(i).wanderRange)
                     {
-                        cpuModel.get(i).setMovement(dx, dy, 1);
+                        cpuModel.get(i).setMovement(dx, dy, 1, true);
                     }
                 }
             }
@@ -246,7 +248,9 @@ public class OverworldModel extends BaseModel {
                     character.setMovement(
                         this.conversation.getMovementDx(), 
                         this.conversation.getMovementDy(), 
-                        1
+                        1,
+                        // force the player to move, so they don't just change direction
+                        true 
                     );
                     this.conversation.setCharacterMoved();            
                 }
@@ -424,7 +428,7 @@ public class OverworldModel extends BaseModel {
             if (canSurf)
             {
                 this.playerModel.surf = true;
-                this.playerModel.setMovement(x - this.playerModel.getX(), y - this.playerModel.getY(), 1);
+                this.playerModel.setMovement(x - this.playerModel.getX(), y - this.playerModel.getY(), 1, false);
                 this.actionCounter = 15;
             }
             else

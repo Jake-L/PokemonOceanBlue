@@ -1414,6 +1414,10 @@ map_id,area_id,name,x,y,y_offset
 8,0,kitchensink,0,2,0
 7,0,pc,9,2,0
 7,0,pokemonCenterStation,2,3,0
+6,0,generator4,0,2,0
+6,0,generator2,1,2,0
+6,0,table5,2,2,0
+6,0,table2,4,2,0
 6,0,pottedTree,12,12,0
 6,0,bookcase,11,9,0
 6,0,bookcase,11,2,0

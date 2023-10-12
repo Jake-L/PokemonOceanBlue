@@ -322,8 +322,8 @@ public abstract class BattleModel extends BaseModel
         else if (effectId == 37)
         {
             // decide whether move will paralyze, freeze, or burn
-            int ailmentId = ranNum.nextInt(3);
-            turnEffectManager.statusEffect(attacker, (attacker + 1) % 2, move.effectChance, ailmentId + (ailmentId % 2) * 2 + 1, 
+            byte ailmentId = (byte)ranNum.nextInt(3);
+            turnEffectManager.statusEffect(attacker, (attacker + 1) % 2, move.effectChance, (byte)(ailmentId + (ailmentId % 2) * 2 + 1), 
                                            this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]], this.events);
         }
         //multiple hit moves
@@ -431,7 +431,7 @@ public abstract class BattleModel extends BaseModel
             {
                 if (i != this.currentPokemon[attacker])
                 {
-                    this.team[attacker][i].statusEffect = (byte)StatusEffect.UNAFFLICTED;
+                    this.team[attacker][i].statusEffect = StatusEffect.UNAFFLICTED;
                 }
             }
         }
@@ -516,7 +516,6 @@ public abstract class BattleModel extends BaseModel
         }
         else if (battleOperationsManager.teamFainted(this.team[0]) || battleOperationsManager.teamFainted(this.team[1]))
         {
-            // TODO: remove confusion/curse from all party members at the end of a battle (maybe they shouldn't be coded the same as status effects...)
             return true;
         }
         else

@@ -138,8 +138,10 @@ public class CharacterModel {
      * @param dx movement speed along x-axis
      * @param dy movement speed along y-axis
      * @param movementCounter the duration of their movement, usually 16
+     * @param forceMovement disable the "tap to change direction" functionality,
+     *  which is needed for player movement in conversations
      */
-    public void setMovement(int dx, int dy, int movementSpeed)
+    public void setMovement(int dx, int dy, int movementSpeed, boolean forceMovement)
     {
         // can only specify movement when not already moving
         if (this.movementCounter <= 0 && this.overworldModel.canMove(this.characterId))
@@ -168,7 +170,7 @@ public class CharacterModel {
             }
 
             // if the player quickly taps a direction key, they can change direction without moving
-            if (this.spriteName == "red" && oldDirection != this.direction && movementSpeed <= 1)
+            if (this.spriteName == "red" && oldDirection != this.direction && movementSpeed <= 1 && !forceMovement)
             {
                 this.movementCounter = 3;
                 return;

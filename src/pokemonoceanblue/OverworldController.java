@@ -52,19 +52,19 @@ public class OverworldController extends BaseController {
                     }
                     else if (keysDown.contains(KeyEvent.VK_UP))
                     {
-                        this.playerModel.setMovement(0, -1, movespeed);
+                        this.playerModel.setMovement(0, -1, movespeed, false);
                     }
                     else if (keysDown.contains(KeyEvent.VK_DOWN))
                     {
-                        this.playerModel.setMovement(0, 1, movespeed);
+                        this.playerModel.setMovement(0, 1, movespeed, false);
                     }
                     else if (keysDown.contains(KeyEvent.VK_LEFT))
                     {
-                        this.playerModel.setMovement(-1, 0, movespeed);
+                        this.playerModel.setMovement(-1, 0, movespeed, false);
                     }
                     else if (keysDown.contains(KeyEvent.VK_RIGHT))
                     {
-                        this.playerModel.setMovement(1, 0, movespeed);
+                        this.playerModel.setMovement(1, 0, movespeed, false);
                     }
 
                     this.model.update();

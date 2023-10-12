@@ -419,6 +419,27 @@ public class PokemonModel
         }
     }
 
+    /**
+     * At the end of a battle the Pokemon's temporary status effects should be removed
+     */
+    public void clearTemporaryStatus()
+    {
+        if (this.statusEffect == StatusEffect.UNAFFLICTED)
+        {
+            return;
+        }
+        // a fainted Pokemon shouldn't still have any status effects
+        else if (this.currentHP == 0)
+        {
+            this.statusEffect = StatusEffect.UNAFFLICTED;
+        }
+        // confusion and curse do not persist after the battle completes
+        else if (this.statusEffect == StatusEffect.CURSE || this.statusEffect == StatusEffect.CONFUSION)
+        {
+            this.statusEffect = StatusEffect.UNAFFLICTED;
+        }
+    }
+
     /** 
      * Read the Pokemon's stats, types, etc from a database
      */

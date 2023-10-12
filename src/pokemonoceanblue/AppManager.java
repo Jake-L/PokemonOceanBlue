@@ -444,9 +444,12 @@ public class AppManager {
 
                 this.checkEvolution(evolveQueue, -1);
 
-                // check for Pokemon form changes
+                // handle post-battle effects for the player's Pokemon
                 for (PokemonModel pokemon : this.partyModel.team) {
+                    // check for Pokemon form changes
                     pokemon.checkFormChange(this.overworldModel.weather, this.overworldModel.battleBackgroundId);
+                    // clear any temporary status effects
+                    pokemon.clearTemporaryStatus();
                 }
 
                 // return to overworld screen
@@ -471,6 +474,7 @@ public class AppManager {
                 PortalModel portal = overworldModel.checkPortalModel(playerModel.getX(), playerModel.getY());
                 if (portal != null) {
                     // move to the new map
+                    System.out.println("New map: " + portal.destMapId);
                     setMap(portal.destMapId, portal.destX, portal.destY, portal.direction);
                 }
             } else if (newPokemonQueue.size() > 0 && overworldModel.conversation == null) {

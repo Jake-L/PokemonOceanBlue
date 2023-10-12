@@ -33,7 +33,7 @@ public class TurnEffectManager
      * @param effectChance the chance that the move that inflicts the status effect
      * @param ailmentId the status effect to be inflicted
      */
-    public void statusEffect(int attacker, int defender, int effectChance, int ailmentId, PokemonModel defendingPokemon, List<BattleEvent> events)
+    public void statusEffect(int attacker, int defender, int effectChance, byte ailmentId, PokemonModel defendingPokemon, List<BattleEvent> events)
     {
         if (this.ranNum.nextInt(100) + 1 <= effectChance && defendingPokemon.statusEffect == StatusEffect.UNAFFLICTED)
         {
