@@ -2,6 +2,8 @@ package pokemonoceanblue;
 
 import java.sql.*;
 
+import pokemonoceanblue.StatEffect;
+
 public class MoveModel 
 {
     public int moveId;
@@ -16,7 +18,7 @@ public class MoveModel
     public int effectChance;
     public byte ailmentId;
     public int recoil;
-    public MoveStatEffect[] moveStatEffects;
+    public StatEffect[] moveStatEffects;
     public MoveEffectModel moveEffect;
     
     /** 
@@ -61,7 +63,7 @@ public class MoveModel
             // get number of stat effects
             query = "SELECT COUNT(*) FROM move_stat_effect WHERE move_id = " + this.moveId;
             rs = db.runQuery(query);
-            moveStatEffects = new MoveStatEffect[rs.getInt(1)];
+            moveStatEffects = new StatEffect[rs.getInt(1)];
 
             // get stat effects
             query = "SELECT stat_id, stat_change FROM move_stat_effect WHERE move_id = " + this.moveId;
@@ -70,7 +72,7 @@ public class MoveModel
 
             while(rs.next()) 
             {
-                moveStatEffects[index] = new MoveStatEffect(rs.getInt(1), rs.getInt(2));
+                moveStatEffects[index] = new StatEffect(rs.getInt(1), rs.getInt(2));
                 index++;
             }     
             
@@ -84,25 +86,5 @@ public class MoveModel
         {
             e.printStackTrace();
         }  
-    }
-
-    /**
-     * Store stat change effects
-     */
-    public class MoveStatEffect
-    {
-        public int statId;
-        public int statChange;
-
-        /** 
-         * Constructor
-         * @param statId the stat that is affected
-         * @param statChange the amount to modify the stat
-         */
-        public MoveStatEffect(int statId, int statChange)
-        {
-            this.statId = statId;
-            this.statChange = statChange;
-        }
     }
 }

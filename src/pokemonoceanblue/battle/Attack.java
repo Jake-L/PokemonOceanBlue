@@ -66,6 +66,7 @@ public class Attack {
             this.eventText.add("It's a one hit KO!");
             return defendingPokemon.currentHP;
         }
+        
         if (move.damageClassId == 2) {
             attack_stat = Stat.ATTACK;
             defense_stat = Stat.DEFENSE;
@@ -109,11 +110,6 @@ public class Attack {
             }
         }
 
-        // same type attack bonus
-        if (move.typeId == attackingPokemon.types[0]
-                || move.typeId == attackingPokemon.types[attackingPokemon.types.length - 1]) {
-            otherModifiers *= 1.5f;
-        }
         // critical hit bonus
         if (movePower > 0 && isCrit) {
             // Sniper ability increases damage dealt by critical hits
@@ -124,39 +120,6 @@ public class Attack {
             }
 
             this.eventText.add("A critical hit!");
-        }
-
-        // Technician ability boosts damage of weak moves
-        if (attackingPokemon.ability != null && attackingPokemon.ability.abilityId == 101 && movePower <= 60) {
-            otherModifiers *= 1.5f;
-        }
-
-        // Overgrow abliity boosts Grass damage when health falls below 1/3
-        else if (attackingPokemon.ability != null && attackingPokemon.ability.abilityId == 65
-                && attackingPokemon.currentHP / attackingPokemon.stats[Stat.HP] <= 0.33
-                && this.move.typeId == Type.GRASS) {
-            otherModifiers *= 1.5f;
-        }
-
-        // Blaze abliity boosts Fire damage when health falls below 1/3
-        else if (attackingPokemon.ability != null && attackingPokemon.ability.abilityId == 66
-                && attackingPokemon.currentHP / attackingPokemon.stats[Stat.HP] <= 0.33
-                && this.move.typeId == Type.FIRE) {
-            otherModifiers *= 1.5f;
-        }
-
-        // Torrent abliity boosts Fire damage when health falls below 1/3
-        else if (attackingPokemon.ability != null && attackingPokemon.ability.abilityId == 67
-                && attackingPokemon.currentHP / attackingPokemon.stats[Stat.HP] <= 0.33
-                && this.move.typeId == Type.WATER) {
-            otherModifiers *= 1.5f;
-        }
-
-        // Swarm abliity boosts Fire damage when health falls below 1/3
-        else if (attackingPokemon.ability != null && attackingPokemon.ability.abilityId == 68
-                && attackingPokemon.currentHP / attackingPokemon.stats[Stat.HP] <= 0.33
-                && this.move.typeId == Type.BUG) {
-            otherModifiers *= 1.5f;
         }
 
         this.getEffectivenessMessage(typeModifier);

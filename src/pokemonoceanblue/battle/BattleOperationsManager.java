@@ -10,6 +10,7 @@ import pokemonoceanblue.Stat;
 import pokemonoceanblue.StatusEffect;
 import pokemonoceanblue.Type;
 import pokemonoceanblue.Weather;
+import pokemonoceanblue.StatEffect;
 import pokemonoceanblue.battle.TurnEffectManager.MultiTurnEffect;
 
 public class BattleOperationsManager {
@@ -35,14 +36,16 @@ public class BattleOperationsManager {
         }
         this.statChanges[attacker] = new int[8];
         model.currentPokemon[attacker] = model.events.get(0).newPokemonIndex;
+        PokemonModel attackingPokemon = model.team[attacker][model.currentPokemon[attacker]];
+
         if (attacker == 1)
         {
             model.isSeen[model.events.get(0).newPokemonIndex] = true;
         }
         // add multi turn effect for any status effect the new pokemon may have
-        if (model.team[attacker][model.currentPokemon[attacker]].statusEffect > 0)
+        if (attackingPokemon.statusEffect > 0)
         {
-            model.turnEffectManager.addStatusEffect(model.team[attacker][model.currentPokemon[attacker]].statusEffect, attacker, false, model);
+            model.turnEffectManager.addStatusEffect(attackingPokemon.statusEffect, attacker, false, model);
         }
     }
 
@@ -142,92 +145,107 @@ public class BattleOperationsManager {
     /** 
      * creates event for the stat changes applied by a move used
      * @param attacker the attacking team
-     * @param move the move that inflicts the stat change
+     * @param target the team targetted by the stat change
+     * @param moveStatEffects the stat changes to be applied
+     * @param targetPokemon the Pokemon the stat changes are applied to
      */
-    public List<BattleEvent> addStatChanges(int attacker, MoveModel move, PokemonModel targetPokemon)
+    public List<BattleEvent> addStatChanges(int attacker, int target, StatEffect[] moveStatEffects, PokemonModel targetPokemon)
+    {
+        return this.addStatChanges(attacker, target, moveStatEffects, targetPokemon, -1);
+    }
+
+    /** 
+     * creates event for the stat changes applied by a move used
+     * @param attacker the attacking team
+     * @param target the team targetted by the stat change
+     * @param moveStatEffects the stat changes to be applied
+     * @param targetPokemon the Pokemon the stat changes are applied to
+     * @param abilityId the ability applying this stat change, or -1 if it's applied by a mvoe
+     */
+    public List<BattleEvent> addStatChanges(int attacker, int target, StatEffect[] moveStatEffects, PokemonModel targetPokemon, int abilityId)
     {
         List<BattleEvent> battleEvents = new ArrayList<BattleEvent>();
 
-        if (ranNum.nextInt(100) + 1 <= move.effectChance)
+        String[] statChangeMessages = {" fell sharply.", " fell.", "", " rose.", " rose sharply."};
+        String[] changedStat = {"", " attack", " defense", " special attack", " special defense", " speed", " accuracy", " evasiveness"};
+
+        //loop through all stat changes in case there are multiple
+        for (int i = 0; i < moveStatEffects.length; i++)
         {
-            String[] statChangeMessages = {" fell sharply.", " fell.", "", " rose.", " rose sharply."};
-            String[] changedStat = {"", " attack", " defense", " special attack", " special defense", " speed", " accuracy", " evasiveness"};
-            int target;
+            int statId = moveStatEffects[i].statId;
+            int statChange = moveStatEffects[i].statChange;
 
-            //when target id is 7 the move applies stat changes to the user, otherwise applied to foe
-            if (move.targetId == 7)
+            //check if mist will prevent stat change
+            if (this.turnEffectManager.multiTurnEffects.size() > 0)
             {
-                target = attacker;
-            }
-            else
-            {
-                target = (attacker + 1) % 2;
-            }
-
-            //loop through all stat changes in case there are multiple
-            for (int i = 0; i < move.moveStatEffects.length; i++)
-            {
-                int statId = move.moveStatEffects[i].statId;
-                int statChange = move.moveStatEffects[i].statChange;
-
-                //check if mist will prevent stat change
-                if (this.turnEffectManager.multiTurnEffects.size() > 0)
+                for (MultiTurnEffect multiTurnEffect : this.turnEffectManager.multiTurnEffects)
                 {
-                    for (MultiTurnEffect multiTurnEffect : this.turnEffectManager.multiTurnEffects)
+                    if (multiTurnEffect.effectId == 47 && multiTurnEffect.attacker == target)
                     {
-                        if (multiTurnEffect.effectId == 47 && multiTurnEffect.attacker == target)
-                        {
-                            battleEvents.add(new BattleEvent("The mist prevented stat changes.", target, target));
-                            // if all stat changes are prevented it can return immediately
-                            return battleEvents;
-                        }
+                        battleEvents.add(new BattleEvent("The mist prevented stat changes.", target, target));
+                        // if all stat changes are prevented it can return immediately
+                        return battleEvents;
                     }
                 }
-                // KEEN EYE prevents accuracy reductions
-                if (targetPokemon.ability != null 
-                    && targetPokemon.ability.abilityId == 51 
-                    && statId == Stat.ACCURACY
-                    && statChange < 0)
-                {
-                    battleEvents.add(new BattleEvent(targetPokemon.name + "'s KEEN EYE prevents accuracy reductions.", target, target));
-                }
-                // HYPER CUTTER prevents attack reductions
-                else if (targetPokemon.ability != null 
-                    && targetPokemon.ability.abilityId == 52 
-                    && statId == Stat.ATTACK
-                    && statChange < 0)
-                {
-                    battleEvents.add(new BattleEvent(targetPokemon.name + "'s HYPER CUTTER prevents attack reductions.", target, target));
-                }
-                // CLEAR BODY prevents stat reduces from the foe (but not the user)
-                else if (targetPokemon.ability != null 
-                    && targetPokemon.ability.abilityId == 29 
-                    && statChange < 0
-                    && target != attacker)
-                {
-                    battleEvents.add(new BattleEvent(targetPokemon.name + "'s CLEAR BODY prevents stat reductions.", target, target));
-                }
-                // WHITE SMOKE prevents stat reduces from the foe (but not the user)
-                else if (targetPokemon.ability != null 
-                    && targetPokemon.ability.abilityId == 73 
-                    && statChange < 0
-                    && target != attacker)
-                {
-                    battleEvents.add(new BattleEvent(targetPokemon.name + "'s WHITE SMOKE prevents stat reductions.", target, target));
-                }
-            
-                //check if stat cannot be changed any further
-                else if ((this.statChanges[target][statId] == 6 && statChange > 0) || (this.statChanges[target][statId] == -6 && statChange < 0))
-                {
-                    battleEvents.add(new BattleEvent(targetPokemon.name + "'s " + changedStat[statId] + " cannot be " +
-                        (this.statChanges[target][statId] < 0 ? "decreased" : "increased") + " any further.", target, target));
-                }
+            }
+            // KEEN EYE prevents accuracy reductions
+            if (targetPokemon.ability != null 
+                && targetPokemon.ability.abilityId == 51 
+                && statId == Stat.ACCURACY
+                && statChange < 0)
+            {
+                battleEvents.add(new BattleEvent(targetPokemon.name + "'s KEEN EYE prevents accuracy reductions.", target, target));
+            }
+            // HYPER CUTTER prevents attack reductions
+            else if (targetPokemon.ability != null 
+                && targetPokemon.ability.abilityId == 52 
+                && statId == Stat.ATTACK
+                && statChange < 0)
+            {
+                battleEvents.add(new BattleEvent(targetPokemon.name + "'s HYPER CUTTER prevents attack reductions.", target, target));
+            }
+            // CLEAR BODY prevents stat reduces from the foe (but not the user)
+            else if (targetPokemon.ability != null 
+                && targetPokemon.ability.abilityId == 29 
+                && statChange < 0
+                && target != attacker)
+            {
+                battleEvents.add(new BattleEvent(targetPokemon.name + "'s CLEAR BODY prevents stat reductions.", target, target));
+            }
+            // WHITE SMOKE prevents stat reduces from the foe (but not the user)
+            else if (targetPokemon.ability != null 
+                && targetPokemon.ability.abilityId == 73 
+                && statChange < 0
+                && target != attacker)
+            {
+                battleEvents.add(new BattleEvent(targetPokemon.name + "'s WHITE SMOKE prevents stat reductions.", target, target));
+            }
+        
+            //check if stat cannot be changed any further
+            else if ((this.statChanges[target][statId] == 6 && statChange > 0) || (this.statChanges[target][statId] == -6 && statChange < 0))
+            {
+                battleEvents.add(new BattleEvent(targetPokemon.name + "'s " + changedStat[statId] + " cannot be " +
+                    (this.statChanges[target][statId] < 0 ? "decreased" : "increased") + " any further.", target, target));
+            }
 
+            else
+            {
+                //apply stat change with limits of |6|
+                this.statChanges[target][statId] = (statChange / Math.abs(statChange)) * Math.min(6, Math.abs(statChange + this.statChanges[target][statId]));
+
+                if (abilityId == 80)
+                {
+                    battleEvents.add(new BattleEvent(
+                        targetPokemon.name + "'s STEADFAST raised it's speed.",
+                        target, target));
+                }
+                else if (abilityId == 22)
+                {
+                    battleEvents.add(new BattleEvent("INTIMIDATE cuts " + targetPokemon.name + "'s " +
+                        changedStat[statId] + statChangeMessages[statChange + 2], target, target));
+                }
                 else
                 {
-                    //apply stat change with limits of |6|
-                    this.statChanges[target][statId] = (statChange / Math.abs(statChange)) * Math.min(6, Math.abs(statChange + this.statChanges[target][statId]));
-
                     battleEvents.add(new BattleEvent(targetPokemon.name + "'s " +
                         changedStat[statId] + statChangeMessages[statChange + 2], target, target));
                 }
@@ -247,6 +265,11 @@ public class BattleOperationsManager {
         int damage;
         Weather weather = this.turnEffectManager.weather;
 
+        // Pokemon with the ROCK HEAD ability do not take recoil damage
+        if (attackingPokemon.ability != null && attackingPokemon.ability.abilityId == 69)
+        {
+            return null;
+        }
         //moves that have power=0 use attackers max hp to calc healing/recoil
         if (move.power == 0)
         {
@@ -262,7 +285,7 @@ public class BattleOperationsManager {
         }
         else if (move.recoil > 0)
         {
-            damage = (int)(Math.ceil(Math.min(attackDamage, attackingPokemon.currentHP) * (move.recoil / 100.0)));
+            damage = (int)(Math.ceil(Math.min(attackDamage, defendingPokemon.currentHP) * (move.recoil / 100.0)));
         }
         else
         {
@@ -383,6 +406,12 @@ public class BattleOperationsManager {
         float otherModifiers = 1.0f;
         Weather weather = this.turnEffectManager.weather;
 
+        // same type attack bonus
+        if (move.typeId == attackingPokemon.types[0]
+            || move.typeId == attackingPokemon.types[attackingPokemon.types.length - 1]) {
+            otherModifiers *= 1.5f;
+        }
+
         // check for effects that affect the type modifier
         if (move.moveEffect != null)
         {
@@ -433,6 +462,64 @@ public class BattleOperationsManager {
             }
         }
 
+
+        if (move.damageClassId == 2)
+        {
+            // GUTS ability increases physical damage under status conditions
+            if (attackingPokemon.ability != null && attackingPokemon.ability.abilityId == 62
+                && (attackingPokemon.statusEffect == StatusEffect.PARALYSIS || 
+                attackingPokemon.statusEffect == StatusEffect.BURN || 
+                attackingPokemon.statusEffect == StatusEffect.POISON ||
+                attackingPokemon.statusEffect == StatusEffect.BADLY_POISON))
+            {
+                otherModifiers *= 1.5f;
+            }
+            // Pokemon without guts ability have physical damage 
+            else if (attackingPokemon.statusEffect == StatusEffect.BURN)
+            {
+                otherModifiers *= 0.5f;
+            }
+        }
+
+        // Technician ability boosts damage of weak moves
+        if (attackingPokemon.ability != null && attackingPokemon.ability.abilityId == 101 && move.power <= 60) {
+            otherModifiers *= 1.5f;
+        }
+
+        // Overgrow abliity boosts Grass damage when health falls below 1/3
+        else if (attackingPokemon.ability != null && attackingPokemon.ability.abilityId == 65
+                && attackingPokemon.currentHP / attackingPokemon.stats[Stat.HP] <= 0.33
+                && move.typeId == Type.GRASS) {
+            otherModifiers *= 1.5f;
+        }
+
+        // Blaze abliity boosts Fire damage when health falls below 1/3
+        else if (attackingPokemon.ability != null && attackingPokemon.ability.abilityId == 66
+                && attackingPokemon.currentHP / attackingPokemon.stats[Stat.HP] <= 0.33
+                && move.typeId == Type.FIRE) {
+            otherModifiers *= 1.5f;
+        }
+
+        // Torrent abliity boosts Water damage when health falls below 1/3
+        else if (attackingPokemon.ability != null && attackingPokemon.ability.abilityId == 67
+                && attackingPokemon.currentHP / attackingPokemon.stats[Stat.HP] <= 0.33
+                && move.typeId == Type.WATER) {
+            otherModifiers *= 1.5f;
+        }
+
+        // Swarm abliity boosts Bug damage when health falls below 1/3
+        else if (attackingPokemon.ability != null && attackingPokemon.ability.abilityId == 68
+                && attackingPokemon.currentHP / attackingPokemon.stats[Stat.HP] <= 0.33
+                && move.typeId == Type.BUG) {
+            otherModifiers *= 1.5f;
+        }
+
+        // THICK FAT ability reduces Ice and Fire type damage
+        if (defendingPokemon.ability != null && defendingPokemon.ability.abilityId == 47
+            && (move.typeId == Type.ICE || move.typeId == Type.FIRE)) {
+            otherModifiers *= 0.5f;
+        }
+        
         return otherModifiers;
     }
 

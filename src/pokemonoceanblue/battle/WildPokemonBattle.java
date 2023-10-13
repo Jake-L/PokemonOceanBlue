@@ -14,7 +14,7 @@ public class WildPokemonBattle extends BattleModel {
 
     public WildPokemonBattle(PokemonModel wildPokemon, PokemonModel[] playerTeam) {
         this(wildPokemon, playerTeam, Weather.NEUTRAL);
-  }
+    }
 
     @Override
     protected void sendOutOpponentPokemon() {

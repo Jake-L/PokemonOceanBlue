@@ -219,14 +219,14 @@ public class BattleOperationsManagerTests {
         // check that GROWL reduces attack
         defendingPokemon = new PokemonModel(1, 5, false);
         battleOperationsManager = new BattleOperationsManager(turnEffectManager);
-        events = battleOperationsManager.addStatChanges(0, move, defendingPokemon);
+        events = battleOperationsManager.addStatChanges(0, 1, move.moveStatEffects, defendingPokemon);
         assertEquals(-1, battleOperationsManager.statChanges[1][Stat.ATTACK]);
         assertEquals(1, events.size());
 
         // check that GROWL doesn't reduce attack of a Pokemon with CLEAR BODY
         defendingPokemon = new PokemonModel(376, 5, false);
         battleOperationsManager = new BattleOperationsManager(turnEffectManager);
-        events = battleOperationsManager.addStatChanges(0, move, defendingPokemon);
+        events = battleOperationsManager.addStatChanges(0, 1, move.moveStatEffects, defendingPokemon);
         assertEquals(0, battleOperationsManager.statChanges[1][Stat.ATTACK]);
         assertEquals(1, events.size());
 
@@ -239,7 +239,7 @@ public class BattleOperationsManagerTests {
         turnEffectManager.addMultiTurnEffect(new MoveModel(54), 1, team, new int[2]);
         battleOperationsManager = new BattleOperationsManager(turnEffectManager);
         // check that GROWL has no effect, used by team 0 affecting team 1
-        events = battleOperationsManager.addStatChanges(0, move, defendingPokemon);
+        events = battleOperationsManager.addStatChanges(0, 1, move.moveStatEffects, defendingPokemon);
         assertEquals(0, battleOperationsManager.statChanges[1][Stat.ATTACK]);
         assertEquals(1, events.size());
     }

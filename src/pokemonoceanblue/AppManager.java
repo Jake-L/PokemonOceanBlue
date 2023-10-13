@@ -643,7 +643,7 @@ public class AppManager {
                     }
                 }
 
-                else if (this.currentController.isComplete()) {
+                else if (returnValue == -1) {
                     this.exitCurrentView();
                 }
             }

@@ -11,6 +11,7 @@ import pokemonoceanblue.PokemonModel;
 import pokemonoceanblue.Stat;
 import pokemonoceanblue.StatusEffect;
 import pokemonoceanblue.Weather;
+import pokemonoceanblue.StatEffect;
 
 public abstract class BattleModel extends BaseModel
 {
@@ -265,6 +266,14 @@ public abstract class BattleModel extends BaseModel
                 this.unableToMove[attacker] = true;
                 this.events.remove(attackEventIndex);
                 this.events.add(attackEventIndex, new BattleEvent(attackingPokemon.name + " flinched!", attacker, attacker));
+
+                // STEADFAST raises Speed after flinching
+                if (attackingPokemon.ability != null && attackingPokemon.ability.abilityId == 80)
+                {
+                    StatEffect[] moveStatEffects = new StatEffect[1];
+                    moveStatEffects[0] = new StatEffect(Stat.SPEED, 1);
+                    this.events.addAll(battleOperationsManager.addStatChanges(attacker, attacker, moveStatEffects, attackingPokemon, attackingPokemon.ability.abilityId));
+                }
             }
         }
         if (!this.unableToMove[attacker])
@@ -654,6 +663,18 @@ public abstract class BattleModel extends BaseModel
                     && (this.events.get(attackEventIndex).attack.move.moveEffect.effectId == 46 || this.events.get(attackEventIndex).attack.move.moveEffect.effectId == 11))))
             {
                 MoveModel move = this.events.get(attackEventIndex).attack.move;
+                int target;
+                
+                // when target id is 7 the move applies stat changes to the user, otherwise applied to foe
+                if (move.targetId == 7)
+                {
+                    target = attacker;
+                }
+                else
+                {
+                    target = (attacker + 1) % 2;
+                }
+
                 if (move.moveEffect != null && move.moveEffect.effectId > -1)
                 {
                     this.moveEffect(move, attackEventIndex, attacker);
@@ -677,9 +698,9 @@ public abstract class BattleModel extends BaseModel
                     turnEffectManager.statusEffect(attacker, (attacker + 1) % 2, move.effectChance, move.ailmentId,
                                                    defendingPokemon, this.events);
                 }
-                if (move.moveStatEffects.length > 0)
+                if (move.moveStatEffects.length > 0 && ranNum.nextInt(100) + 1 <= move.effectChance)
                 {
-                    this.events.addAll(battleOperationsManager.addStatChanges(attacker, move, defendingPokemon));
+                    this.events.addAll(battleOperationsManager.addStatChanges(attacker, target, move.moveStatEffects, defendingPokemon));
                 }
             }
             if (!this.moveProcessed[(attacker + 1) % 2])

@@ -44,7 +44,7 @@ public class AbilityModel
             // // get number of stat effects
             // query = "SELECT COUNT(*) FROM move_stat_effect WHERE move_id = " + this.moveId;
             // rs = db.runQuery(query);
-            // moveStatEffects = new MoveStatEffect[rs.getInt(1)];
+            // moveStatEffects = new StatEffect[rs.getInt(1)];
 
             // // get stat effects
             // query = "SELECT stat_id, stat_change FROM move_stat_effect WHERE move_id = " + this.moveId;
@@ -53,7 +53,7 @@ public class AbilityModel
 
             // while(rs.next()) 
             // {
-            //     moveStatEffects[index] = new MoveStatEffect(rs.getInt(1), rs.getInt(2));
+            //     moveStatEffects[index] = new StatEffect(rs.getInt(1), rs.getInt(2));
             //     index++;
             // }     
             
