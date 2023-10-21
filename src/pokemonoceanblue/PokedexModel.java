@@ -5,8 +5,8 @@ import java.sql.*;
 public class PokedexModel extends BaseModel
 {
     // TODO: add tasks for defeating Pokemon, catching them 20 times, etc
-    public int[] caughtPokemon = new int[506];
-    public String[] pokemonDescription = new String[506];
+    public int[] caughtPokemon = new int[Utils.POKEMON_COUNT + 1];
+    public String[] pokemonDescription = new String[Utils.POKEMON_COUNT + 1];
     public int uniqueCaught = 0;
 
     public PokedexModel()
@@ -59,7 +59,7 @@ public class PokedexModel extends BaseModel
         {
             DatabaseUtility db = new DatabaseUtility();
 
-            String query = "SELECT pokemon_id, [description] FROM pokemon WHERE pokemon_id <= 505 ";
+            String query = "SELECT pokemon_id, [description] FROM pokemon WHERE pokemon_id < 1000 ";
 
             ResultSet rs = db.runQuery(query);
 

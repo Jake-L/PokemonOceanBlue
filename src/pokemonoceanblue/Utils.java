@@ -9,11 +9,14 @@ import java.util.Hashtable;
 public class Utils 
 {
     // list of legendary pokemon that can only be caught once and cannot be shiny
-    public static int[] LEGENDARY_POKEMON = new int[] {
+    public static final int[] LEGENDARY_POKEMON = new int[] {
         144, 145, 146, 150, 151, 243, 244, 245, 249, 250, 251,
         377, 378, 379, 380, 381, 382, 383, 384, 385, 386,
         480, 481, 482, 483, 484, 485, 486, 487, 488, 490, 491, 492, 493
     };
+
+    // number of Pokemon in the game
+    public static final int POKEMON_COUNT = 507;
 
     /**
      * Returns the id of the current time of day

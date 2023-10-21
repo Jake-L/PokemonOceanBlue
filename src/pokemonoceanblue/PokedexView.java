@@ -15,7 +15,7 @@ import java.io.IOException;
  */
 public class PokedexView extends BaseView 
 {
-    private BufferedImage[] pokemonIconSprite = new BufferedImage[506];
+    private BufferedImage[] pokemonIconSprite = new BufferedImage[Utils.POKEMON_COUNT + 1];
     private Image[] indexHighlight = new Image[2];
     private BufferedImage pokemonSprite;
     private PokedexModel model;
@@ -82,7 +82,7 @@ public class PokedexView extends BaseView
     {
         try 
         {
-            this.pokemonSprite = ImageIO.read(this.getClass().getResource("/pokemoncentered/frame0/" + this.model.optionIndex + ".png"));
+            this.pokemonSprite = ImageIO.read(this.getClass().getResource("/pokemon/frame0/" + this.model.optionIndex + ".png"));
 
             // turn the sprite black if they player hasn't caught the Pokemon
             if (this.model.caughtPokemon[this.model.optionIndex] == 0)
@@ -92,7 +92,7 @@ public class PokedexView extends BaseView
         }
         catch (IOException e)
         {
-            System.out.println("Error loading /pokemoncentered/frame0/" + this.model.optionIndex + ".png");
+            System.out.println("Error loading /pokemon/frame0/" + this.model.optionIndex + ".png");
         }
     }
 
@@ -174,7 +174,7 @@ public class PokedexView extends BaseView
         g.drawImage(
             this.pokemonSprite,
             10 * graphicsScaling,
-            28 * graphicsScaling,
+            (28 - pokemonYOffset.get(this.model.optionIndex)) * graphicsScaling,
             this.pokemonSprite.getWidth(null) * graphicsScaling,
             this.pokemonSprite.getHeight(null) * graphicsScaling,
             canvas

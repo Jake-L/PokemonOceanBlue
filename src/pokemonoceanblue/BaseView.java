@@ -7,7 +7,11 @@ import java.awt.Image;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import java.awt.image.BufferedImage;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 import java.awt.BasicStroke;
 import java.awt.Graphics2D;
@@ -39,6 +43,7 @@ public abstract class BaseView {
     protected static Image sandstormSprite;
     protected static Image[] genderIcons = new Image[2];
     protected static Image[] typeSprites = new Image[18];
+    protected static Dictionary<Integer, Integer> pokemonYOffset;
 
     public BaseView() {
         ImageIcon ii;
@@ -120,6 +125,20 @@ public abstract class BaseView {
             this.pokemonBackground[i] = ii.getImage();
             ii = new ImageIcon(this.getClass().getResource("/menus/summaryHeader" + i + ".png"));
             this.summaryHeader[i] = ii.getImage();
+        }
+
+        pokemonYOffset = new Hashtable<>();
+
+        try {
+            DatabaseUtility db = new DatabaseUtility();
+            String query = "SELECT pokemon_id, y_offset FROM pokemon";
+            ResultSet rs = db.runQuery(query);
+
+            while (rs.next()) {
+                pokemonYOffset.put(rs.getInt("pokemon_id"), rs.getInt("y_offset"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
@@ -497,7 +516,8 @@ public abstract class BaseView {
         g.drawImage(sprite,
                 x + (this.summaryHeader[style].getWidth(null) / 2 - sprite.getWidth(null) / 2) * graphicsScaling,
                 y + (this.summaryHeader[style].getHeight(null)
-                        + (this.pokemonBackground[style].getHeight(null) - 80) / 2) * graphicsScaling,
+                        + (this.pokemonBackground[style].getHeight(null) - pokemonYOffset.get(pokemon.base_pokemon_id) - 80) / 2)
+                        * graphicsScaling,
                 sprite.getWidth(null) * graphicsScaling, sprite.getHeight(null) * graphicsScaling, canvas);
 
         // display header to hold Pokemon's name and level
@@ -570,14 +590,8 @@ public abstract class BaseView {
         RoundRectangle2D roundedRectangle;
 
         // quest section background rectangle
-        roundedRectangle = new RoundRectangle2D.Float(
-            x, 
-            y, 
-            width / 5,
-            (14 + 10 * rowCount) * graphicsScaling, 
-            5 * graphicsScaling, 
-            5 * graphicsScaling
-        );
+        roundedRectangle = new RoundRectangle2D.Float(x, y, width / 5, (14 + 10 * rowCount) * graphicsScaling,
+                5 * graphicsScaling, 5 * graphicsScaling);
 
         // lighter fill
         colour = new Color(255, 230, 189, 255);
@@ -585,14 +599,8 @@ public abstract class BaseView {
         graphics2.fill(roundedRectangle);
 
         // header background rectangle
-        roundedRectangle = new RoundRectangle2D.Float(
-            x, 
-            y, 
-            width / 5,
-            14 * graphicsScaling, 
-            5 * graphicsScaling, 
-            5 * graphicsScaling
-        );
+        roundedRectangle = new RoundRectangle2D.Float(x, y, width / 5, 14 * graphicsScaling, 5 * graphicsScaling,
+                5 * graphicsScaling);
 
         // lighter fill
         colour = new Color(255, 197, 92, 255);
@@ -600,14 +608,8 @@ public abstract class BaseView {
         graphics2.fill(roundedRectangle);
 
         // quest section background rectangle
-        roundedRectangle = new RoundRectangle2D.Float(
-            x, 
-            y,
-            width / 5,
-            (14 + 10 * rowCount) * graphicsScaling, 
-            5 * graphicsScaling, 
-            5 * graphicsScaling
-        );
+        roundedRectangle = new RoundRectangle2D.Float(x, y, width / 5, (14 + 10 * rowCount) * graphicsScaling,
+                5 * graphicsScaling, 5 * graphicsScaling);
 
         // darker outline
         colour = new Color(255, 165, 0, 255);

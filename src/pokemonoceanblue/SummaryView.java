@@ -31,7 +31,7 @@ public class SummaryView extends BaseView {
 
         for (int i = 0; i < this.pokemonSprites.length; i++)
         {
-            ii = new ImageIcon(this.getClass().getResource("/pokemoncentered/frame0/" + this.model.pokemonList.get(i).getSpriteId() + ".png"));
+            ii = new ImageIcon(this.getClass().getResource("/pokemon/frame0/" + this.model.pokemonList.get(i).getSpriteId() + ".png"));
             this.pokemonSprites[i] = ii.getImage();
             ii = new ImageIcon(this.getClass().getResource("/inventory/" + this.model.pokemonList.get(i).pokeballId + ".png"));
             this.pokeballSprites[i] = ii.getImage();

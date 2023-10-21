@@ -303,10 +303,6 @@ public class PokemonTests {
         testSprite("pokemon/frame1");
         testSprite("pokemon/shinyframe0");
         testSprite("pokemon/frame1");
-
-        // test the centered sprites that appear in the party screen
-        testSprite("pokemoncentered/frame0");
-        testSprite("pokemoncentered/shinyframe0");
     }
 
     @Test
