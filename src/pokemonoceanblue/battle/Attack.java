@@ -57,7 +57,7 @@ public class Attack {
         float otherModifiers = battleOperationsManager.getDamageMultiplier(attackingPokemon, defendingPokemon, move,
                 isCrit, defender);
 
-        if (!battleOperationsManager.isHit(this.attacker, this.move.accuracy)
+        if (!battleOperationsManager.isHit(this.attacker, this.move.accuracy, defendingPokemon)
                 || (defendingPokemon.currentHP == 0 && move.targetId != 7)) {
             this.eventText.add(attackingPokemon.name + "'s attack missed!");
             this.attackMissed = true;
@@ -66,7 +66,7 @@ public class Attack {
             this.eventText.add("It's a one hit KO!");
             return defendingPokemon.currentHP;
         }
-        
+
         if (move.damageClassId == 2) {
             attack_stat = Stat.ATTACK;
             defense_stat = Stat.DEFENSE;
@@ -95,11 +95,11 @@ public class Attack {
             } else if (effectId == 238) {
                 movePower = 1 + 120 * defendingPokemon.currentHP / defendingPokemon.stats[Stat.HP];
             } else if (effectId == 294) {
-                int speedRatio = Math.min(attackingPokemon.stats[Stat.SPEED] / defendingPokemon.stats[Stat.SPEED], 4);
+                int speedRatio = Math.min(battleOperationsManager.getStat(attackingPokemon, attacker, Stat.SPEED)
+                        / battleOperationsManager.getStat(defendingPokemon, defender, Stat.SPEED), 4);
                 movePower = (speedRatio < 2 ? 60 : speedRatio * 40 - (speedRatio / 4) * 10);
             } else if (effectId == 220) {
-                movePower = (int) Math
-                        .min(1 + 25.0 * defendingPokemon.stats[Stat.SPEED] / attackingPokemon.stats[Stat.SPEED], 150);
+                movePower = (int) Math.min(1 + 25.0 * battleOperationsManager.getStat(defendingPokemon, defender, Stat.SPEED) / battleOperationsManager.getStat(attackingPokemon, attacker, Stat.SPEED), 150);
             } else if ((effectId == 9 && defendingPokemon.statusEffect != StatusEffect.SLEEP)
                     || (effectId == 93 && attackingPokemon.statusEffect != StatusEffect.SLEEP)) {
                 // moves that can only be used on sleeping Pokemon
@@ -125,10 +125,8 @@ public class Attack {
         this.getEffectivenessMessage(typeModifier);
 
         return (int) Math.ceil(((attackingPokemon.level * 2.0 / 5.0 + 2.0) * (movePower)
-                * (attackingPokemon.getStat(attack_stat, battleOperationsManager.statChanges[attacker][attack_stat])
-                        * 1.0
-                        / defendingPokemon.getStat(defense_stat,
-                                battleOperationsManager.statChanges[defender][defense_stat]))
+                * (battleOperationsManager.getStat(attackingPokemon, attacker, attack_stat) * 1.0
+                        / battleOperationsManager.getStat(defendingPokemon, defender, defense_stat))
                 / 50 + 2) * typeModifier * otherModifiers);
     }
 

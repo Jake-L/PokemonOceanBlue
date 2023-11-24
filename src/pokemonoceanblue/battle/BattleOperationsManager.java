@@ -47,23 +47,85 @@ public class BattleOperationsManager {
         {
             model.turnEffectManager.addStatusEffect(attackingPokemon.statusEffect, attacker, false, model);
         }
+
+        // abilities that are triggered when a Pokemon is sent out, such as INTIMIDATE or DRIZZLE
+        if (attackingPokemon.ability != null)
+        {
+            BattleEvent abilityEvent = null;
+
+            if (attackingPokemon.ability.abilityId == 2)
+            {
+                abilityEvent = new BattleEvent(
+                    attackingPokemon.name + "'s DRIZZLE made it rain.", 
+                    attacker, 
+                    attacker
+                );
+                abilityEvent.setWeather(Weather.RAIN);
+            }
+            else if (attackingPokemon.ability.abilityId == 70)
+            {
+                abilityEvent = new BattleEvent(
+                    attackingPokemon.name + "'s DROUGHT intensified the heat.", 
+                    attacker, 
+                    attacker
+                );
+                abilityEvent.setWeather(Weather.SUNNY);
+            }
+            else if (attackingPokemon.ability.abilityId == 76)
+            {
+                abilityEvent = new BattleEvent(
+                    attackingPokemon.name + "'s AIR LOCK cleared the weather.", 
+                    attacker, 
+                    attacker
+                );
+                abilityEvent.setWeather(Weather.NEUTRAL);
+            }
+            else if (attackingPokemon.ability.abilityId == 117)
+            {
+                abilityEvent = new BattleEvent(
+                    attackingPokemon.name + "'s SNOW WARNING kicked up a snowstorm.", 
+                    attacker, 
+                    attacker
+                );
+                abilityEvent.setWeather(Weather.HAIL);
+            }
+            else if (attackingPokemon.ability.abilityId == 45)
+            {
+                abilityEvent = new BattleEvent(
+                    attackingPokemon.name + "'s SAND STREAM kicked up a sandstorm.", 
+                    attacker, 
+                    attacker
+                );
+                abilityEvent.setWeather(Weather.SANDSTORM);
+            }
+
+            if (abilityEvent != null)
+            {
+                model.events.add(1, abilityEvent);
+            }
+        }
     }
 
     /**
      * Check if a move lands
      * @param attacker
      * @param moveAccuracy
+     * @param defendingPokemon the Pokemon being targetted by the attack
      * @return True if the move hits
      */
-    public boolean isHit(int attacker, int moveAccuracy)
+    public boolean isHit(int attacker, int moveAccuracy, PokemonModel defendingPokemon)
     {
-        int defender = (attacker + 1) % 2;
-        if (this.statChanges[attacker][6] != 0 || this.statChanges[defender][7] != 0)
+        if (moveAccuracy == -1)
         {
-            moveAccuracy = (int)(moveAccuracy * (2.0 / (Math.abs(this.statChanges[attacker][6]) + 2)) / 
-                (this.statChanges[defender][7] > 0 ? (Math.abs(this.statChanges[defender][7]) + 2) / 2.0 : 2.0 / (Math.abs(this.statChanges[defender][7]) + 2)));
+            return true;
         }
-        return moveAccuracy == -1 || this.ranNum.nextInt(100) + 1 <= moveAccuracy;
+
+        int defender = (attacker + 1) % 2;
+
+        moveAccuracy = (int)(moveAccuracy * (2.0 / (Math.abs(this.statChanges[attacker][6]) + 2)) / 
+            (this.statChanges[defender][7] > 0 ? (Math.abs(this.statChanges[defender][7]) + 2) / 2.0 : 2.0 / (Math.abs(this.statChanges[defender][7]) + 2)));
+        
+        return this.ranNum.nextInt(100) + 1 <= moveAccuracy;
     }
 
     /**
@@ -99,6 +161,57 @@ public class BattleOperationsManager {
     }
 
     /**
+     * Calculates a Pokemon's stat, taking into effect stat changes, abilities, etc
+     * @param pokemon the PokemonModel object
+     * @param attacker the index of the team of the Pokemon
+     * @param statIndex the index of the stat in the Stat enum
+     * @return the Pokemon's adjusted stat
+     */
+    public int getStat(PokemonModel pokemon, int attacker, int statIndex)
+    {
+        int stat = pokemon.stats[statIndex];
+        int modifier = this.statChanges[attacker][statIndex];
+
+        if (pokemon.ability != null) 
+        {
+            // Chlorophyll doubles speed in sunny weather
+            if (pokemon.ability.abilityId == 34 
+                && this.turnEffectManager.weather == Weather.SUNNY
+                && statIndex == Stat.SPEED)
+            {
+                stat *= 2;
+            }
+            // SWIFT SWIM doubles speed in rain weather
+            if (pokemon.ability.abilityId == 33 
+                && this.turnEffectManager.weather == Weather.RAIN
+                && statIndex == Stat.SPEED)
+            {
+                stat *= 2;
+            }
+
+            // SAND VEIL increases evasion in a sandstorm
+            if (pokemon.ability.abilityId == 8
+                && this.turnEffectManager.weather == Weather.SANDSTORM
+                && statIndex == Stat.EVASION
+                && modifier < 6)
+                {
+                    modifier += 0.5;
+                }
+        }
+
+        if (modifier < 0)
+        {
+            stat = (int)(stat * (2.0 / (Math.abs(modifier) + 2)));
+        }
+        else if (modifier > 0)
+        {
+            stat = (int)(stat * ((Math.abs(modifier) + 2) / 2.0));
+        }
+
+        return stat;
+    }
+
+    /**
      * Determine's which Pokemon attacks first
      * @param playerPokemon
      * @param enemyPokemon
@@ -109,8 +222,8 @@ public class BattleOperationsManager {
     public int determineFirstAttacker(PokemonModel playerPokemon, PokemonModel enemyPokemon, int playerMoveIndex, int enemyMoveIndex)
     {
         int firstAttacker;
-        int playerSpeed = playerPokemon.getStat(Stat.SPEED, this.statChanges[0][Stat.SPEED]);
-        int enemySpeed = enemyPokemon.getStat(Stat.SPEED, this.statChanges[0][Stat.SPEED]);
+        int playerSpeed = this.getStat(playerPokemon, 0, Stat.SPEED);
+        int enemySpeed = this.getStat(enemyPokemon, 1, Stat.SPEED);
         if (playerPokemon.moves[playerMoveIndex].priority > enemyPokemon.moves[enemyMoveIndex].priority)
         {
             firstAttacker = 0;

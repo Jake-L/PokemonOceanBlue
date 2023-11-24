@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import pokemonoceanblue.MoveModel;
 import pokemonoceanblue.PokemonModel;
+import pokemonoceanblue.Stat;
 import pokemonoceanblue.StatusEffect;
 import pokemonoceanblue.Type;
 import pokemonoceanblue.battle.WildPokemonBattle;
@@ -211,8 +212,8 @@ public class BattleTests {
             // choose "HARDEN"
             chooseAttack(battleModel, 0);
         }
-        assertNotEquals((team[0].getStat(2, battleModel.battleOperationsManager.statChanges[0][2])), team[0].stats[2]); 
-        assertTrue(team[0].getStat(2, battleModel.battleOperationsManager.statChanges[0][2]) > team[0].stats[2]);
+        assertNotEquals(battleModel.battleOperationsManager.getStat(team[0], 0, Stat.DEFENSE), team[0].stats[2]); 
+        assertTrue(battleModel.battleOperationsManager.getStat(team[0], 0, Stat.DEFENSE) > team[0].stats[2]);
     }
 
     /**
@@ -441,9 +442,9 @@ public class BattleTests {
         // choose "Dream Eater"
         chooseAttack(battleModel, 1);
         // player should not have taken any damage
-        assertEquals(team[0].getStat(0, 0), team[0].currentHP);
+        assertEquals(team[0].stats[Stat.HP], team[0].currentHP);
         // enemy should not have taken any damage
-        assertEquals(enemyTeam.getStat(0, 0), enemyTeam.currentHP);
+        assertEquals(enemyTeam.stats[Stat.HP], enemyTeam.currentHP);
 
         // second turn, put enemy to sleep and check that Snore does damage
         // choose "Spore"
@@ -451,15 +452,15 @@ public class BattleTests {
         // enemy should be asleep
         assertEquals(2, enemyTeam.statusEffect);
         // enemy should not have taken any damage
-        assertEquals(enemyTeam.getStat(0, 0), enemyTeam.currentHP);
+        assertEquals(enemyTeam.stats[Stat.HP], enemyTeam.currentHP);
         // player should have taken damage from Snore
-        assertTrue(team[0].currentHP < team[0].getStat(0, 0));
+        assertTrue(team[0].currentHP < team[0].stats[Stat.HP]);
 
         // third turn, Dream Eater should do damage
         // choose "Dream Eater"
         chooseAttack(battleModel, 1);
         // enemy should have taken any damage
-        assertTrue(enemyTeam.currentHP < enemyTeam.getStat(0, 0));
+        assertTrue(enemyTeam.currentHP < enemyTeam.stats[Stat.HP]);
     }
 
     /**
@@ -502,7 +503,7 @@ public class BattleTests {
             chooseAttack(battleModel, 0);
 
             // enemy should not have taken any damage
-            assertEquals(enemyTeam.getStat(0, 0), enemyTeam.currentHP);
+            assertEquals(enemyTeam.stats[Stat.HP], enemyTeam.currentHP);
 
             // check that heal bell removed the status effects
             assertEquals(0, team[0].statusEffect);
@@ -594,7 +595,7 @@ public class BattleTests {
         chooseAttack(battleModel, 0);
         
         // enemy should not have taken any damage
-        assertEquals(enemyTeam.getStat(0, 0), enemyTeam.currentHP);
+        assertEquals(enemyTeam.stats[Stat.HP], enemyTeam.currentHP);
     }
 
     /**

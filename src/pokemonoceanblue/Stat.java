@@ -8,4 +8,5 @@ public class Stat {
     public static int SPECIAL_DEFENSE = 4;
     public static int SPEED = 5;
     public static int ACCURACY = 6;
+    public static int EVASION = 7;
 }

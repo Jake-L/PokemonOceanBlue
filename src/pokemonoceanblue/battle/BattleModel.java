@@ -6,6 +6,7 @@ import java.util.Random;
 
 import pokemonoceanblue.AppManager;
 import pokemonoceanblue.BaseModel;
+import pokemonoceanblue.Constants;
 import pokemonoceanblue.MoveModel;
 import pokemonoceanblue.PokemonModel;
 import pokemonoceanblue.Stat;
@@ -212,6 +213,7 @@ public abstract class BattleModel extends BaseModel
     private int canAttack(int attacker)
     {
         PokemonModel attackingPokemon = this.team[attacker][this.currentPokemon[attacker]];
+        PokemonModel defendingPokemon = this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]];
         int attackEventIndex = 0;
         // check if freze or sleep should end this turn
         if (attackingPokemon.statusEffect == StatusEffect.SLEEP || attackingPokemon.statusEffect == StatusEffect.FROZEN)
@@ -258,10 +260,23 @@ public abstract class BattleModel extends BaseModel
             attackEventIndex = 1;
         }
         // check if Pokemon flinched
-        if (!this.unableToMove[attacker])
+        if (!this.unableToMove[attacker] 
+            && this.moveProcessed[(attacker + 1) % 2] 
+            && this.attacks[(attacker + 1) % 2] != null 
+            && this.attacks[(attacker + 1) % 2].move != null)
         {
-            if (this.moveProcessed[(attacker + 1) % 2] && this.attacks[(attacker + 1) % 2] != null && this.attacks[(attacker + 1) % 2].move != null && 
-                this.ranNum.nextInt(100) + 1 <= this.attacks[(attacker + 1) % 2].move.flinchChance)
+            int flinchChance = this.attacks[(attacker + 1) % 2].move.flinchChance;
+
+            // STENCH gives a 10% flinch chance for physical attacks
+            if (flinchChance < 10 
+                && defendingPokemon.ability != null 
+                && defendingPokemon.ability.abilityId == 1
+                && this.attacks[(attacker + 1) % 2].move.damageClassId == 2)
+            {
+                flinchChance = 10;
+            }
+
+            if (this.ranNum.nextInt(100) + 1 <= flinchChance)
             {
                 this.unableToMove[attacker] = true;
                 this.events.remove(attackEventIndex);
@@ -276,10 +291,17 @@ public abstract class BattleModel extends BaseModel
                 }
             }
         }
+        // SOUNDPROOF ability grants immunity to sound-based moves
+        else if (defendingPokemon.ability != null && defendingPokemon.ability.abilityId == 43 && Constants.SOUND_MOVES.contains(this.attacks[attacker].move.moveId))
+        {
+            this.unableToMove[attacker] = true;
+            this.events.remove(attackEventIndex);
+            this.events.add(attackEventIndex, new BattleEvent(defendingPokemon.name + "'s SOUNDPROOF grants immunity to sound-based moves.'", attacker, (attacker + 1) % 2));
+        }
         if (!this.unableToMove[attacker])
         {
-            this.events.get(attackEventIndex).attack.useAttack(this.team[attacker][this.currentPokemon[attacker]],
-                this.team[(attacker + 1) % 2][this.currentPokemon[(attacker + 1) % 2]], battleOperationsManager, turnEffectManager);
+            this.events.get(attackEventIndex).attack.useAttack(attackingPokemon,
+            defendingPokemon, battleOperationsManager, turnEffectManager);
             this.events.get(attackEventIndex).damage = this.events.get(attackEventIndex).attack.damage;
             return attackEventIndex;
         }

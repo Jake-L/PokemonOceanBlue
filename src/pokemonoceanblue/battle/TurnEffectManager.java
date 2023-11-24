@@ -200,14 +200,29 @@ public class TurnEffectManager
             {
                 continue;
             }
-            byte statusEffect = team[i][currentPokemon[i]].statusEffect;
-            if (statusEffect > StatusEffect.FROZEN && statusEffect < StatusEffect.CONFUSION)
+
+            PokemonModel pokemon = team[i][currentPokemon[i]];
+            byte statusEffect = pokemon.statusEffect;
+
+            // before applying status effect damage, check if their ability cured the effect
+            if (pokemon.ability != null && pokemon.ability.abilityId == 61 && ranNum.nextInt(3) == 0)
             {
-                BattleEvent event = new BattleEvent(team[i][currentPokemon[i]].name + effectMessages[team[i][currentPokemon[i]].statusEffect - 4], i, i);
-                event.setDamage((int)Math.ceil(team[i][currentPokemon[i]].stats[Stat.HP] / 8.0), i);
+                BattleEvent event = new BattleEvent(
+                    pokemon.name + "'s SHED SKIN cured it's status condition.",
+                    i,
+                    i
+                );
+                event.setStatusEffect(StatusEffect.UNAFFLICTED, i);
+                events.add(event);
+            }
+
+            else if (statusEffect > StatusEffect.FROZEN && statusEffect < StatusEffect.CONFUSION)
+            {
+                BattleEvent event = new BattleEvent(pokemon.name + effectMessages[pokemon.statusEffect - 4], i, i);
+                event.setDamage((int)Math.ceil(pokemon.stats[Stat.HP] / 8.0), i);
 
                 //badly poisoned
-                if (team[i][currentPokemon[i]].statusEffect == StatusEffect.BADLY_POISON)
+                if (pokemon.statusEffect == StatusEffect.BADLY_POISON)
                 {
                     // determine damage multiplier first
                     int multiplier = 1;
@@ -219,12 +234,12 @@ public class TurnEffectManager
                             break;
                         }
                     }
-                    event.damage = (int)Math.ceil((team[i][currentPokemon[i]].stats[Stat.HP] * multiplier) / 8.0);
+                    event.damage = (int)Math.ceil((pokemon.stats[Stat.HP] * multiplier) / 8.0);
                 }
                 //curse
-                else if (team[i][currentPokemon[i]].statusEffect == StatusEffect.CURSE)
+                else if (pokemon.statusEffect == StatusEffect.CURSE)
                 {
-                    event.damage = (int)Math.ceil(team[i][currentPokemon[i]].stats[Stat.HP] / 4.0);
+                    event.damage = (int)Math.ceil(pokemon.stats[Stat.HP] / 4.0);
                 }
                 events.add(event);
             }
