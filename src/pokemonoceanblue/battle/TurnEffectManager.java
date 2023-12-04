@@ -8,6 +8,7 @@ import pokemonoceanblue.MoveEffectModel;
 import pokemonoceanblue.MoveModel;
 import pokemonoceanblue.PokemonModel;
 import pokemonoceanblue.Stat;
+import pokemonoceanblue.StatEffect;
 import pokemonoceanblue.StatusEffect;
 import pokemonoceanblue.Type;
 import pokemonoceanblue.Weather;
@@ -57,6 +58,8 @@ public class TurnEffectManager
                     || (ailmentId == StatusEffect.POISON && defendingPokemon.ability.name.equals("IMMUNITY"))
                     // check if Pokemon cannot be paralyzed due to limber
                     || (ailmentId == StatusEffect.PARALYSIS && defendingPokemon.ability.name.equals("LIMBER"))
+                    // check if Pokemon cannot be burned due to water veil
+                    || (ailmentId == StatusEffect.BURN && defendingPokemon.ability.name.equals("WATER VEIL"))
                     // check if Pokemon cannot be confused due to own tempo
                     || (ailmentId == StatusEffect.CONFUSION && defendingPokemon.ability.name.equals("OWN TEMPO"))))
             {
@@ -181,7 +184,7 @@ public class TurnEffectManager
     /** 
      * checks if either pokemon should suffer an end of turn effect
      */
-    public void endOfTurnEffects(PokemonModel team[][], int currentPokemon[], List<BattleEvent> events)
+    public void endOfTurnEffects(PokemonModel team[][], int currentPokemon[], List<BattleEvent> events, BattleOperationsManager battleOperationsManager)
     {
         String[] effectMessages = {" is hurt by burn."," is hurt by poison."," is badly hurt by poison."," is hurt by the curse.","sandstorm.","hail."};
         //check for status effect end of turn effects
@@ -242,6 +245,14 @@ public class TurnEffectManager
                     event.damage = (int)Math.ceil(pokemon.stats[Stat.HP] / 4.0);
                 }
                 events.add(event);
+            }
+
+            // SPEED BOOST ability raises SPEED at the end of each turn
+            if (pokemon.ability != null && pokemon.ability.abilityId == 3)
+            {
+                StatEffect[] moveStatEffects = new StatEffect[1];
+                moveStatEffects[0] = new StatEffect(Stat.SPEED, 1);
+                events.addAll(battleOperationsManager.addStatChanges(i, i, moveStatEffects, pokemon, pokemon.ability.abilityId));
             }
         }
         //check for multiTurnEffects by looping through list
@@ -305,6 +316,8 @@ public class TurnEffectManager
 
     public void addStatusEffect(int effectId, int target, boolean isNewStatusEffect, BattleModel model)
     {
+        // TODO: why does BattleOperationsManager call this function with 
+        // isNewStatusEffect = false if that does nothing?
         if (isNewStatusEffect)
         {
             model.team[model.events.get(0).target][model.currentPokemon[model.events.get(0).target]].statusEffect = (byte) effectId;

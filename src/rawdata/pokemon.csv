@@ -39,8 +39,8 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 38,Ninetales,10,0,73,76,75,81,100,100,4,30,38,Some legends claim that each of its nine tails has its own unique type of special mystical power.,1.01,-1,7
 39,Jigglypuff,1,18,115,45,20,45,25,20,0,70,39,If it inflates to sing a lullaby$ it can perform longer and cause sure drowsiness in its audience.,0.87,43,22
 40,Wigglytuff,1,18,140,70,45,85,50,45,0,20,40,Their fur feels so good that if two of them snuggle together$ they won't want to be separated.,0.87,43,11
-41,Zubat,4,3,40,45,35,30,40,55,5,100,41,While flying$ it constantly emits ultrasonic waves from its mouth to check its surroundings.,1.07,-1,16
-42,Golbat,4,3,75,80,70,65,75,90,5,40,42,However hard its victim's hide may be$ it punctures with sharp fangs and gorges itself with blood.,1.07,-1,11
+41,Zubat,4,3,40,45,35,30,40,55,5,100,41,While flying$ it constantly emits ultrasonic waves from its mouth to check its surroundings.,1.07,39,16
+42,Golbat,4,3,75,80,70,65,75,90,5,40,42,However hard its victim's hide may be$ it punctures with sharp fangs and gorges itself with blood.,1.07,39,11
 43,Oddish,12,4,45,50,55,75,65,30,3,100,43,Awakened by moonlight$ it roams actively at night. In the day$ it stays quietly underground.,0.98,34,23
 44,Gloom,12,4,60,65,70,85,75,40,3,50,44,What appears to be drool is actually sweet honey. It is very sticky and clings stubbornly if touched.,0.98,34,20
 45,Vileplume,12,4,75,80,85,110,90,50,3,20,45,It has the world's largest petals. With every step$ the petals shake out heavy clouds of toxic pollen.,0.98,34,15
@@ -52,8 +52,8 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 51,Dugtrio,5,0,35,100,50,50,70,120,5,20,51,Its three heads bob separately up and down to loosen the soil nearby$ making it easier for it to burrow.,0.85,8,19
 52,Meowth,1,0,40,45,35,40,40,90,5,100,52,It is fascinated by round objects. It can't stop playing with them until it tires and falls asleep.,0.88,7,16
 53,Persian,1,0,65,70,60,65,65,115,5,40,53,Many adore it for its sophisticated air. However$ it will lash out and scratch for little reason.,0.88,7,12
-54,Psyduck,11,14,50,52,48,65,50,55,3,75,54,It has mystical powers but doesn't recall that it has used them. That is why it always looks puzzled.,1,-1,17
-55,Golduck,11,14,80,82,78,95,80,85,3,30,55,When it swims at full speed using its long$ webbed limbs$ its forehead somehow begins to glow.,1,-1,11
+54,Psyduck,11,14,50,52,48,65,50,55,3,75,54,It has mystical powers but doesn't recall that it has used them. That is why it always looks puzzled.,1,6,17
+55,Golduck,11,14,80,82,78,95,80,85,3,30,55,When it swims at full speed using its long$ webbed limbs$ its forehead somehow begins to glow.,1,6,11
 56,Mankey,2,0,40,80,35,35,45,70,1,75,56,It is extremely ill-tempered. Groups of them will attack any handy target for no reason.,1.07,72,18
 57,Primeape,2,0,65,105,60,60,70,95,1,30,57,If approached while asleep$ it may awaken and angrily give chase in a groggy state of semi-sleep.,1.07,72,12
 58,Growlithe,10,0,55,70,45,70,50,60,3,75,58,It has a brave and trustworthy nature. It fearlessly stands up to bigger and stronger foes.,1.11,-1,15
@@ -79,8 +79,8 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 78,Rapidash,10,0,65,100,70,80,80,105,5,25,78,At full gallop$ its four hooves barely touch the ground because it moves so incredibly fast.,1,49,3
 79,Slowpoke,11,14,90,65,65,40,40,15,0,75,79,It lazes vacantly near water. If something bites its tail$ it won't even notice for a whole day.,0.98,20,25
 80,Slowbro,11,14,95,75,110,100,80,30,2,30,80,If the tail-biting SHELLDER is thrown off in a harsh battle$ it reverts to being an ordinary SLOWPOKE.,0.98,20,11
-81,Magnemite,13,9,25,35,70,95,55,45,3,75,81,It is attracted by electromagnetic waves. It may approach Trainers if they are using their Pokegear.,1.07,-1,27
-82,Magneton,13,9,50,60,95,120,70,70,3,25,82,Three MAGNEMITE are linked by a strong magnetic force. Earaches will occur if you get too close.,1.07,-1,12
+81,Magnemite,13,9,25,35,70,95,55,45,3,75,81,It is attracted by electromagnetic waves. It may approach Trainers if they are using their Pokegear.,1.07,5,27
+82,Magneton,13,9,50,60,95,120,70,70,3,25,82,Three MAGNEMITE are linked by a strong magnetic force. Earaches will occur if you get too close.,1.07,5,12
 83,Farfetch'd,1,3,52,90,55,58,62,60,1,20,83,If anyone tries to disturb where the essential plant stalks grow$ it uses its own stalk to thwart them.,0.754,51,15
 84,Doduo,1,3,35,85,45,35,35,75,1,75,84,By alternately raising and lowering its two heads$ it balances itself to be more stable while running.,0.94,-1,13
 85,Dodrio,1,3,60,110,70,60,60,110,1,20,85,It collects data and plans three times as wisely$ but it may think too much and fall into a state of immobility.,0.94,-1,0
@@ -147,7 +147,7 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 146,Moltres,10,3,90,100,90,125,85,90,3,2,146,This legendary Pokemon scatters embers with every flap of its wings. It is a thrilling sight to behold.,1.16,-1,
 147,Dratini,16,0,41,64,45,50,50,50,1,20,147,It is born large to start with. It repeatedly sheds its skin as it steadily grows longer.,1.2,61,
 148,Dragonair,16,0,61,84,65,70,70,70,1,20,148,They say that if it emits an aura from its whole body$ the weather will begin to change instantly.,1.2,61,
-149,Dragonite,16,3,91,134,95,100,100,80,1,20,149,It is said that this Pokemon constantly flies over the immense seas and rescues drowning people.,1.2,-1,
+149,Dragonite,16,3,91,134,95,100,100,80,1,20,149,It is said that this Pokemon constantly flies over the immense seas and rescues drowning people.,1.2,39,
 150,Mewtwo,14,0,106,110,90,154,90,130,3,2,150,Because its battle abilities were raised to the ultimate level$ it thinks only of defeating its foes.,1.25,-1,
 151,Mew,14,0,100,100,100,100,100,100,3,20,151,Apparently$ it appears only to those people who are pure of heart and have a strong desire to see it.,1.2,-1,
 152,Chikorita,12,0,45,49,65,49,65,45,4,20,152,A sweet aroma gently wafts from the leaf on its head. It is docile and loves to soak up sunrays.,1.05,65,
@@ -167,7 +167,7 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 166,Ledian,7,3,55,35,50,55,110,85,4,40,166,When the stars flicker in the night sky$ it flutters about$ scattering a glowing powder.,0.78,68,
 167,Spinarak,7,4,40,60,40,40,40,30,1,100,167,It lies still in the same pose for days in its web$ waiting for its unsuspecting prey to wander close.,0.8,68,
 168,Ariados,7,4,70,90,70,60,70,40,1,40,168,It spins string not only from its rear but also from its mouth. It's hard to tell which end is which.,0.8,68,
-169,Crobat,4,3,85,90,80,70,80,130,5,40,169,It flies so silently through the dark on its four wings that it may not be noticed even when nearby.,1.07,-1,0
+169,Crobat,4,3,85,90,80,70,80,130,5,40,169,It flies so silently through the dark on its four wings that it may not be noticed even when nearby.,1.07,39,0
 170,Chinchou,11,13,75,38,38,56,56,67,0,75,170,It shoots positive and negative electricity between the tips of its two antennae and zaps its enemies.,0.92,-1,0
 171,Lanturn,11,13,125,58,58,76,76,67,0,30,171,The light it emits is so bright that it can illuminate the sea's surface from a depth of over three miles.,0.92,-1,0
 172,Pichu,13,0,20,40,15,35,35,60,5,75,172,It is not yet skilled at storing electricity. It may send out a jolt if amused or startled.,0.97,9,
@@ -191,19 +191,19 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 190,Aipom,1,0,55,70,55,40,55,85,5,20,190,Its tail is so powerful that it can use it to grab a tree branch and hold itself up in the air.,0.964,101,
 191,Sunkern,12,0,30,30,30,30,30,30,3,95,191,It may plummet from the sky. If attacked by a SPEAROW$ it will violently shake its leaves.,0.85,34,0
 192,Sunflora,12,0,75,75,55,105,85,30,3,50,192,It converts sunlight into energy. In the darkness after sunset$ it closes its petals and becomes still.,0.85,34,
-193,Yanma,7,3,65,65,45,75,45,95,5,30,193,If it flaps its wings really fast$ it can generate shock waves that will shatter windows in the area.,1.03,-1,0
-194,Wooper,11,5,55,45,45,25,25,15,0,100,194,This Pokemon lives in cold water. It will leave the water to search for food when it gets cold outside.,0.86,-1,
-195,Quagsire,11,5,95,85,85,65,65,35,0,40,195,This carefree Pokemon has an easy-going nature. While swimming$ it always bumps into boat hulls.,0.86,-1,
+193,Yanma,7,3,65,65,45,75,45,95,5,30,193,If it flaps its wings really fast$ it can generate shock waves that will shatter windows in the area.,1.03,3,0
+194,Wooper,11,5,55,45,45,25,25,15,0,100,194,This Pokemon lives in cold water. It will leave the water to search for food when it gets cold outside.,0.86,6,
+195,Quagsire,11,5,95,85,85,65,65,35,0,40,195,This carefree Pokemon has an easy-going nature. While swimming$ it always bumps into boat hulls.,0.86,6,
 196,Espeon,14,0,65,65,60,130,95,110,3,20,196,It uses the fine hair that covers its body to sense air currents and predict its enemy's actions.,1.05,-1,
 197,Umbreon,17,0,95,65,110,60,130,65,4,20,197,When agitated$ this Pokemon protects itself by spraying poisonous sweat from its pores.,1.05,-1,
 198,Murkrow,17,3,60,85,42,85,42,91,5,15,198,Feared and loathed by many$ it is believed to bring misfortune to all those who see it at night.,1.01,15,0
-199,Slowking,11,14,95,75,80,100,110,30,4,30,199,It has incredible intellect and intuition. Whatever the situation$ it remains calm and collected.,0.98,-1,
+199,Slowking,11,14,95,75,80,100,110,30,4,30,199,It has incredible intellect and intuition. Whatever the situation$ it remains calm and collected.,0.98,20,
 200,Misdreavus,8,0,60,60,60,85,85,85,4,20,200,It likes playing mischievous tricks$ such as screaming and wailing to startle people at night. ,0.99,26,0
 201,Unown,14,0,48,72,48,72,48,48,3,90,201,Their shapes look like hieroglyphs on ancient tablets. It is said that the two are somehow related.,0.672,26,0
 202,Wobbuffet,14,0,190,33,58,33,58,33,0,20,202,It hates light and shock. If attacked$ it inflates its body to build up its counterstrike.,0.81,-1,
-203,Girafarig,1,14,70,80,65,90,65,85,3,25,203,Its tail has a small brain of its own. Beware! If you get close$ it may react to your scent by biting.,0.91,-1,
-204,Pineco,7,0,50,65,90,35,35,15,2,75,204,It likes to make its shell thicker by adding layers of tree bark. The additional weight doesn't bother it.,0.93,-1,
-205,Forretress,7,9,75,90,140,60,60,40,2,30,205,Its entire body is shielded by a steel-hard shell. What lurks inside this shell is a total mystery.,0.93,-1,
+203,Girafarig,1,14,70,80,65,90,65,85,3,25,203,Its tail has a small brain of its own. Beware! If you get close$ it may react to your scent by biting.,0.91,39,
+204,Pineco,7,0,50,65,90,35,35,15,2,75,204,It likes to make its shell thicker by adding layers of tree bark. The additional weight doesn't bother it.,0.93,5,
+205,Forretress,7,9,75,90,140,60,60,40,2,30,205,Its entire body is shielded by a steel-hard shell. What lurks inside this shell is a total mystery.,0.93,5,
 206,Dunsparce,1,0,110,80,70,55,65,35,0,75,206,When spotted$ this Pokemon escapes backward by furiously boring into the ground with its tail.,1.04,-1,
 207,Gligar,5,3,65,75,105,35,65,85,2,25,207,It flies straight at its target's face$ then clamps down on the startled victim to inject poison.,1.02,52,0
 208,Steelix,9,5,75,85,200,55,65,30,2,10,208,Its body has been compressed deep under the ground. As a result$ it is even harder than a diamond.,1.02,69,
@@ -211,9 +211,9 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 210,Granbull,18,0,90,120,75,60,60,45,1,30,210,It is actually timid and easily spooked. If attacked$ it flails about to fend off its attacker.,0.9,22,
 211,Qwilfish,11,4,65,95,85,55,55,85,1,20,211,To fire its poison spikes$ it must inflate its body by drinking over 2.6 gallons of water all at once.,0.88,38,0
 212,Scizor,7,9,70,130,100,55,80,65,1,10,212,It swings its eye-patterned pincers up to scare its foes. This makes it look like it has three heads.,1,101,
-213,Shuckle,7,6,20,10,230,10,230,5,2,75,213,The berries it stores in its vase-like shell decompose and become a gooey liquid.,1.01,-1,
+213,Shuckle,7,6,20,10,230,10,230,5,2,75,213,The berries it stores in its vase-like shell decompose and become a gooey liquid.,1.01,5,
 214,Heracross,7,2,80,125,75,40,95,85,1,20,214,This powerful Pokemon thrusts its prized horn under its enemies' bellies$ then lifts and throws them.,1,62,
-215,Sneasel,17,15,55,95,55,35,75,115,5,25,215,Its paws conceal sharp claws. If attacked$ it suddenly extends the claws and startles its enemy.,1.02,-1,
+215,Sneasel,17,15,55,95,55,35,75,115,5,25,215,Its paws conceal sharp claws. If attacked$ it suddenly extends the claws and startles its enemy.,1.02,39,
 216,Teddiursa,1,0,60,80,50,50,50,40,1,50,216,If it finds honey$ its crescent mark glows. It always licks its paws because they're soaked with honey.,1,-1,
 217,Ursaring,1,0,90,130,75,75,75,55,1,25,217,Although it is a good climber$ it prefers to snap trees with its forelegs and eat fallen berries.,1,62,
 218,Slugma,10,0,40,40,40,70,40,20,3,75,218,It never sleeps. It has to keep moving because if it stopped$ its magma body would cool and harden.,0.86,49,
@@ -225,7 +225,7 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 224,Octillery,11,0,75,105,75,105,75,45,3,30,224,It traps foes with the suction cups on its tentacles$ then smashes them with its rock-hard head.,0.96,97,
 225,Delibird,15,3,45,55,45,65,45,75,5,20,225,It carries food all day long. There are tales about lost people who were saved by its stored food.,0.66,15,
 226,Mantine,11,3,85,40,70,80,140,70,4,10,226,As it majestically swims$ it doesn't care if REMORAID attach to it for scavenging its leftovers.,0.97,33,0
-227,Skarmory,9,3,65,80,140,40,70,70,2,10,227,Its sturdy wings look heavy$ but they are actually hollow and light$ allowing it to fly freely in the sky.,0.93,51,
+227,Skarmory,9,3,65,80,140,40,70,70,2,10,227,Its sturdy wings look heavy$ but they are actually hollow and light$ allowing it to fly freely in the sky.,0.93,5,
 228,Houndour,17,10,45,60,30,80,50,65,3,50,228,It uses different kinds of cries for communicating with others of its kind and for pursuing its prey.,1,-1,
 229,Houndoom,17,10,75,90,50,110,80,95,3,20,229,If you are burned by the flames it shoots from its mouth$ the pain will never go away.,1,-1,
 230,Kingdra,11,16,75,95,95,95,95,85,3,20,230,It is said that it usually hides in underwater caves. It can create whirlpools by yawning.,1.08,33,0
@@ -289,7 +289,7 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 288,Vigoroth,1,0,80,80,80,55,55,90,5,50,288,Its stress level rises if it cannot keep moving constantly. Too much stress makes it feel sick.,1.1,72,
 289,Slaking,1,0,150,160,100,95,65,100,1,20,289,The world's laziest Pokemon. It moves to another spot when there's no food left within its reach.,1.1,-1,
 290,Nincada,7,5,31,45,90,30,30,40,2,100,290,It can sometimes live underground for more than 10 years. It absorbs nutrients from the roots of trees.,0.912,-1,
-291,Ninjask,7,3,61,90,45,50,50,160,5,50,291,Its cry leaves a lasting headache if heard for too long. It moves so quickly that it is almost invisible.,0.912,-1,0
+291,Ninjask,7,3,61,90,45,50,50,160,5,50,291,Its cry leaves a lasting headache if heard for too long. It moves so quickly that it is almost invisible.,0.912,3,0
 292,Shedinja,7,8,1,90,45,30,30,40,1,20,292,A strange Pokemon--it flies without moving its wings$ has a hollow shell for a body$ and does not breathe.,0.912,-1,0
 293,Whismur,1,0,64,51,23,51,23,28,0,75,293,If it senses danger$ it scares the foe by crying out with the volume of a jet-plane engine.,0.98,43,
 294,Loudred,1,0,84,71,43,71,43,48,0,50,294,It shouts loudly by inhaling air$ and then uses its well-developed stomach muscles to exhale.,0.98,43,
@@ -297,7 +297,7 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 296,Makuhita,2,0,72,60,30,20,30,25,0,75,296,It toughens up by slamming into thick trees over and over. It gains a sturdy body and dauntless spirit.,0.948,47,
 297,Hariyama,2,0,144,120,60,40,60,50,0,80,297,It loves challenging others to tests of strength. It has the power to stop a train with a slap.,0.948,47,
 298,Azurill,1,18,50,20,40,20,40,20,0,60,298,Its tail is packed full of the nutrients it needs to grow.,0.84,47,
-299,Nosepass,6,0,30,45,135,45,90,30,2,100,299,If two of these meet$ they cannot get too close because their noses repel each other.,1.05,-1,
+299,Nosepass,6,0,30,45,135,45,90,30,2,100,299,If two of these meet$ they cannot get too close because their noses repel each other.,1.05,5,
 300,Skitty,1,18,50,45,45,35,35,50,5,100,300,It's adorable when it chases its own tail. It's difficult to earn its trust.,0.8,-1,
 301,Delcatty,1,18,70,65,65,55,55,90,5,25,301,It dislikes dirty places. It often searches for a comfortable place in which to groom itself.,0.8,-1,
 302,Sableye,17,8,50,75,75,65,65,50,1,20,302,It dwells in the darkness of caves. It uses its sharp claws to dig up gems to nourish itself.,0.76,51,
@@ -318,8 +318,8 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 317,Swalot,4,0,100,73,83,73,83,55,0,30,317,It gulps anything that fits in its mouth. Its special enzymes can dissolve anything.,0.934,-1,
 318,Carvanha,11,17,45,90,20,65,20,65,1,90,318,They form packs to attack boats and rip out their hulls to sink them. They live in rivers in the jungle.,0.92,-1,0
 319,Sharpedo,11,17,70,120,40,95,40,95,1,25,319,It can swim at speeds of 75 mph by jetting seawater through its body. It is the bandit of the sea.,0.92,-1,0
-320,Wailmer,11,0,130,70,35,70,35,60,0,50,320,It bounces playfully like a ball. The more seawater it swallows$ the higher it bounces.,1,-1,0
-321,Wailord,11,0,170,90,45,90,45,60,0,25,321,It is the largest of all identified Pokemon. They jump as a pack to herd their prey.,1,-1,0
+320,Wailmer,11,0,130,70,35,70,35,60,0,50,320,It bounces playfully like a ball. The more seawater it swallows$ the higher it bounces.,1,41,0
+321,Wailord,11,0,170,90,45,90,45,60,0,25,321,It is the largest of all identified Pokemon. They jump as a pack to herd their prey.,1,41,0
 322,Numel,10,5,60,60,40,65,45,35,3,100,322,The flaming magma it stores in the hump on its back is the source of its tremendous power.,0.92,-1,
 323,Camerupt,10,5,70,100,70,105,75,40,3,60,323,It lives in the crater of a volcano. It is well known that the humps on its back erupt every 10 years.,0.92,-1,
 324,Torkoal,10,0,70,85,140,85,70,20,2,40,324,You find abandoned coal mines full of them. They dig tirelessly in search of coal.,0.94,73,
@@ -327,8 +327,8 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 326,Grumpig,14,0,80,45,65,90,110,80,4,25,326,It can perform odd dance steps to influence foes. Its style of dancing became hugely popular overseas.,0.94,47,
 327,Spinda,1,0,60,60,60,60,60,60,0,100,327,The chances of two SPINDA having identical spot patterns is less than one in four billion.,0.72,20,
 328,Trapinch,7,5,45,100,45,45,45,10,1,100,328,Its nest is a sloped$ bowl-like pit in the desert. Once something has fallen in$ there is no escape.,1.04,52,
-329,Vibrava,7,16,50,70,50,50,50,70,1,50,329,It vibrates its wings vigorously$ creating ultrasonic waves that cause serious headaches.,1.04,-1,0
-330,Flygon,7,16,80,100,80,80,80,100,1,20,330,It is nicknamed “The Desert Spirit” because the flapping of its wings sounds like a woman singing.,1.04,-1,0
+329,Vibrava,7,16,50,70,50,50,50,70,1,50,329,It vibrates its wings vigorously$ creating ultrasonic waves that cause serious headaches.,1.04,26,0
+330,Flygon,7,16,80,100,80,80,80,100,1,20,330,It is nicknamed “The Desert Spirit” because the flapping of its wings sounds like a woman singing.,1.04,26,0
 331,Cacnea,12,0,50,85,40,85,40,35,3,75,331,It lives in arid locations. Its yellow flowers bloom once a year.,0.95,8,
 332,Cacturne,12,17,70,115,60,115,60,55,3,25,332,Packs of them follow travelers through the desert until the travelers can no longer move.,0.95,8,
 333,Swablu,1,3,45,40,60,40,75,50,4,100,333,Its wings bring cottony clouds to mind. It grooms with springwater and loves to sit on heads.,0.98,-1,0
@@ -365,7 +365,7 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 364,Sealeo,15,11,90,60,70,75,70,45,0,50,364,It has a very sensitive nose. It touches new things with its nose to examine them.,1.06,47,
 365,Walrein,15,11,110,80,90,95,90,65,0,20,365,It shatters drift ice with its strong tusks. Its thick layer of blubber repels enemy attacks.,1.06,47,
 366,Clamperl,11,0,35,64,85,74,55,32,2,100,366,When it evolves$ it makes a mysterious pearl that amplifies psychic powers when it's held.,0.97,75,
-367,Huntail,11,17,55,104,105,94,75,52,2,25,367,It lives deep in the pitch-dark sea. It attracts prey by moving its tail in mimicry of a small animal.,0.97,33,0
+367,Huntail,11,17,55,104,105,94,75,52,2,25,367,It lives deep in the pitch-dark sea. It attracts prey by moving its tail in mimicry of a small animal.,0.97,41,0
 368,Gorebyss,11,18,55,84,105,114,75,52,3,25,368,Its pink body becomes more vivid with the rise of water temperatures in the springtime.,0.97,33,0
 369,Relicanth,11,6,100,90,130,45,65,55,2,10,369,Discovered by chance during deep-sea explorations$ it has not changed since ancient times.,0.97,69,0
 370,Luvdisc,11,0,43,30,55,40,65,97,5,90,370,Its heart-shaped body makes it popular. In some places$ you would give a LUVDISC to someone you love.,0.66,33,0
@@ -408,8 +408,8 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 407,Roserade,12,4,60,70,65,125,105,90,3,30,407,Its sweet aroma attracts prey. Then it spews poison. The more toxic it is$ the sweeter its aroma.,1.03,38,
 408,Cranidos,6,0,67,125,40,30,30,58,1,20,408,CRANIDOS toughen up their already rock-hard heads by headbutting one another.,0.99,69,
 409,Rampardos,6,0,97,165,60,65,50,58,1,20,409,Its skull withstands impacts of any magnitude. As a result$ its brain never gets the chance to grow.,0.99,69,
-410,Shieldon,6,9,30,42,118,42,88,30,2,20,410,It was generated from a fossil dug out of a layer of clay that was older than anyone knows. It has a sturdy face.,0.99,-1,
-411,Bastiodon,6,9,60,52,168,47,138,30,2,20,411,When attacked$ they form a wall. Their rock-hard faces serve to protect them from the attacks.,0.99,-1,
+410,Shieldon,6,9,30,42,118,42,88,30,2,20,410,It was generated from a fossil dug out of a layer of clay that was older than anyone knows. It has a sturdy face.,0.99,5,
+411,Bastiodon,6,9,60,52,168,47,138,30,2,20,411,When attacked$ they form a wall. Their rock-hard faces serve to protect them from the attacks.,0.99,5,
 412,Burmy,7,0,40,29,45,29,45,36,4,50,412,It covers itself with a cloak to shelter from the cold. When it's hot$ its cloak is thinner.,0.848,61,0
 413,Wormadam,7,12,60,59,85,79,105,36,4,20,413,It is said that a WORMADAM that evolves on a cold day will have a thicker cloak.,0.848,-1,0
 414,Mothim,7,3,70,94,50,94,50,66,3,20,414,It flutters around at night and steals honey from the COMBEE hive.,0.848,68,0
@@ -460,21 +460,21 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 459,Snover,12,15,60,62,50,62,60,40,1,50,459,During cold seasons$ it migrates to the mountain's lower reaches. It returns to the snow-covered summit in the spring.,0.988,117,
 460,Abomasnow,12,15,90,92,75,92,85,60,1,25,460,It lives a quiet life on mountains that are perpetually covered in snow. It hides itself by whipping up blizzards.,0.988,117,
 461,Weavile,17,15,70,120,65,45,85,125,5,20,461,It lives in snowy regions. It carves patterns in trees with its claws as a signal to others.,1.02,-1,
-462,Magnezone,13,9,70,70,115,130,90,60,3,15,462,Exposure to a special magnetic field changed MAGNETON's molecular structure$ turning it into MAGNEZONE.,1.07,-1,0
+462,Magnezone,13,9,70,70,115,130,90,60,3,15,462,Exposure to a special magnetic field changed MAGNETON's molecular structure$ turning it into MAGNEZONE.,1.07,5,0
 463,Lickilicky,1,0,110,85,95,80,95,50,0,15,463,Its saliva can decompose anything. It wraps its long tongue around things to coat them with its sticky saliva.,1.03,20,
 464,Rhyperior,5,6,115,140,130,55,55,40,1,15,464,From holes in its palms$ it fires out GEODUDE. Its carapace  can withstand volcanic eruptions.,1.07,-1,
 465,Tangrowth,12,0,100,100,125,110,50,50,2,15,465,When it remains still$ it appears to be a large shrub. Unsuspecting prey that wander near get ensnared by its vines.,1.07,-1,
 466,Electivire,13,0,75,123,67,95,85,95,1,15,466,As its electric charge amplifies$ blue sparks begin to crackle between its horns.,1.08,9,
 467,Magmortar,10,0,75,95,67,125,95,83,3,15,467,It blasts fireballs of over 3$600 degrees Fahrenheit out of its arms. Its breath also sears and sizzles.,1.08,49,
 468,Togekiss,18,3,85,50,95,120,115,80,3,15,468,As everyone knows$ it visits peaceful regions$ bringing them gifts of kindness and sweet blessings.,1.09,-1,0
-469,Yanmega,7,3,86,76,86,116,56,95,3,15,469,This six-legged Pokemon is easily capable of transporting an adult in flight. The wings on its tail help it stay balanced.,1.03,-1,0
+469,Yanmega,7,3,86,76,86,116,56,95,3,15,469,This six-legged Pokemon is easily capable of transporting an adult in flight. The wings on its tail help it stay balanced.,1.03,3,0
 470,Leafeon,12,0,65,110,130,60,65,95,2,20,470,When you see LEAFEON asleep in a patch of sunshine$ you'll know it is using photosynthesis to produce clean air.,1.05,34,
 471,Glaceon,15,0,65,60,110,130,95,65,3,20,471,It causes small ice crystals to form by lowering the temperature of the surrounding atmosphere.,1.05,-1,
 472,Gliscor,5,3,75,95,125,45,75,95,2,15,472,Its flight is soundless. It uses its lengthy tail to carry off its prey... Then its elongated fangs do the rest.,1.02,52,0
 473,Mamoswine,15,5,110,130,80,70,60,80,1,20,473,A frozen MAMOSWINE was dug from ice dating back 10$000 years. This Pokemon has been around a long$ long$ long time.,1.06,47,
 474,Porygon-Z,1,0,85,80,70,135,75,90,3,15,474,Its programming was modified to enable it to travel through alien dimensions. Seems there might have been an error...,1.07,-1,0
 475,Gallade,14,2,68,125,65,65,115,80,1,20,475,Because it can sense what its foe is thinking$ its attacks burst out first$ fast$ and fierce.,1.036,80,
-476,Probopass,6,9,60,55,145,75,150,40,4,25,476,It controls three units called Mini-Noses using magnetic force. With them$ it can attack the foe from three directions.,1.05,-1,0
+476,Probopass,6,9,60,55,145,75,150,40,4,25,476,It controls three units called Mini-Noses using magnetic force. With them$ it can attack the foe from three directions.,1.05,5,0
 477,Dusknoir,8,0,45,100,135,65,135,45,4,20,477,This feared Pokemon is said to travel to worlds unknown. Some even believe that it takes lost spirits along with it.,1.05,-1,0
 478,Froslass,15,8,70,80,70,80,70,110,5,30,478,It freezes foes with an icy breath nearly?-60 degrees Fahrenheit. What seems to be its body is actually hollow.,0.96,-1,0
 479,Rotom,13,8,50,50,77,95,77,91,3,20,479,Research continues on this Pokemon$ which could be the power source of a unique motor.,0.88,26,0
@@ -527,6 +527,6 @@ pokemon_id,name,type1,type2,hp,attack,defense,special attack,special defense,spe
 10100,Raichu,13,14,60,85,50,95,85,110,5,2,26,,0.97,26,0
 10114,Cubone,8,0,50,50,95,40,50,35,2,75,104,,0.85,-1,
 10115,Marowak,10,8,60,80,110,50,80,45,2,20,105,,0.85,-1,
-10116,Slowpoke,14,0,90,65,65,40,40,15,0,75,79,,0.63,-1,
-10117,Slowbro,14,4,95,100,95,100,70,30,2,30,80,,0.98,-1,
-10118,Slowking,14,4,95,65,80,110,110,30,4,30,199,,0.98,-1,
+10116,Slowpoke,14,0,90,65,65,40,40,15,0,75,79,,0.63,20,
+10117,Slowbro,14,4,95,100,95,100,70,30,2,30,80,,0.98,20,
+10118,Slowking,14,4,95,65,80,110,110,30,4,30,199,,0.98,20,

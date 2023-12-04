@@ -352,6 +352,12 @@ public class BattleOperationsManager {
                         targetPokemon.name + "'s STEADFAST raised it's speed.",
                         target, target));
                 }
+                else if (abilityId == 3)
+                {
+                    battleEvents.add(new BattleEvent(
+                        targetPokemon.name + "'s SPEED BOOST raised it's speed.",
+                        target, target));
+                }
                 else if (abilityId == 22)
                 {
                     battleEvents.add(new BattleEvent("INTIMIDATE cuts " + targetPokemon.name + "'s " +

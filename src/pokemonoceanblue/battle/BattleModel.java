@@ -278,16 +278,30 @@ public abstract class BattleModel extends BaseModel
 
             if (this.ranNum.nextInt(100) + 1 <= flinchChance)
             {
-                this.unableToMove[attacker] = true;
-                this.events.remove(attackEventIndex);
-                this.events.add(attackEventIndex, new BattleEvent(attackingPokemon.name + " flinched!", attacker, attacker));
-
-                // STEADFAST raises Speed after flinching
-                if (attackingPokemon.ability != null && attackingPokemon.ability.abilityId == 80)
+                // INNER FOCUS ability prevents flinching
+                System.out.println(defendingPokemon.name);
+                if (attackingPokemon.ability != null && attackingPokemon.ability.name.equals("INNER FOCUS"))
                 {
-                    StatEffect[] moveStatEffects = new StatEffect[1];
-                    moveStatEffects[0] = new StatEffect(Stat.SPEED, 1);
-                    this.events.addAll(battleOperationsManager.addStatChanges(attacker, attacker, moveStatEffects, attackingPokemon, attackingPokemon.ability.abilityId));
+                    // only display a message for guaranteed flinches
+                    if (flinchChance >= 100)
+                    {
+                        this.events.add(attackEventIndex, new BattleEvent(attackingPokemon.name + "'s INNER FOCUS prevents flinching.'", attacker, attacker));
+                        attackEventIndex++;
+                    }
+                }
+                else
+                {
+                    this.unableToMove[attacker] = true;
+                    this.events.remove(attackEventIndex);
+                    this.events.add(attackEventIndex, new BattleEvent(attackingPokemon.name + " flinched!", attacker, attacker));
+    
+                    // STEADFAST raises Speed after flinching
+                    if (attackingPokemon.ability != null && attackingPokemon.ability.abilityId == 80)
+                    {
+                        StatEffect[] moveStatEffects = new StatEffect[1];
+                        moveStatEffects[0] = new StatEffect(Stat.SPEED, 1);
+                        this.events.addAll(battleOperationsManager.addStatChanges(attacker, attacker, moveStatEffects, attackingPokemon, attackingPokemon.ability.abilityId));
+                    }
                 }
             }
         }
@@ -298,6 +312,21 @@ public abstract class BattleModel extends BaseModel
             this.events.remove(attackEventIndex);
             this.events.add(attackEventIndex, new BattleEvent(defendingPokemon.name + "'s SOUNDPROOF grants immunity to sound-based moves.'", attacker, (attacker + 1) % 2));
         }
+        // DAMP ability prevents the use of EXPLOSION or SELF-DESTRUCT
+        else if (defendingPokemon.ability != null && defendingPokemon.ability.abilityId == 43 && Constants.EXPLOSION_MOVES.contains(this.attacks[attacker].move.moveId))
+        {
+            this.unableToMove[attacker] = true;
+            this.events.remove(attackEventIndex);
+            this.events.add(attackEventIndex, new BattleEvent(defendingPokemon.name + "'s DAMP prevents self-destruction.'", attacker, (attacker + 1) % 2));
+        }
+        // STURDY ability prevents the use of One Hit KO moves
+        else if (defendingPokemon.ability != null && defendingPokemon.ability.name.equals("STURDY") && this.attacks[attacker].move.power == -1)
+        {
+            this.unableToMove[attacker] = true;
+            this.events.remove(attackEventIndex);
+            this.events.add(attackEventIndex, new BattleEvent(defendingPokemon.name + "'s STURDY prevents One Hit KO moves.", attacker, (attacker + 1) % 2));
+        }
+
         if (!this.unableToMove[attacker])
         {
             this.events.get(attackEventIndex).attack.useAttack(attackingPokemon,
@@ -608,7 +637,7 @@ public abstract class BattleModel extends BaseModel
 
                 if ((this.moveProcessed[0] || this.moveProcessed[1]) && (!this.moveProcessed[0] || !this.moveProcessed[1]))
                 {
-                    turnEffectManager.endOfTurnEffects(this.team, this.currentPokemon, this.events);
+                    turnEffectManager.endOfTurnEffects(this.team, this.currentPokemon, this.events, this.battleOperationsManager);
                 }
                 if (damagedTeamIndex == 0)
                 {
@@ -851,7 +880,7 @@ public abstract class BattleModel extends BaseModel
         {
             if (this.moveProcessed[0] || this.moveProcessed[1])
             {
-                turnEffectManager.endOfTurnEffects(this.team, this.currentPokemon, this.events);
+                turnEffectManager.endOfTurnEffects(this.team, this.currentPokemon, this.events, this.battleOperationsManager);
             }
             if (this.events.size() > 0)
             {
