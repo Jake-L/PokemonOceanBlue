@@ -56,7 +56,7 @@ public class OverworldView extends BaseView {
         for (int i = 0; i < tileSprite.length; i++)
         {
             // load overlay tiles
-            if ((i >= 27 && i <= 65) || (i >= 85 && i <= 104) || (i >= 1 && i <= 8) || (i >= 117 && i <= 125 && i != 118 && i != 121))
+            if ((i >= 27 && i <= 73) || (i >= 85 && i <= 104) || (i >= 1 && i <= 8) || (i >= 117 && i <= 125 && i != 118 && i != 121))
             {
                 ii = new ImageIcon(this.getClass().getResource(String.format("/tilesOverlay/%s.png", i)));
                 overlayTileSprite[i] = ii.getImage();

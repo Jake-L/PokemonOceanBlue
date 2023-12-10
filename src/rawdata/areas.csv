@@ -24,6 +24,8 @@ map_id,area_id,name,min_x,max_x,min_y,max_y,music_id,battle_background_id,safe_x
 45,0,Saffron City,0,100,0,100,22,6,17,45
 46,0,Saffron City TUNNEL,0,100,0,100,22,6,,
 48,0,Lavendar Town,0,100,0,100,40,0,6,6
+50,0,Route 12,0,999,0,15,3,0,,
+50,1,Route 13,0,20,16,999,3,0,,
 501,0,Vermilion Pokemon Center,0,10,0,10,11,0,,
 510,0,Celadon City Gym,0,13,0,13,23,0,,
 521,0,Saffron City Gym,0,13,0,13,23,6,,
